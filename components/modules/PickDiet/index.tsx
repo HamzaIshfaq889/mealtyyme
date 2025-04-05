@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 
-import { Button, Text, TouchableOpacity, View } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
 
 import Svg1 from "../../../assets/svgs/arrow-left.svg";
+import { router } from "expo-router";
+import { Button, ButtonText } from "@/components/ui/button";
 
 const PickDiet = () => {
   const [selectedIndexes, setSelectedIndexes] = useState<number[]>([]);
@@ -29,7 +31,7 @@ const PickDiet = () => {
     <>
       <View className="flex-col w-full h-full px-9 py-16">
         <View className="flex flex-row justify-between items-center mb-20">
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => router.push("onboarding3")}>
             <Svg1 width={23} height={23} />
           </TouchableOpacity>
           <Text className="block font-bold text-2xl">Pick your diet</Text>
@@ -58,9 +60,9 @@ const PickDiet = () => {
             );
           })}
         </View>
-        <View className="mt-auto">
-          <Button title="Next"></Button>
-        </View>
+        <Button className="mt-2" action="primary" onPress={() => router.push("allergies")}>
+          <ButtonText>Next</ButtonText>
+        </Button>
       </View>
     </>
   );

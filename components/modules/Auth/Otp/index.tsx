@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 
-import { TouchableOpacity } from "react-native";
-import { Text, View } from "react-native";
+import { Text } from "react-native";
+import { TouchableOpacity, View } from "react-native";
+
+import { RectangleEllipsis } from "lucide-react-native";
 
 import {
   FormControl,
@@ -11,15 +13,14 @@ import {
   FormControlLabelText,
 } from "@/components/ui/form-control";
 import { Input, InputField, InputIcon, InputSlot } from "@/components/ui/input";
-import { MailIcon } from "@/components/ui/icon";
-import { Button, ButtonText } from "@/components/ui/button";
 
 import Svg1 from "@/assets/svgs/arrow-left.svg";
+import { Button, ButtonText } from "@/components/ui/button";
 import { router } from "expo-router";
 
-const ForgotPassword = () => {
+const Otp = () => {
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
-  const [formData, setFormData] = useState({ email: "" });
+  const [formData, setFormData] = useState({ otp: "" });
 
   const validateField = (key: string, value: string) => {
     setFormData((prev) => ({ ...prev, [key]: value }));
@@ -28,11 +29,11 @@ const ForgotPassword = () => {
 
     // Validation rules for each field
     switch (key) {
-      case "email":
+      case "otp":
         if (!value) {
-          errorMessage = "Email is required.";
-        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
-          errorMessage = "Please enter a valid email.";
+          errorMessage = "Otp is required.";
+        } else if (value.length !== 5) {
+          errorMessage = "Please enter 5 digit otp.";
         }
         break;
 
@@ -43,58 +44,57 @@ const ForgotPassword = () => {
     setErrors((prev) => ({ ...prev, [key]: errorMessage }));
   };
 
-  const isFormValid = !errors?.email;
+  const isFormValid = !errors?.otp;
 
   const handleSubmit = () => {
     if (!isFormValid) {
-      console.log("Not valid");
+      console.log("not valid");
       return;
     }
-
-    router.push("otp");
-    console.log("Form valid");
+    router.push("reset-password");
+    console.log("valid");
   };
 
   return (
     <View className="flex flex-col w-full h-full px-9 py-16">
-      <View className="flex flex-row justify-between items-center mb-12">
-        <TouchableOpacity onPress={() => router.push("login")}>
+      <View className="flex flex-row justify-between items-center mb-14">
+        <TouchableOpacity onPress={() => router.push("forget-password")}>
           <Svg1 width={23} height={23} />
         </TouchableOpacity>
-        <Text className="block font-bold text-2xl">Forgot Password</Text>
+        <Text className="block font-bold text-2xl">Otp</Text>
         <Text></Text>
       </View>
       <View>
-        <Text className="text-primary/70 leading-6 mb-6">
-          Enter your email and we will send you a link to reset your password.
-        </Text>
-        <FormControl isInvalid={!!errors.email} size="md" className="mb-1">
+        <FormControl isInvalid={!!errors.otp} size="md" className="mb-1">
           <FormControlLabel>
             <FormControlLabelText className="font-bold leading-5">
-              Email Address
+              Otp
             </FormControlLabelText>
           </FormControlLabel>
           <Input className="my-3.5">
             <InputSlot className="ml-1">
-              <InputIcon className="!w-6 !h-6 text-primary" as={MailIcon} />
+              <InputIcon
+                className="!w-6 !h-6 text-primary"
+                as={RectangleEllipsis}
+              />
             </InputSlot>
             <InputField
               type="text"
-              placeholder="Enter Email Address"
-              value={formData?.email}
-              onChangeText={(text) => validateField("email", text)}
+              placeholder="Enter Otp"
+              value={formData?.otp}
+              onChangeText={(text) => validateField("otp", text)}
             />
           </Input>
           <FormControlError>
-            <FormControlErrorText>{errors?.email}</FormControlErrorText>
+            <FormControlErrorText>{errors?.otp}</FormControlErrorText>
           </FormControlError>
         </FormControl>
       </View>
-      <Button action="primary" className="mt-auto" onPress={handleSubmit}>
-        <ButtonText>Send Email</ButtonText>
+      <Button className="mt-2" action="primary" onPress={handleSubmit}>
+        <ButtonText>Confirm</ButtonText>
       </Button>
     </View>
   );
 };
 
-export default ForgotPassword;
+export default Otp;

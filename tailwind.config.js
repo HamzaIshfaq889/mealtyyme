@@ -52,7 +52,7 @@ module.exports = {
         },
       },
       fontFamily: {
-        roboto: ["inter", "sans-serif"],
+        sofia: ["SofiaPro", "sans-serif"],
       },
       fontWeight: {
         extrablack: "950",

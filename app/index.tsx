@@ -11,10 +11,13 @@ import {
   PickDiet,
   Login,
   ForgotPassword,
+  Signup,
+  Otp,
+  ResetPassword,
 } from "@/components/modules";
 
 const Homescreen = () => {
-  return <ForgotPassword />;
+  return <OnBoarding />;
 };
 
 export default Homescreen;
