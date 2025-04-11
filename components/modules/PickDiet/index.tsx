@@ -2,8 +2,9 @@ import React, { useState } from "react";
 
 import { Text, TouchableOpacity, View } from "react-native";
 
-import Svg1 from "../../../assets/svgs/arrow-left.svg";
 import { router } from "expo-router";
+
+import Svg1 from "../../../assets/svgs/arrow-left.svg";
 import { Button, ButtonText } from "@/components/ui/button";
 
 const PickDiet = () => {
@@ -31,7 +32,9 @@ const PickDiet = () => {
     <>
       <View className="flex-col w-full h-full px-9 py-16">
         <View className="flex flex-row justify-between items-center mb-20">
-          <TouchableOpacity onPress={() => router.push("onboarding3")}>
+          <TouchableOpacity
+            onPress={() => router.push("/(onboarding)/onboarding3")}
+          >
             <Svg1 width={23} height={23} />
           </TouchableOpacity>
           <Text className="block font-bold text-2xl">Pick your diet</Text>
@@ -49,7 +52,7 @@ const PickDiet = () => {
                   <Text
                     className={`border-2 font-bold leading-6 border-border p-4 rounded-xl ${
                       isSelected
-                        ? "text-primary-foreground bg-secondary"
+                        ? "text-background bg-secondary"
                         : "text-foreground bg-background"
                     }`}
                   >
@@ -60,7 +63,11 @@ const PickDiet = () => {
             );
           })}
         </View>
-        <Button className="mt-2" action="primary" onPress={() => router.push("allergies")}>
+        <Button
+          className="mt-2"
+          action="primary"
+          onPress={() => router.push("/allergies")}
+        >
           <ButtonText>Next</ButtonText>
         </Button>
       </View>

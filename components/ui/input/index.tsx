@@ -58,7 +58,7 @@ const inputStyle = tva({
 });
 
 const inputIconStyle = tva({
-  base: "justify-center items-center text-accent !w-7 !h-7 fill-none",
+  base: "justify-center items-center text-muted !w-7 !h-7 fill-none",
   parentVariants: {
     size: {
       "2xs": "h-3 w-3",
@@ -76,7 +76,7 @@ const inputSlotStyle = tva({
 });
 
 const inputFieldStyle = tva({
-  base: "flex-1 text-primary !text-xl py-3 px-3 placeholder:text-accent h-full ios:leading-[0px] web:cursor-text web:data-[disabled=true]:cursor-not-allowed",
+  base: "flex-1 text-primary !text-xl py-3 px-3 placeholder:text-muted h-full ios:leading-[0px] web:cursor-text web:data-[disabled=true]:cursor-not-allowed",
 
   parentVariants: {
     variant: {

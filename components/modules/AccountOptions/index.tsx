@@ -1,13 +1,13 @@
 import React from "react";
 
 import { Text, TouchableOpacity, View } from "react-native";
-import { useRouter } from "expo-router";
+
+import { router } from "expo-router";
 
 import Svg1 from "../../../assets/svgs/account-option.svg";
 import { Button, ButtonText } from "@/components/ui/button";
 
 const AccountsOptions = () => {
-  const router = useRouter();
   return (
     <View className="bg-secondary w-full h-full flex flex-col justify-end items-center">
       <View>
@@ -20,11 +20,11 @@ const AccountsOptions = () => {
         <Button
           className="mt-2"
           action="primary"
-          onPress={() => router.push("login")}
+          onPress={() => router.push("/(auth)/login")}
         >
           <ButtonText>Login</ButtonText>
         </Button>
-        <TouchableOpacity onPress={() => router.push("signup")}>
+        <TouchableOpacity onPress={() => router.push("/(auth)/signup")}>
           <Text className="font-bold leading-5 mt-6 text-center text-background">
             Create New Account
           </Text>

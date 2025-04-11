@@ -8,37 +8,33 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        border: "hsl(214, 32%, 93%, 1)",
+        border: "hsl(214, 32%, 93%, 1)" /*inputborders */,
         ring: "hsl(224 71.4% 4.1%)",
 
         input: "hsl(220 13% 91%)",
 
-        background: "hsl(0, 0%, 100%, 1)",
-        foreground: "hsl(218, 67%, 12%, 1)",
+        background: "hsl(0, 0%, 100%, 1)" /* white color */,
+        foreground: "hsl(218, 67%, 12%, 1)" /* Black headings color */,
 
         primary: {
-          DEFAULT: "hsl(240, 79%, 5%, 1)",
-          foreground: "hsl(0, 0%, 100%, 1)",
+          DEFAULT:
+            "hsl(200, 67%, 12%, 1)" /* dark blue color(light shade of foreground/Black) */,
         },
 
         secondary: {
-          DEFAULT: "hsla(194, 100%, 50%, 1)",
-          foreground: "hsl(0, 0%, 100%, 1)",
+          DEFAULT: "hsla(194, 100%, 50%, 1)" /* blue color Main theme color */,
         },
 
         destructive: {
-          DEFAULT: "hsl(5, 84%, 64%, 1)",
-          foreground: "hsl(0, 0%, 100%, 1)",
+          DEFAULT: "hsl(5, 84%, 64%, 1)" /* red color for error messages */,
         },
 
         muted: {
-          DEFAULT: "hsl(220 14.3% 95.9%)",
-          foreground: "hsl(220 8.9% 46.1%)",
+          DEFAULT: "hsla(215, 14%, 64%, 1)", // grayish color paragraph texts and inputs placeholders
         },
 
         accent: {
-          DEFAULT: "hsla(215, 14%, 64%, 1)",
-          foreground: "hsl(218, 67%, 12%, 1)",
+          DEFAULT: "hsla(180, 17%, 95%, 1)", //grayish secondary
         },
 
         popover: {
@@ -58,7 +54,10 @@ module.exports = {
         extrablack: "950",
       },
       borderRadius: {
-        input: "8px", 
+        input: "8px",
+      },
+      boxShadow: {
+        custom: "0px 4px 4px 0px hsla(0, 0%, 0%, 0.25)",
       },
     },
   },

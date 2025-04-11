@@ -14,10 +14,16 @@ import { Input, InputField, InputIcon, InputSlot } from "@/components/ui/input";
 import { MailIcon } from "@/components/ui/icon";
 import { Button, ButtonText } from "@/components/ui/button";
 
+import { forgotPassword } from "@/services/authApi";
+
 import Svg1 from "@/assets/svgs/arrow-left.svg";
 import { router } from "expo-router";
+import { Spinner } from "@/components/ui/spinner";
+
+import Toast from "react-native-toast-message";
 
 const ForgotPassword = () => {
+  const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [formData, setFormData] = useState({ email: "" });
 
@@ -43,22 +49,57 @@ const ForgotPassword = () => {
     setErrors((prev) => ({ ...prev, [key]: errorMessage }));
   };
 
-  const isFormValid = !errors?.email;
+  const validateAllFields = () => {
+    const fieldsToValidate = {
+      ...formData,
+    };
 
-  const handleSubmit = () => {
+    Object.entries(fieldsToValidate).forEach(([key, value]) => {
+      validateField(key, value);
+    });
+  };
+
+  const isFormValid = !errors?.email && formData?.email;
+  const handleSubmit = async () => {
+    setIsLoading(true);
+
+    validateAllFields();
     if (!isFormValid) {
-      console.log("Not valid");
+      console.log("Form Not valid");
+      setIsLoading(false);
       return;
     }
 
-    router.push("otp");
-    console.log("Form valid");
+    try {
+      const payload = {
+        email: formData?.email,
+      };
+
+      await forgotPassword(payload);
+
+      Toast.show({
+        type: "success",
+        text1: "Reset code sent to your email!",
+      });
+      router.push(`/(auth)/otp?email=${formData.email}`);
+    } catch (error: any) {
+      const errorMessage =
+        error.message || "Something went wrong. Please try again.";
+
+      Toast.show({
+        type: "error",
+        text1: errorMessage,
+      });
+      console.log("Forget Password Error:", errorMessage);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
     <View className="flex flex-col w-full h-full px-9 py-16">
       <View className="flex flex-row justify-between items-center mb-12">
-        <TouchableOpacity onPress={() => router.push("login")}>
+        <TouchableOpacity onPress={() => router.push("/(auth)/login")}>
           <Svg1 width={23} height={23} />
         </TouchableOpacity>
         <Text className="block font-bold text-2xl">Forgot Password</Text>
@@ -91,7 +132,13 @@ const ForgotPassword = () => {
         </FormControl>
       </View>
       <Button action="primary" className="mt-auto" onPress={handleSubmit}>
-        <ButtonText>Send Email</ButtonText>
+        {!isLoading ? (
+          <ButtonText>Send email</ButtonText>
+        ) : (
+          <ButtonText>
+            <Spinner />
+          </ButtonText>
+        )}
       </Button>
     </View>
   );

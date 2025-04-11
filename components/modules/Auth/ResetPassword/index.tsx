@@ -1,6 +1,13 @@
 import React, { useState } from "react";
 
-import { Text, TouchableOpacity, View } from "react-native";
+import { Text, View } from "react-native";
+
+import { router } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
+
+import { useDispatch, useSelector } from "react-redux";
+
+import { resetPassword } from "@/services/authApi";
 
 import {
   FormControl,
@@ -13,9 +20,16 @@ import { Button, ButtonText } from "@/components/ui/button";
 import { Input, InputField, InputIcon, InputSlot } from "@/components/ui/input";
 import { EyeIcon, EyeOffIcon, LockIcon } from "@/components/ui/icon";
 
+import { Spinner } from "@/components/ui/spinner";
+
 import Svg1 from "@/assets/svgs/arrow-left.svg";
+import { clearResetToken } from "@/redux/slices/Auth";
+
+import Toast from "react-native-toast-message";
 
 const ResetPassword = () => {
+  const dispatch = useDispatch();
+  const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
@@ -23,6 +37,9 @@ const ResetPassword = () => {
     password: "",
     confirmPassword: "",
   });
+
+  const resetToken = useSelector((state: any) => state.auth["reset-token"]);
+  const { email } = useLocalSearchParams<{ email: string }>();
 
   const validateField = (key: string, value: string) => {
     setFormData((prev) => ({ ...prev, [key]: value }));
@@ -55,23 +72,65 @@ const ResetPassword = () => {
 
     setErrors((prev) => ({ ...prev, [key]: errorMessage }));
   };
+  const validateAllFields = () => {
+    const fieldsToValidate = {
+      ...formData,
+    };
 
-  const isFormValid = !errors.password && !errors.confirmPassword;
-  const handleSubmit = () => {
+    Object.entries(fieldsToValidate).forEach(([key, value]) => {
+      validateField(key, value);
+    });
+  };
+
+  const isFormValid =
+    !errors.password &&
+    !errors.confirmPassword &&
+    formData.password &&
+    formData.confirmPassword;
+  const handleSubmit = async () => {
+    setIsLoading(true);
+
+    validateAllFields();
     if (!isFormValid) {
       console.log("not valid");
+      setIsLoading(false);
       return;
     }
 
-    console.log("valid");
+    const payload = {
+      email: email,
+      reset_token: resetToken,
+      new_password: formData.confirmPassword,
+    };
+
+    try {
+      await resetPassword(payload);
+
+      dispatch(clearResetToken());
+
+      Toast.show({
+        type: "success",
+        text1: "Password reset successfully!",
+      });
+      router.push("/(auth)/login");
+    } catch (error: any) {
+      const errorMessage =
+        error.message || "Something went wrong. Please try again.";
+
+      Toast.show({
+        type: "error",
+        text1: errorMessage,
+      });
+      console.log("Reset Password Error:", errorMessage);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
     <View className="flex flex-col w-full h-full px-9 py-16">
       <View className="flex flex-row justify-between items-center mb-14">
-        <TouchableOpacity>
-          <Svg1 width={23} height={23} />
-        </TouchableOpacity>
+        <Text></Text>
         <Text className="block font-bold text-2xl">Reset Password</Text>
         <Text></Text>
       </View>
@@ -149,7 +208,13 @@ const ResetPassword = () => {
         </FormControl>
       </View>
       <Button className="mt-2" action="primary" onPress={handleSubmit}>
-        <ButtonText>Reset</ButtonText>
+        {!isLoading ? (
+          <ButtonText>Reset</ButtonText>
+        ) : (
+          <ButtonText>
+            <Spinner />
+          </ButtonText>
+        )}
       </Button>
     </View>
   );

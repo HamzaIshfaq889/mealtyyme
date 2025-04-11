@@ -10,6 +10,11 @@ import Signup from "./Auth/Signup";
 import ForgotPassword from "./Auth/ForgotPassword";
 import Otp from "./Auth/Otp";
 import ResetPassword from "./Auth/ResetPassword";
+import HomeUser from "./Home";
+import Favourites from "./Favourites";
+import RecipeDetails from "./RecipeDetails";
+import AuthWrapper from "./Auth/AuthWrapper";
+import Account from "./Account";
 
 export {
   Splash,
@@ -24,4 +29,9 @@ export {
   ForgotPassword,
   Otp,
   ResetPassword,
+  HomeUser,
+  Favourites,
+  RecipeDetails,
+  AuthWrapper,
+  Account
 };
