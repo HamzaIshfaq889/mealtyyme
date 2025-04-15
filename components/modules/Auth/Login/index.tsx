@@ -2,6 +2,8 @@ import React, { useState } from "react";
 
 import { Text, TouchableOpacity, View } from "react-native";
 
+import Toast from "react-native-toast-message";
+
 import { router } from "expo-router";
 
 import { useDispatch } from "react-redux";
@@ -18,16 +20,15 @@ import {
 import { Button, ButtonText } from "@/components/ui/button";
 import { Input, InputField, InputIcon, InputSlot } from "@/components/ui/input";
 import { EyeIcon, EyeOffIcon, LockIcon, MailIcon } from "@/components/ui/icon";
-
-import { loginUser } from "@/services/authApi";
+import { Spinner } from "@/components/ui/spinner";
 
 import Svg1 from "@/assets/svgs/arrow-left.svg";
 import Svg2 from "@/assets/svgs/google.svg";
 import Svg3 from "@/assets/svgs/facebook.svg";
 import { LoginResponseTypes } from "@/lib/types";
-import { Spinner } from "@/components/ui/spinner";
 
-import Toast from "react-native-toast-message";
+import { loginUser } from "@/services/authApi";
+
 
 const Login = () => {
   const dispatch = useDispatch();

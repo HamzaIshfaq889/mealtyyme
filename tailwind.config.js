@@ -32,9 +32,14 @@ module.exports = {
         muted: {
           DEFAULT: "hsla(215, 14%, 64%, 1)", // grayish color paragraph texts and inputs placeholders
         },
-
         accent: {
           DEFAULT: "hsla(180, 17%, 95%, 1)", //grayish secondary
+        },
+        gray3: {
+          DEFAULT: "hsla(214, 22%, 83%, 1)",
+        },
+        gray4: {
+          DEFAULT: "hsla(214, 32%, 93%, 1)",
         },
 
         popover: {

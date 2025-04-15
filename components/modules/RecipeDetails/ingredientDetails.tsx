@@ -92,7 +92,7 @@ const IngredientDetails = () => {
               }}
             >
               <View className="flex flex-row gap-6 items-center">
-                <View className="bg-accent p-7 rounded-lg"></View>
+                <View className="bg-gray4 p-7 rounded-lg"></View>
                 <Text className="font-bold text-xl text-foreground">
                   {ing?.ingredientName}
                 </Text>
@@ -144,7 +144,7 @@ const IngredientDetails = () => {
             <View key={item.id} className="basis-1/3 p-1">
               <View className="bg-background rounded-2xl p-2 shadow-custom">
                 <View className="relative mb-4">
-                  <View className="h-24 w-full rounded-xl bg-gray-300" />
+                  <View className="h-24 w-full rounded-xl bg-gray4" />
                 </View>
                 <Text className="text-foreground font-bold text-base leading-5 mb-3">
                   {truncateName(item.name)}

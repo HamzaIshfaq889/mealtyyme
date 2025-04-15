@@ -15,6 +15,11 @@ import Favourites from "./Favourites";
 import RecipeDetails from "./RecipeDetails";
 import AuthWrapper from "./Auth/AuthWrapper";
 import Account from "./Account";
+import EditProfile from "./Account/EditProfile";
+import Settings from "./Settings";
+import Search from "./Search";
+
+import { RecipeCard } from "./Common";
 
 export {
   Splash,
@@ -33,5 +38,9 @@ export {
   Favourites,
   RecipeDetails,
   AuthWrapper,
-  Account
+  Account,
+  RecipeCard,
+  EditProfile,
+  Settings,
+  Search,
 };

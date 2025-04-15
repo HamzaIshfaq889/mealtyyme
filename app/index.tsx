@@ -1,6 +1,6 @@
 import React from "react";
 
-import { HomeUser, Account } from "@/components/modules";
+import { HomeUser, Account, RecipeDetails } from "@/components/modules";
 import "../global.css";
 
 const Homescreen = () => {
@@ -8,8 +8,8 @@ const Homescreen = () => {
     <>
       {/* <Favourites /> */}
       {/* <RecipeDetails /> */}
-      {/* <HomeUser /> */}
-      <Account />
+      <HomeUser />
+      {/* <Account /> */}
     </>
   );
 };

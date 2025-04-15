@@ -11,27 +11,30 @@ const AuthWrapper = () => {
 
   console.log(token);
 
-  useEffect(() => {
-    const currentGroup = segments[0];
+  // useEffect(() => {
+  //   const currentGroup = segments[0];
 
-    const isPublicGroup =
-      currentGroup === "(auth)" || currentGroup === "(onboarding)";
-    const isPrivateGroup = !isPublicGroup;
+  //   const isPublicGroup =
+  //     currentGroup === "(auth)" || currentGroup === "(onboarding)";
+  //   const isPrivateGroup = !isPublicGroup;
 
-    if (!token && isPrivateGroup) {
-      router.replace("/(onboarding)/onboarding2");
-    }
+  //   if (!token && isPrivateGroup) {
+  //     router.replace("/(onboarding)/onboarding2");
+  //   }
 
-    if (token && isPublicGroup) {
-      router.replace("/");
-    }
-  }, [token, segments]);
+  //   if (!token && !isPublicGroup) {
+  //     router.replace("/");
+  //   }
+  // }, [token, segments]);
 
   return (
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Screen name="+not-found" />
       <Stack.Screen name="(onboarding)" />
       <Stack.Screen name="(auth)" />
+      <Stack.Screen name="account" />
+      <Stack.Screen name="edit-profile" />
+      <Stack.Screen name="search.tsx" />
     </Stack>
   );
 };

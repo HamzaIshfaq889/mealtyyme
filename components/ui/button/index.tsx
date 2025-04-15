@@ -44,8 +44,8 @@ const buttonStyle = tva({
         "bg-primary data-[hover=true]:bg-primary-600 data-[active=true]:bg-primary-700 border-primary-300 data-[hover=true]:border-primary-400 data-[active=true]:border-primary-500 data-[focus-visible=true]:web:ring-indicator-info rounded-2xl",
       secondary:
         "bg-secondary order-secondary data-[hover=true]:bg-secondary-600 data-[hover=true]:border-secondary-400 data-[active=true]:bg-secondary-700 data-[active=true]:border-secondary-700 data-[focus-visible=true]:web:ring-indicator-info rounded-2xl",
-      positive:
-        "bg-success-500 border-success-300 data-[hover=true]:bg-success-600 data-[hover=true]:border-success-400 data-[active=true]:bg-success-700 data-[active=true]:border-success-500 data-[focus-visible=true]:web:ring-indicator-info",
+      muted:
+        "bg-gray4 border-success-300 data-[hover=true]:bg-success-600 data-[hover=true]:border-success-400 data-[active=true]:bg-success-700 data-[active=true]:border-success-500 data-[focus-visible=true]:web:ring-indicator-info rounded-2xl",
       negative:
         "bg-destructive border-error-300 data-[hover=true]:bg-error-600 data-[hover=true]:border-error-400 data-[active=true]:bg-error-700 data-[active=true]:border-error-500 data-[focus-visible=true]:web:ring-indicator-info rounded-2xl",
       default:
@@ -80,7 +80,7 @@ const buttonStyle = tva({
         "px-0 bg-transparent data-[hover=true]:bg-transparent data-[active=true]:bg-transparent",
     },
     {
-      action: "positive",
+      action: "muted",
       variant: "link",
       class:
         "px-0 bg-transparent data-[hover=true]:bg-transparent data-[active=true]:bg-transparent",
@@ -104,7 +104,7 @@ const buttonStyle = tva({
         "bg-transparent data-[hover=true]:bg-background-50 data-[active=true]:bg-transparent",
     },
     {
-      action: "positive",
+      action: "muted",
       variant: "outline",
       class:
         "bg-transparent data-[hover=true]:bg-background-50 data-[active=true]:bg-transparent",
@@ -126,8 +126,8 @@ const buttonTextStyle = tva({
         "!text-background data-[hover=true]:text-primary-600 data-[active=true]:text-primary-700 !font-bold !leading-5 !text-lg",
       secondary:
         "!text-background data-[hover=true]:text-typography-600 data-[active=true]:text-typography-700 !font-bold !leading-5 !text-lg",
-      positive:
-        "text-success-600 data-[hover=true]:text-success-600 data-[active=true]:text-success-700",
+      muted:
+        "!text-primary !text-lg data-[hover=true]:text-success-600 data-[active=true]:text-success-700",
       negative:
         "!text-background data-[hover=true]:text-error-600 data-[active=true]:text-error-700 !font-bold !leading-5 !text-lg",
     },
