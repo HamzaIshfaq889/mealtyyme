@@ -1,12 +1,11 @@
-import React, { useCallback, useRef } from "react";
+import React, { useCallback, useRef, useState } from "react";
 
 import { Search } from "lucide-react-native";
 import { Text, View, FlatList, Pressable } from "react-native";
 
 import { router } from "expo-router";
 
-import BottomSheet from '@gorhom/bottom-sheet';
-
+import BottomSheet from "@gorhom/bottom-sheet";
 
 import Svg1 from "@/assets/svgs/Sun.svg";
 import { Button, ButtonText } from "@/components/ui/button";
@@ -14,8 +13,6 @@ import { Button, ButtonText } from "@/components/ui/button";
 import FeaturedRecipes from "./featuredRecipes";
 import PopularRecipes from "./popularRecipes";
 import RecipeDetails from "../RecipeDetails";
-
-
 
 const categories = [
   { id: "1", name: "Relax Dinner" },
@@ -30,14 +27,15 @@ const categories = [
 
 const HomeUser = () => {
   const bottomSheetRef = useRef<BottomSheet>(null);
-
+  const [selectedRecipeId, setSelectedRecipeId] = useState<string | null>(null);
   const handleSheetChanges = useCallback((index: number) => {
-    console.log('handleSheetChanges', index);
+    console.log("handleSheetChanges", index);
   }, []);
 
-  const openRecipeDetails = () => {
-    bottomSheetRef.current?.snapToIndex(2)
-  }
+  const openRecipeDetails = (id: string) => {
+    setSelectedRecipeId(id);
+    bottomSheetRef.current?.snapToIndex(2);
+  };
 
   return (
     <View className="flex flex-col w-full h-full pl-7 py-16 bg-background">
@@ -54,7 +52,7 @@ const HomeUser = () => {
           </Text>
         </View>
         <View className="mr-5">
-          <Search color="#000" onPress={() => router.push('/search')} />
+          <Search color="#000" onPress={() => router.push("/search")} />
         </View>
       </View>
 
@@ -77,14 +75,16 @@ const HomeUser = () => {
           renderItem={({ item, index }) => (
             <Button
               action="secondary"
-              className={`rounded-full px-10 py-2 ${index === 0 ? "bg-secondary" : "bg-accent"
-                }`}
+              className={`rounded-full px-10 py-2 ${
+                index === 0 ? "bg-secondary" : "bg-accent"
+              }`}
             >
               <ButtonText
-                className={`text-base leading-6 ${index === 0
-                  ? "text-background"
-                  : "!text-primary font-semibold"
-                  }`}
+                className={`text-base leading-6 ${
+                  index === 0
+                    ? "text-background"
+                    : "!text-primary font-semibold"
+                }`}
               >
                 {item.name}
               </ButtonText>
@@ -95,8 +95,11 @@ const HomeUser = () => {
       <PopularRecipes onSelectRecipe={openRecipeDetails} />
 
       {/* bottom sheet rendering */}
-      <RecipeDetails bottomSheetRef={bottomSheetRef} />
-    </View >
+      <RecipeDetails
+        bottomSheetRef={bottomSheetRef}
+        recipeId={selectedRecipeId}
+      />
+    </View>
   );
 };
 
