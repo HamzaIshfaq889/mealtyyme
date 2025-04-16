@@ -1,24 +1,51 @@
-import React, { useState } from "react";
-
+import React, { useEffect, useState } from "react";
 
 import { Text, View } from "react-native";
 
 import { Clock, Leaf, Flame, Pizza } from "lucide-react-native";
 
-import BottomSheet, { BottomSheetBackdrop, BottomSheetScrollView } from '@gorhom/bottom-sheet';
+import BottomSheet, {
+  BottomSheetBackdrop,
+  BottomSheetScrollView,
+} from "@gorhom/bottom-sheet";
 
 import Protien from "@/assets/svgs/Proteins.svg";
 
 import { Button, ButtonText } from "@/components/ui/button";
 import IngredientDetails from "./ingredientDetails";
 import InstructionDetails from "./instructionDetails";
+import { Recipe } from "@/lib/types/recipe";
+import { getSingleRecipe } from "@/services/recipesAPI";
 
-const RecipeDetails = ({ bottomSheetRef }: { bottomSheetRef: React.RefObject<BottomSheet> }) => {
-
+const RecipeDetails = ({
+  bottomSheetRef,
+  recipeId,
+}: {
+  bottomSheetRef: React.RefObject<BottomSheet>;
+  recipeId: string | null;
+}) => {
   const [activeTab, setActiveTab] = useState<"Ingredients" | "Instructions">(
     "Ingredients"
   );
 
+  const [recipes, setRecipes] = useState<Recipe>();
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchRecipes = async () => {
+      try {
+        console.log("recipe id", recipeId);
+        const data = await getSingleRecipe(recipeId);
+        setRecipes(data);
+        console.log("recipe data", recipes);
+      } catch (error) {
+        console.error("Failed to fetch recipes:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchRecipes();
+  }, []);
 
   const gradientsInfo = [
     { id: 1, icon: Leaf, text: "65 Carbs" },
@@ -26,7 +53,6 @@ const RecipeDetails = ({ bottomSheetRef }: { bottomSheetRef: React.RefObject<Bot
     { id: 3, icon: Flame, text: "27g Protiens" },
     { id: 4, icon: Pizza, text: "91g Protiens" },
   ];
-
 
   return (
     <BottomSheet
@@ -99,34 +125,34 @@ const RecipeDetails = ({ bottomSheetRef }: { bottomSheetRef: React.RefObject<Bot
 
           <View className="flex flex-row gap-1.5 bg-gray4 px-2 py-2 rounded-2xl mb-5">
             <Button
-              className={`basis-1/2 rounded-2xl ${activeTab === "Ingredients"
-                ? "bg-foreground"
-                : "bg-gray4"
-                }`}
+              className={`basis-1/2 rounded-2xl ${
+                activeTab === "Ingredients" ? "bg-foreground" : "bg-gray4"
+              }`}
               onPress={() => setActiveTab("Ingredients")}
             >
               <ButtonText
-                className={`${activeTab === "Ingredients"
-                  ? "text-background"
-                  : "!text-primary"
-                  }`}
+                className={`${
+                  activeTab === "Ingredients"
+                    ? "text-background"
+                    : "!text-primary"
+                }`}
               >
                 Ingredients
               </ButtonText>
             </Button>
 
             <Button
-              className={`basis-1/2 rounded-2xl ${activeTab === "Instructions"
-                ? "bg-foreground"
-                : "bg-gray4"
-                }`}
+              className={`basis-1/2 rounded-2xl ${
+                activeTab === "Instructions" ? "bg-foreground" : "bg-gray4"
+              }`}
               onPress={() => setActiveTab("Instructions")}
             >
               <ButtonText
-                className={`${activeTab === "Instructions"
-                  ? "text-background"
-                  : "!text-primary"
-                  }`}
+                className={`${
+                  activeTab === "Instructions"
+                    ? "text-background"
+                    : "!text-primary"
+                }`}
               >
                 Instructions
               </ButtonText>
