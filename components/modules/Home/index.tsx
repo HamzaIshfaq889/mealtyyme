@@ -1,18 +1,15 @@
-import React, { useCallback, useRef, useState } from "react";
+import React from "react";
 
 import { Search } from "lucide-react-native";
-import { Text, View, FlatList, Pressable } from "react-native";
+import { Text, View, FlatList, Pressable, ScrollView } from "react-native";
 
 import { router } from "expo-router";
-
-import BottomSheet from "@gorhom/bottom-sheet";
 
 import Svg1 from "@/assets/svgs/Sun.svg";
 import { Button, ButtonText } from "@/components/ui/button";
 
 import FeaturedRecipes from "./featuredRecipes";
 import PopularRecipes from "./popularRecipes";
-import RecipeDetails from "../RecipeDetails";
 
 const categories = [
   { id: "1", name: "Relax Dinner" },
@@ -26,19 +23,8 @@ const categories = [
 ];
 
 const HomeUser = () => {
-  const bottomSheetRef = useRef<BottomSheet>(null);
-  const [selectedRecipeId, setSelectedRecipeId] = useState<string | null>(null);
-  const handleSheetChanges = useCallback((index: number) => {
-    console.log("handleSheetChanges", index);
-  }, []);
-
-  const openRecipeDetails = (id: string) => {
-    setSelectedRecipeId(id);
-    bottomSheetRef.current?.snapToIndex(2);
-  };
-
   return (
-    <View className="flex flex-col w-full h-full pl-7 py-16 bg-background">
+    <ScrollView className="flex flex-col w-full h-full pl-7 py-16 bg-background">
       <View className="flex flex-row justify-between items-center mb-10">
         <View className="space-y-1.5">
           <View className="flex flex-row items-center gap-1">
@@ -51,19 +37,20 @@ const HomeUser = () => {
             MealTyme
           </Text>
         </View>
-        <View className="mr-5">
-          <Search color="#000" onPress={() => router.push("/search")} />
-        </View>
+
+        <Pressable
+          className="mr-5"
+          onPress={() => router.push("/(nested)/search")}
+        >
+          <Search color="#000" />
+        </Pressable>
       </View>
 
-      <FeaturedRecipes onSelectRecipe={openRecipeDetails} />
+      <FeaturedRecipes />
 
       <View className="mb-6">
         <View className="flex-row justify-between items-center mb-4">
           <Text className="text-lg font-bold text-black">Category</Text>
-          <Pressable onPress={() => router.push("/")}>
-            <Text className="text-secondary pr-5 font-bold">See All</Text>
-          </Pressable>
         </View>
 
         <FlatList
@@ -92,14 +79,8 @@ const HomeUser = () => {
           )}
         />
       </View>
-      <PopularRecipes onSelectRecipe={openRecipeDetails} />
-
-      {/* bottom sheet rendering */}
-      <RecipeDetails
-        bottomSheetRef={bottomSheetRef}
-        recipeId={selectedRecipeId}
-      />
-    </View>
+      <PopularRecipes />
+    </ScrollView>
   );
 };
 

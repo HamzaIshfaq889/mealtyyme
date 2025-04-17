@@ -29,7 +29,6 @@ import { LoginResponseTypes } from "@/lib/types";
 
 import { loginUser } from "@/services/authApi";
 
-
 const Login = () => {
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
@@ -103,7 +102,7 @@ const Login = () => {
         type: "success",
         text1: "Login Successful!",
       });
-      router.push("/");
+      router.push("/(tabs)/Home");
     } catch (error: any) {
       const errorMessage =
         error.message || "Something went wrong. Please try again.";

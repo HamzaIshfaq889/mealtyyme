@@ -68,6 +68,10 @@ const IngredientDetails = () => {
     return name.length > 8 ? name.slice(0, 8) + "..." : name;
   };
 
+  const handlePress = () => {
+    router.push("/(nested)/cooking");
+  };
+
   return (
     <View className="">
       <View className="flex flex-row justify-between">
@@ -77,19 +81,20 @@ const IngredientDetails = () => {
           </Text>
           <Text className="text-muted">6 Item</Text>
         </View>
-        <Pressable onPress={() => router.push("/")}>
+        <Pressable>
           <Text className="text-secondary pr-5 font-bold">Add All to Cart</Text>
         </Pressable>
       </View>
 
       <View className="mt-5 mb-5">
-        {ingredentDetail?.map((ing, item) => {
+        {ingredentDetail?.map((ing, index) => {
           return (
             <View
               className="p-2.5 flex flex-row justify-between items-center rounded-2xl mb-4"
               style={{
                 boxShadow: "0px 2px 12px 0px rgba(0,0,0,0.1)",
               }}
+              key={index}
             >
               <View className="flex flex-row gap-6 items-center">
                 <View className="bg-gray4 p-7 rounded-lg"></View>
@@ -107,7 +112,7 @@ const IngredientDetails = () => {
 
       {/* </View> */}
 
-      <Button action="secondary" className="mb-8 h-16">
+      <Button action="secondary" className="mb-8 h-16" onPress={handlePress}>
         <ButtonText>Start Cooking</ButtonText>
       </Button>
 
@@ -133,7 +138,7 @@ const IngredientDetails = () => {
         <Text className="text-primary font-bold text-xl leading-7 mb-1">
           Related Recipes
         </Text>
-        <Pressable onPress={() => router.push("/")}>
+        <Pressable>
           <Text className="text-secondary pr-5 font-bold">See All</Text>
         </Pressable>
       </View>

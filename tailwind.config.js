@@ -54,6 +54,7 @@ module.exports = {
       },
       fontFamily: {
         sofia: ["SofiaPro", "sans-serif"],
+        roboto: ["RobotoRegular", "sans-serif"],
       },
       fontWeight: {
         extrablack: "950",

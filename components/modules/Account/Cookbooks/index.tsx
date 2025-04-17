@@ -15,7 +15,6 @@ const Cookbooks = () => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-  console.log(showEditModal);
 
   return (
     <View>
@@ -37,7 +36,7 @@ const Cookbooks = () => {
             />
           </View>
         </View>
-        <Pressable onPress={() => router.push("/")}>
+        <Pressable>
           <Text className="text-secondary pr-5 font-bold">See All</Text>
         </Pressable>
       </View>
@@ -47,7 +46,10 @@ const Cookbooks = () => {
         keyExtractor={(item) => item.id}
         showsHorizontalScrollIndicator={false}
         renderItem={({ item }) => (
-          <Pressable className="mr-5">
+          <Pressable
+            className="ml-3 mr-5 py-4"
+            onPress={() => router.push(`/recipe/${1}` as const)}
+          >
             <RecipeCard recipeItem={item} />
           </Pressable>
         )}

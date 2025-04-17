@@ -1,15 +1,20 @@
 import React from "react";
 
-import { Text, View } from "react-native";
 import { router } from "expo-router";
+
+import { Text, View } from "react-native";
 import Swiper from "react-native-swiper";
+
+import { Button, ButtonText } from "@/components/ui/button";
 
 import Slide1 from "./slide1";
 import Slide2 from "./slide2";
 import Slide3 from "./slide3";
-import { Button, ButtonText } from "@/components/ui/button";
 
 const OnBoarding3 = () => {
+  const handleCompleteOnboaring = () => {
+    router.push("/pick-diet");
+  };
   return (
     <View className="flex w-full h-full">
       <Swiper>
@@ -35,7 +40,7 @@ const OnBoarding3 = () => {
         <Button
           className="mt-2"
           action="primary"
-          onPress={() => router.push("/pick-diet")}
+          onPress={handleCompleteOnboaring}
         >
           <ButtonText>Next</ButtonText>
         </Button>

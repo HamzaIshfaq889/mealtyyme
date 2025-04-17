@@ -14,9 +14,7 @@ const Settings = () => {
   return (
     <View className="flex flex-col w-full h-full px-9 py-16">
       <View className="flex flex-row justify-between items-center mb-14">
-        <TouchableOpacity
-          onPress={() => router.push("/(auth)/account-options")}
-        >
+        <TouchableOpacity onPress={() => router.push("/(tabs)/account")}>
           <Svg1 width={23} height={23} />
         </TouchableOpacity>
         <Text className="block font-bold text-2xl text-foreground">

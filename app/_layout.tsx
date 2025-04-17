@@ -1,24 +1,25 @@
-import { AuthWrapper, Splash } from "@/components/modules";
+import { useEffect, useState } from "react";
 import {
   DarkTheme,
   DefaultTheme,
   ThemeProvider,
 } from "@react-navigation/native";
-import { useFonts } from "expo-font";
-import * as SplashScreen from "expo-splash-screen";
-import { StatusBar } from "expo-status-bar";
-import { useEffect, useState } from "react";
 import "react-native-reanimated";
-
 import { Provider } from "react-redux";
-import { store, persistor } from "@/redux/store";
 import { PersistGate } from "redux-persist/integration/react";
-
-import QueryProvider from "@/providers/QueryProvider";
-
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 import Toast from "react-native-toast-message";
+
+import { useFonts } from "expo-font";
+import * as SplashScreen from "expo-splash-screen";
+import { StatusBar } from "expo-status-bar";
+
+import { AuthWrapper, Splash } from "@/components/modules";
+import { store, persistor } from "@/redux/store";
+import QueryProvider from "@/providers/QueryProvider";
+
+import "@/global.css";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -27,6 +28,7 @@ export default function RootLayout() {
   const [isSplashVisible, setIsSplashVisible] = useState(true);
   const [loaded] = useFonts({
     SpaceMono: require("../assets/fonts/Sofia Pro Regular Az.ttf"),
+    roborto: require("../assets/fonts/Roboto-Regular.ttf"),
   });
 
   useEffect(() => {

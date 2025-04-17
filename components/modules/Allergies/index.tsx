@@ -4,10 +4,17 @@ import { Text, TouchableOpacity, View } from "react-native";
 
 import { router } from "expo-router";
 
+import { useDispatch } from "react-redux";
+
 import { Button, ButtonText } from "@/components/ui/button";
+
 import Svg1 from "@/assets/svgs/arrow-left.svg";
 
+import { setOnboardingComplete } from "@/redux/slices/Auth";
+
 const Allergies = () => {
+  const dispatch = useDispatch();
+
   const [selectedIndexes, setSelectedIndexes] = useState<number[]>([]);
 
   const allergies = [
@@ -30,6 +37,11 @@ const Allergies = () => {
     } else {
       setSelectedIndexes([...selectedIndexes, index]);
     }
+  };
+
+  const handleNext = () => {
+    dispatch(setOnboardingComplete(true));
+    router.push("/(auth)/account-options");
   };
 
   return (
@@ -70,11 +82,7 @@ const Allergies = () => {
           personalized meal suggestions that cater to your needs!
         </Text>
       </View>
-      <Button
-        className="mt-2"
-        action="primary"
-        onPress={() => router.push("/(auth)/account-options")}
-      >
+      <Button className="mt-2" action="primary" onPress={handleNext}>
         <ButtonText>Next</ButtonText>
       </Button>
     </View>

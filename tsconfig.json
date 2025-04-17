@@ -17,5 +17,5 @@
     ".expo/types/**/*.ts",
     "expo-env.d.ts",
     "nativewind-env.d.ts"
-, "components/ui/slider/Label.js", "components/ui/slider/Notch.js"  ]
+, "components/ui/slider/Label.js", "components/ui/slider/Notch.js", "components/modules/modals/MealSchedule"  ]
 }

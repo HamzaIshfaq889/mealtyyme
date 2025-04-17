@@ -20,7 +20,7 @@ const Account = () => {
       <View className="flex flex-row justify-between items-center">
         <Text></Text>
         <Text className="font-bold text-2xl text-foreground">Account</Text>
-        <Pressable onPress={() => router.push("/settings")}>
+        <Pressable onPress={() => router.push("/(nested)/settings")}>
           <Settings color="#000" size={26} />
         </Pressable>
       </View>
@@ -44,7 +44,7 @@ const Account = () => {
           </View>
         </View>
 
-        <Pressable onPress={() => router.push("/edit-profile")}>
+        <Pressable onPress={() => router.push("/(nested)/edit-profile")}>
           <View className="flex flex-row gap-0.5 mr-2">
             <UserPen color="#000" size={30} />
           </View>

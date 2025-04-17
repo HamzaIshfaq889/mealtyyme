@@ -45,7 +45,7 @@ const InstructionDetails = () => {
             Instructions
           </Text>
         </View>
-        <Pressable onPress={() => router.push("/")}>
+        <Pressable>
           <Text className="text-muted pr-5 font-bold">12 Steps</Text>
         </Pressable>
       </View>
@@ -56,6 +56,7 @@ const InstructionDetails = () => {
             style={{
               boxShadow: "0px 2px 12px 0px rgba(0,0,0,0.1)",
             }}
+            key={index}
           >
             <View className="bg-accent py-1.5 px-4 rounded-lg">
               <Text className="text-secondary font-bold text-2xl">

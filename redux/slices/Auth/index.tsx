@@ -11,6 +11,7 @@ const initialState: AuthSliceType = {
     role: null,
     isAuthenticated: false,
   },
+  hasOnboarded: false,
   "reset-token": null,
 };
 
@@ -34,6 +35,11 @@ const authSlice = createSlice({
     clearResetToken: (state) => {
       state["reset-token"] = null;
     },
+
+    setOnboardingComplete: (state, action: PayloadAction<boolean>) => {
+      state.hasOnboarded = action.payload;
+    },
+
     logout: (state) => {
       state.loginResponseType.access = null;
       state.loginResponseType.refresh = null;
@@ -45,6 +51,11 @@ const authSlice = createSlice({
   },
 });
 
-export const { setCredentials, logout, setResetToken, clearResetToken } =
-  authSlice.actions;
+export const {
+  setCredentials,
+  logout,
+  setResetToken,
+  clearResetToken,
+  setOnboardingComplete,
+} = authSlice.actions;
 export default authSlice.reducer;

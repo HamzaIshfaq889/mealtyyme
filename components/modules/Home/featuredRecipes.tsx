@@ -7,12 +7,9 @@ import { HStack } from "@/components/ui/hstack";
 import { Text, View, FlatList, Image, Pressable } from "react-native";
 import { getRecipes } from "@/services/recipesAPI";
 import { Recipe } from "@/lib/types/recipe";
+import { router } from "expo-router";
 
-const FeaturedRecipes = ({
-  onSelectRecipe,
-}: {
-  onSelectRecipe?: (id: string) => void; // Modify the function type to accept the id
-}) => {
+const FeaturedRecipes = () => {
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -52,7 +49,7 @@ const FeaturedRecipes = ({
           renderItem={({ item }) => (
             <Pressable
               className="mr-4"
-              onPress={() => onSelectRecipe?.(item.id.toString())}
+              onPress={() => router.push(`/recipe/${1}` as const)}
             >
               <View className="bg-secondary rounded-2xl p-4 w-[260px]">
                 <Image

@@ -29,22 +29,18 @@ const data = [
   },
 ];
 
-const PopularRecipes = ({
-  onSelectRecipe,
-}: {
-  onSelectRecipe?: (id: string) => void;
-}) => {
+const PopularRecipes = () => {
   return (
     <>
       <View className="flex flex-row justify-between">
-        <Text className="text-foreground font-bold text-xl leading-5 mb-5">
+        <Text className="text-foreground font-bold text-xl leading-5 mb-1">
           Popular Recipies
         </Text>
-        <Pressable onPress={() => router.push("/")}>
+        <Pressable>
           <Text className="text-secondary pr-5 font-bold">See All</Text>
         </Pressable>
       </View>
-      <View className="py-3">
+      <View>
         <FlatList
           data={data}
           horizontal
@@ -52,8 +48,8 @@ const PopularRecipes = ({
           showsHorizontalScrollIndicator={false}
           renderItem={({ item }) => (
             <Pressable
-              className="mr-5"
-              onPress={() => onSelectRecipe?.(item.id.toString())}
+              className="ml-2 mr-5 py-4"
+              onPress={() => router.push(`/recipe/${1}` as const)}
             >
               <View className="bg-background rounded-2xl w-64 p-3 shadow-custom">
                 <View className="relative mb-4">

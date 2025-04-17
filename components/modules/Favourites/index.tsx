@@ -43,7 +43,7 @@ const Favourites = () => {
   return (
     <View className="flex flex-col w-full h-full px-5 py-16 bg-background">
       <View className="flex flex-row justify-between items-center mb-6 p-1.5">
-        <TouchableOpacity onPress={() => router.push("/")}>
+        <TouchableOpacity onPress={() => router.push("/(tabs)/Home")}>
           <Svg1 width={23} height={23} />
         </TouchableOpacity>
         <Text className="block font-bold text-2xl text-foreground">
