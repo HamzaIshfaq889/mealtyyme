@@ -20,7 +20,7 @@ const PopularRecipes = () => {
   const [categories, setCategories] = useState<Categories[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
+  const scheme = useColorScheme();
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [loadingRecipe, setLoadingRecipe] = useState(true);
 
@@ -41,6 +41,10 @@ const PopularRecipes = () => {
     };
 
     fetchCategories();
+  }, []);
+
+  useEffect(() => {
+    fetchRecipes(null);
   }, []);
 
   const handlePress = (id: string | number) => {

@@ -21,7 +21,7 @@ import PopularRecipes from "./popularRecipes";
 const HomeUser = () => {
   const scheme = useColorScheme();
   return (
-    <ScrollView className="flex flex-col w-full h-full pl-7 py-16 bg-background">
+    <ScrollView className="flex flex-col w-full h-full pl-7 py-16 ">
       <View className="flex flex-row justify-between items-center mb-10">
         <View className="space-y-1.5">
           <View className="flex flex-row items-center gap-1">

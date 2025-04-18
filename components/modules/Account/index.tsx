@@ -17,7 +17,7 @@ const Account = () => {
   );
 
   return (
-    <View className="w-full h-full px-6 py-16 bg-background">
+    <View className="w-full h-full px-6 py-16 ">
       <View className="flex flex-row justify-between items-center">
         <Text></Text>
         <Text className="font-bold text-2xl text-foreground">Account</Text>
