@@ -28,6 +28,7 @@ import Svg3 from "@/assets/svgs/facebook.svg";
 import { LoginResponseTypes } from "@/lib/types";
 
 import { loginUser } from "@/services/authApi";
+import { setAuthToken } from "@/lib/apiClient";
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -96,6 +97,8 @@ const Login = () => {
       };
 
       const response = (await loginUser(payload)) as LoginResponseTypes;
+
+      setAuthToken(response.access);
 
       dispatch(setCredentials({ ...response, isAuthenticated: true }));
       Toast.show({
