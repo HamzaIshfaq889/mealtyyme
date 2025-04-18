@@ -92,3 +92,10 @@ export type Diet = {
   name: string;
   created_by: number;
 };
+
+export type Categories = {
+  id: number;
+
+  name: string;
+  created_by: number;
+};

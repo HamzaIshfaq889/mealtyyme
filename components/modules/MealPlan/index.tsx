@@ -12,7 +12,7 @@ const MealPlan = () => {
   );
 
   return (
-    <ScrollView className="w-full h-full bg-background">
+    <ScrollView className="w-full h-full ">
       <View className="flex flex-row justify-center px-9 pt-16 pb-10">
         <Text className="block font-bold text-2xl text-foreground">
           Meal Planning
@@ -36,10 +36,10 @@ const MealPlan = () => {
         </Text>
       </View>
 
-      <View className="mt-8 px-8">
+      <View className="mt-8 px-8 ">
         <Text className="text-xl leading-6 text-secondary">BREAKFAST</Text>
         <View
-          className="flex flex-row justify-between items-center py-5 px-3 rounded-2xl mb-5 mt-5"
+          className="flex flex-row justify-between items-center py-5 px-3 rounded-2xl mb-5 mt-5 bg-background"
           style={{
             boxShadow: "0px 2px 12px 0px rgba(0,0,0,0.1)",
           }}
@@ -66,7 +66,7 @@ const MealPlan = () => {
       <View className="mt-2 px-8">
         <Text className="text-xl leading-6 text-secondary">LUNCH</Text>
         <View
-          className="flex flex-row justify-between items-center py-5 px-3 rounded-2xl mb-5 mt-5"
+          className="flex flex-row justify-between items-center py-5 px-3 rounded-2xl mb-5 mt-5 bg-background"
           style={{
             boxShadow: "0px 2px 12px 0px rgba(0,0,0,0.1)",
           }}
@@ -89,7 +89,7 @@ const MealPlan = () => {
           </View>
         </View>
         <View
-          className="flex flex-row justify-between items-center py-5 px-3 rounded-2xl mb-5 mt-1"
+          className="flex flex-row justify-between items-center py-5 px-3 rounded-2xl mb-5 mt-1 bg-background"
           style={{
             boxShadow: "0px 2px 12px 0px rgba(0,0,0,0.1)",
           }}
@@ -116,7 +116,7 @@ const MealPlan = () => {
       <View className="mt-2 px-8">
         <Text className="text-xl leading-6 text-secondary">DINNER</Text>
         <View
-          className="flex flex-row justify-between items-center py-5 px-3 rounded-2xl mb-5 mt-5"
+          className="flex flex-row justify-between items-center py-5 px-3 rounded-2xl mb-5 mt-5 bg-background"
           style={{
             boxShadow: "0px 2px 12px 0px rgba(0,0,0,0.1)",
           }}
@@ -139,7 +139,7 @@ const MealPlan = () => {
           </View>
         </View>
         <View
-          className="flex flex-row justify-between items-center py-5 px-3 rounded-2xl mb-5 mt-1"
+          className="flex flex-row justify-between items-center py-5 px-3 rounded-2xl mb-5 mt-1 bg-background"
           style={{
             boxShadow: "0px 2px 12px 0px rgba(0,0,0,0.1)",
           }}
