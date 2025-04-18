@@ -64,6 +64,11 @@ const Signup = () => {
     }
   };
 
+  const confirmDateOnIOS = () => {
+    formData.dateOfBirth = date.toDateString();
+    toggleDatePicker();
+  };
+
   const validateField = (key: string, value: string) => {
     setFormData((prev) => ({ ...prev, [key]: value }));
 
@@ -215,7 +220,7 @@ const Signup = () => {
                 Username
               </FormControlLabelText>
             </FormControlLabel>
-            <Input className="my-3.5">
+            <Input className="my-3.5 flex flex-row items-center">
               <InputSlot className="ml-1">
                 <InputIcon className="!w-6 !h-6 text-primary" as={UserRound} />
               </InputSlot>
@@ -241,7 +246,7 @@ const Signup = () => {
                   First Name
                 </FormControlLabelText>
               </FormControlLabel>
-              <Input className="my-3.5">
+              <Input className="my-3.5 flex flex-row items-center">
                 <InputSlot className="ml-1">
                   <InputIcon
                     className="!w-6 !h-6 text-primary"
@@ -269,7 +274,7 @@ const Signup = () => {
                   Last Name
                 </FormControlLabelText>
               </FormControlLabel>
-              <Input className="my-3.5">
+              <Input className="my-3.5 flex flex-row items-center">
                 <InputSlot className="ml-1">
                   <InputIcon
                     className="!w-6 !h-6 text-primary"
@@ -295,7 +300,7 @@ const Signup = () => {
                 Email Address
               </FormControlLabelText>
             </FormControlLabel>
-            <Input className="my-3.5">
+            <Input className="my-3.5 flex flex-row items-center">
               <InputSlot className="ml-1">
                 <InputIcon className="!w-6 !h-6 text-primary" as={MailIcon} />
               </InputSlot>
@@ -324,7 +329,7 @@ const Signup = () => {
 
             {!showdatePicker && (
               <Pressable onPress={toggleDatePicker}>
-                <Input className="my-3.5">
+                <Input className="my-3.5 flex flex-row items-center">
                   <InputSlot className="ml-1">
                     <InputIcon
                       className="!w-6 !h-6 text-primary"
@@ -337,6 +342,7 @@ const Signup = () => {
                     placeholder="Enter Date of Birth"
                     value={formData?.dateOfBirth}
                     editable={false}
+                    onPressIn={toggleDatePicker}
                   />
                 </Input>
               </Pressable>
@@ -348,7 +354,28 @@ const Signup = () => {
                 display="spinner"
                 value={date}
                 onChange={onChange}
+                className={`${
+                  Platform?.OS === "ios" ? "bg-foreground mx-auto" : ""
+                }`}
               />
+            )}
+
+            {showdatePicker && Platform.OS === "ios" && (
+              <View className="flex flex-row mt-8 mx-auto gap-10">
+                <TouchableOpacity
+                  className="py-3 px-6 bg-[#CCD4DE] rounded-xl"
+                  onPress={toggleDatePicker}
+                >
+                  <Text className="text-foreground">Cancel</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  className="py-3 px-6 bg-second rounded-xl"
+                  onPress={confirmDateOnIOS}
+                >
+                  <Text className="text-background">Add</Text>
+                </TouchableOpacity>
+              </View>
             )}
             <FormControlError>
               <FormControlErrorText>{errors?.dateOfBirth}</FormControlErrorText>
@@ -361,7 +388,7 @@ const Signup = () => {
                 Password
               </FormControlLabelText>
             </FormControlLabel>
-            <Input className="my-3.5">
+            <Input className="my-3.5 flex flex-row items-center">
               <InputSlot className="ml-1">
                 <InputIcon className="!w-6 !h-6 text-primary" as={LockIcon} />
               </InputSlot>

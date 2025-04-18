@@ -15,7 +15,6 @@ const Cookbooks = () => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-
   return (
     <View>
       <View className="flex-row justify-between items-center mb-4 mt-4">
