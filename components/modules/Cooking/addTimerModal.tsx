@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Text } from "react-native";
 import Dialog from "react-native-dialog";
 
-import { FilePenLine, View } from "lucide-react-native";
+import { Clock, FilePenLine, View } from "lucide-react-native";
 
 import { Button, ButtonText } from "@/components/ui/button";
 import {
@@ -29,6 +29,8 @@ const AddTimerModal = ({
   setIsPlaying,
   setIsTimerComplete,
 }: AddTimeModalProps) => {
+  const scheme = useColorScheme();
+
   const [formData, setFormData] = useState({ time: "" });
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const systemColorScheme = useColorScheme();
@@ -74,45 +76,57 @@ const AddTimerModal = ({
   };
 
   return (
-    <Dialog.Container visible={showTimerModal}>
-      <Text className="bg-foreground">Add Timer</Text>
-
-      <FormControl size="md">
-        <Input>
-          <InputField
-            type="text"
-            placeholder="Enter Time in Minutes"
-            value={formData?.time}
-            keyboardType="numeric"
-            onChangeText={(text) => validateField("time", text)}
-            style={{ color: "#000" }}
-            placeholderTextColor="#999"
-          />
-        </Input>
-
-        {errors?.time && (
-          <Text style={{ color: "#EF4444", marginTop: 4, marginBottom: 16 }}>
-            {errors?.time}
-          </Text>
-        )}
-      </FormControl>
-
-      <Button
-        action="secondary"
-        className="w-full h-16 mb-4"
-        onPress={handleAddClick}
+    <View>
+      <Dialog.Container
+        visible={showTimerModal}
+        contentStyle={{
+          backgroundColor: scheme === "dark" ? "#000" : "#fff",
+          paddingBottom: 50,
+          paddingTop: 10,
+          borderRadius: 30,
+        }}
       >
-        <ButtonText className="text-black">Add</ButtonText>
-      </Button>
+        <Text className="text-primary text-2xl text-center mb-7">
+          Add Timer
+        </Text>
 
-      <Button
-        action="muted"
-        className="w-full h-16"
-        onPress={() => setShowTimerModal(false)}
-      >
-        <ButtonText className="text-black">Cancel</ButtonText>
-      </Button>
-    </Dialog.Container>
+        <FormControl size="md" className="mb-7">
+          <Input>
+            <InputField
+              type="text"
+              placeholder="Enter Time in Minutes"
+              value={formData?.time}
+              keyboardType="numeric"
+              onChangeText={(text) => validateField("time", text)}
+              className="text-primary text-lg"
+              placeholderTextColor="#999"
+            />
+          </Input>
+
+          {errors?.time && (
+            <Text style={{ color: "#EF4444", marginTop: 4 }}>
+              {errors?.time}
+            </Text>
+          )}
+        </FormControl>
+
+        <Button
+          action="secondary"
+          className="w-full py-3"
+          onPress={handleAddClick}
+        >
+          <ButtonText className="text-primary">Add</ButtonText>
+        </Button>
+
+        <Button
+          action="muted"
+          className="!w-full py-3 mt-4"
+          onPress={() => setShowTimerModal(false)}
+        >
+          <ButtonText className="text-black">Cancel</ButtonText>
+        </Button>
+      </Dialog.Container>
+    </View>
   );
 };
 
