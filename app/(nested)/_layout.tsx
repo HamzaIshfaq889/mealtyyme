@@ -1,5 +1,4 @@
 import { Stack } from "expo-router";
-import { StatusBar } from "expo-status-bar";
 
 import "react-native-reanimated";
 
@@ -13,7 +12,6 @@ export default function RootLayout() {
         <Stack.Screen name="search" />
       </Stack>
       <Toast />
-      <StatusBar style="auto" />
     </>
   );
 }

@@ -36,7 +36,7 @@ module.exports = {
           DEFAULT: "hsla(180, 17%, 95%, 1)", //grayish secondary
         },
         gray3: {
-          DEFAULT: "hsla(214, 22%, 83%, 1)",
+          DEFAULT: "hsla(214, 22%, 83%, 1)", //grayish version
         },
         gray4: {
           DEFAULT: "hsla(214, 32%, 93%, 1)",

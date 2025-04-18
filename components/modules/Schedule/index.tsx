@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import { Text, View } from "react-native";
+import { Text, useColorScheme, View } from "react-native";
 import Dialog from "react-native-dialog";
 
 import { Button, ButtonText } from "@/components/ui/button";
@@ -25,6 +25,9 @@ const AddSchedule = ({ setShowEditModal, showEditModal }: AddSchedule) => {
 
   const validateField = (key: string, value: string) => {
     setFormData((prev) => ({ ...prev, [key]: value }));
+
+    const colorScheme = useColorScheme();
+    const isDarkMode = colorScheme === "dark";
 
     let errorMessage = "";
 
