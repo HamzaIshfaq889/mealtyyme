@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from "react";
 
-import { Text, View, FlatList, Image, Pressable } from "react-native";
+import {
+  Text,
+  View,
+  FlatList,
+  Image,
+  Pressable,
+  useColorScheme,
+} from "react-native";
 
 import { router } from "expo-router";
 import { Clock, Flame, Heart } from "lucide-react-native";
@@ -112,7 +119,15 @@ const PopularRecipes = () => {
               className="ml-2 mr-5 py-4"
               onPress={() => router.push(`/recipe/${1}` as const)}
             >
-              <View className="flex flex-col bg-background rounded-2xl w-64 p-3 shadow-custom !h-64">
+              <View
+                className="flex flex-col bg-background rounded-2xl w-64 p-3 !h-64"
+                style={{
+                  boxShadow:
+                    scheme === "dark"
+                      ? "0px 2px 12px 0px rgba(0,0,0,0.4)"
+                      : "0px 2px 12px 0px rgba(0,0,0,0.2)",
+                }}
+              >
                 <View className="relative mb-4">
                   <Image
                     source={{ uri: item.image_url }}
@@ -120,7 +135,10 @@ const PopularRecipes = () => {
                     resizeMode="cover"
                   />
                   <View className="absolute top-2 right-2 bg-background rounded-md p-1.5">
-                    <Heart color="#000" size={16} />
+                    <Heart
+                      color={scheme === "dark" ? "#fff" : "#000"}
+                      size={16}
+                    />
                   </View>
                 </View>
                 <Text className="text-foreground font-bold text-base leading-5 mb-3">

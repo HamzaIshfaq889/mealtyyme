@@ -1,11 +1,12 @@
 import moment from "moment";
 import React, { useState } from "react";
 
-import { View, Text, ScrollView } from "react-native";
+import { View, Text, ScrollView, useColorScheme } from "react-native";
 import Calendar from "./Calander";
 import { ArrowRight } from "lucide-react-native";
 
 const MealPlan = () => {
+  const scheme = useColorScheme();
   const [selectedDate, setSelectedDate] = useState(
     moment().format("YYYY-MM-DD")
   );
@@ -21,9 +22,12 @@ const MealPlan = () => {
       <View>
         <Calendar onSelectDate={setSelectedDate} selected={selectedDate} />
         <Text
-          className="mt-8 text-lg text-[#21201B] px-8 font-roboto"
+          className="mt-8 text-lg text-primary px-8 font-roboto"
           style={{
-            textShadowColor: "rgba(0, 0, 0, 0.25)",
+            textShadowColor:
+              scheme === "dark"
+                ? "rgba(100, 100, 100, 0.5)"
+                : "rgba(0, 0, 0, 0.25)",
             textShadowOffset: { width: 0, height: 4 },
             textShadowRadius: 4,
           }}
@@ -44,7 +48,7 @@ const MealPlan = () => {
             {/* Will be replavce by image if the recipie */}
             <View className="w-24 h-[80px] rounded-2xl bg-gray3"></View>
             <View className="flex flex-col justify-between max-w-40">
-              <Text className="font-bold text-lg mb-1 leading-6">
+              <Text className="font-bold text-lg mb-1 leading-6 text-primary">
                 Easy homemade beef burger
               </Text>
               <View className="flex flex-row gap-2">
@@ -71,7 +75,7 @@ const MealPlan = () => {
             {/* Will be replavce by image if the recipie */}
             <View className="w-24 h-[80px] rounded-2xl bg-gray3"></View>
             <View className="flex flex-col justify-between max-w-40">
-              <Text className="font-bold text-lg mb-1 leading-6">
+              <Text className="font-bold text-lg mb-1 leading-6 text-primary">
                 Easy homemade beef burger
               </Text>
               <View className="flex flex-row gap-2">
@@ -94,7 +98,7 @@ const MealPlan = () => {
             {/* Will be replavce by image if the recipie */}
             <View className="w-24 h-[80px] rounded-2xl bg-gray3"></View>
             <View className="flex flex-col justify-between max-w-40">
-              <Text className="font-bold text-lg mb-1 leading-6">
+              <Text className="font-bold text-lg mb-1 leading-6 text-primary">
                 Easy homemade beef burger
               </Text>
               <View className="flex flex-row gap-2">
@@ -121,7 +125,7 @@ const MealPlan = () => {
             {/* Will be replavce by image if the recipie */}
             <View className="w-24 h-[80px] rounded-2xl bg-gray3"></View>
             <View className="flex flex-col justify-between max-w-40">
-              <Text className="font-bold text-lg mb-1 leading-6">
+              <Text className="font-bold text-lg mb-1 leading-6 text-primary">
                 Easy homemade beef burger
               </Text>
               <View className="flex flex-row gap-2">
@@ -144,7 +148,7 @@ const MealPlan = () => {
             {/* Will be replavce by image if the recipie */}
             <View className="w-24 h-[80px] rounded-2xl bg-gray3"></View>
             <View className="flex flex-col justify-between max-w-40">
-              <Text className="font-bold text-lg mb-1 leading-6">
+              <Text className="font-bold text-lg mb-1 leading-6 text-primary">
                 Easy homemade beef burger
               </Text>
               <View className="flex flex-row gap-2">

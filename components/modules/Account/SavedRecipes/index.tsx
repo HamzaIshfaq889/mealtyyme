@@ -1,10 +1,12 @@
 import React from "react";
 
-import { Text, View } from "react-native";
+import { Text, useColorScheme, View } from "react-native";
 
 import { SquareArrowRight } from "lucide-react-native";
 
 const Savedrecipes = () => {
+  const scheme = useColorScheme();
+
   const savedRecipies = [
     {
       id: 1,
@@ -41,7 +43,7 @@ const Savedrecipes = () => {
               {/* Will be replavce by image if the recipie */}
               <View className="w-24 h-[80px] rounded-2xl bg-gray3"></View>
               <View className="flex flex-col justify-between max-w-40">
-                <Text className="font-bold text-lg mb-1 leading-6">
+                <Text className="font-bold text-lg mb-1 leading-6 text-primary">
                   {recipe?.name}
                 </Text>
                 <View className="flex flex-row gap-2">
@@ -51,7 +53,10 @@ const Savedrecipes = () => {
               </View>
             </View>
             <View className="mr-2">
-              <SquareArrowRight color="#000" size={30} />
+              <SquareArrowRight
+                color={scheme === "dark" ? "#fff" : "#000"}
+                size={30}
+              />
             </View>
           </View>
         );

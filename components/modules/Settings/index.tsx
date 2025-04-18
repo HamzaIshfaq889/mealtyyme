@@ -1,21 +1,25 @@
 import React from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import { Text, TouchableOpacity, useColorScheme, View } from "react-native";
 
 import { router } from "expo-router";
 
-import { Bell, ArrowRight } from "lucide-react-native";
+import { Bell, ArrowRight, ArrowLeft } from "lucide-react-native";
 
 import { Switch } from "@/components/ui/switch";
 
-import Svg1 from "@/assets/svgs/arrow-left.svg";
 import { Image } from "react-native";
 
 const Settings = () => {
+  const scheme = useColorScheme();
   return (
-    <View className="flex flex-col w-full h-full px-9 py-16">
+    <View className="flex flex-col w-full h-full px-9 py-16 bg-background">
       <View className="flex flex-row justify-between items-center mb-14">
         <TouchableOpacity onPress={() => router.push("/(tabs)/account")}>
-          <Svg1 width={23} height={23} />
+          <ArrowLeft
+            width={30}
+            height={30}
+            color={scheme === "dark" ? "#fff" : "#000"}
+          />
         </TouchableOpacity>
         <Text className="block font-bold text-2xl text-foreground">
           Settings
@@ -24,9 +28,12 @@ const Settings = () => {
       </View>
 
       <View
-        className="flex flex-row justify-between mt-3 py-6 px-5 rounded-2xl"
+        className="flex flex-row justify-between mt-3 py-3 px-5 rounded-2xl"
         style={{
-          boxShadow: "0px 2px 12px 0px rgba(0,0,0,0.1)",
+          boxShadow:
+            scheme === "dark"
+              ? "0px 2px 12px 0px rgba(0,0,0,0.2)"
+              : "0px 2px 12px 0px rgba(0,0,0,0.1)",
         }}
       >
         <View className="flex flex-row items-center gap-4">
@@ -51,7 +58,10 @@ const Settings = () => {
       <View
         className="flex flex-row justify-between mt-3 py-6 px-5 rounded-2xl"
         style={{
-          boxShadow: "0px 2px 12px 0px rgba(0,0,0,0.1)",
+          boxShadow:
+            scheme === "dark"
+              ? "0px 2px 12px 0px rgba(0,0,0,0.2)"
+              : "0px 2px 12px 0px rgba(0,0,0,0.1)",
         }}
       >
         <View className="flex flex-row items-center gap-4">
@@ -59,14 +69,17 @@ const Settings = () => {
           <Text className="font-medium text-primary leading-4">FAQ</Text>
         </View>
         <View className="bg-primary flex flex-row justify-center items-center p-1 rounded-md">
-          <ArrowRight size={16} color="#fff" />
+          <ArrowRight size={16} color={scheme === "dark" ? "#000" : "#fff"} />
         </View>
       </View>
 
       <View
         className="flex flex-row justify-between mt-3 py-6 px-5 rounded-2xl"
         style={{
-          boxShadow: "0px 2px 12px 0px rgba(0,0,0,0.1)",
+          boxShadow:
+            scheme === "dark"
+              ? "0px 2px 12px 0px rgba(0,0,0,0.2)"
+              : "0px 2px 12px 0px rgba(0,0,0,0.1)",
         }}
       >
         <View className="flex flex-row items-center gap-4">
@@ -78,14 +91,17 @@ const Settings = () => {
           </Text>
         </View>
         <View className="bg-primary flex flex-row justify-center items-center p-1 rounded-md">
-          <ArrowRight size={16} color="#fff" />
+          <ArrowRight size={16} color={scheme === "dark" ? "#000" : "#fff"} />
         </View>
       </View>
 
       <View
         className="flex flex-row justify-between mt-3 py-6 px-5 rounded-2xl"
         style={{
-          boxShadow: "0px 2px 12px 0px rgba(0,0,0,0.1)",
+          boxShadow:
+            scheme === "dark"
+              ? "0px 2px 12px 0px rgba(0,0,0,0.2)"
+              : "0px 2px 12px 0px rgba(0,0,0,0.1)",
         }}
       >
         <View className="flex flex-row items-center gap-4">
@@ -99,13 +115,16 @@ const Settings = () => {
           </Text>
         </View>
         <View className="bg-primary flex flex-row justify-center items-center p-1 rounded-md">
-          <ArrowRight size={16} color="#fff" />
+          <ArrowRight size={16} color={scheme === "dark" ? "#000" : "#fff"} />
         </View>
       </View>
       <View
         className="flex flex-row justify-between mt-3 py-6 px-5 rounded-2xl"
         style={{
-          boxShadow: "0px 2px 12px 0px rgba(0,0,0,0.1)",
+          boxShadow:
+            scheme === "dark"
+              ? "0px 2px 12px 0px rgba(0,0,0,0.2)"
+              : "0px 2px 12px 0px rgba(0,0,0,0.1)",
         }}
       >
         <View className="flex flex-row items-center gap-4">
@@ -117,7 +136,7 @@ const Settings = () => {
           <Text className="font-medium text-primary leading-4">About app</Text>
         </View>
         <View className="bg-primary flex flex-row justify-center items-center p-1 rounded-md">
-          <ArrowRight size={16} color="#fff" />
+          <ArrowRight size={16} color={scheme === "dark" ? "#000" : "#fff"} />
         </View>
       </View>
 
@@ -129,7 +148,10 @@ const Settings = () => {
           <View
             className="flex justify-center items-center px-1.5 rounded-xl bg-background"
             style={{
-              boxShadow: "0px 2px 12px 0px rgba(0,0,0,0.1)",
+              boxShadow:
+                scheme === "dark"
+                  ? "0px 2px 12px 0px rgba(0,0,0,0.2)"
+                  : "0px 2px 12px 0px rgba(0,0,0,0.1)",
             }}
           >
             <Image
@@ -140,7 +162,10 @@ const Settings = () => {
           <View
             className="flex justify-center items-center px-3.5 py-1 rounded-xl bg-background"
             style={{
-              boxShadow: "0px 2px 12px 0px rgba(0,0,0,0.1)",
+              boxShadow:
+                scheme === "dark"
+                  ? "0px 2px 12px 0px rgba(0,0,0,0.2)"
+                  : "0px 2px 12px 0px rgba(0,0,0,0.1)",
             }}
           >
             <Image
@@ -151,7 +176,10 @@ const Settings = () => {
           <View
             className="flex justify-center items-center px-3.5 py-1 rounded-xl bg-background"
             style={{
-              boxShadow: "0px 2px 12px 0px rgba(0,0,0,0.1)",
+              boxShadow:
+                scheme === "dark"
+                  ? "0px 2px 12px 0px rgba(0,0,0,0.2)"
+                  : "0px 2px 12px 0px rgba(0,0,0,0.1)",
             }}
           >
             <Image

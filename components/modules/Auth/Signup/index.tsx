@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { TouchableOpacity, View, Pressable } from "react-native";
-import { UserRound } from "lucide-react-native";
+import { ArrowLeft, UserRound } from "lucide-react-native";
 import { Text } from "react-native";
 import { useColorScheme, Platform } from "react-native";
 import { router } from "expo-router";
@@ -27,6 +27,8 @@ import Toast from "react-native-toast-message";
 import { ScrollView } from "react-native-gesture-handler";
 
 const Signup = () => {
+  const scheme = useColorScheme();
+
   const [showPassword, setShowPassword] = useState(false);
   const [date, setDate] = useState(new Date());
   const [showdatePicker, setShowdatePicker] = useState(false);
@@ -204,9 +206,15 @@ const Signup = () => {
           <TouchableOpacity
             onPress={() => router.push("/(auth)/account-options")}
           >
-            <Svg1 width={23} height={23} />
+            <ArrowLeft
+              width={30}
+              height={30}
+              color={scheme === "dark" ? "#fff" : "#000"}
+            />
           </TouchableOpacity>
-          <Text className="block font-bold text-2xl">Create Account</Text>
+          <Text className="block font-bold text-2xl text-primary">
+            Create Account
+          </Text>
           <Text></Text>
         </View>
         <View>

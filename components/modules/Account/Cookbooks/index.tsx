@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { FilePenLine, Trash } from "lucide-react-native";
 
-import { FlatList, Pressable, Text, View } from "react-native";
+import { FlatList, Pressable, Text, useColorScheme, View } from "react-native";
 
 import { router } from "expo-router";
 
@@ -12,6 +12,8 @@ import DeleteCookbook from "./deleteCookbook";
 import EditCookbook from "./editCookbook";
 
 const Cookbooks = () => {
+  const scheme = useColorScheme();
+
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
@@ -24,7 +26,7 @@ const Cookbooks = () => {
           </Text>
           <View className="flex flex-row gap-6">
             <FilePenLine
-              color="#0a2533"
+              color={scheme === "dark" ? "#fff" : "#0a2533"}
               size={22}
               onPress={() => setShowEditModal(!showEditModal)}
             />

@@ -1,7 +1,7 @@
 import React from "react";
 
 import { Clock, Flame, Heart } from "lucide-react-native";
-import { Image, Text, View } from "react-native";
+import { Image, Text, useColorScheme, View } from "react-native";
 
 type RecipeItemT = {
   recipeItem: {
@@ -15,8 +15,18 @@ type RecipeItemT = {
 };
 
 const RecipeCard = ({ recipeItem }: RecipeItemT) => {
+  const scheme = useColorScheme();
+
   return (
-    <View className="bg-background rounded-2xl w-64 p-3 shadow-custom">
+    <View
+      className="bg-background rounded-2xl w-64 p-3"
+      style={{
+        boxShadow:
+          scheme === "dark"
+            ? "0px 2px 12px 0px rgba(0,0,0,0.4)"
+            : "0px 2px 12px 0px rgba(0,0,0,0.2)",
+      }}
+    >
       <View className="relative mb-4">
         <Image
           source={{ uri: "abc" }}
@@ -24,7 +34,7 @@ const RecipeCard = ({ recipeItem }: RecipeItemT) => {
           resizeMode="cover"
         />
         <View className="absolute top-2 right-2 bg-background rounded-md p-1.5">
-          <Heart color="#000" size={16} />
+          <Heart color={scheme === "dark" ? "#fff" : "#000"} size={16} />
         </View>
       </View>
       <Text className="text-foreground font-bold text-base leading-5 mb-3">

@@ -1,10 +1,10 @@
-import { Text, View } from "react-native";
+import { Text, useColorScheme, View } from "react-native";
 import Dialog from "react-native-dialog";
 
 import React from "react";
 
 import { Button, ButtonText } from "@/components/ui/button";
-import { FilePenLine } from "lucide-react-native";
+import { Trash2 } from "lucide-react-native";
 
 type DeleteCookbook = {
   showDeleteModal: boolean;
@@ -15,12 +15,21 @@ const DeleteCookbook = ({
   setShowDeleteModal,
   showDeleteModal,
 }: DeleteCookbook) => {
+  const scheme = useColorScheme();
+
   return (
     <View>
-      <Dialog.Container visible={showDeleteModal}>
+      <Dialog.Container
+        visible={showDeleteModal}
+        contentStyle={{
+          backgroundColor: scheme === "dark" ? "#000" : "#fff",
+          paddingVertical: 50,
+          borderRadius: 30,
+        }}
+      >
         <View className="flex flex-row justify-center mb-6">
-          <View className="bg-destructive flex flex-row justify-center items-center w-16 h-16 p-8 rounded-full basis-1/">
-            <FilePenLine color="#fff" size={28} />
+          <View className="bg-destructive flex flex-row justify-center items-center w-24 h-24 p-8 rounded-full basis-1/">
+            <Trash2 color="#fff" size={35} />
           </View>
         </View>
         <View>

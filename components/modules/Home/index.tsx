@@ -1,7 +1,14 @@
 import React from "react";
 
 import { Search } from "lucide-react-native";
-import { Text, View, FlatList, Pressable, ScrollView } from "react-native";
+import {
+  Text,
+  View,
+  FlatList,
+  Pressable,
+  ScrollView,
+  useColorScheme,
+} from "react-native";
 
 import { router } from "expo-router";
 
@@ -12,8 +19,9 @@ import FeaturedRecipes from "./featuredRecipes";
 import PopularRecipes from "./popularRecipes";
 
 const HomeUser = () => {
+  const scheme = useColorScheme();
   return (
-    <ScrollView className="flex flex-col w-full h-full pl-7 py-16 ">
+    <ScrollView className="flex flex-col w-full h-full pl-7 py-16 bg-background">
       <View className="flex flex-row justify-between items-center mb-10">
         <View className="space-y-1.5">
           <View className="flex flex-row items-center gap-1">
@@ -31,7 +39,7 @@ const HomeUser = () => {
           className="mr-5"
           onPress={() => router.push("/(nested)/search")}
         >
-          <Search color="#000" />
+          <Search color={scheme === "dark" ? "#fff" : "#000"} />
         </Pressable>
       </View>
 

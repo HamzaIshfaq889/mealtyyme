@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 
-import { Text } from "react-native";
+import { Text, useColorScheme } from "react-native";
 import { TouchableOpacity, View } from "react-native";
 import { router } from "expo-router";
 import { useLocalSearchParams } from "expo-router";
 
-import { RectangleEllipsis } from "lucide-react-native";
+import { ArrowLeft, RectangleEllipsis } from "lucide-react-native";
 
 import { useDispatch } from "react-redux";
 import { setResetToken } from "@/redux/slices/Auth";
@@ -28,6 +28,7 @@ import { Spinner } from "@/components/ui/spinner";
 import Toast from "react-native-toast-message";
 
 const Otp = () => {
+  const scheme = useColorScheme();
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
@@ -118,9 +119,13 @@ const Otp = () => {
         <TouchableOpacity
           onPress={() => router.push("/(auth)/forget-password")}
         >
-          <Svg1 width={23} height={23} />
+          <ArrowLeft
+            width={30}
+            height={30}
+            color={scheme === "dark" ? "#fff" : "#000"}
+          />
         </TouchableOpacity>
-        <Text className="block font-bold text-2xl">Otp</Text>
+        <Text className="block font-bold text-2xl text-primary">Otp</Text>
         <Text></Text>
       </View>
       <View>

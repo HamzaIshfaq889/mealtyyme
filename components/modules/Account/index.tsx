@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import { Image, Pressable, Text, View } from "react-native";
+import { Image, Pressable, Text, useColorScheme, View } from "react-native";
 import { router } from "expo-router";
 
 import { Settings, UserPen } from "lucide-react-native";
@@ -11,6 +11,7 @@ import Cookbooks from "./Cookbooks";
 import Savedrecipes from "./SavedRecipes";
 
 const Account = () => {
+  const scheme = useColorScheme();
   const [activeTab, setActiveTab] = useState<"cookbooks" | "savedrecipes">(
     "cookbooks"
   );
@@ -21,7 +22,7 @@ const Account = () => {
         <Text></Text>
         <Text className="font-bold text-2xl text-foreground">Account</Text>
         <Pressable onPress={() => router.push("/(nested)/settings")}>
-          <Settings color="#000" size={26} />
+          <Settings color={scheme === "dark" ? "#fff" : "#000"} size={26} />
         </Pressable>
       </View>
 
@@ -37,7 +38,9 @@ const Account = () => {
             className="w-16 h-16"
           />
           <View>
-            <Text className="font-bold text-lg leading-5 mb-0.5">Username</Text>
+            <Text className="font-bold text-lg leading-5 mb-0.5 text-primary">
+              Username
+            </Text>
             <Text className="text-primary/60 text-base leading-6">
               Recipe Developer
             </Text>
@@ -46,7 +49,7 @@ const Account = () => {
 
         <Pressable onPress={() => router.push("/(nested)/edit-profile")}>
           <View className="flex flex-row gap-0.5 mr-2">
-            <UserPen color="#000" size={30} />
+            <UserPen color={scheme === "dark" ? "#fff" : "#000"} size={30} />
           </View>
         </Pressable>
       </View>

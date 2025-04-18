@@ -9,6 +9,7 @@ import {
   Pressable,
   Text,
   TouchableOpacity,
+  useColorScheme,
   View,
 } from "react-native";
 import {
@@ -16,6 +17,7 @@ import {
   ChevronDown,
   ArrowRight,
   SlidersHorizontal,
+  ArrowLeft,
 } from "lucide-react-native";
 
 import Svg1 from "@/assets/svgs/arrow-left.svg";
@@ -71,6 +73,7 @@ const savedRecipies = [
 
 const recipesType = ["Salad", "Egg", "Cakes", "Chicken", "Meals", "Vegetable"];
 const Search = () => {
+  const scheme = useColorScheme();
   const bottomSheetRef = useRef<BottomSheet>(null);
 
   const [selectedIndexes, setSelectedIndexes] = useState<number[]>([]);
@@ -109,7 +112,11 @@ const Search = () => {
         <View className="px-6 pt-16 pb-5">
           <View className="flex flex-row justify-between items-center mb-8">
             <TouchableOpacity onPress={() => router.push("/(tabs)/Home")}>
-              <Svg1 width={23} height={23} />
+              <ArrowLeft
+                width={30}
+                height={30}
+                color={scheme === "dark" ? "#fff" : "#000"}
+              />
             </TouchableOpacity>
             <Text className="block font-bold text-2xl text-foreground">
               Search
@@ -156,7 +163,7 @@ const Search = () => {
                     }}
                     renderButton={(selectedItem, isOpened) => (
                       <View className="flex-row items-center gap-4 px-6 py-2 bg-secondary rounded-full">
-                        <Text className="flex-1 text-lg leading-6 font-semibold text-background">
+                        <Text className="flex-1 text-lg leading-6 font-semibold text-primary">
                           {selectedItem || "Select"}
                         </Text>
                         {isOpened ? (
@@ -243,7 +250,7 @@ const Search = () => {
                     {/* Will be replavce by image if the recipie */}
                     <View className="w-24 h-[80px] rounded-2xl bg-gray3"></View>
                     <View className="flex flex-col justify-between max-w-40">
-                      <Text className="font-bold text-lg mb-1 leading-6">
+                      <Text className="font-bold text-lg mb-1 leading-6 text-primary">
                         {recipe?.name}
                       </Text>
                       <View className="flex flex-row gap-2">
@@ -276,93 +283,97 @@ const Search = () => {
             }
           }}
         >
-          <Text className="font-bold text-2xl leading-8 text-foreground text-center mb-4 mt-8">
-            Filter
-          </Text>
-          <Text className="text-xl font-bold text-foreground px-6 mb-6">
-            Category
-          </Text>
-
-          <View className="mb-6">
-            <BottomSheetFlatList
-              data={categories}
-              keyExtractor={(item) => item.id}
-              horizontal
-              contentContainerStyle={{ gap: 12, paddingLeft: 24 }}
-              showsHorizontalScrollIndicator={false}
-              renderItem={({ item }) => (
-                <Button
-                  action="secondary"
-                  className={`rounded-full px-10 py-2 bg-gray4`}
-                >
-                  <ButtonText
-                    className={`!text-lg leading-6 !text-primary !font-medium`}
-                  >
-                    {item.name}
-                  </ButtonText>
-                </Button>
-              )}
-            />
-          </View>
-
-          <View className="px-6 mb-6">
-            <Text className="text-xl font-bold text-foregroundmb-4 mb-6">
-              Recipe Type
+          <View className="bg-background w-full h-full">
+            <Text className="font-bold text-2xl leading-8 text-foreground text-center mb-4 mt-8">
+              Filter
+            </Text>
+            <Text className="text-xl font-bold text-foreground px-6 mb-6">
+              Category
             </Text>
 
-            <View className="flex flex-row flex-wrap justify-between ">
-              {recipesType?.map((rec, index) => {
-                const isSelected = selectedIndexes.includes(index);
-
-                return (
-                  <TouchableOpacity
-                    key={index}
-                    className={`basis-[31%] rounded-full bg-gray4 py-3 px-3 flex items-center justify-center mb-4 ${
-                      isSelected ? "bg-secondary" : "bg-gray4"
-                    }`}
-                    onPress={() => handleSelection(index)}
+            <View className="mb-6">
+              <BottomSheetFlatList
+                data={categories}
+                keyExtractor={(item) => item.id}
+                horizontal
+                contentContainerStyle={{ gap: 12, paddingLeft: 24 }}
+                showsHorizontalScrollIndicator={false}
+                renderItem={({ item }) => (
+                  <Button
+                    action="secondary"
+                    className={`rounded-full px-10 py-2 bg-gray4`}
                   >
-                    <Text
-                      className={`text-center text-foreground leading-6 font-medium ${
-                        isSelected ? "!text-background" : "!text-foreground"
-                      }`}
+                    <ButtonText
+                      className={`!text-lg leading-6 !text-primary !font-medium`}
                     >
-                      {rec}
-                    </Text>
-                  </TouchableOpacity>
-                );
-              })}
+                      {item.name}
+                    </ButtonText>
+                  </Button>
+                )}
+              />
             </View>
-          </View>
 
-          <View className="px-6 mb-10">
-            <View className="flex flex-row justify-between items-center mb-8">
-              <Text className="text-xl font-bold text-foreground">
-                Calories Range
+            <View className="px-6 mb-6">
+              <Text className="text-xl font-bold text-foreground mb-6">
+                Recipe Type
               </Text>
-              <Text className="text-foreground text-lg">{`${low}-${high} KCal`}</Text>
-            </View>
-            <Slider
-              min={0}
-              max={300}
-              step={1}
-              floatingLabel
-              renderThumb={renderThumb}
-              renderRail={renderRail}
-              renderRailSelected={renderRailSelected}
-              renderLabel={renderLabel}
-              renderNotch={renderNotch}
-              onValueChanged={handleValueChange}
-            />
-          </View>
 
-          <View className="px-6">
-            <Button action="secondary" className="mb-3 !h-20">
-              <ButtonText>Apply Filters</ButtonText>
-            </Button>
-            <Button className="bg-background">
-              <ButtonText className="!text-secondary">Clear Filters</ButtonText>
-            </Button>
+              <View className="flex flex-row flex-wrap justify-between ">
+                {recipesType?.map((rec, index) => {
+                  const isSelected = selectedIndexes.includes(index);
+
+                  return (
+                    <TouchableOpacity
+                      key={index}
+                      className={`basis-[31%] rounded-full bg-gray4 py-3 px-3 flex items-center justify-center mb-4 ${
+                        isSelected ? "bg-secondary" : "bg-gray4"
+                      }`}
+                      onPress={() => handleSelection(index)}
+                    >
+                      <Text
+                        className={`text-center text-foreground leading-6 font-medium ${
+                          isSelected ? "!text-background" : "!text-foreground"
+                        }`}
+                      >
+                        {rec}
+                      </Text>
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
+            </View>
+
+            <View className="px-6 mb-10">
+              <View className="flex flex-row justify-between items-center mb-8">
+                <Text className="text-xl font-bold text-foreground">
+                  Calories Range
+                </Text>
+                <Text className="text-foreground text-lg">{`${low}-${high} KCal`}</Text>
+              </View>
+              <Slider
+                min={0}
+                max={300}
+                step={1}
+                floatingLabel
+                renderThumb={renderThumb}
+                renderRail={renderRail}
+                renderRailSelected={renderRailSelected}
+                renderLabel={renderLabel}
+                renderNotch={renderNotch}
+                onValueChanged={handleValueChange}
+              />
+            </View>
+
+            <View className="px-6">
+              <Button action="secondary" className="mb-3 !h-20">
+                <ButtonText>Apply Filters</ButtonText>
+              </Button>
+              <Button className="bg-background">
+                <ButtonText className="!text-secondary">
+                  Clear Filters
+                </ButtonText>
+              </Button>
+            </View>
           </View>
         </BottomSheet>
       </View>

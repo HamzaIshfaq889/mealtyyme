@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import { TouchableOpacity } from "react-native";
+import { TouchableOpacity, useColorScheme } from "react-native";
 import { Text, View } from "react-native";
 
 import {
@@ -21,8 +21,11 @@ import { router } from "expo-router";
 import { Spinner } from "@/components/ui/spinner";
 
 import Toast from "react-native-toast-message";
+import { ArrowLeft } from "lucide-react-native";
 
 const ForgotPassword = () => {
+  const scheme = useColorScheme();
+
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [formData, setFormData] = useState({ email: "" });
@@ -100,9 +103,15 @@ const ForgotPassword = () => {
     <View className="flex flex-col w-full h-full px-9 py-16">
       <View className="flex flex-row justify-between items-center mb-12">
         <TouchableOpacity onPress={() => router.push("/(auth)/login")}>
-          <Svg1 width={23} height={23} />
+          <ArrowLeft
+            width={30}
+            height={30}
+            color={scheme === "dark" ? "#fff" : "#000"}
+          />
         </TouchableOpacity>
-        <Text className="block font-bold text-2xl">Forgot Password</Text>
+        <Text className="block font-bold text-2xl text-primary">
+          Forgot Password
+        </Text>
         <Text></Text>
       </View>
       <View>
