@@ -54,7 +54,7 @@ const InstructionDetails = () => {
           <View
             className="mt-10 flex flex-row items-start gap-4 p-5 rounded-2xl"
             style={{
-              boxShadow: "0px 2px 12px 0px rgba(0,0,0,0.1)",
+              boxShadow: "0px 2px 12px 0px rgba(0,0,0,0.2)",
             }}
             key={index}
           >
@@ -63,7 +63,7 @@ const InstructionDetails = () => {
                 {recipe.step}
               </Text>
             </View>
-            <Text className="text-[#48525F] font-medium pr-16 leading-6">
+            <Text className="text-primary font-medium pr-16 leading-6">
               {recipe?.instruction}
             </Text>
           </View>

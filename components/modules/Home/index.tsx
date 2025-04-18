@@ -24,7 +24,7 @@ const categories = [
 
 const HomeUser = () => {
   return (
-    <ScrollView className="flex flex-col w-full h-full pl-7 py-16 bg-background">
+    <ScrollView className="flex flex-col w-full h-full pl-7 py-16 ">
       <View className="flex flex-row justify-between items-center mb-10">
         <View className="space-y-1.5">
           <View className="flex flex-row items-center gap-1">
@@ -50,7 +50,7 @@ const HomeUser = () => {
 
       <View className="mb-6">
         <View className="flex-row justify-between items-center mb-4">
-          <Text className="text-lg font-bold text-black">Category</Text>
+          <Text className="text-lg font-bold text-primary">Category</Text>
         </View>
 
         <FlatList

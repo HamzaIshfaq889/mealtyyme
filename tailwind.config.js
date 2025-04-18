@@ -2,44 +2,48 @@ import gluestackPlugin from "@gluestack-ui/nativewind-utils/tailwind-plugin";
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
+  darkMode: "class", // Enables class-based dark mode
+
   content: ["./app/**/*.{js,jsx,ts,tsx}", "./components/**/*.{js,jsx,ts,tsx}"],
   presets: [require("nativewind/preset")],
 
   theme: {
     extend: {
       colors: {
-        border: "hsl(214, 32%, 93%, 1)" /*inputborders */,
-        ring: "hsl(224 71.4% 4.1%)",
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
 
-        input: "hsl(220 13% 91%)",
+        border: "hsl(var(--border))",
+        ring: "hsl(var(--ring))",
 
-        background: "hsl(0, 0%, 100%, 1)" /* white color */,
-        foreground: "hsl(218, 67%, 12%, 1)" /* Black headings color */,
+        input: "hsl(var(--input))",
 
         primary: {
-          DEFAULT:
-            "hsl(200, 67%, 12%, 1)" /* dark blue color(light shade of foreground/Black) */,
+          DEFAULT: "hsl(var(--primary))",
         },
 
         secondary: {
-          DEFAULT: "hsla(194, 100%, 50%, 1)" /* blue color Main theme color */,
+          DEFAULT: "hsl(var(--secondary))",
         },
 
         destructive: {
-          DEFAULT: "hsl(5, 84%, 64%, 1)" /* red color for error messages */,
+          DEFAULT: "hsl(var(--destructive))",
         },
 
         muted: {
-          DEFAULT: "hsla(215, 14%, 64%, 1)", // grayish color paragraph texts and inputs placeholders
+          DEFAULT: "hsl(var(--muted))",
         },
+
         accent: {
-          DEFAULT: "hsla(180, 17%, 95%, 1)", //grayish secondary
+          DEFAULT: "hsl(var(--accent))",
         },
+
         gray3: {
-          DEFAULT: "hsla(214, 22%, 83%, 1)", //grayish version
+          DEFAULT: "hsl(var(--gray3))",
         },
+
         gray4: {
-          DEFAULT: "hsla(214, 32%, 93%, 1)",
+          DEFAULT: "hsl(var(--gray4))",
         },
 
         popover: {
@@ -52,20 +56,25 @@ module.exports = {
           foreground: "hsl(var(--card-foreground))",
         },
       },
+
       fontFamily: {
         sofia: ["SofiaPro", "sans-serif"],
         roboto: ["RobotoRegular", "sans-serif"],
       },
+
       fontWeight: {
         extrablack: "950",
       },
+
       borderRadius: {
         input: "8px",
       },
+
       boxShadow: {
         custom: "0px 4px 4px 0px hsla(0, 0%, 0%, 0.25)",
       },
     },
   },
+
   plugins: [gluestackPlugin],
 };

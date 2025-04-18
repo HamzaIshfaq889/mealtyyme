@@ -12,8 +12,8 @@ const RecipeMenuOptions = () => {
   const [showSaveCookbookModal, setShowSaveCookbookModal] = useState(false);
 
   return (
-    <SafeAreaView>
-      <View className="flex flex-col w-full h-full pl-7 py-16 bg-background">
+    <SafeAreaView className="flex flex-col w-full h-full pl-7 py-16 bg-background">
+      <View>
         <Pressable
           className="flex flex-row items-center mb-11 gap-4"
           onPress={() => setShowMealScheduleModal(true)}

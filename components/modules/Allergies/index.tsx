@@ -82,7 +82,11 @@ const Allergies = () => {
           personalized meal suggestions that cater to your needs!
         </Text>
       </View>
-      <Button className="mt-2" action="primary" onPress={handleNext}>
+      <Button
+        className="mt-2 bg-secondary"
+        action="primary"
+        onPress={handleNext}
+      >
         <ButtonText>Next</ButtonText>
       </Button>
     </View>

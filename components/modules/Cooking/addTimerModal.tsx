@@ -74,66 +74,45 @@ const AddTimerModal = ({
   };
 
   return (
-    <View style={{ backgroundColor: "#FFFFFF" }}>
-      <Dialog.Container
-        visible={showTimerModal}
-        contentStyle={{
-          backgroundColor: "#FFFFFF",
-          padding: 20,
-          borderRadius: 12,
-        }}
-        headerStyle={{ backgroundColor: "#FFFFFF" }}
-        footerStyle={{ backgroundColor: "#FFFFFF" }}
+    <Dialog.Container visible={showTimerModal}>
+      <Text className="bg-foreground">Add Timer</Text>
+
+      <FormControl size="md">
+        <Input>
+          <InputField
+            type="text"
+            placeholder="Enter Time in Minutes"
+            value={formData?.time}
+            keyboardType="numeric"
+            onChangeText={(text) => validateField("time", text)}
+            style={{ color: "#000" }}
+            placeholderTextColor="#999"
+          />
+        </Input>
+
+        {errors?.time && (
+          <Text style={{ color: "#EF4444", marginTop: 4, marginBottom: 16 }}>
+            {errors?.time}
+          </Text>
+        )}
+      </FormControl>
+
+      <Button
+        action="secondary"
+        className="w-full h-16 mb-4"
+        onPress={handleAddClick}
       >
-        <Text
-          style={{
-            fontSize: 24,
-            fontWeight: "bold",
-            textAlign: "center",
-            color: "#000",
-            marginBottom: 20,
-          }}
-        >
-          Add Timer
-        </Text>
+        <ButtonText className="text-black">Add</ButtonText>
+      </Button>
 
-        <FormControl size="md">
-          <Input>
-            <InputField
-              type="text"
-              placeholder="Enter Time in Minutes"
-              value={formData?.time}
-              keyboardType="numeric"
-              onChangeText={(text) => validateField("time", text)}
-              style={{ color: "#000" }}
-              placeholderTextColor="#999"
-            />
-          </Input>
-
-          {errors?.time && (
-            <Text style={{ color: "#EF4444", marginTop: 4, marginBottom: 16 }}>
-              {errors?.time}
-            </Text>
-          )}
-        </FormControl>
-
-        <Button
-          action="secondary"
-          className="w-full h-16 mb-4"
-          onPress={handleAddClick}
-        >
-          <ButtonText className="text-black">Add</ButtonText>
-        </Button>
-
-        <Button
-          action="muted"
-          className="w-full h-16"
-          onPress={() => setShowTimerModal(false)}
-        >
-          <ButtonText className="text-black">Cancel</ButtonText>
-        </Button>
-      </Dialog.Container>
-    </View>
+      <Button
+        action="muted"
+        className="w-full h-16"
+        onPress={() => setShowTimerModal(false)}
+      >
+        <ButtonText className="text-black">Cancel</ButtonText>
+      </Button>
+    </Dialog.Container>
   );
 };
 
