@@ -18,7 +18,6 @@ import { Button, ButtonText } from "@/components/ui/button";
 import FeaturedRecipes from "./featuredRecipes";
 import PopularRecipes from "./popularRecipes";
 
-
 const categories = [
   { id: "1", name: "Relax Dinner" },
   { id: "2", name: "Kids Favourite" },

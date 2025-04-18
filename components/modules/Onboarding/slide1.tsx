@@ -1,22 +1,36 @@
-import React from 'react';
+import React from "react";
 
-import {View} from 'react-native';
+import { Text, View } from "react-native";
 
-import Svg1 from '@/assets/svgs/Vector5.svg';
-import Svg2 from '@/assets/svgs/Vector6.svg';
-import Svg3 from '@/assets/svgs/Vector7.svg';
+import Svg1 from "@/assets/svgs/Vector5.svg";
+import Svg2 from "@/assets/svgs/Vector6.svg";
+import Svg3 from "@/assets/svgs/Vector7.svg";
+import { Button, ButtonText } from "@/components/ui/button";
+import { router } from "expo-router";
 
 const Slide1 = () => {
   return (
     <>
-      <View className="absolute left-0 top-0">
-        <Svg1 />
+      <View className="h-[65%]">
+        <View className="absolute left-5 top-0">
+          <Svg1 />
+        </View>
+        <View className="relative flex justify-center items-center py-48">
+          <Svg2 />
+        </View>
+        <View className="absolute left-0 right-0 -bottom-28">
+          <Svg3 />
+        </View>
       </View>
-      <View className="relative flex justify-center items-center mt-12">
-        <Svg2 />
-      </View>
-      <View className="absolute left-0 right-0 -bottom-16">
-        <Svg3 />
+
+      <View className="mt-3 px-4">
+        <Text className="text-center text-primary font-bold text-3xl mb-3 leading-9 font-sofia">
+          Endless recipes for your tastes and lifestyle.
+        </Text>
+        <Text className="text-center text-xl leading-8 text-muted mb-10">
+          Unlock access to a huge collection of recipes—over 100,000 and
+          counting!
+        </Text>
       </View>
     </>
   );

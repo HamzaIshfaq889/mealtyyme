@@ -12,7 +12,7 @@ import Toast from "react-native-toast-message";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
-import { useColorScheme } from "react-native"; 
+import { useColorScheme } from "react-native";
 
 import { AuthWrapper, Splash } from "@/components/modules";
 import { store, persistor } from "@/redux/store";
