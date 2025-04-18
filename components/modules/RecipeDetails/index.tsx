@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 
-import { Pressable, Text, View } from "react-native";
+import { Pressable, Text, useColorScheme, View } from "react-native";
 
 import { router } from "expo-router";
 
@@ -32,14 +32,13 @@ import { Button, ButtonText } from "@/components/ui/button";
 import { getSingleRecipe } from "@/services/recipesAPI";
 import { ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useTheme } from "@react-navigation/native"; // or your custom theme hook
 
 const RecipeDetails = ({ recipeId }: { recipeId: string | null }) => {
   const bottomSheetMenuRef = useRef<BottomSheet>(null);
   const [activeTab, setActiveTab] = useState<"Ingredients" | "Instructions">(
     "Ingredients"
   );
-  const { colors } = useTheme();
+  const scheme = useColorScheme();
 
   const [recipes, setRecipes] = useState<Recipe>();
   const [loading, setLoading] = useState(true);
@@ -71,31 +70,31 @@ const RecipeDetails = ({ recipeId }: { recipeId: string | null }) => {
     <>
       <SafeAreaView style={{ flex: 1 }}>
         <ScrollView className="relative">
-          <View className="bg-green-500 w-full h-80"></View>
+          <View className="bg-gray-300 w-full h-80"></View>
           {/* <Image
           source={require("@/assets/images/review-person1.png")}
           className="w-full h-80"
         /> */}
 
           <View
-            className="flex flex-row justify-between w-full absolute top-0 py-6 px-6"
+            className="flex flex-row justify-between w-full absolute top-0 py-12 px-6"
             pointerEvents="box-none"
           >
             <View className="bg-background w-10 h-10 p-1.5 flex justify-center items-center rounded-md">
               <X
-                color="#000"
+                color={scheme === "dark" ? "#fff" : "#000"}
                 size={22}
                 onPress={() => router.push("/(tabs)/Home")}
               />
             </View>
             <View className="flex flex-row gap-2 items-center">
               <View className="bg-background w-20 h-10 p-1.5 flex flex-row justify-center gap-1.5 items-center rounded-md">
-                <Star color="#000" size={22} />
-                <Text>4.5</Text>
+                <Star color={scheme === "dark" ? "#fff" : "#000"} size={22} />
+                <Text className="text-primary">4.5</Text>
               </View>
 
               <View className="bg-background w-10 h-10 p-1.5 flex justify-center items-center rounded-md">
-                <Heart color="#000" size={22} />
+                <Heart color={scheme === "dark" ? "#fff" : "#000"} size={22} />
               </View>
             </View>
           </View>
@@ -104,7 +103,7 @@ const RecipeDetails = ({ recipeId }: { recipeId: string | null }) => {
               className="flex flex-row justify-end py-1"
               onPress={() => bottomSheetMenuRef.current?.snapToIndex(1)}
             >
-              <Ellipsis size={25} color="#000" />
+              <Ellipsis size={25} color={scheme === "dark" ? "#fff" : "#000"} />
             </Pressable>
             <View className="w-full fex flex-row items-center justify-between">
               <Text className="text-primary font-bold text-2xl leading-8 mt-2">

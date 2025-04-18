@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import { Text, View } from "react-native";
+import { Text, useColorScheme, View } from "react-native";
 import Dialog from "react-native-dialog";
 
 import { Button, ButtonText } from "@/components/ui/button";
@@ -20,6 +20,7 @@ type EditCookbook = {
   setShowEditModal: (value: boolean) => void;
 };
 const EditCookbook = ({ setShowEditModal, showEditModal }: EditCookbook) => {
+  const scheme = useColorScheme();
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [formData, setFormData] = useState({ collectionName: "" });
 
@@ -44,10 +45,17 @@ const EditCookbook = ({ setShowEditModal, showEditModal }: EditCookbook) => {
 
   return (
     <View>
-      <Dialog.Container visible={showEditModal}>
+      <Dialog.Container
+        visible={showEditModal}
+        contentStyle={{
+          backgroundColor: scheme === "dark" ? "#000" : "#fff",
+          paddingVertical: 50,
+          borderRadius: 30,
+        }}
+      >
         <View className="flex flex-row justify-center mb-6">
-          <View className="bg-secondary flex flex-row justify-center items-center w-16 h-16 p-8 rounded-full">
-            <FilePenLine color="#fff" size={28} />
+          <View className="bg-secondary flex flex-row justify-center items-center w-24 h-24 p-8 rounded-full">
+            <FilePenLine color="#fff" size={35} />
           </View>
         </View>
         <FormControl size="md" className="mb-1">

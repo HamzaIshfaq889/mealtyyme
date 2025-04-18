@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import { Text, TouchableOpacity, View } from "react-native";
+import { Text, TouchableOpacity, useColorScheme, View } from "react-native";
 
 import Toast from "react-native-toast-message";
 
@@ -28,8 +28,10 @@ import Svg3 from "@/assets/svgs/facebook.svg";
 import { LoginResponseTypes } from "@/lib/types";
 
 import { loginUser } from "@/services/authApi";
+import { ArrowLeft } from "lucide-react-native";
 
 const Login = () => {
+  const scheme = useColorScheme();
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -124,7 +126,11 @@ const Login = () => {
         <TouchableOpacity
           onPress={() => router.push("/(auth)/account-options")}
         >
-          <Svg1 width={23} height={23} />
+          <ArrowLeft
+            width={30}
+            height={30}
+            color={scheme === "dark" ? "#fff" : "#000"}
+          />
         </TouchableOpacity>
         <Text className="block font-bold text-2xl text-foreground">Login</Text>
         <Text></Text>

@@ -2,10 +2,16 @@ import React, { useRef, useState } from "react";
 
 import { router } from "expo-router";
 
-import { Pressable, Text, TouchableOpacity, View } from "react-native";
+import {
+  Pressable,
+  Text,
+  TouchableOpacity,
+  useColorScheme,
+  View,
+} from "react-native";
 import { CountdownCircleTimer } from "react-native-countdown-circle-timer";
 
-import { Logs, Pause, Play, Plus } from "lucide-react-native";
+import { ArrowLeft, Logs, Pause, Play, Plus } from "lucide-react-native";
 
 import BottomSheet, {
   BottomSheetBackdrop,
@@ -58,6 +64,7 @@ const recipeSteps = [
 ];
 
 const Cooking = () => {
+  const scheme = useColorScheme();
   const bottomSheetRef = useRef<BottomSheet>(null);
   const reviewBottomSheetRef = useRef<BottomSheet>(null);
 
@@ -93,7 +100,11 @@ const Cooking = () => {
     <View className="relative flex flex-col w-full h-full px-9 py-16">
       <View className="flex flex-row justify-between items-center mb-12">
         <TouchableOpacity onPress={() => router.push("/(tabs)/Home")}>
-          <Svg1 width={23} height={23} />
+          <ArrowLeft
+            width={30}
+            height={30}
+            color={scheme === "dark" ? "#fff" : "#000"}
+          />
         </TouchableOpacity>
         <Text className="block font-bold text-2xl text-foreground">
           Healthy Taco Salad

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import { Pressable, Text, View } from "react-native";
+import { Pressable, Text, useColorScheme, View } from "react-native";
 import Dialog from "react-native-dialog";
 
 import { Button, ButtonText } from "@/components/ui/button";
@@ -24,6 +24,7 @@ const SaveCookbook = ({
   setShowSaveCookbookModal,
   showSaveCookbookModal,
 }: SaveCookbookProps) => {
+  const scheme = useColorScheme();
   const [showExistingCollections, setShowExistingCOllections] = useState(false);
   const options = ["Collection1", "Collection2", "Collection3"];
 
@@ -51,7 +52,14 @@ const SaveCookbook = ({
 
   return (
     <View>
-      <Dialog.Container visible={showSaveCookbookModal}>
+      <Dialog.Container
+        visible={showSaveCookbookModal}
+        contentStyle={{
+          backgroundColor: scheme === "dark" ? "#000" : "#fff",
+          paddingVertical: 50,
+          borderRadius: 30,
+        }}
+      >
         <View className="flex flex-row justify-center mb-6">
           <View className="bg-secondary flex flex-row justify-center items-center w-16 h-16 p-8 rounded-full">
             <Bookmark color="#fff" size={28} />

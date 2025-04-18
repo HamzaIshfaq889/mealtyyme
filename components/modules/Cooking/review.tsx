@@ -30,7 +30,7 @@ const Review = () => {
     "Vegan",
   ];
   return (
-    <View className="flex flex-col w-full h-full py-4 px-6">
+    <View className="flex flex-col w-full h-full py-4 px-6 bg-background">
       <Text className="font-bold text-2xl leading-8 text-foreground text-center mb-4 mt-8">
         Rate Recipes
       </Text>

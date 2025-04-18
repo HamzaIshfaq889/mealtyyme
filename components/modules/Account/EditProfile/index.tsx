@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import { MailIcon, UserRound, UserRoundPen } from "lucide-react-native";
+import { ArrowLeft, MailIcon, UserRound, UserRoundPen } from "lucide-react-native";
 
 import DateTimPicker from "@react-native-community/datetimepicker";
 import {
@@ -8,6 +8,7 @@ import {
   ScrollView,
   Text,
   TouchableOpacity,
+  useColorScheme,
   View,
 } from "react-native";
 import { Platform } from "react-native";
@@ -27,8 +28,10 @@ import { Input, InputField, InputIcon, InputSlot } from "@/components/ui/input";
 import { Button, ButtonText } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { Textarea, TextareaInput } from "@/components/ui/textarea";
+import { colorScheme } from "react-native-css-interop";
 
 const EditProfile = () => {
+  const scheme = useColorScheme();
   const [date, setDate] = useState(new Date());
   const [showdatePicker, setShowdatePicker] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -151,7 +154,11 @@ const EditProfile = () => {
     <ScrollView className="min-w-sceen min-h-scr px-6 py-16">
       <View className="flex flex-row justify-between items-center mb-10">
         <TouchableOpacity onPress={() => router.push("/(tabs)/account")}>
-          <Svg1 width={23} height={23} />
+          <ArrowLeft
+            width={30}
+            height={30}
+            color={scheme === "dark" ? "#fff" : "#000"}
+          />
         </TouchableOpacity>
         <Text className="block font-bold text-2xl text-foreground">
           Edit profile
@@ -284,13 +291,14 @@ const EditProfile = () => {
         </FormControlLabel>
         <Textarea className="flex flex-row items-start gap-1 px-3 py-2 my-3.5">
           <View className="mt-3">
-            <UserRoundPen color="#000" size={23} />
+            <UserRoundPen color={colorScheme ? "#fff" : "#000"} size={23} />
           </View>
           <TextareaInput
             type="text"
             placeholder="Recipe Developer"
             value={formData?.bio}
             onChangeText={(text) => validateField("bio", text)}
+            className="placeholder:text-muted !placeholder:text-base !text-base"
           />
         </Textarea>
       </FormControl>
