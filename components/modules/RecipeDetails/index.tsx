@@ -32,12 +32,14 @@ import { Button, ButtonText } from "@/components/ui/button";
 import { getSingleRecipe } from "@/services/recipesAPI";
 import { ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useTheme } from "@react-navigation/native"; // or your custom theme hook
 
 const RecipeDetails = ({ recipeId }: { recipeId: string | null }) => {
   const bottomSheetMenuRef = useRef<BottomSheet>(null);
   const [activeTab, setActiveTab] = useState<"Ingredients" | "Instructions">(
     "Ingredients"
   );
+  const { colors } = useTheme();
 
   const [recipes, setRecipes] = useState<Recipe>();
   const [loading, setLoading] = useState(true);
@@ -131,7 +133,7 @@ const RecipeDetails = ({ recipeId }: { recipeId: string | null }) => {
                     <View className="bg-accent p-2 rounded-md">
                       <item.icon color="#00C3FF" />
                     </View>
-                    <Text className="font-semibold text-lg leading-5">
+                    <Text className="font-semibold text-lg leading-5 text-primary">
                       {item.text}
                     </Text>
                   </View>
@@ -150,9 +152,11 @@ const RecipeDetails = ({ recipeId }: { recipeId: string | null }) => {
               </Text>
               <View className="flex flex-row gap-3 items-center">
                 <View className="border border-accent py-0.5 px-2 rounded-lg">
-                  <Text>-</Text>
+                  <Text className="text-primary">-</Text>
                 </View>
-                <Text className="font-bold text-lg leading-8">1</Text>
+                <Text className="font-bold text-lg leading-8 text-primary">
+                  1
+                </Text>
                 <View className="border border-secondary py-0.5 px-2 rounded-lg">
                   <Text className="text-secondary">+</Text>
                 </View>
@@ -218,7 +222,7 @@ const RecipeDetails = ({ recipeId }: { recipeId: string | null }) => {
           }
         }}
       >
-        <BottomSheetView>
+        <BottomSheetView style={{ backgroundColor: "#000" }}>
           <RecipeMenuOptions />
         </BottomSheetView>
       </BottomSheet>

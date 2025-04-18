@@ -1,27 +1,32 @@
 import { useEffect, useState } from "react";
-import { DefaultTheme, ThemeProvider } from "@react-navigation/native";
+import {
+  DefaultTheme as LightTheme,
+  DarkTheme,
+  ThemeProvider,
+} from "@react-navigation/native";
 import "react-native-reanimated";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-
 import Toast from "react-native-toast-message";
-
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
+import { useColorScheme } from "react-native"; // <- ✅ Added this
 
 import { AuthWrapper, Splash } from "@/components/modules";
 import { store, persistor } from "@/redux/store";
 import QueryProvider from "@/providers/QueryProvider";
+import { View } from "react-native";
 
 import "@/global.css";
 
-// Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const [isSplashVisible, setIsSplashVisible] = useState(true);
+  const scheme = useColorScheme(); // <- ✅ Get OS theme
+
   const [loaded] = useFonts({
     SpaceMono: require("../assets/fonts/Sofia Pro Regular Az.ttf"),
     roborto: require("../assets/fonts/Roboto-Regular.ttf"),
@@ -51,15 +56,17 @@ export default function RootLayout() {
       <PersistGate loading={null} persistor={persistor}>
         <QueryProvider>
           <GestureHandlerRootView style={{ flex: 1 }}>
-            <ThemeProvider value={DefaultTheme}>
-              <AuthWrapper />
-              {/* Force light status bar for white backgrounds */}
+            <ThemeProvider value={scheme === "dark" ? DarkTheme : LightTheme}>
               <StatusBar
-                style="dark"
-                backgroundColor="#ffffff"
-                translucent={true}
+                style={scheme === "dark" ? "light" : "dark"}
+                backgroundColor="transparent"
+                translucent
               />
-              <Toast />
+              {/* Apply the 'dark' class if needed */}
+              <View className={scheme === "dark" ? "dark flex-1" : "flex-1"}>
+                <AuthWrapper />
+                <Toast />
+              </View>
             </ThemeProvider>
           </GestureHandlerRootView>
         </QueryProvider>

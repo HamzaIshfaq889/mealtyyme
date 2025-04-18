@@ -45,7 +45,7 @@ const Review = () => {
                   className="w-14 h-14"
                 />
                 <View>
-                  <Text className="font-semibold text-base leading-5 mb-1.5">
+                  <Text className="font-semibold text-base leading-5 mb-1.5 text-primary">
                     {review.name}
                   </Text>
                   <Text className="text-muted text-sm">{review.date}</Text>
