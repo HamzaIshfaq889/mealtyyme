@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 
-import DateTimPicker from "@react-native-community/datetimepicker";
-import { TouchableOpacity, View, Pressable, Platform } from "react-native";
+import DateTimePicker from "@react-native-community/datetimepicker";
+import { TouchableOpacity, View, Pressable } from "react-native";
 import { UserRound } from "lucide-react-native";
 import { Text } from "react-native";
-
+import { useColorScheme, Platform } from "react-native";
 import { router } from "expo-router";
 
 import {
@@ -31,7 +31,7 @@ const Signup = () => {
   const [date, setDate] = useState(new Date());
   const [showdatePicker, setShowdatePicker] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-
+  const colorScheme = useColorScheme();
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [formData, setFormData] = useState({
     username: "",
@@ -235,7 +235,7 @@ const Signup = () => {
               <FormControlErrorText>{errors?.username}</FormControlErrorText>
             </FormControlError>
           </FormControl>
-          <View className="w-full flex flex-row gap-6">
+          <View className="w-full flex flex-row gap-2">
             <FormControl
               size="md"
               className="mb-1 basis-1/2"
@@ -308,6 +308,7 @@ const Signup = () => {
                 type="text"
                 placeholder="Enter Email Address"
                 value={formData?.email}
+                size="2xl"
                 onChangeText={(text) => validateField("email", text)}
               />
             </Input>
@@ -349,29 +350,29 @@ const Signup = () => {
             )}
 
             {showdatePicker && (
-              <DateTimPicker
+              <DateTimePicker
                 mode="date"
                 display="spinner"
                 value={date}
                 onChange={onChange}
-                className={`bg-foreground mx-auto`}
+                themeVariant="light"
               />
             )}
 
             {showdatePicker && Platform.OS === "ios" && (
-              <View className="flex flex-row mt-8 mx-auto gap-10">
+              <View className="flex flex-row mt-2 mb-4 mx-auto gap-2">
                 <TouchableOpacity
-                  className="py-3 px-6 bg-[#CCD4DE] rounded-xl"
+                  className="py-3 px-6 bg-[#CCD4DE] rounded-xl w-32 items-center"
                   onPress={toggleDatePicker}
                 >
                   <Text className="text-foreground">Cancel</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                  className="py-3 px-6 bg-secondary rounded-xl"
+                  className="py-3 px-6 bg-secondary rounded-xl w-32 items-center"
                   onPress={confirmDateOnIOS}
                 >
-                  <Text className="text-background">Add</Text>
+                  <Text className="text-background">Select</Text>
                 </TouchableOpacity>
               </View>
             )}

@@ -1,9 +1,5 @@
 import { useEffect, useState } from "react";
-import {
-  DarkTheme,
-  DefaultTheme,
-  ThemeProvider,
-} from "@react-navigation/native";
+import { DefaultTheme, ThemeProvider } from "@react-navigation/native";
 import "react-native-reanimated";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
@@ -50,18 +46,19 @@ export default function RootLayout() {
     return <Splash />;
   }
 
-  const colorScheme = "dark";
-
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <QueryProvider>
-          <GestureHandlerRootView>
-            <ThemeProvider
-              value={colorScheme !== "dark" ? DarkTheme : DefaultTheme}
-            >
+          <GestureHandlerRootView style={{ flex: 1 }}>
+            <ThemeProvider value={DefaultTheme}>
               <AuthWrapper />
-              <StatusBar style="auto" />
+              {/* Force light status bar for white backgrounds */}
+              <StatusBar
+                style="dark"
+                backgroundColor="#ffffff"
+                translucent={true}
+              />
               <Toast />
             </ThemeProvider>
           </GestureHandlerRootView>
