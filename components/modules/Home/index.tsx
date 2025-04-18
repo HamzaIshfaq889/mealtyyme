@@ -18,18 +18,6 @@ import { Button, ButtonText } from "@/components/ui/button";
 import FeaturedRecipes from "./featuredRecipes";
 import PopularRecipes from "./popularRecipes";
 
-
-const categories = [
-  { id: "1", name: "Relax Dinner" },
-  { id: "2", name: "Kids Favourite" },
-  { id: "3", name: "Family Meals" },
-  { id: "4", name: "Quick Bites" },
-  { id: "5", name: "Relax Dinner" },
-  { id: "6", name: "Kids Favourite" },
-  { id: "7", name: "Family Meals" },
-  { id: "8", name: "Quick Bites" },
-];
-
 const HomeUser = () => {
   const scheme = useColorScheme();
   return (
@@ -57,37 +45,6 @@ const HomeUser = () => {
 
       <FeaturedRecipes />
 
-      <View className="mb-6">
-        <View className="flex-row justify-between items-center mb-4">
-          <Text className="text-lg font-bold text-primary">Category</Text>
-        </View>
-
-        <FlatList
-          horizontal
-          data={categories}
-          keyExtractor={(item) => item.id}
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{ gap: 12 }}
-          renderItem={({ item, index }) => (
-            <Button
-              action="secondary"
-              className={`rounded-full px-10 py-2 ${
-                index === 0 ? "bg-secondary" : "bg-accent"
-              }`}
-            >
-              <ButtonText
-                className={`text-base leading-6 ${
-                  index === 0
-                    ? "text-background"
-                    : "!text-primary font-semibold"
-                }`}
-              >
-                {item.name}
-              </ButtonText>
-            </Button>
-          )}
-        />
-      </View>
       <PopularRecipes />
     </ScrollView>
   );
