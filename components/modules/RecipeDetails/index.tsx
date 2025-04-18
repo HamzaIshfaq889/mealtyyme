@@ -76,7 +76,7 @@ const RecipeDetails = ({ recipeId }: { recipeId: string | null }) => {
         /> */}
 
           <View
-            className="flex flex-row justify-between w-full absolute top-0 py-10 px-12"
+            className="flex flex-row justify-between w-full absolute top-0 py-6 px-6"
             pointerEvents="box-none"
           >
             <View className="bg-background w-10 h-10 p-1.5 flex justify-center items-center rounded-md">

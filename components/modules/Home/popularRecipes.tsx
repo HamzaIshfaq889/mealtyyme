@@ -8,7 +8,7 @@ import { Clock, Flame, Heart } from "lucide-react-native";
 const data = [
   {
     id: "1",
-    title: "Asian white noodle with extra seafood",
+    title: "hello",
     author: "James Spader",
     time: "20 Min",
     image: "/abc",
@@ -51,7 +51,7 @@ const PopularRecipes = () => {
               className="ml-2 mr-5 py-4"
               onPress={() => router.push(`/recipe/${1}` as const)}
             >
-              <View className="bg-background rounded-2xl w-64 p-3 shadow-custom">
+              <View className="flex flex-col bg-background rounded-2xl w-64 p-3 shadow-custom !h-64">
                 <View className="relative mb-4">
                   <Image
                     source={{ uri: item.image }}
@@ -66,7 +66,7 @@ const PopularRecipes = () => {
                   {item.title}
                 </Text>
 
-                <View className="flex flex-row items-center gap-2">
+                <View className="flex flex-row items-center gap-2 mt-auto">
                   <View className="flex flex-row items-center gap-0.5">
                     <Flame color="#96a1b0" size={20} />
                     <Text className="text-muted">120 Kcal</Text>

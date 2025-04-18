@@ -354,9 +354,7 @@ const Signup = () => {
                 display="spinner"
                 value={date}
                 onChange={onChange}
-                className={`${
-                  Platform?.OS === "ios" ? "bg-foreground mx-auto" : ""
-                }`}
+                className={`bg-foreground mx-auto`}
               />
             )}
 
@@ -370,7 +368,7 @@ const Signup = () => {
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                  className="py-3 px-6 bg-second rounded-xl"
+                  className="py-3 px-6 bg-secondary rounded-xl"
                   onPress={confirmDateOnIOS}
                 >
                   <Text className="text-background">Add</Text>
