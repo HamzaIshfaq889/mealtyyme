@@ -11,7 +11,7 @@ import { Button, ButtonText } from "@/components/ui/button";
 
 const OnBoarding = () => {
   return (
-    <View className="flex w-full h-full">
+    <View className="flex w-full h-full ">
       <Swiper>
         <View className="flex-1 justify-center items-center">
           <Slide1 />
@@ -34,7 +34,7 @@ const OnBoarding = () => {
         </Text>
 
         <Button
-          className="mt-2"
+          className="mt-2 "
           action="primary"
           onPress={() => router.push("/(onboarding)/onboarding2")}
         >

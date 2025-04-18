@@ -98,11 +98,11 @@ const IngredientDetails = () => {
             >
               <View className="flex flex-row gap-6 items-center">
                 <View className="bg-gray4 p-7 rounded-lg"></View>
-                <Text className="font-bold text-xl text-foreground">
+                <Text className="font-bold text-xl text-primary">
                   {ing?.ingredientName}
                 </Text>
               </View>
-              <Text className="font-semibold leading-5 text-lg">
+              <Text className="font-semibold leading-5 text-lg text-primary">
                 {ing?.ingredientAmount}
               </Text>
             </View>

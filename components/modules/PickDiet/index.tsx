@@ -37,7 +37,9 @@ const PickDiet = () => {
           >
             <Svg1 width={23} height={23} />
           </TouchableOpacity>
-          <Text className="block font-bold text-2xl">Pick your diet</Text>
+          <Text className="block font-bold text-2xl text-primary">
+            Pick your diet
+          </Text>
           <Text></Text>
         </View>
         <View>
@@ -48,9 +50,9 @@ const PickDiet = () => {
                 key={index}
                 onPress={() => handleSelection(index)}
               >
-                <View className="mb-4">
+                <View className="mb-4 ">
                   <Text
-                    className={`border-2 font-bold leading-6 border-border p-4 rounded-xl ${
+                    className={`border-2 font-bold leading-6 border-border p-4 rounded-xl bg-background  ${
                       isSelected
                         ? "text-background bg-secondary"
                         : "text-foreground bg-background"
