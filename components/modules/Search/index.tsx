@@ -44,59 +44,43 @@ import Label from "@/components/ui/slider/Label";
 import Rail from "@/components/ui/slider/Rail";
 import RailSelected from "@/components/ui/slider/RailSelected";
 import Notch from "@/components/ui/slider/Notch";
-import { getFeaturedRecipes, searchRecipes } from "@/services/recipesAPI";
-import { Recipe } from "@/lib/types/recipe";
+import {
+  getCategories,
+  getCusines,
+  getDiets,
+  getFeaturedRecipes,
+  searchRecipes,
+} from "@/services/recipesAPI";
+import { Categories, Cuisine, Diet, Recipe } from "@/lib/types/recipe";
+import { capitalizeWords } from "@/utils";
 
 const options = ["Categories", "Ingredients"];
-
-const categories = [
-  { id: "1", name: "Relax Dinner" },
-  { id: "2", name: "Kids Favourite" },
-  { id: "3", name: "Family Meals" },
-  { id: "4", name: "Quick Bites" },
-  { id: "5", name: "Relax Dinner" },
-  { id: "6", name: "Kids Favourite" },
-  { id: "7", name: "Family Meals" },
-  { id: "8", name: "Quick Bites" },
-];
-
-const savedRecipies = [
-  {
-    id: 1,
-    recipiesImage: "",
-    name: " Easy homemade beef burger",
-    chef: "James spader",
-  },
-  {
-    id: 2,
-    recipiesImage: "",
-    name: " Easy homemade beef burger",
-    chef: "James spader",
-  },
-  {
-    id: 3,
-    recipiesImage: "",
-    name: " Easy homemade beef burger",
-    chef: "James spader",
-  },
-];
 
 const recipesType = ["Salad", "Egg", "Cakes", "Chicken", "Meals", "Vegetable"];
 const Search = () => {
   const scheme = useColorScheme();
   const bottomSheetRef = useRef<BottomSheet>(null);
+  const [categories, setCategories] = useState<Categories[]>([]);
+  const [cuisines, setCuisines] = useState<Cuisine[]>([]);
+  const [diets, setDiets] = useState<Diet[]>([]);
 
   const [selectedIndexes, setSelectedIndexes] = useState<number[]>([]);
-  const [searchValue, setSearchValue] = useState<string>("");
+
   const [selected, setSelected] = useState(options[0]);
   const [low, setLow] = useState<number>(25);
   const [high, setHigh] = useState<number>(75);
 
+  ///API Settigns
   const [page, setPage] = useState(1);
   const [categoriesIds, setCategoriesIds] = useState<number[]>([]);
+  const [cusinesIds, setCuisnesIds] = useState<number[]>([]);
+  const [dietIds, setDietIds] = useState<number[]>([]);
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
+  const [searchValue, setSearchValue] = useState<string>("");
+  const [totalRecipes, setTotalRecipes] = useState(0);
+  const [error, setError] = useState<string | null>(null);
 
   const renderRail = useCallback(() => <Rail />, []);
   const renderRailSelected = useCallback(() => <RailSelected />, []);
@@ -122,15 +106,26 @@ const Search = () => {
     }
   };
 
-  const fetchRecipes = async (pageNumber = 1) => {
+  const fetchRecipes = async (page: number) => {
     if (loading || !hasMore) return;
     setLoading(true);
     try {
-      const data = await searchRecipes(categoriesIds, pageNumber);
-      if (data.length === 0) {
+      const { results, total } = await searchRecipes(
+        categoriesIds,
+        page,
+        searchValue,
+        cusinesIds,
+        0,
+        1000,
+        dietIds
+      );
+
+      if (results.length === 0) {
         setHasMore(false);
       } else {
-        setRecipes((prev) => [...prev, ...data]);
+        setRecipes((prev) => (page === 1 ? results : [...prev, ...results]));
+        setPage(page);
+        setTotalRecipes(total);
       }
     } catch (error) {
       console.error("Failed to fetch recipes:", error);
@@ -139,9 +134,100 @@ const Search = () => {
     }
   };
 
+  // Initial load
   useEffect(() => {
-    fetchRecipes();
+    fetchRecipes(1);
   }, []);
+
+  useEffect(() => {
+    setRecipes([]);
+    setPage(1);
+    setHasMore(true);
+    fetchRecipes(1);
+  }, [searchValue]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const data = await getCategories();
+        setCategories(data);
+        console.log(categories.length);
+      } catch (err: any) {
+        setError(err.message || "Error fetching categories");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
+  useEffect(() => {
+    const fetchCuisines = async () => {
+      try {
+        const data = await getCusines();
+        setCuisines(data);
+      } catch (err: any) {
+        setError(err.message || "Error fetching categories");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCuisines();
+  }, []);
+
+  useEffect(() => {
+    const fetchDiets = async () => {
+      try {
+        const data = await getDiets();
+        setDiets(data);
+      } catch (err: any) {
+        setError(err.message || "Error fetching categories");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDiets();
+  }, []);
+
+  ///Categories
+  const toggleCategory = (id: number) => {
+    setCategoriesIds(
+      (prev) =>
+        prev.includes(id)
+          ? prev.filter((item) => item !== id) // Remove if already selected
+          : [...prev, id] // Add if not selected
+    );
+  };
+
+  ///Cuisines
+  const toggleCusines = (id: number) => {
+    setCuisnesIds(
+      (prev) =>
+        prev.includes(id)
+          ? prev.filter((item) => item !== id) // Remove if already selected
+          : [...prev, id] // Add if not selected
+    );
+  };
+
+  ///Diets
+  const toggleDiets = (id: number) => {
+    setDietIds(
+      (prev) =>
+        prev.includes(id)
+          ? prev.filter((item) => item !== id) // Remove if already selected
+          : [...prev, id] // Add if not selected
+    );
+  };
+
+  const handleApplyFilters = () => {
+    setHasMore(true);
+    setRecipes([]);
+    setPage(1);
+    fetchRecipes(1);
+  };
 
   return (
     <>
@@ -182,9 +268,12 @@ const Search = () => {
           </View>
         </View>
 
-        <View className="px-6">
+        <View className="px-4">
           <View className="flex-row justify-between items-center mb-4">
             <Text className="text-xl font-bold text-foreground">Recipes</Text>
+            <Text className="text-xl font-bold text-foreground">
+              {totalRecipes}
+            </Text>
           </View>
           <FlatList
             data={recipes}
@@ -254,7 +343,7 @@ const Search = () => {
             }
           }}
         >
-          <View className=" w-full h-full">
+          <View className=" w-full h-full bg-background">
             <Text className="font-bold text-2xl leading-8 text-foreground text-center mb-4 mt-8">
               Filter
             </Text>
@@ -265,53 +354,103 @@ const Search = () => {
             <View className="mb-6">
               <BottomSheetFlatList
                 data={categories}
-                keyExtractor={(item) => item.id}
+                keyExtractor={(item) => item.id.toString()}
                 horizontal
-                contentContainerStyle={{ gap: 12, paddingLeft: 24 }}
+                contentContainerStyle={{
+                  gap: 12,
+                  paddingLeft: 24,
+                  flexGrow: 1,
+                }}
                 showsHorizontalScrollIndicator={false}
-                renderItem={({ item }) => (
-                  <Button
-                    action="secondary"
-                    className={`rounded-full px-10 py-2 bg-gray4`}
-                  >
-                    <ButtonText
-                      className={`!text-lg leading-6 !text-primary !font-medium`}
+                renderItem={({ item }) => {
+                  const isSelected = categoriesIds.includes(item.id);
+                  return (
+                    <Button
+                      action="secondary"
+                      onPress={() => toggleCategory(item.id)}
+                      className={`rounded-full px-10 py-2 ${
+                        isSelected ? "bg-secondary" : "bg-gray4"
+                      }`}
                     >
-                      {item.name}
-                    </ButtonText>
-                  </Button>
-                )}
+                      <ButtonText
+                        className={`!text-lg leading-6 ${
+                          isSelected ? "!text-white" : "!text-primary"
+                        } !font-medium`}
+                      >
+                        {capitalizeWords(item.name)}
+                      </ButtonText>
+                    </Button>
+                  );
+                }}
               />
             </View>
 
-            <View className="px-6 mb-6">
-              <Text className="text-xl font-bold text-foreground mb-6">
-                Recipe Type
-              </Text>
+            <Text className="text-xl font-bold text-foreground px-6 mb-6">
+              Cusines
+            </Text>
 
-              <View className="flex flex-row flex-wrap justify-between ">
-                {recipesType?.map((rec, index) => {
-                  const isSelected = selectedIndexes.includes(index);
-
+            <View className="mb-6">
+              <BottomSheetFlatList
+                data={cuisines}
+                keyExtractor={(item) => item.id.toString()}
+                horizontal
+                contentContainerStyle={{ gap: 12, paddingLeft: 24 }}
+                showsHorizontalScrollIndicator={false}
+                renderItem={({ item }) => {
+                  const isSelected = cusinesIds.includes(item.id);
                   return (
-                    <TouchableOpacity
-                      key={index}
-                      className={`basis-[31%] rounded-full bg-gray4 py-3 px-3 flex items-center justify-center mb-4 ${
+                    <Button
+                      action="secondary"
+                      onPress={() => toggleCusines(item.id)}
+                      className={`rounded-full px-10 py-2 ${
                         isSelected ? "bg-secondary" : "bg-gray4"
                       }`}
-                      onPress={() => handleSelection(index)}
                     >
-                      <Text
-                        className={`text-center text-foreground leading-6 font-medium ${
-                          isSelected ? "!text-background" : "!text-foreground"
-                        }`}
+                      <ButtonText
+                        className={`!text-lg leading-6 ${
+                          isSelected ? "!text-white" : "!text-primary"
+                        } !font-medium`}
                       >
-                        {rec}
-                      </Text>
-                    </TouchableOpacity>
+                        {capitalizeWords(item.name)}
+                      </ButtonText>
+                    </Button>
                   );
-                })}
-              </View>
+                }}
+              />
+            </View>
+
+            <Text className="text-xl font-bold text-foreground px-6 mb-6">
+              Diets
+            </Text>
+
+            <View className="mb-6">
+              <BottomSheetFlatList
+                data={diets}
+                keyExtractor={(item) => item.id.toString()}
+                horizontal
+                contentContainerStyle={{ gap: 12, paddingLeft: 24 }}
+                showsHorizontalScrollIndicator={false}
+                renderItem={({ item }) => {
+                  const isSelected = dietIds.includes(item.id);
+                  return (
+                    <Button
+                      action="secondary"
+                      onPress={() => toggleDiets(item.id)}
+                      className={`rounded-full px-10 py-2 ${
+                        isSelected ? "bg-secondary" : "bg-gray4"
+                      }`}
+                    >
+                      <ButtonText
+                        className={`!text-lg leading-6 ${
+                          isSelected ? "!text-white" : "!text-primary"
+                        } !font-medium`}
+                      >
+                        {capitalizeWords(item.name)}
+                      </ButtonText>
+                    </Button>
+                  );
+                }}
+              />
             </View>
 
             <View className="px-6 mb-10">
@@ -323,8 +462,8 @@ const Search = () => {
               </View>
               <Slider
                 min={0}
-                max={300}
-                step={1}
+                max={1000}
+                step={10}
                 floatingLabel
                 renderThumb={renderThumb}
                 renderRail={renderRail}
@@ -336,9 +475,14 @@ const Search = () => {
             </View>
 
             <View className="px-6">
-              <Button action="secondary" className="mb-3 !h-20">
+              <Button
+                action="secondary"
+                className="mb-3 !h-20"
+                onPress={handleApplyFilters}
+              >
                 <ButtonText>Apply Filters</ButtonText>
               </Button>
+
               <Button className="">
                 <ButtonText className="!text-secondary">
                   Clear Filters
