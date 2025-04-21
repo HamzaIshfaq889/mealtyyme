@@ -115,8 +115,8 @@ const Search = () => {
         page,
         searchValue,
         cusinesIds,
-        0,
-        1000,
+        low,
+        high,
         dietIds
       );
 
@@ -344,7 +344,7 @@ const Search = () => {
           }}
         >
           <View className=" w-full h-full bg-background">
-            <Text className="font-bold text-2xl leading-8 text-foreground text-center mb-4 mt-8">
+            <Text className="font-bold text-2xl leading-8 text-foreground text-center mb-4 mt-4">
               Filter
             </Text>
             <Text className="text-xl font-bold text-foreground px-6 mb-6">

@@ -181,13 +181,13 @@ export const searchRecipes = async (
     params.push(`search=${encodeURIComponent(search.trim())}`);
   }
 
-  // if (min_calories !== undefined) {
-  //   params.push(`min_calories=${min_calories}`);
-  // }
+  if (min_calories !== undefined) {
+    params.push(`min_calories=${min_calories}`);
+  }
 
-  // if (max_calories !== undefined) {
-  //   params.push(`max_calories=${max_calories}`);
-  // }
+  if (max_calories !== undefined) {
+    params.push(`max_calories=${max_calories}`);
+  }
 
   params.push(`pageSize=10`);
   params.push(`page=${page}`);
