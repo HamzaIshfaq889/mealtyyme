@@ -1,14 +1,16 @@
 import React, { useState } from "react";
 
-import { Text, TouchableOpacity, View } from "react-native";
+import { Text, TouchableOpacity, useColorScheme, View } from "react-native";
 
 import { router } from "expo-router";
 
 import Svg1 from "../../../assets/svgs/arrow-left.svg";
 import { Button, ButtonText } from "@/components/ui/button";
+import { ArrowLeft } from "lucide-react-native";
 
 const PickDiet = () => {
   const [selectedIndexes, setSelectedIndexes] = useState<number[]>([]);
+  const scheme = useColorScheme();
 
   const buttons = [
     "Low Carbs",
@@ -33,9 +35,13 @@ const PickDiet = () => {
       <View className="flex-col w-full h-full px-9 py-16">
         <View className="flex flex-row justify-between items-center mb-20">
           <TouchableOpacity
-            onPress={() => router.push("/(onboarding)/onboarding3")}
+            onPress={() => router.push("/(onboarding)/onboarding1")}
           >
-            <Svg1 width={23} height={23} />
+            <ArrowLeft
+              width={30}
+              height={30}
+              color={scheme === "dark" ? "#fff" : "#000"}
+            />
           </TouchableOpacity>
           <Text className="block font-bold text-2xl text-primary">
             Pick your diet

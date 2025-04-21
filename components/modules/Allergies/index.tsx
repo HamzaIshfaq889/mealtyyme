@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import { Text, TouchableOpacity, View } from "react-native";
+import { Text, TouchableOpacity, useColorScheme, View } from "react-native";
 
 import { router } from "expo-router";
 
@@ -11,9 +11,11 @@ import { Button, ButtonText } from "@/components/ui/button";
 import Svg1 from "@/assets/svgs/arrow-left.svg";
 
 import { setOnboardingComplete } from "@/redux/slices/Auth";
+import { ArrowLeft } from "lucide-react-native";
 
 const Allergies = () => {
   const dispatch = useDispatch();
+  const scheme = useColorScheme();
 
   const [selectedIndexes, setSelectedIndexes] = useState<number[]>([]);
 
@@ -48,9 +50,15 @@ const Allergies = () => {
     <View className="px-9 py-16 flex w-full h-full flex-col">
       <View className="flex flex-row justify-between items-center mb-14">
         <TouchableOpacity onPress={() => router.push("/pick-diet")}>
-          <Svg1 width={23} height={23} />
+          <ArrowLeft
+            width={30}
+            height={30}
+            color={scheme === "dark" ? "#fff" : "#000"}
+          />
         </TouchableOpacity>
-        <Text className="block font-bold text-2xl">Any allergies?</Text>
+        <Text className="block font-bold text-2xl text-primary">
+          Any allergies?
+        </Text>
         <Text></Text>
       </View>
       <View className="flex-row flex-wrap">

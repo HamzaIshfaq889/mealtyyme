@@ -1,4 +1,10 @@
-import React, { useState, useRef, useCallback, useMemo } from "react";
+import React, {
+  useState,
+  useRef,
+  useCallback,
+  useMemo,
+  useEffect,
+} from "react";
 
 import SelectDropdown from "react-native-select-dropdown";
 
@@ -11,6 +17,8 @@ import {
   TouchableOpacity,
   useColorScheme,
   View,
+  Image,
+  ActivityIndicator,
 } from "react-native";
 import {
   SearchIcon,
@@ -36,6 +44,8 @@ import Label from "@/components/ui/slider/Label";
 import Rail from "@/components/ui/slider/Rail";
 import RailSelected from "@/components/ui/slider/RailSelected";
 import Notch from "@/components/ui/slider/Notch";
+import { getFeaturedRecipes, searchRecipes } from "@/services/recipesAPI";
+import { Recipe } from "@/lib/types/recipe";
 
 const options = ["Categories", "Ingredients"];
 
@@ -82,6 +92,12 @@ const Search = () => {
   const [low, setLow] = useState<number>(25);
   const [high, setHigh] = useState<number>(75);
 
+  const [page, setPage] = useState(1);
+  const [categoriesIds, setCategoriesIds] = useState<number[]>([]);
+  const [recipes, setRecipes] = useState<Recipe[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+
   const renderRail = useCallback(() => <Rail />, []);
   const renderRailSelected = useCallback(() => <RailSelected />, []);
   const renderLabel = useCallback((value: any) => <Label text={value} />, []);
@@ -106,9 +122,30 @@ const Search = () => {
     }
   };
 
+  const fetchRecipes = async (pageNumber = 1) => {
+    if (loading || !hasMore) return;
+    setLoading(true);
+    try {
+      const data = await searchRecipes(categoriesIds, pageNumber);
+      if (data.length === 0) {
+        setHasMore(false);
+      } else {
+        setRecipes((prev) => [...prev, ...data]);
+      }
+    } catch (error) {
+      console.error("Failed to fetch recipes:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchRecipes();
+  }, []);
+
   return (
     <>
-      <View className="bg-background w-full h-full">
+      <View className=" w-full h-full">
         <View className="px-6 pt-16 pb-5">
           <View className="flex flex-row justify-between items-center mb-8">
             <TouchableOpacity onPress={() => router.push("/(tabs)/Home")}>
@@ -144,130 +181,64 @@ const Search = () => {
             </Pressable>
           </View>
         </View>
-        <View className="pl-6 mb-6">
-          <FlatList
-            horizontal
-            data={categories}
-            keyExtractor={(item) => item.id}
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{ gap: 12 }}
-            renderItem={({ item, index }) => {
-              const isFirstItem = index === 0;
-              return isFirstItem ? (
-                <>
-                  <SelectDropdown
-                    data={options}
-                    defaultValue={selected}
-                    onSelect={(selectedItem) => {
-                      setSelected(selectedItem);
-                    }}
-                    renderButton={(selectedItem, isOpened) => (
-                      <View className="flex-row items-center gap-4 px-6 py-2 bg-secondary rounded-full">
-                        <Text className="flex-1 text-lg leading-6 font-semibold text-primary">
-                          {selectedItem || "Select"}
-                        </Text>
-                        {isOpened ? (
-                          <ChevronDown color="#fff" size={22} />
-                        ) : (
-                          <ChevronDown color="#fff" size={22} />
-                        )}
-                      </View>
-                    )}
-                    renderItem={(selectedItem, item, isSelected) => {
-                      return (
-                        <View
-                          className={`px-4 py-2 ${
-                            isSelected ? "bg-secondary" : "bg-accent "
-                          }`}
-                        >
-                          <Text
-                            className={`text-lg text-black ${
-                              isSelected
-                                ? "!text-background"
-                                : "text-foreground"
-                            }`}
-                          >
-                            {selectedItem}
-                          </Text>
-                        </View>
-                      );
-                    }}
-                    dropdownStyle={{
-                      borderRadius: 18,
-                      backgroundColor: "#f1f3f5",
-                      marginTop: -25,
-                    }}
-                    showsVerticalScrollIndicator={false}
-                  />
-                  <View className="h-[80%] bg-secondary w-0.5 ml-4 mt-2"></View>
-                  <Button
-                    action="secondary"
-                    className={`rounded-full ml-4 px-10 py-2 bg-accent
-                                        `}
-                  >
-                    <ButtonText
-                      className={`text-base leading-6 !text-primary font-semibold`}
-                    >
-                      {item.name}
-                    </ButtonText>
-                  </Button>
-                </>
-              ) : (
-                <Button
-                  action="secondary"
-                  className={`rounded-full px-10 py-2 bg-accent`}
-                >
-                  <ButtonText
-                    className={`text-base leading-6 !text-primary font-semibold`}
-                  >
-                    {item.name}
-                  </ButtonText>
-                </Button>
-              );
-            }}
-          />
-        </View>
+
         <View className="px-6">
           <View className="flex-row justify-between items-center mb-4">
-            <Text className="text-xl font-bold text-foreground">
-              Popular Recipes
-            </Text>
-            <Pressable>
-              <Text className="text-secondary pr-5 font-bold">View All</Text>
-            </Pressable>
+            <Text className="text-xl font-bold text-foreground">Recipes</Text>
           </View>
-          <View className="mt-3 space-y-10">
-            {savedRecipies.map((recipe) => {
-              return (
-                <View
-                  className="flex flex-row justify-between items-center py-5 px-3 rounded-2xl mb-5"
-                  style={{
-                    boxShadow: "0px 2px 12px 0px rgba(0,0,0,0.1)",
-                  }}
-                  key={recipe?.id}
-                >
-                  <View className="flex flex-row gap-4">
-                    {/* Will be replavce by image if the recipie */}
-                    <View className="w-24 h-[80px] rounded-2xl bg-gray3"></View>
-                    <View className="flex flex-col justify-between max-w-40">
-                      <Text className="font-bold text-lg mb-1 leading-6 text-primary">
-                        {recipe?.name}
+          <FlatList
+            data={recipes}
+            keyExtractor={(item) => item?.id.toString()}
+            contentContainerStyle={{
+              paddingHorizontal: 2,
+              paddingBottom: 100,
+            }}
+            onEndReached={() => {
+              if (!loading && hasMore) {
+                const nextPage = page + 1;
+                setPage(nextPage);
+                fetchRecipes(nextPage);
+              }
+            }}
+            onEndReachedThreshold={0.4}
+            showsVerticalScrollIndicator={false}
+            renderItem={({ item: recipe }) => (
+              <View
+                className="flex flex-row justify-between items-center py-5 px-3 rounded-2xl mb-5 bg-background"
+                style={{
+                  boxShadow: "0px 2px 12px 0px rgba(0,0,0,0.1)",
+                }}
+              >
+                <View className="flex flex-row gap-4">
+                  <Image
+                    source={{ uri: recipe?.image_url }}
+                    className="w-24 h-[80px] rounded-2xl"
+                  />
+                  <View className="flex flex-col justify-between max-w-40">
+                    <Text className="font-bold text-lg mb-1 leading-6 text-primary">
+                      {recipe?.title}
+                    </Text>
+                    <View className="flex flex-row gap-2">
+                      <Image
+                        source={{ uri: recipe?.created_by.image_url }}
+                        className="w-6 h-6 rounded-full"
+                      />
+                      <Text className="text-muted text-base ">
+                        {recipe?.created_by.first_name}{" "}
+                        {recipe?.created_by.last_name}
                       </Text>
-                      <View className="flex flex-row gap-2">
-                        <View className="bg-gray3 w-1 h-1 p-3.5 rounded-full"></View>
-                        <Text className="text-muted text-base ">
-                          {recipe?.chef}
-                        </Text>
-                      </View>
                     </View>
                   </View>
-                  <View className="mr-2 p-0.5 bg-secondary rounded-md">
-                    <ArrowRight color="#fff" size={22} />
-                  </View>
                 </View>
-              );
-            })}
-          </View>
+                <View className="mr-2 p-0.5 bg-secondary rounded-md">
+                  <ArrowRight color="#fff" size={22} />
+                </View>
+              </View>
+            )}
+            ListFooterComponent={
+              loading ? <ActivityIndicator size="small" /> : null
+            }
+          />
         </View>
         <BottomSheet
           ref={bottomSheetRef}
@@ -283,7 +254,7 @@ const Search = () => {
             }
           }}
         >
-          <View className="bg-background w-full h-full">
+          <View className=" w-full h-full">
             <Text className="font-bold text-2xl leading-8 text-foreground text-center mb-4 mt-8">
               Filter
             </Text>
@@ -368,7 +339,7 @@ const Search = () => {
               <Button action="secondary" className="mb-3 !h-20">
                 <ButtonText>Apply Filters</ButtonText>
               </Button>
-              <Button className="bg-background">
+              <Button className="">
                 <ButtonText className="!text-secondary">
                   Clear Filters
                 </ButtonText>

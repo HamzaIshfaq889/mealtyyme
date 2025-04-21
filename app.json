@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "mealtyyme",
-    "slug": "mealtyyme",
+    "slug": "mealtyme",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -36,6 +36,15 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "a86e20a1-d770-49f4-95bf-31f6fdc36e10"
+      }
+    },
+    "owner": "mealtyme"
   }
 }

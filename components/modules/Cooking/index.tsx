@@ -29,11 +29,12 @@ import {
   SliderFilledTrack,
 } from "@/components/ui/slider";
 
-import AddTimerModal from "./addTimerModal";
+// import AddTimerModal from "./addTimerModal";
 import Step from "./step";
 import AllSteps from "./allSteps";
 import StepCompleted from "./stepCompleted";
 import Review from "./review";
+import AddTimerModal from "./addTimerModal";
 
 const recipeSteps = [
   { stepNo: 1, stepDetail: "Preheat the oven to 375°F (190°C)." },
@@ -97,7 +98,7 @@ const Cooking = () => {
   };
 
   return (
-    <View className="relative flex flex-col w-full h-full px-9 py-16">
+    <View className="flex flex-col w-full h-full px-9 py-16 bg-background">
       <View className="flex flex-row justify-between items-center mb-12">
         <TouchableOpacity onPress={() => router.push("/(tabs)/Home")}>
           <ArrowLeft
@@ -153,7 +154,10 @@ const Cooking = () => {
                             onPress={toggleTimer}
                             className="bg-foreground p-2.5 flex justify-center items-center rounded-full"
                           >
-                            <Play color="#fff" size={30} />
+                            <Play
+                              color={scheme === "dark" ? "#000" : "#fff"}
+                              size={30}
+                            />
                           </Pressable>
                         ) : (
                           <Pressable
@@ -161,13 +165,15 @@ const Cooking = () => {
                             className="bg-foreground p-2.5 flex justify-center items-center rounded-full"
                           >
                             <Pause
-                              color="#fff"
+                              color={scheme === "dark" ? "#000" : "#fff"}
                               size={30}
                               onPress={toggleTimer}
                             />
                           </Pressable>
                         )}
-                        <Text className="text-xl">{formattedTime}</Text>
+                        <Text className="text-xl text-primary">
+                          {formattedTime}
+                        </Text>
                       </View>
                     );
                   }}
