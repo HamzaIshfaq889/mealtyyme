@@ -102,3 +102,39 @@ export const getCategories = async (): Promise<Categories[]> => {
 
   return result;
 };
+
+export const searchRecipes = async (
+  category_ids?: (string | number)[] | null,
+  page: string | number = 1
+): Promise<Recipe[]> => {
+  const params: string[] = [];
+
+  // Add dish_types if available
+  if (category_ids && category_ids.length > 0) {
+    params.push(...category_ids.map((id) => `dish_types=${id}`));
+  }
+
+  // Add pagination and page size
+  params.push(`pageSize=10`);
+  params.push(`page=${page}`);
+
+  const query = `/recipes/?${params.join("&")}`;
+  console.log("query", query);
+
+  const response = await apiClient.get<RecipeResponse>(query, {});
+
+  if (!response.ok) {
+    if (response.status === 401 || response.status === 404) {
+      throw new Error("Invalid Credentials");
+    }
+    throw new Error(response?.originalError?.message || "Recipe Error");
+  }
+
+  const results = response.data?.results;
+
+  if (!results) {
+    throw new Error("No recipe data found.");
+  }
+
+  return results;
+};

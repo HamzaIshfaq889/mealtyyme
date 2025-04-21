@@ -8,6 +8,7 @@ import {
   Pressable,
   ScrollView,
   useColorScheme,
+  Platform,
 } from "react-native";
 
 import { router } from "expo-router";
@@ -15,37 +16,68 @@ import { router } from "expo-router";
 import Svg1 from "@/assets/svgs/Sun.svg";
 
 import FeaturedRecipes from "./featuredRecipes";
+import { Ionicons } from "@expo/vector-icons";
 import PopularRecipes from "./popularRecipes";
 
 const HomeUser = () => {
   const scheme = useColorScheme();
-  return (
-    <ScrollView className="flex flex-col w-full h-full pl-7 py-16 ">
-      <View className="flex flex-row justify-between items-center mb-10">
-        <View className="space-y-1.5">
-          <View className="flex flex-row items-center gap-1">
-            <Svg1 />
-            <Text className=" text-sm leading-6 text-foreground">
-              Good Morning
-            </Text>
-          </View>
-          <Text className="font-bold text-2xl text-foreground leading-8">
-            MealTyme
-          </Text>
-        </View>
+  const currentHour = new Date().getHours();
+  const getGreeting = () => {
+    if (currentHour < 12) {
+      return "Good Morning";
+    } else if (currentHour < 18) {
+      return "Good Afternoon";
+    } else {
+      return "Good Evening";
+    }
+  };
 
-        <Pressable
-          className="mr-5"
-          onPress={() => router.push("/(nested)/search")}
-        >
-          <Search color={scheme === "dark" ? "#fff" : "#000"} />
-        </Pressable>
+  const getIconName = () => {
+    if (currentHour < 12) {
+      return "sunny-outline"; // Morning
+    } else if (currentHour < 18) {
+      return "partly-sunny-outline"; // Afternoon
+    } else {
+      return "moon-outline"; // Evening
+    }
+  };
+
+  return (
+    <View className="flex-1  relative">
+      {/* Sticky Header */}
+      <View
+        className="absolute top-0 left-0 right-0 z-10 bg-background pt-12 pb-4 "
+        style={{
+          paddingTop: Platform.OS === "ios" ? 50 : 40, // Adjust for status bar
+        }}
+      >
+        <View className="flex flex-row justify-between items-center px-5 ">
+          <View className="space-y-1.5">
+            <View className="flex flex-row items-center gap-1">
+              <Ionicons name={getIconName()} size={24} color="orange" />
+              <Text className="text-sm text-foreground">{getGreeting()}</Text>
+            </View>
+            <Text className="text-2xl font-bold text-foreground">MealTyme</Text>
+          </View>
+
+          <Pressable onPress={() => router.push("/(nested)/search")}>
+            <Search color={scheme === "dark" ? "#fff" : "#000"} />
+          </Pressable>
+        </View>
       </View>
 
-      <FeaturedRecipes />
-
-      <PopularRecipes />
-    </ScrollView>
+      {/* Scrollable Content */}
+      <ScrollView
+        className="flex-1 mt-2"
+        contentContainerStyle={{
+          paddingTop: Platform.OS === "ios" ? 130 : 110,
+        }}
+        showsVerticalScrollIndicator={false}
+      >
+        <FeaturedRecipes />
+        <PopularRecipes />
+      </ScrollView>
+    </View>
   );
 };
 

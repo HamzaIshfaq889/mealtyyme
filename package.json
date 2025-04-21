@@ -3,7 +3,7 @@
   "main": "expo-router/entry",
   "version": "1.0.0",
   "scripts": {
-    "start": "expo start",
+    "start": "expo start ",
     "reset-project": "node ./scripts/reset-project.js",
     "android": "DARK_MODE=media expo start --android",
     "ios": "DARK_MODE=media expo start --ios",
@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@expo/html-elements": "^0.4.2",
-    "@expo/vector-icons": "^14.0.2",
+    "@expo/vector-icons": "^14.1.0",
     "@gluestack-ui/actionsheet": "^0.2.53",
     "@gluestack-ui/alert-dialog": "^0.1.38",
     "@gluestack-ui/button": "^1.0.14",
