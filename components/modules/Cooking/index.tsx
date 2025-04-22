@@ -1,6 +1,6 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import { router } from "expo-router";
 
@@ -36,11 +36,39 @@ import AllSteps from "./allSteps";
 import StepCompleted from "./stepCompleted";
 import Review from "./review";
 import AddTimerModal from "./addTimerModal";
+import {
+  startCooking,
+  stopCooking,
+  setCurrentRecipe,
+} from "@/redux/slices/recipies";
 
 const Cooking = () => {
   const currentRecipe: Recipe = useSelector(
     (state: any) => state.recipe.currentRecipe
   );
+
+  const cookingRecipe: Recipe = useSelector(
+    (state: any) => state.recipe.cookingRecipe
+  );
+
+  const isCooking: boolean = useSelector(
+    (state: any) => state.recipe.isCooking
+  );
+
+  const dispatch = useDispatch();
+  const hasStartedRef = useRef(false);
+
+  useEffect(() => {
+    if (!hasStartedRef.current) {
+      hasStartedRef.current = true;
+
+      if (isCooking && cookingRecipe) {
+        dispatch(setCurrentRecipe(cookingRecipe));
+      } else if (currentRecipe) {
+        dispatch(startCooking(currentRecipe));
+      }
+    }
+  }, [dispatch, isCooking, currentRecipe, cookingRecipe]);
 
   const scheme = useColorScheme();
   const isDarkMode = scheme === "dark";
@@ -88,13 +116,21 @@ const Cooking = () => {
             color={scheme === "dark" ? "#fff" : "#000"}
           />
         </TouchableOpacity>
-        <Text className="block font-bold text-2xl text-foreground">
-          Healthy Taco Salad
-        </Text>
+        <View>
+          <Text
+            numberOfLines={1}
+            ellipsizeMode="tail"
+            className="flex-1 mx-4 font-bold text-2xl text-foreground w-48"
+          >
+            {currentRecipe.title}
+          </Text>
+        </View>
+
         <Pressable onPress={() => bottomSheetRef.current?.snapToIndex(2)}>
           <Logs color={isDarkMode ? "#fff" : "#000"} />
         </Pressable>
       </View>
+
       {!isAllStepsComplete && (
         <View>
           <Step step={currentRecipe?.instructions[currentStep - 1]} />
