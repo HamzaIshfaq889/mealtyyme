@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { Text, TouchableOpacity, useColorScheme, View } from "react-native";
 
@@ -30,6 +30,11 @@ import { LoginResponseTypes } from "@/lib/types";
 import { loginUser } from "@/services/authApi";
 import { setAuthToken } from "@/lib/apiClient";
 import { ArrowLeft } from "lucide-react-native";
+import * as Google from "expo-auth-session/providers/google";
+import * as WebBrowser from "expo-web-browser";
+import * as AuthSession from "expo-auth-session";
+
+WebBrowser.maybeCompleteAuthSession();
 
 const Login = () => {
   const scheme = useColorScheme();
@@ -123,6 +128,40 @@ const Login = () => {
     }
   };
 
+  const redirectUri = AuthSession.makeRedirectUri();
+
+  console.log("Redirect URI:", redirectUri);
+
+  const [request, response, promptAsync] = Google.useAuthRequest({
+    clientId:
+      "878398669630-qnsp8rps2sqrouutee53lapnmcj5u7e4.apps.googleusercontent.com",
+    iosClientId: "com.mealtyme.app",
+    androidClientId: "com.mealtyme.app",
+    redirectUri,
+    responseType: "id_token", // ensures you get the ID token
+    usePKCE: false, // usually not needed with implicit flow
+  });
+
+  useEffect(() => {
+    if (response?.type === "success" && response.authentication?.idToken) {
+      const idToken = response.authentication.idToken;
+
+      console.log("ID Token:", idToken);
+
+      fetch("http://127.0.0.1:8000/api/auth/google/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id_token: idToken }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          console.log("Login successful:", data);
+        })
+        .catch((err) => console.error("Login error:", err));
+    }
+  }, [response]);
   return (
     <View className="flex flex-col w-full h-full px-9 py-16">
       <View className="flex flex-row justify-between items-center mb-14">
@@ -219,7 +258,11 @@ const Login = () => {
       </TouchableOpacity>
       <View className="mt-auto">
         <Text className="mb-5 text-center text-muted">or continue with</Text>
-        <Button action="negative" className="mb-5">
+        <Button
+          onPress={() => promptAsync()}
+          action="negative"
+          className="mb-5"
+        >
           <Svg2 width={20} height={20} />
           <ButtonText>Login with Google</ButtonText>
         </Button>
