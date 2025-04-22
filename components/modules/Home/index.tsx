@@ -4,7 +4,6 @@ import { Search } from "lucide-react-native";
 import {
   Text,
   View,
-  FlatList,
   Pressable,
   ScrollView,
   useColorScheme,
@@ -12,8 +11,6 @@ import {
 } from "react-native";
 
 import { router } from "expo-router";
-
-import Svg1 from "@/assets/svgs/Sun.svg";
 
 import FeaturedRecipes from "./featuredRecipes";
 import { Ionicons } from "@expo/vector-icons";
@@ -48,7 +45,7 @@ const HomeUser = () => {
       <View
         className="absolute top-0 left-0 right-0 z-10 bg-background pt-12 pb-4 "
         style={{
-          paddingTop: Platform.OS === "ios" ? 50 : 40, // Adjust for status bar
+          paddingTop: Platform.OS === "ios" ? 50 : 36, // Adjust for status bar
         }}
       >
         <View className="flex flex-row justify-between items-center px-5 ">
@@ -74,8 +71,10 @@ const HomeUser = () => {
         }}
         showsVerticalScrollIndicator={false}
       >
-        <FeaturedRecipes />
-        <PopularRecipes />
+        <View>
+          <FeaturedRecipes />
+          <PopularRecipes />
+        </View>
       </ScrollView>
     </View>
   );

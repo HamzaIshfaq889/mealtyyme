@@ -8,7 +8,6 @@ import { useDispatch } from "react-redux";
 
 import { Button, ButtonText } from "@/components/ui/button";
 
-import Svg1 from "@/assets/svgs/arrow-left.svg";
 
 import { setOnboardingComplete } from "@/redux/slices/Auth";
 import { ArrowLeft } from "lucide-react-native";

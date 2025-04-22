@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 
+import { router } from "expo-router";
+
 import {
   Text,
   View,
@@ -9,13 +11,14 @@ import {
   useColorScheme,
 } from "react-native";
 
-import { router } from "expo-router";
-import { Clock, Flame, Heart } from "lucide-react-native";
-import { Button, ButtonText } from "@/components/ui/button";
+import { Clock, Flame } from "lucide-react-native";
 import { getCategories, getPopularRecipes } from "@/services/recipesAPI";
+
 import { Categories, Recipe } from "@/lib/types/recipe";
-import { capitalizeWords } from "@/utils";
-import { PulsePlaceholder } from "@/components/ui/PulsePlaceHolder";
+import { capitalizeWords, truncateChars } from "@/utils";
+
+import { Button, ButtonText } from "@/components/ui/button";
+import { FeaturedRecipeSketon } from "../Skeletons";
 
 const PopularRecipes = () => {
   const [categories, setCategories] = useState<Categories[]>([]);
@@ -51,22 +54,19 @@ const PopularRecipes = () => {
   const handlePress = (id: string | number) => {
     setSelectedCategoryId(id);
 
-    // Pass null if 'all' is selected, or if the id is an empty string, otherwise pass the selected id
     const categoryIdToPass = id === "all" || id === "" ? null : id;
-
-    // Call fetchRecipes when category ID changes
     fetchRecipes(categoryIdToPass);
   };
 
   const fetchRecipes = async (categoryIdToPass: string | number | null) => {
-    setLoadingRecipe(true); // Ensure loading starts before fetching
+    setLoadingRecipe(true);
     try {
       const data = await getPopularRecipes(categoryIdToPass);
       setRecipes(data);
     } catch (error) {
       console.error("Failed to fetch recipes:", error);
     } finally {
-      setLoadingRecipe(false); // Stop loading when done
+      setLoadingRecipe(false);
     }
   };
 
@@ -89,7 +89,7 @@ const PopularRecipes = () => {
               className={`rounded-full px-10 py-2 ${
                 index === 0 ? "ml-7" : ""
               } ${
-                selectedCategoryId === item.id ? "bg-secondary" : "bg-accent"
+                selectedCategoryId === item.id ? "bg-secondary" : "bg-gray3/60"
               }`}
               onPress={() => handlePress(item.id)}
             >
@@ -124,13 +124,13 @@ const PopularRecipes = () => {
             showsHorizontalScrollIndicator={false}
             className="mt-4"
             renderItem={({ index }) => (
-              <PulsePlaceholder
+              <FeaturedRecipeSketon
                 style={{
                   width: 220,
                   height: 220,
                   marginRight: 16,
                   marginLeft: index === 0 ? 28 : 0,
-                  borderRadius: 32, // Match the rounded corners of the card
+                  borderRadius: 32,
                 }}
               />
             )}
@@ -144,10 +144,10 @@ const PopularRecipes = () => {
             renderItem={({ item, index }) => (
               <Pressable
                 className={`${index === 0 ? "ml-7" : "ml-1"} mr-3 py-4`}
-                onPress={() => router.push(`/recipe/${1}` as const)}
+                onPress={() => router.push(`/recipe/${item?.id}` as const)}
               >
                 <View
-                  className="flex flex-col bg-background rounded-2xl w-64 p-3 !h-64"
+                  className="flex flex-col bg-background rounded-2xl w-64 p-3 !h-[230px]"
                   style={{
                     boxShadow:
                       scheme === "dark"
@@ -161,16 +161,11 @@ const PopularRecipes = () => {
                       className="h-36 w-full rounded-xl bg-gray-300"
                       resizeMode="cover"
                     />
-                    <View className="absolute top-2 right-2 bg-background rounded-md p-1.5">
-                      <Heart
-                        color={scheme === "dark" ? "#fff" : "#000"}
-                        size={16}
-                      />
-                    </View>
                   </View>
 
                   <Text className="text-foreground font-bold text-base leading-5 mb-3">
-                    {item.title}
+                    {truncateChars(item?.title, 35)}
+                    {/* {item?.title} */}
                   </Text>
 
                   <View className="flex flex-row items-center gap-2 mt-auto">

@@ -19,11 +19,36 @@ const Review = () => {
       date: "July, 23 2023",
       reviewText: "Kid-approved",
     },
+    {
+      id: 3,
+      name: "Daisy Murphy",
+      date: "July, 23 2023",
+      reviewText: "Easy and Tasty",
+    },
+    {
+      id: 4,
+      name: "Maiki",
+      date: "July, 23 2023",
+      reviewText: "Kid-approved",
+    },
+    {
+      id: 5,
+      name: "Daisy Murphy",
+      date: "July, 23 2023",
+      reviewText: "Easy and Tasty",
+    },
+    {
+      id: 6,
+      name: "Maiki",
+      date: "July, 23 2023",
+      reviewText: "Kid-approved",
+    },
   ];
 
   return (
     <ScrollView
-      className="py-6 px-7 h-80 rounded-3xl"
+      className="pt-6 px-7 h-80 mt-8 rounded-3xl"
+      showsVerticalScrollIndicator={false}
       style={{
         boxShadow: "0px 2px 12px 0px rgba(0,0,0,0.1)",
       }}
@@ -36,7 +61,9 @@ const Review = () => {
         return (
           <View
             key={index}
-            className={`${index == ReviewDetails.length - 1 ? "" : " mb-5"}`}
+            className={`${
+              index == ReviewDetails.length - 1 ? "mb-12" : " mb-5"
+            }`}
           >
             <View className="flex flex-row justify-between items-center mb-5">
               <View className="flex flex-row gap-4">

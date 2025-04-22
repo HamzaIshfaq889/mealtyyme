@@ -1,6 +1,12 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 
-import { Pressable, Text, useColorScheme, View } from "react-native";
+import { Image, Pressable, Text, useColorScheme, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { ScrollView } from "react-native";
+
+import { useDispatch } from "react-redux";
+
+import { useQuery } from "@tanstack/react-query";
 
 import { router } from "expo-router";
 
@@ -20,61 +26,79 @@ import {
   Star,
 } from "lucide-react-native";
 
-import { Recipe } from "@/lib/types/recipe";
+import { convertMinutesToTimeLabel } from "@/utils";
+
+import { Button, ButtonText } from "@/components/ui/button";
 
 import Protien from "@/assets/svgs/Proteins.svg";
 
+import { getSingleRecipe } from "@/services/recipesAPI";
+
+import { setCurrentRecipe } from "@/redux/slices/recipies";
+
+import RecipeDetailsSkeleton from "../Skeletons/recipeDetailsSkeleton";
 import InstructionDetails from "./instructionDetails";
 import RecipeMenuOptions from "./recipeMenuOptions";
 import IngredientDetails from "./ingredientDetails";
-
-import { Button, ButtonText } from "@/components/ui/button";
-import { getSingleRecipe } from "@/services/recipesAPI";
-import { ScrollView } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import RelatedRecipes from "./relatedRecipes";
+import Review from "./review";
+import Error from "../Error";
 
 const RecipeDetails = ({ recipeId }: { recipeId: string | null }) => {
+  const scheme = useColorScheme();
+  const dispatch = useDispatch();
+
+  const isDarkMode = scheme === "dark";
   const bottomSheetMenuRef = useRef<BottomSheet>(null);
   const [activeTab, setActiveTab] = useState<"Ingredients" | "Instructions">(
     "Ingredients"
   );
-  const scheme = useColorScheme();
 
-  const [recipes, setRecipes] = useState<Recipe>();
-  const [loading, setLoading] = useState(true);
+  const {
+    data: recipe,
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ["recipe", recipeId],
+    queryFn: () => getSingleRecipe(recipeId),
+    enabled: !!recipeId,
+  });
 
-  useEffect(() => {
-    const fetchRecipes = async () => {
-      try {
-        console.log("recipe id", recipeId);
-        const data = await getSingleRecipe(recipeId);
-        setRecipes(data);
-        console.log("recipe data", recipes);
-      } catch (error) {
-        console.error("Failed to fetch recipes:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchRecipes();
-  }, []);
+  if (isLoading) {
+    return <RecipeDetailsSkeleton />;
+  }
+
+  if (isError) {
+    return (
+      <Error
+        errorButtonLink="/(tabs)/Home"
+        errorButtonText="Go to home"
+        errorMessage="Recipe Not Found"
+      />
+    );
+  }
+
+  if (recipe) {
+    dispatch(setCurrentRecipe(recipe));
+  }
 
   const gradientsInfo = [
-    { id: 1, icon: Leaf, text: "65 Carbs" },
-    { id: 2, icon: Protien, text: "27g Protiens" },
-    { id: 3, icon: Flame, text: "27g Protiens" },
-    { id: 4, icon: Pizza, text: "91g Protiens" },
+    { id: 1, icon: Leaf, text: `${recipe?.nutrition?.carbohydrates}g carbs` },
+    { id: 2, icon: Protien, text: `${recipe?.nutrition?.protein}g protiens` },
+    { id: 3, icon: Flame, text: `${recipe?.nutrition?.calories}g cal` },
+    { id: 4, icon: Pizza, text: `${recipe?.nutrition?.fat}g fat` },
   ];
 
   return (
     <>
       <SafeAreaView style={{ flex: 1 }}>
         <ScrollView className="relative">
-          <View className="bg-gray-300 w-full h-80"></View>
-          {/* <Image
-          source={require("@/assets/images/review-person1.png")}
-          className="w-full h-80"
-        /> */}
+          <Image
+            source={{ uri: recipe?.image_url }}
+            resizeMode="cover"
+            className="w-full h-96 object-cover object-center"
+          />
 
           <View
             className="flex flex-row justify-between w-full absolute top-0 py-12 px-6"
@@ -106,12 +130,16 @@ const RecipeDetails = ({ recipeId }: { recipeId: string | null }) => {
               <Ellipsis size={25} color={scheme === "dark" ? "#fff" : "#000"} />
             </Pressable>
             <View className="w-full fex flex-row items-center justify-between">
-              <Text className="text-primary font-bold text-2xl leading-8 mt-2">
-                Healthy Taco Salad
+              <Text className="text-primary font-bold text-2xl leading-8 mt-2 max-w-80">
+                {recipe?.title}
               </Text>
-              <View className="flex flex-row items-center justify-between">
+              <View className="flex flex-row items-center justify-between gap-1.5">
                 <Clock color="#96a1b0" size={18} />
-                <Text className="text-muted">15 Min</Text>
+                <Text className="text-muted">
+                  {recipe?.ready_in_minutes
+                    ? convertMinutesToTimeLabel(recipe?.ready_in_minutes)
+                    : "15min"}
+                </Text>
               </View>
             </View>
             <Text className="text-muted mt-3">
@@ -200,10 +228,44 @@ const RecipeDetails = ({ recipeId }: { recipeId: string | null }) => {
 
             <View>
               {activeTab === "Ingredients" ? (
-                <IngredientDetails />
+                <IngredientDetails
+                  ingredients={recipe?.ingredients ? recipe.ingredients : []}
+                />
               ) : (
-                <InstructionDetails />
+                <InstructionDetails
+                  instructions={recipe?.instructions ? recipe.instructions : []}
+                />
               )}
+            </View>
+
+            <Button
+              action="secondary"
+              className="h-16 mt-6"
+              onPress={() => router.push(`/cooking/${recipe?.id}` as any)}
+            >
+              <ButtonText>Start Cooking</ButtonText>
+            </Button>
+
+            <View className="mb-8">
+              <Review />
+            </View>
+
+            <View className="w-full h-[2px] bg-accent mb-7"></View>
+
+            <View className="flex flex-row gap-3.5 mb-10">
+              <View className="bg-accent p-7 border-2 border-secondary rounded-full"></View>
+              <View>
+                <Text className="text-foreground font-semibold leading-5 text-lg mb-1.5">
+                  Natalia Luca
+                </Text>
+                <Text className="font-medium text-gray-500">
+                  I'm the author and recipe developer.
+                </Text>
+              </View>
+            </View>
+
+            <View className="mt-8">
+              <RelatedRecipes />
             </View>
           </View>
         </ScrollView>
@@ -220,8 +282,15 @@ const RecipeDetails = ({ recipeId }: { recipeId: string | null }) => {
             bottomSheetMenuRef.current?.close();
           }
         }}
+        handleStyle={{
+          backgroundColor: isDarkMode ? "#1f242a" : "#fff",
+          borderWidth: 0,
+        }}
+        handleIndicatorStyle={{
+          backgroundColor: isDarkMode ? "#888" : "#ccc",
+        }}
       >
-        <BottomSheetView style={{ backgroundColor: "#000" }}>
+        <BottomSheetView>
           <RecipeMenuOptions />
         </BottomSheetView>
       </BottomSheet>

@@ -7,13 +7,13 @@ import {
   useColorScheme,
 } from "react-native";
 
-interface PulsePlaceholderProps {
+interface FeaturedRecipeSketonProps {
   style?: StyleProp<ViewStyle>;
   borderRadius?: number;
   backgroundColor?: string;
 }
 
-export const PulsePlaceholder: React.FC<PulsePlaceholderProps> = ({
+export const FeaturedRecipeSketon: React.FC<FeaturedRecipeSketonProps> = ({
   style,
   // Reduced for more professional look
   backgroundColor,

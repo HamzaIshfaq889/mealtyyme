@@ -22,7 +22,6 @@ import {
 } from "react-native";
 import {
   SearchIcon,
-  ChevronDown,
   ArrowRight,
   SlidersHorizontal,
   ArrowLeft,
@@ -36,6 +35,7 @@ import { Button, ButtonText } from "@/components/ui/button";
 import BottomSheet, {
   BottomSheetBackdrop,
   BottomSheetFlatList,
+  BottomSheetScrollView,
 } from "@gorhom/bottom-sheet";
 
 import Slider from "rn-range-slider";
@@ -59,6 +59,8 @@ const options = ["Categories", "Ingredients"];
 const recipesType = ["Salad", "Egg", "Cakes", "Chicken", "Meals", "Vegetable"];
 const Search = () => {
   const scheme = useColorScheme();
+  const isDarkMode = scheme === "dark";
+
   const bottomSheetRef = useRef<BottomSheet>(null);
   const [categories, setCategories] = useState<Categories[]>([]);
   const [cuisines, setCuisines] = useState<Cuisine[]>([]);
@@ -337,13 +339,20 @@ const Search = () => {
           enablePanDownToClose={true}
           enableContentPanningGesture={false}
           enableHandlePanningGesture={true}
+          handleStyle={{
+            backgroundColor: isDarkMode ? "#1f242a" : "#fff",
+            borderWidth: 0,
+          }}
+          handleIndicatorStyle={{
+            backgroundColor: isDarkMode ? "#888" : "#ccc",
+          }}
           onChange={(index) => {
             if (index === -1 || index === 0) {
               bottomSheetRef.current?.close();
             }
           }}
         >
-          <View className=" w-full h-full bg-background">
+          <BottomSheetScrollView className="w-full h-full bg-background">
             <Text className="font-bold text-2xl leading-8 text-foreground text-center mb-4 mt-4">
               Filter
             </Text>
@@ -483,13 +492,13 @@ const Search = () => {
                 <ButtonText>Apply Filters</ButtonText>
               </Button>
 
-              <Button className="">
+              <Button className="mb-10 !h-20">
                 <ButtonText className="!text-secondary">
                   Clear Filters
                 </ButtonText>
               </Button>
             </View>
-          </View>
+          </BottomSheetScrollView>
         </BottomSheet>
       </View>
     </>

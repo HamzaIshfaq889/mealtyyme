@@ -5,13 +5,11 @@ import { Text, View } from "react-native";
 import Svg1 from "@/assets/svgs/Vector5.svg";
 import Svg2 from "@/assets/svgs/Vector6.svg";
 import Svg3 from "@/assets/svgs/Vector7.svg";
-import { Button, ButtonText } from "@/components/ui/button";
-import { router } from "expo-router";
 
 const Slide1 = () => {
   return (
     <>
-      <View className="h-[65%]">
+      <View className="h-[71%]">
         <View className="absolute left-5 top-0">
           <Svg1 />
         </View>

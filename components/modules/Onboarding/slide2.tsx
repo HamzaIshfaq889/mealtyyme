@@ -9,7 +9,7 @@ import Svg3 from "../../../assets/svgs/Vector10.svg";
 const Slide2 = () => {
   return (
     <>
-      <View className="relative h-[65%]">
+      <View className="relative h-[71%]">
         <View className="absolute left-0 top-0">
           <Svg1 />
         </View>

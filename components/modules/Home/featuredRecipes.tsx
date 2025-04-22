@@ -1,9 +1,5 @@
 import React, { useEffect, useState } from "react";
 
-import { Clock } from "lucide-react-native";
-
-import { HStack } from "@/components/ui/hstack";
-
 import {
   Text,
   View,
@@ -12,11 +8,18 @@ import {
   Pressable,
   StyleSheet,
 } from "react-native";
-import { getFeaturedRecipes } from "@/services/recipesAPI";
-import { Recipe } from "@/lib/types/recipe";
+
+import { Clock } from "lucide-react-native";
+
 import { router } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
-import { PulsePlaceholder } from "@/components/ui/PulsePlaceHolder";
+
+import { Recipe } from "@/lib/types/recipe";
+import { getFeaturedRecipes } from "@/services/recipesAPI";
+
+import { truncateChars } from "@/utils/index";
+
+import { FeaturedRecipeSketon } from "../Skeletons";
 
 const FeaturedRecipes = () => {
   const [recipes, setRecipes] = useState<Recipe[]>([]);
@@ -77,13 +80,13 @@ const FeaturedRecipes = () => {
             showsHorizontalScrollIndicator={false}
             className="mt-4"
             renderItem={({ index }) => (
-              <PulsePlaceholder
+              <FeaturedRecipeSketon
                 style={{
                   width: 260,
                   height: 200,
                   marginRight: 16,
                   marginLeft: index === 0 ? 28 : 0,
-                  borderRadius: 8,
+                  borderRadius: 32,
                 }}
               />
             )}
@@ -119,7 +122,7 @@ const FeaturedRecipes = () => {
                       numberOfLines={1}
                       ellipsizeMode="tail"
                     >
-                      {item.title}
+                      {truncateChars(item.title, 20)}
                     </Text>
                     <View className="flex-row justify-between items-center">
                       <View className="flex-row items-center gap-2">
