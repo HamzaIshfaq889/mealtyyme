@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { Text, TouchableOpacity, useColorScheme, View } from "react-native";
 
@@ -30,6 +30,13 @@ import { LoginResponseTypes } from "@/lib/types";
 import { loginUser } from "@/services/authApi";
 import { setAuthToken } from "@/lib/apiClient";
 import { ArrowLeft } from "lucide-react-native";
+import * as Google from "expo-auth-session/providers/google";
+import * as WebBrowser from "expo-web-browser";
+import * as AuthSession from "expo-auth-session";
+import { useAuth, useOAuth, useSSO, useUser } from "@clerk/clerk-expo";
+import { makeRedirectUri, useAuthRequest } from "expo-auth-session";
+import { useClerk } from "@clerk/clerk-react";
+WebBrowser.maybeCompleteAuthSession();
 
 const Login = () => {
   const scheme = useColorScheme();
@@ -38,7 +45,7 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [formData, setFormData] = useState({ email: "", password: "" });
-
+  const { signOut } = useClerk();
   const validateField = (key: string, value: string) => {
     setFormData((prev) => ({ ...prev, [key]: value }));
 
@@ -120,6 +127,83 @@ const Login = () => {
       console.log("Login Error:", errorMessage);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const { startSSOFlow } = useSSO(); // Use 'startSSOFlow' instead of 'initiateSSO'
+  const { user } = useUser();
+  const { getToken } = useAuth();
+
+  const handleSignIn = async () => {
+    try {
+      const { createdSessionId, setActive } = await startSSOFlow({
+        strategy: "oauth_google",
+      });
+
+      if (createdSessionId && setActive) {
+        await setActive({ session: createdSessionId });
+        console.log("🔐 Clerk session activated");
+
+        // Send the session ID to the backend
+        const data = await sendSessionIdToBackend(createdSessionId);
+        console.log("Response from backend:", data);
+      } else {
+        console.error("❌ setActive failed or undefined");
+      }
+    } catch (error) {
+      console.error("SSO error:", error);
+    }
+  };
+
+  const handleSignOut = () => {
+    signOut();
+  };
+
+  const email = user?.primaryEmailAddress?.emailAddress;
+  console.log("User email:", email); // Output: hassaninayatchaudhry@gmail.com
+
+  const firstName = user?.firstName;
+  console.log("User first name:", firstName); // Output: Hassan Inayat
+
+  const lastName = user?.lastName;
+  console.log("User last name:", lastName); // Output: Chaudhry
+
+  const sendSessionIdToBackend = async (sessionId: string) => {
+    try {
+      if (!sessionId) {
+        console.error("No session ID received from Clerk");
+        return;
+      }
+
+      const response = await fetch(
+        `${process.env.EXPO_PUBLIC_API_URL}auth/clerk/`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            token: sessionId, // Send the session ID to the backend
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setAuthToken(data.access);
+        console.log("data", data);
+        dispatch(setCredentials({ ...data, isAuthenticated: true }));
+        Toast.show({
+          type: "success",
+          text1: "Login Successful!",
+        });
+        router.push("/(tabs)/Home");
+      } else {
+        console.error("❌ Backend error:", data);
+      }
+    } catch (err) {
+      console.error("Error sending session ID to backend:", err);
     }
   };
 
@@ -218,8 +302,20 @@ const Login = () => {
         </Text>
       </TouchableOpacity>
       <View className="mt-auto">
+        <Button
+          onPress={() => handleSignOut()}
+          action="negative"
+          className="mb-5"
+        >
+          <Svg2 width={20} height={20} />
+          <ButtonText>Login with Google</ButtonText>
+        </Button>
         <Text className="mb-5 text-center text-muted">or continue with</Text>
-        <Button action="negative" className="mb-5">
+        <Button
+          onPress={() => handleSignIn()}
+          action="negative"
+          className="mb-5"
+        >
           <Svg2 width={20} height={20} />
           <ButtonText>Login with Google</ButtonText>
         </Button>
