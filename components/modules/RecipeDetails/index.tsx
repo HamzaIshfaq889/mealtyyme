@@ -1,8 +1,17 @@
 import React, { useRef, useState } from "react";
 
-import { Image, Pressable, Text, useColorScheme, View } from "react-native";
+import {
+  Image,
+  Pressable,
+  Text,
+  useColorScheme,
+  useWindowDimensions,
+  View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ScrollView } from "react-native";
+
+import RenderHtml from "react-native-render-html";
 
 import { useDispatch } from "react-redux";
 
@@ -45,11 +54,15 @@ import Review from "./review";
 import Error from "../Error";
 
 const RecipeDetails = ({ recipeId }: { recipeId: string | null }) => {
-  const scheme = useColorScheme();
-  const dispatch = useDispatch();
-
-  const isDarkMode = scheme === "dark";
   const bottomSheetMenuRef = useRef<BottomSheet>(null);
+
+  const { width } = useWindowDimensions();
+  const dispatch = useDispatch();
+  const scheme = useColorScheme();
+  const isDarkMode = scheme === "dark";
+
+  const [expanded, setExpanded] = useState(false);
+  const [serving, setServings] = useState<number>(1);
   const [activeTab, setActiveTab] = useState<"Ingredients" | "Instructions">(
     "Ingredients"
   );
@@ -58,7 +71,6 @@ const RecipeDetails = ({ recipeId }: { recipeId: string | null }) => {
     data: recipe,
     isLoading,
     isError,
-    error,
   } = useQuery({
     queryKey: ["recipe", recipeId],
     queryFn: () => getSingleRecipe(recipeId),
@@ -84,11 +96,40 @@ const RecipeDetails = ({ recipeId }: { recipeId: string | null }) => {
   }
 
   const gradientsInfo = [
-    { id: 1, icon: Leaf, text: `${recipe?.nutrition?.carbohydrates}g carbs` },
-    { id: 2, icon: Protien, text: `${recipe?.nutrition?.protein}g protiens` },
-    { id: 3, icon: Flame, text: `${recipe?.nutrition?.calories}g cal` },
-    { id: 4, icon: Pizza, text: `${recipe?.nutrition?.fat}g fat` },
+    {
+      id: 1,
+      icon: Leaf,
+      amount: recipe?.nutrition?.carbohydrates,
+      text: `g carbs`,
+    },
+    {
+      id: 2,
+      icon: Protien,
+      amount: recipe?.nutrition?.protein,
+      text: `g protiens`,
+    },
+    {
+      id: 3,
+      icon: Flame,
+      amount: recipe?.nutrition?.calories,
+      text: `g cal`,
+    },
+    {
+      id: 4,
+      icon: Pizza,
+      amount: recipe?.nutrition?.fat,
+      text: `g fat`,
+    },
   ];
+
+  function getTruncatedSummary(text: string): string {
+    const words = text.split(" ");
+    const wordLimit = words.slice(0, 10).join(" ");
+    const charLimit = text.slice(0, 45);
+    return wordLimit.length < charLimit.length
+      ? wordLimit + "..."
+      : charLimit + "...";
+  }
 
   return (
     <>
@@ -108,7 +149,7 @@ const RecipeDetails = ({ recipeId }: { recipeId: string | null }) => {
               <X
                 color={scheme === "dark" ? "#fff" : "#000"}
                 size={22}
-                onPress={() => router.push("/(tabs)/Home")}
+                onPress={() => router.back()}
               />
             </View>
             <View className="flex flex-row gap-2 items-center">
@@ -142,13 +183,30 @@ const RecipeDetails = ({ recipeId }: { recipeId: string | null }) => {
                 </Text>
               </View>
             </View>
-            <Text className="text-muted mt-3">
-              This Healthy Taco Salad is the universal delight of taco night
-              <Text className="text-primary font-semibold leading-5">
-                {" "}
-                View More
-              </Text>
-            </Text>
+
+            <View className="mt-3">
+              <RenderHtml
+                contentWidth={width}
+                source={{
+                  html:
+                    expanded && recipe
+                      ? recipe?.summary
+                      : getTruncatedSummary(recipe?.summary || ""),
+                }}
+                baseStyle={{
+                  color: "#9ca3af",
+                  fontSize: 14,
+                  lineHeight: 20,
+                  maxHeight: !expanded ? 20 : undefined,
+                  overflow: "hidden",
+                }}
+              />
+              <Pressable onPress={() => setExpanded(!expanded)}>
+                <Text className="text-primary font-semibold mt-1">
+                  {expanded ? "View Less" : "View More"}
+                </Text>
+              </Pressable>
+            </View>
 
             <View className="flex flex-row flex-wrap mt-3 mb-3">
               {gradientsInfo?.map((item) => {
@@ -161,6 +219,9 @@ const RecipeDetails = ({ recipeId }: { recipeId: string | null }) => {
                       <item.icon color="#00C3FF" />
                     </View>
                     <Text className="font-semibold text-lg leading-5 text-primary">
+                      {item?.amount
+                        ? (item?.amount * serving).toFixed(2)
+                        : "N/A"}{" "}
                       {item.text}
                     </Text>
                   </View>
@@ -178,15 +239,27 @@ const RecipeDetails = ({ recipeId }: { recipeId: string | null }) => {
                 Number of Servings
               </Text>
               <View className="flex flex-row gap-3 items-center">
-                <View className="border border-accent py-0.5 px-2 rounded-lg">
+                <Pressable
+                  className="border border-accent py-1 px-3 rounded-lg"
+                  onPress={() => {
+                    if (serving > 1) {
+                      setServings(serving - 1);
+                    } else {
+                      setServings(serving);
+                    }
+                  }}
+                >
                   <Text className="text-primary">-</Text>
-                </View>
+                </Pressable>
                 <Text className="font-bold text-lg leading-8 text-primary">
-                  1
+                  {serving}
                 </Text>
-                <View className="border border-secondary py-0.5 px-2 rounded-lg">
+                <Pressable
+                  className="border border-secondary py-1 px-3 rounded-lg"
+                  onPress={() => setServings(serving + 1)}
+                >
                   <Text className="text-secondary">+</Text>
-                </View>
+                </Pressable>
               </View>
             </View>
 
@@ -230,6 +303,7 @@ const RecipeDetails = ({ recipeId }: { recipeId: string | null }) => {
               {activeTab === "Ingredients" ? (
                 <IngredientDetails
                   ingredients={recipe?.ingredients ? recipe.ingredients : []}
+                  serving={serving}
                 />
               ) : (
                 <InstructionDetails
@@ -253,10 +327,14 @@ const RecipeDetails = ({ recipeId }: { recipeId: string | null }) => {
             <View className="w-full h-[2px] bg-accent mb-7"></View>
 
             <View className="flex flex-row gap-3.5 mb-10">
-              <View className="bg-accent p-7 border-2 border-secondary rounded-full"></View>
+              <Image
+                source={{ uri: recipe?.created_by?.image_url }}
+                resizeMode="cover"
+                className="w- w-16 h-16 object-cover object-center rounded-full"
+              />
               <View>
                 <Text className="text-foreground font-semibold leading-5 text-lg mb-1.5">
-                  Natalia Luca
+                  {recipe?.created_by.first_name}
                 </Text>
                 <Text className="font-medium text-gray-500">
                   I'm the author and recipe developer.

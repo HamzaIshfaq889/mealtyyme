@@ -12,6 +12,7 @@ const initialState: AuthSliceType = {
     isAuthenticated: false,
   },
   hasOnboarded: false,
+  isSigningIn: false,
   "reset-token": null,
 };
 
@@ -36,6 +37,10 @@ const authSlice = createSlice({
       state["reset-token"] = null;
     },
 
+    setIsSigningIn: (state, action: PayloadAction<boolean>) => {
+      state.isSigningIn = action.payload;
+    },
+
     setOnboardingComplete: (state, action: PayloadAction<boolean>) => {
       state.hasOnboarded = action.payload;
     },
@@ -57,5 +62,6 @@ export const {
   setResetToken,
   clearResetToken,
   setOnboardingComplete,
+  setIsSigningIn,
 } = authSlice.actions;
 export default authSlice.reducer;

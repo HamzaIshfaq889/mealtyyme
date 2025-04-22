@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 import { Text, TouchableOpacity, useColorScheme, View } from "react-native";
 
@@ -8,7 +8,7 @@ import { router } from "expo-router";
 
 import { useDispatch } from "react-redux";
 
-import { setCredentials } from "@/redux/slices/Auth";
+import { setCredentials, setIsSigningIn } from "@/redux/slices/Auth";
 
 import {
   FormControl,
@@ -22,7 +22,6 @@ import { Input, InputField, InputIcon, InputSlot } from "@/components/ui/input";
 import { EyeIcon, EyeOffIcon, LockIcon, MailIcon } from "@/components/ui/icon";
 import { Spinner } from "@/components/ui/spinner";
 
-import Svg1 from "@/assets/svgs/arrow-left.svg";
 import Svg2 from "@/assets/svgs/google.svg";
 import Svg3 from "@/assets/svgs/facebook.svg";
 import { LoginResponseTypes } from "@/lib/types";
@@ -30,22 +29,25 @@ import { LoginResponseTypes } from "@/lib/types";
 import { loginUser } from "@/services/authApi";
 import { setAuthToken } from "@/lib/apiClient";
 import { ArrowLeft } from "lucide-react-native";
-import * as Google from "expo-auth-session/providers/google";
 import * as WebBrowser from "expo-web-browser";
-import * as AuthSession from "expo-auth-session";
-import { useAuth, useOAuth, useSSO, useUser } from "@clerk/clerk-expo";
-import { makeRedirectUri, useAuthRequest } from "expo-auth-session";
-import { useClerk } from "@clerk/clerk-react";
+import { useAuth, useSSO } from "@clerk/clerk-expo";
+import { SignedIn, useClerk } from "@clerk/clerk-react";
+import { saveToken } from "@/redux/store/expoStore";
 WebBrowser.maybeCompleteAuthSession();
 
 const Login = () => {
+  const { startSSOFlow } = useSSO();
+  const { signOut } = useClerk();
+  const { isSignedIn } = useAuth();
+
   const scheme = useColorScheme();
   const dispatch = useDispatch();
+
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [formData, setFormData] = useState({ email: "", password: "" });
-  const { signOut } = useClerk();
+
   const validateField = (key: string, value: string) => {
     setFormData((prev) => ({ ...prev, [key]: value }));
 
@@ -109,6 +111,9 @@ const Login = () => {
 
       setAuthToken(response.access);
 
+      if (response.access) {
+        await saveToken(response.access);
+      }
       dispatch(setCredentials({ ...response, isAuthenticated: true }));
       Toast.show({
         type: "success",
@@ -130,11 +135,17 @@ const Login = () => {
     }
   };
 
-  const { startSSOFlow } = useSSO(); // Use 'startSSOFlow' instead of 'initiateSSO'
-  const { user } = useUser();
-  const { getToken } = useAuth();
-
   const handleSignIn = async () => {
+    if (isSignedIn) {
+      Toast.show({
+        type: "error",
+        text1: "You are already Signed in",
+      });
+      return;
+    }
+
+    dispatch(setIsSigningIn(true));
+
     try {
       const { createdSessionId, setActive } = await startSSOFlow({
         strategy: "oauth_google",
@@ -147,26 +158,17 @@ const Login = () => {
         // Send the session ID to the backend
         const data = await sendSessionIdToBackend(createdSessionId);
         console.log("Response from backend:", data);
+
+        router.push("/(tabs)/Home");
       } else {
         console.error("❌ setActive failed or undefined");
       }
     } catch (error) {
       console.error("SSO error:", error);
+    } finally {
+      dispatch(setIsSigningIn(false));
     }
   };
-
-  const handleSignOut = () => {
-    signOut();
-  };
-
-  const email = user?.primaryEmailAddress?.emailAddress;
-  console.log("User email:", email); // Output: hassaninayatchaudhry@gmail.com
-
-  const firstName = user?.firstName;
-  console.log("User first name:", firstName); // Output: Hassan Inayat
-
-  const lastName = user?.lastName;
-  console.log("User last name:", lastName); // Output: Chaudhry
 
   const sendSessionIdToBackend = async (sessionId: string) => {
     try {
@@ -183,7 +185,7 @@ const Login = () => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            token: sessionId, // Send the session ID to the backend
+            token: sessionId,
           }),
         }
       );
@@ -192,19 +194,24 @@ const Login = () => {
 
       if (response.ok) {
         setAuthToken(data.access);
-        console.log("data", data);
         dispatch(setCredentials({ ...data, isAuthenticated: true }));
+        if (data.access) {
+          await saveToken(data.access);
+        }
+
         Toast.show({
           type: "success",
           text1: "Login Successful!",
         });
-        router.push("/(tabs)/Home");
       } else {
         console.error("❌ Backend error:", data);
       }
     } catch (err) {
       console.error("Error sending session ID to backend:", err);
     }
+  };
+  const handleSignOut = () => {
+    signOut();
   };
 
   return (
@@ -302,14 +309,6 @@ const Login = () => {
         </Text>
       </TouchableOpacity>
       <View className="mt-auto">
-        <Button
-          onPress={() => handleSignOut()}
-          action="negative"
-          className="mb-5"
-        >
-          <Svg2 width={20} height={20} />
-          <ButtonText>Login with Google</ButtonText>
-        </Button>
         <Text className="mb-5 text-center text-muted">or continue with</Text>
         <Button
           onPress={() => handleSignIn()}

@@ -8,6 +8,7 @@ export type RootStackParamList = {
 export type AuthSliceType = {
   loginResponseType: LoginResponseTypes;
   hasOnboarded: boolean;
+  isSigningIn:boolean
   "reset-token": null | string;
 };
 

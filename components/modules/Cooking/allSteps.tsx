@@ -1,15 +1,18 @@
 import React from "react";
 import { Instruction } from "@/lib/types/recipe";
 
-import { Text, View } from "react-native";
+import { Text, useColorScheme, View } from "react-native";
 
 type AllSteps = {
   steps: Instruction[];
 };
 
 const AllSteps = ({ steps }: AllSteps) => {
+  const theme = useColorScheme();
+  const isDarkMode = theme === "dark";
+
   return (
-    <View className="py-10 px-6 bg-background">
+    <View className="pb-10 pt-4 px-6 bg-background">
       <Text className="font-bold text-2xl leading-8 text-foreground text-center mb-4 mt-8">
         Steps
       </Text>
@@ -18,7 +21,9 @@ const AllSteps = ({ steps }: AllSteps) => {
           <View
             className="mt-6 flex flex-row items-start gap-4 p-5 rounded-2xl"
             style={{
-              boxShadow: "0px 2px 12px 0px rgba(0,0,0,0.1)",
+              boxShadow: isDarkMode
+                ? "0px 2px 12px 0px rgba(0,0,0,0.3)"
+                : "0px 2px 12px 0px rgba(0,0,0,0.1)",
             }}
             key={step.step_number}
           >

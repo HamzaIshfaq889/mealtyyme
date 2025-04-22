@@ -81,7 +81,7 @@ const Cooking = () => {
   return (
     <View className="flex flex-col w-full h-full px-9 py-16 bg-background">
       <View className="flex flex-row justify-between items-center mb-12">
-        <TouchableOpacity onPress={() => router.push("/(tabs)/Home")}>
+        <TouchableOpacity onPress={() => router.back()}>
           <ArrowLeft
             width={30}
             height={30}

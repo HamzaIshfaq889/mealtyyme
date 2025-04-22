@@ -165,6 +165,9 @@ export const searchRecipes = async (
 ): Promise<{ results: Recipe[]; total: number }> => {
   const params: string[] = [];
 
+  console.log(page)
+  console.log(search);
+
   if (category_ids && category_ids.length > 0) {
     params.push(...category_ids.map((id) => `dish_types=${id}`));
   }

@@ -9,12 +9,18 @@ import { Button, ButtonText } from "@/components/ui/button";
 
 import Cookbooks from "./Cookbooks";
 import Savedrecipes from "./SavedRecipes";
+import { deleteToken } from "@/redux/store/expoStore";
 
 const Account = () => {
   const scheme = useColorScheme();
   const [activeTab, setActiveTab] = useState<"cookbooks" | "savedrecipes">(
     "cookbooks"
   );
+
+  const clearToken = () => {
+    deleteToken();
+    console.log("done");
+  };
 
   return (
     <View className="w-full h-full px-6 py-16 ">
@@ -47,7 +53,8 @@ const Account = () => {
           </View>
         </View>
 
-        <Pressable onPress={() => router.push("/(nested)/edit-profile")}>
+        {/* <Pressable onPress={() => router.push("/(nested)/edit-profile")}> */}
+        <Pressable onPress={() => clearToken()}>
           <View className="flex flex-row gap-0.5 mr-2">
             <UserPen color={scheme === "dark" ? "#fff" : "#000"} size={30} />
           </View>

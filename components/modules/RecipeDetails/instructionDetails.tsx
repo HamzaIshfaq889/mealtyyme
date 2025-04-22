@@ -1,13 +1,16 @@
 import { Instruction } from "@/lib/types/recipe";
 import React from "react";
 
-import { Pressable, Text, View } from "react-native";
+import { Pressable, Text, useColorScheme, View } from "react-native";
 
 type InstructionDetailsProps = {
   instructions: Instruction[];
 };
 
 const InstructionDetails = ({ instructions }: InstructionDetailsProps) => {
+  const scheme = useColorScheme();
+  const isDarkMode = scheme === "dark";
+
   if (instructions.length === 0) {
     return (
       <View className="flex items-center justify-center">
@@ -38,7 +41,9 @@ const InstructionDetails = ({ instructions }: InstructionDetailsProps) => {
             <View
               className="mb-4 flex flex-row items-start gap-4 p-5 rounded-2xl"
               style={{
-                boxShadow: "0px 2px 12px 0px rgba(0,0,0,0.1)",
+                boxShadow: isDarkMode
+                  ? "0px 2px 12px 0px rgba(0,0,0,0.3)"
+                  : "0px 2px 12px 0px rgba(0,0,0,0.1)",
               }}
               key={instruction?.step_number}
             >

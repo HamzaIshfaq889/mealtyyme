@@ -1,9 +1,9 @@
+import { Account } from "@/components/modules";
+import ComingSoonOverlay from "@/components/modules/ComingSoonOverlay";
 import React from "react";
 
-import { Account } from "@/components/modules";
-
 const AccountScreen = () => {
-  return <Account />;
+  return <ComingSoonOverlay />;
 };
 
 export default AccountScreen;

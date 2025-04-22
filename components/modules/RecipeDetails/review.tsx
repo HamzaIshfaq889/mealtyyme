@@ -1,11 +1,14 @@
 import React from "react";
-import { Image, View } from "react-native";
+import { Image, useColorScheme, View } from "react-native";
 import { Text } from "react-native";
 
 import Stars from "@/assets/svgs/star.svg";
 import { ScrollView } from "react-native-gesture-handler";
 
 const Review = () => {
+  const scheme = useColorScheme();
+  const isDarkTheme = scheme === "dark";
+
   const ReviewDetails = [
     {
       id: 1,
@@ -50,7 +53,9 @@ const Review = () => {
       className="pt-6 px-7 h-80 mt-8 rounded-3xl"
       showsVerticalScrollIndicator={false}
       style={{
-        boxShadow: "0px 2px 12px 0px rgba(0,0,0,0.1)",
+        boxShadow: isDarkTheme
+          ? "0px 2px 12px 0px rgba(0,0,0,0.4)"
+          : "0px 2px 12px 0px rgba(0,0,0,0.1)",
       }}
     >
       <Text className="text-primary font-bold text-2xl leading-6 mb-4">

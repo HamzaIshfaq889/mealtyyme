@@ -1,36 +1,21 @@
 import React from "react";
 
-import { Pressable, Text, View } from "react-native";
+import { Pressable, Text, useColorScheme, View } from "react-native";
 
 import { Ingredient } from "@/lib/types/recipe";
+import { capitalizeFirstLetter, truncateChars } from "@/utils";
 
 type IngredientDetailsProps = {
   ingredients: Ingredient[];
+  serving: number;
 };
 
-const IngredientDetails = ({ ingredients }: IngredientDetailsProps) => {
-  const ingredentDetail = [
-    {
-      ingredientName: "Honey",
-      ingredientAmount: "1 Cup",
-    },
-    {
-      ingredientName: "Avocado",
-      ingredientAmount: "1",
-    },
-    {
-      ingredientName: "Red Cabbage",
-      ingredientAmount: "9 ml",
-    },
-    {
-      ingredientName: "Peanuts",
-      ingredientAmount: "1",
-    },
-    {
-      ingredientName: "Red Onions",
-      ingredientAmount: "1",
-    },
-  ];
+const IngredientDetails = ({
+  ingredients,
+  serving,
+}: IngredientDetailsProps) => {
+  const scheme = useColorScheme();
+  const isDarkMode = scheme === "dark";
 
   if (ingredients.length === 0) {
     return (
@@ -52,7 +37,7 @@ const IngredientDetails = ({ ingredients }: IngredientDetailsProps) => {
           <Text className="text-muted">{`${ingredients?.length} Item`}</Text>
         </View>
         <Pressable>
-          <Text className="text-secondary pr-5 font-bold">Add All to Cart</Text>
+          {/* <Text className="text-secondary pr-5 font-bold">Add All to Cart</Text> */}
         </Pressable>
       </View>
 
@@ -62,17 +47,22 @@ const IngredientDetails = ({ ingredients }: IngredientDetailsProps) => {
             <View
               className="p-6 py-5 flex flex-row justify-between items-center rounded-2xl mb-4"
               style={{
-                boxShadow: "0px 2px 12px 0px rgba(0,0,0,0.1)",
+                boxShadow: isDarkMode
+                  ? "0px 2px 12px 0px rgba(0,0,0,0.3)"
+                  : "0px 2px 12px 0px rgba(0,0,0,0.1)",
               }}
               key={ing?.ingredient?.id}
             >
               <View className="flex flex-row gap-6 items-center">
-                <Text className="font-bold text-xl text-primary">
-                  {ing?.ingredient?.name}
+                <Text className="font-bold text-sm text-primary">
+                  {truncateChars(
+                    capitalizeFirstLetter(ing?.ingredient?.name),
+                    28
+                  )}
                 </Text>
               </View>
-              <Text className="font-semibold leading-5 text-lg text-primary">
-                {ing?.amount}
+              <Text className="font-semibold leading-5 text-base text-primary">
+                {(ing?.amount * serving).toFixed(2)} {ing?.unit}
               </Text>
             </View>
           );

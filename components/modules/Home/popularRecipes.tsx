@@ -38,6 +38,7 @@ const PopularRecipes = () => {
         const data = await getCategories();
         setCategories(data);
       } catch (err: any) {
+        console.log(err);
         setError(err.message || "Error fetching categories");
       } finally {
         setLoading(false);
@@ -69,6 +70,7 @@ const PopularRecipes = () => {
       setLoadingRecipe(false);
     }
   };
+
 
   return (
     <>

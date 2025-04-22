@@ -43,9 +43,6 @@ const RelatedRecipes = () => {
         <Text className="text-primary font-bold text-xl leading-7 mb-1">
           Related Recipes
         </Text>
-        <Pressable>
-          <Text className="text-secondary pr-5 font-bold">See All</Text>
-        </Pressable>
       </View>
       <View className="flex flex-row flex-wrap">
         {favouritesData.map((item) => {
