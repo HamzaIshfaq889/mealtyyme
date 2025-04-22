@@ -26,17 +26,23 @@ import {
   Star,
 } from "lucide-react-native";
 
+import { convertMinutesToTimeLabel } from "@/utils";
+
 import { Button, ButtonText } from "@/components/ui/button";
 
 import Protien from "@/assets/svgs/Proteins.svg";
 
 import { getSingleRecipe } from "@/services/recipesAPI";
 
+import { setCurrentRecipe } from "@/redux/slices/recipies";
+
+import RecipeDetailsSkeleton from "../Skeletons/recipeDetailsSkeleton";
 import InstructionDetails from "./instructionDetails";
 import RecipeMenuOptions from "./recipeMenuOptions";
 import IngredientDetails from "./ingredientDetails";
-
+import RelatedRecipes from "./relatedRecipes";
 import Review from "./review";
+import Error from "../Error";
 
 const RecipeDetails = ({ recipeId }: { recipeId: string | null }) => {
   const scheme = useColorScheme();
@@ -58,6 +64,24 @@ const RecipeDetails = ({ recipeId }: { recipeId: string | null }) => {
     queryFn: () => getSingleRecipe(recipeId),
     enabled: !!recipeId,
   });
+
+  if (isLoading) {
+    return <RecipeDetailsSkeleton />;
+  }
+
+  if (isError) {
+    return (
+      <Error
+        errorButtonLink="/(tabs)/Home"
+        errorButtonText="Go to home"
+        errorMessage="Recipe Not Found"
+      />
+    );
+  }
+
+  if (recipe) {
+    dispatch(setCurrentRecipe(recipe));
+  }
 
   const gradientsInfo = [
     { id: 1, icon: Leaf, text: `${recipe?.nutrition?.carbohydrates}g carbs` },
@@ -112,9 +136,9 @@ const RecipeDetails = ({ recipeId }: { recipeId: string | null }) => {
               <View className="flex flex-row items-center justify-between gap-1.5">
                 <Clock color="#96a1b0" size={18} />
                 <Text className="text-muted">
-                  {/* {recipe?.ready_in_minutes
+                  {recipe?.ready_in_minutes
                     ? convertMinutesToTimeLabel(recipe?.ready_in_minutes)
-                    : "15min"} */}
+                    : "15min"}
                 </Text>
               </View>
             </View>
@@ -203,7 +227,7 @@ const RecipeDetails = ({ recipeId }: { recipeId: string | null }) => {
             </View>
 
             <View>
-              {/* {activeTab === "Ingredients" ? (
+              {activeTab === "Ingredients" ? (
                 <IngredientDetails
                   ingredients={recipe?.ingredients ? recipe.ingredients : []}
                 />
@@ -211,7 +235,7 @@ const RecipeDetails = ({ recipeId }: { recipeId: string | null }) => {
                 <InstructionDetails
                   instructions={recipe?.instructions ? recipe.instructions : []}
                 />
-              )} */}
+              )}
             </View>
 
             <Button
@@ -240,7 +264,9 @@ const RecipeDetails = ({ recipeId }: { recipeId: string | null }) => {
               </View>
             </View>
 
-            <View className="mt-8">{/* <RelatedRecipes /> */}</View>
+            <View className="mt-8">
+              <RelatedRecipes />
+            </View>
           </View>
         </ScrollView>
       </SafeAreaView>
