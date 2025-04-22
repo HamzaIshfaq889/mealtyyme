@@ -15,10 +15,13 @@ import { router } from "expo-router";
 import FeaturedRecipes from "./featuredRecipes";
 import { Ionicons } from "@expo/vector-icons";
 import PopularRecipes from "./popularRecipes";
+import { useSelector } from "react-redux";
+import Svg1 from "../../../assets/svgs/cookingfood.svg";
 
 const HomeUser = () => {
   const scheme = useColorScheme();
   const currentHour = new Date().getHours();
+  const isCooking = useSelector((state: any) => state.recipe.isCooking);
   const getGreeting = () => {
     if (currentHour < 12) {
       return "Good Morning";
@@ -28,6 +31,8 @@ const HomeUser = () => {
       return "Good Evening";
     }
   };
+
+  console.log("iscooking", isCooking);
 
   const getIconName = () => {
     if (currentHour < 12) {
@@ -40,15 +45,15 @@ const HomeUser = () => {
   };
 
   return (
-    <View className="flex-1  relative">
+    <View className="flex-1 relative">
       {/* Sticky Header */}
       <View
-        className="absolute top-0 left-0 right-0 z-10 bg-background pt-12 pb-4 "
+        className="absolute top-0 left-0 right-0 z-10 bg-background pt-12 pb-4"
         style={{
           paddingTop: Platform.OS === "ios" ? 50 : 36, // Adjust for status bar
         }}
       >
-        <View className="flex flex-row justify-between items-center px-5 ">
+        <View className="flex flex-row justify-between items-center px-5">
           <View className="space-y-1.5">
             <View className="flex flex-row items-center gap-1">
               <Ionicons name={getIconName()} size={24} color="orange" />
@@ -76,6 +81,17 @@ const HomeUser = () => {
           <PopularRecipes />
         </View>
       </ScrollView>
+
+      {isCooking && (
+        <Pressable
+          className="absolute bottom-5 right-5 z-20 mb-24"
+          onPress={() => router.push(`/cooking/1` as any)}
+        >
+          <View className="bg-secondary p-1 rounded-full shadow-lg">
+            <Svg1 width={50} height={50} color="#fff" />
+          </View>
+        </Pressable>
+      )}
     </View>
   );
 };
