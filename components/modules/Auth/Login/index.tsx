@@ -33,7 +33,9 @@ import { ArrowLeft } from "lucide-react-native";
 import * as Google from "expo-auth-session/providers/google";
 import * as WebBrowser from "expo-web-browser";
 import * as AuthSession from "expo-auth-session";
-
+import { useOAuth, useSSO, useUser } from "@clerk/clerk-expo";
+import { makeRedirectUri, useAuthRequest } from "expo-auth-session";
+import { useClerk } from "@clerk/clerk-react";
 WebBrowser.maybeCompleteAuthSession();
 
 const Login = () => {
@@ -43,7 +45,7 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [formData, setFormData] = useState({ email: "", password: "" });
-
+  const { signOut } = useClerk();
   const validateField = (key: string, value: string) => {
     setFormData((prev) => ({ ...prev, [key]: value }));
 
@@ -128,40 +130,44 @@ const Login = () => {
     }
   };
 
-  const redirectUri = AuthSession.makeRedirectUri();
+  const { startSSOFlow } = useSSO(); // Use 'startSSOFlow' instead of 'initiateSSO'
+  const { user } = useUser();
 
-  console.log("Redirect URI:", redirectUri);
+  const handleSignIn = async () => {
+    try {
+      // Assuming startSSOFlow is the correct method
+      const { createdSessionId, setActive } = await startSSOFlow({
+        strategy: "oauth_google",
+      });
 
-  const [request, response, promptAsync] = Google.useAuthRequest({
-    clientId:
-      "878398669630-qnsp8rps2sqrouutee53lapnmcj5u7e4.apps.googleusercontent.com",
-    iosClientId: "com.mealtyme.app",
-    androidClientId: "com.mealtyme.app",
-    redirectUri,
-    responseType: "id_token", // ensures you get the ID token
-    usePKCE: false, // usually not needed with implicit flow
-  });
+      // Log the values of createdSessionId, setActive, and user
+      console.log("createdSessionId:", createdSessionId);
+      console.log("setActive:", setActive);
+      console.log("user:", user); // Assuming the user object contains the email and other details
 
-  useEffect(() => {
-    if (response?.type === "success" && response.authentication?.idToken) {
-      const idToken = response.authentication.idToken;
-
-      console.log("ID Token:", idToken);
-
-      fetch("http://127.0.0.1:8000/api/auth/google/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ id_token: idToken }),
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          console.log("Login successful:", data);
-        })
-        .catch((err) => console.error("Login error:", err));
+      if (createdSessionId && setActive) {
+        await setActive({ session: createdSessionId });
+      } else {
+        console.error("setActive is not defined");
+      }
+    } catch (error) {
+      console.error("Error during SSO flow:", error);
     }
-  }, [response]);
+  };
+
+  const handleSignOut = () => {
+    signOut();
+  };
+
+  const email = user?.primaryEmailAddress?.emailAddress;
+  console.log("User email:", email); // Output: hassaninayatchaudhry@gmail.com
+
+  const firstName = user?.firstName;
+  console.log("User first name:", firstName); // Output: Hassan Inayat
+
+  const lastName = user?.lastName;
+  console.log("User last name:", lastName); // Output: Chaudhry
+
   return (
     <View className="flex flex-col w-full h-full px-9 py-16">
       <View className="flex flex-row justify-between items-center mb-14">
@@ -257,9 +263,17 @@ const Login = () => {
         </Text>
       </TouchableOpacity>
       <View className="mt-auto">
+        <Button
+          onPress={() => handleSignOut()}
+          action="negative"
+          className="mb-5"
+        >
+          <Svg2 width={20} height={20} />
+          <ButtonText>Login with Google</ButtonText>
+        </Button>
         <Text className="mb-5 text-center text-muted">or continue with</Text>
         <Button
-          onPress={() => promptAsync()}
+          onPress={() => handleSignIn()}
           action="negative"
           className="mb-5"
         >
