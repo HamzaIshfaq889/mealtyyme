@@ -20,7 +20,7 @@ import Svg1 from "../../../assets/svgs/cookingfood.svg";
 import { Button, ButtonText } from "@/components/ui/button";
 import { useClerk } from "@clerk/clerk-expo";
 import { logout } from "@/redux/slices/Auth";
-import { deleteToken } from "@/redux/store/expoStore";
+import { deleteToken, resetOnboardStatus } from "@/redux/store/expoStore";
 
 const HomeUser = () => {
   const scheme = useColorScheme();
@@ -52,6 +52,8 @@ const HomeUser = () => {
   const handleSignOut = () => {
     signOut();
     dispatch(logout());
+    deleteToken();
+    resetOnboardStatus();
     console.log("working");
     deleteToken();
     router.push("/(auth)/login");

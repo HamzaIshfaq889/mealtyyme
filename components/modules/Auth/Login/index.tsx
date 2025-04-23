@@ -23,7 +23,7 @@ import { EyeIcon, EyeOffIcon, LockIcon, MailIcon } from "@/components/ui/icon";
 import { Spinner } from "@/components/ui/spinner";
 
 import Svg2 from "@/assets/svgs/google.svg";
-import Svg3 from "@/assets/svgs/facebook.svg";
+import Svg3 from "@/assets/svgs/apple-14.svg";
 import { LoginResponseTypes } from "@/lib/types";
 
 import { loginUser } from "@/services/authApi";
@@ -149,6 +149,41 @@ const Login = () => {
     try {
       const { createdSessionId, setActive } = await startSSOFlow({
         strategy: "oauth_google",
+      });
+
+      if (createdSessionId && setActive) {
+        await setActive({ session: createdSessionId });
+        console.log("🔐 Clerk session activated");
+
+        // Send the session ID to the backend
+        const data = await sendSessionIdToBackend(createdSessionId);
+        console.log("Response from backend:", data);
+
+        router.push("/(tabs)/Home");
+      } else {
+        console.error("❌ setActive failed or undefined");
+      }
+    } catch (error) {
+      console.error("SSO error:", error);
+    } finally {
+      dispatch(setIsSigningIn(false));
+    }
+  };
+
+  const handleSignApple = async () => {
+    if (isSignedIn) {
+      Toast.show({
+        type: "error",
+        text1: "You are already Signed in",
+      });
+      return;
+    }
+
+    dispatch(setIsSigningIn(true));
+
+    try {
+      const { createdSessionId, setActive } = await startSSOFlow({
+        strategy: "oauth_apple",
       });
 
       if (createdSessionId && setActive) {
@@ -318,9 +353,13 @@ const Login = () => {
           <Svg2 width={20} height={20} />
           <ButtonText>Login with Google</ButtonText>
         </Button>
-        <Button action="negative" className="bg-[#1E76D6]">
-          <Svg3 width={20} height={20} />
-          <ButtonText>Login with Facebbok</ButtonText>
+        <Button
+          action="negative"
+          onPress={() => handleSignApple()}
+          className="bg-gray-500"
+        >
+          <Svg3 width={20} height={20} color="#fff" />
+          <ButtonText>Login with Apple</ButtonText>
         </Button>
       </View>
     </View>
