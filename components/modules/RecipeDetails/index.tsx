@@ -153,23 +153,23 @@ const RecipeDetails = ({ recipeId }: { recipeId: string | null }) => {
               />
             </View>
             <View className="flex flex-row gap-2 items-center">
-              <View className="bg-background w-20 h-10 p-1.5 flex flex-row justify-center gap-1.5 items-center rounded-md">
+              {/* <View className="bg-background w-20 h-10 p-1.5 flex flex-row justify-center gap-1.5 items-center rounded-md">
                 <Star color={scheme === "dark" ? "#fff" : "#000"} size={22} />
                 <Text className="text-primary">4.5</Text>
-              </View>
+              </View> */}
 
-              <View className="bg-background w-10 h-10 p-1.5 flex justify-center items-center rounded-md">
+              {/* <View className="bg-background w-10 h-10 p-1.5 flex justify-center items-center rounded-md">
                 <Heart color={scheme === "dark" ? "#fff" : "#000"} size={22} />
-              </View>
+              </View> */}
             </View>
           </View>
           <View className="px-6 pt-6 pb-20 rounded-tl-[30px] rounded-tr-[30px] -mt-10 bg-gray-50 dark:bg-black">
-            <Pressable
+            {/* <Pressable
               className="flex flex-row justify-end py-1"
               onPress={() => bottomSheetMenuRef.current?.snapToIndex(1)}
             >
               <Ellipsis size={25} color={scheme === "dark" ? "#fff" : "#000"} />
-            </Pressable>
+            </Pressable> */}
             <View className="w-full fex flex-row items-center justify-between">
               <Text className="text-primary font-bold text-2xl leading-8 mt-2 max-w-80">
                 {recipe?.title}

@@ -112,9 +112,9 @@ const PopularRecipes = () => {
         <Text className="text-foreground font-bold text-xl leading-5 mb-1 pl-7">
           Popular Recipies
         </Text>
-        <Pressable>
+        {/* <Pressable>
           <Text className="text-secondary pr-5 font-bold">See All</Text>
-        </Pressable>
+        </Pressable> */}
       </View>
 
       <View>

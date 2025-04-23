@@ -12,8 +12,10 @@ import Savedrecipes from "./SavedRecipes";
 import { deleteToken, resetOnboardStatus } from "@/redux/store/expoStore";
 import { setCredentials } from "@/redux/slices/Auth";
 import { useDispatch } from "react-redux";
+import { useClerk } from "@clerk/clerk-expo";
 
 const Account = () => {
+  const { signOut } = useClerk();
   const scheme = useColorScheme();
   const dispatch = useDispatch();
   const [activeTab, setActiveTab] = useState<"cookbooks" | "savedrecipes">(
@@ -33,6 +35,7 @@ const Account = () => {
         isAuthenticated: false,
       })
     );
+    signOut();
     console.log("done");
   };
 
