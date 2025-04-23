@@ -22,27 +22,24 @@ const AuthWrapper = () => {
 
   const segments = useSegments();
 
-  // Check SecureStore for token on mount
+  const checkSecureStore = async () => {
+    console.log("Checking....");
+    try {
+      const storedToken = await getToken();
+      const onboardingStatus = await getOnboardStatus();
+
+      setSecureStoreToken(storedToken);
+      setHasOnboardedFromSecure(onboardingStatus);
+    } catch (error) {
+      console.error("Error fetching token from SecureStore:", error);
+    } finally {
+      setIsCheckingStore(false);
+    }
+  };
+
   useEffect(() => {
-    const checkSecureStore = async () => {
-      setIsCheckingStore(true);
-      try {
-        const storedToken = await getToken();
-        const onboardingStatus = await getOnboardStatus();
-
-        setSecureStoreToken(storedToken);
-        setHasOnboardedFromSecure(onboardingStatus);
-      } catch (error) {
-        console.error("Error fetching token from SecureStore:", error);
-      } finally {
-        setIsCheckingStore(false);
-      }
-    };
-
     checkSecureStore();
-  }, []);
-
-  console.log("GS", isSigningIn);
+  }, [segments]);
 
   useEffect(() => {
     // Don't redirect until we've checked SecureStore

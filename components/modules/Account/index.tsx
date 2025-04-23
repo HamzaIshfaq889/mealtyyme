@@ -9,16 +9,30 @@ import { Button, ButtonText } from "@/components/ui/button";
 
 import Cookbooks from "./Cookbooks";
 import Savedrecipes from "./SavedRecipes";
-import { deleteToken } from "@/redux/store/expoStore";
+import { deleteToken, resetOnboardStatus } from "@/redux/store/expoStore";
+import { setCredentials } from "@/redux/slices/Auth";
+import { useDispatch } from "react-redux";
 
 const Account = () => {
   const scheme = useColorScheme();
+  const dispatch = useDispatch();
   const [activeTab, setActiveTab] = useState<"cookbooks" | "savedrecipes">(
     "cookbooks"
   );
 
   const clearToken = () => {
     deleteToken();
+    resetOnboardStatus();
+    dispatch(
+      setCredentials({
+        access: null,
+        refresh: null,
+        email: null,
+        first_name: null,
+        role: null,
+        isAuthenticated: false,
+      })
+    );
     console.log("done");
   };
 
