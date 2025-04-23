@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
+import { stopCooking } from "@/redux/slices/recipies";
 
 import { router } from "expo-router";
 
@@ -36,38 +37,31 @@ import AllSteps from "./allSteps";
 import StepCompleted from "./stepCompleted";
 import Review from "./review";
 import AddTimerModal from "./addTimerModal";
-import {
-  startCooking,
-  setCurrentRecipe,
-} from "@/redux/slices/recipies";
 
 const Cooking = () => {
-  const currentRecipe: Recipe = useSelector(
-    (state: any) => state.recipe.currentRecipe
-  );
+  const dispatch = useDispatch();
 
-  const cookingRecipe: Recipe = useSelector(
+  const currentRecipe: Recipe = useSelector(
     (state: any) => state.recipe.cookingRecipe
   );
-
   const isCooking: boolean = useSelector(
     (state: any) => state.recipe.isCooking
   );
 
-  const dispatch = useDispatch();
-  const hasStartedRef = useRef(false);
+  // const dispatch = useDispatch();
+  // const hasStartedRef = useRef(false);
 
-  useEffect(() => {
-    if (!hasStartedRef.current) {
-      hasStartedRef.current = true;
+  // useEffect(() => {
+  //   if (!hasStartedRef.current) {
+  //     hasStartedRef.current = true;
 
-      if (isCooking && cookingRecipe) {
-        dispatch(setCurrentRecipe(cookingRecipe));
-      } else if (currentRecipe) {
-        dispatch(startCooking(currentRecipe));
-      }
-    }
-  }, [dispatch, isCooking, currentRecipe, cookingRecipe]);
+  //     if (isCooking && cookingRecipe) {
+  //       dispatch(setCurrentRecipe(cookingRecipe));
+  //     } else if (currentRecipe) {
+  //       dispatch(startCooking(currentRecipe));
+  //     }
+  //   }
+  // }, [dispatch, isCooking, currentRecipe, cookingRecipe]);
 
   const scheme = useColorScheme();
   const isDarkMode = scheme === "dark";
@@ -103,6 +97,11 @@ const Cooking = () => {
     }
   };
 
+  const handleStopCooking = () => {
+    dispatch(stopCooking());
+    router.push("/(tabs)/Home");
+  };
+
   console.log("currentRecipe", currentRecipe?.title);
 
   return (
@@ -121,7 +120,7 @@ const Cooking = () => {
             ellipsizeMode="tail"
             className="flex-1 mx-4 font-bold text-2xl text-foreground w-48"
           >
-            {currentRecipe.title}
+            {currentRecipe?.title}
           </Text>
         </View>
 
@@ -262,10 +261,9 @@ const Cooking = () => {
             <Button
               action="secondary"
               className="w-full h-16"
-              onPress={handleNextStep}
-              disabled={currentStep === currentRecipe?.instructions.length}
+              onPress={handleStopCooking}
             >
-              <ButtonText>Completed</ButtonText>
+              <ButtonText>Complete Cooking</ButtonText>
             </Button>
           </View>
         )}

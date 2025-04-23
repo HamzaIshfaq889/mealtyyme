@@ -50,7 +50,7 @@ const Review = () => {
 
   return (
     <ScrollView
-      className="pt-6 px-7 h-80 mt-8 rounded-3xl"
+      className="pt-6 px-6 h-80 mt-8 rounded-3xl bg-accent"
       showsVerticalScrollIndicator={false}
       style={{
         boxShadow: isDarkTheme

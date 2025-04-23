@@ -24,7 +24,6 @@ const Account = () => {
 
   const clearToken = () => {
     deleteToken();
-    resetOnboardStatus();
     dispatch(
       setCredentials({
         access: null,

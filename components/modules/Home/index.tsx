@@ -40,8 +40,6 @@ const HomeUser = () => {
     }
   };
 
-  console.log("iscooking", isCooking);
-
   const getIconName = () => {
     if (currentHour < 12) {
       return "sunny-outline"; // Morning
@@ -50,15 +48,6 @@ const HomeUser = () => {
     } else {
       return "moon-outline"; // Evening
     }
-  };
-  const dispatch = useDispatch();
-  const { signOut } = useClerk();
-  const handleSignOut = () => {
-    signOut();
-    dispatch(logout());
-    deleteToken();
-    console.log("working");
-    router.push("/(auth)/login");
   };
 
   return (

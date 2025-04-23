@@ -29,10 +29,7 @@ import {
   Leaf,
   Flame,
   Pizza,
-  Ellipsis,
   X,
-  Heart,
-  Star,
 } from "lucide-react-native";
 
 import { convertMinutesToTimeLabel } from "@/utils";
@@ -43,7 +40,7 @@ import Protien from "@/assets/svgs/Proteins.svg";
 
 import { getSingleRecipe } from "@/services/recipesAPI";
 
-import { setCurrentRecipe } from "@/redux/slices/recipies";
+import { setCurrentRecipe, startCooking } from "@/redux/slices/recipies";
 
 import RecipeDetailsSkeleton from "../Skeletons/recipeDetailsSkeleton";
 import InstructionDetails from "./instructionDetails";
@@ -122,6 +119,10 @@ const RecipeDetails = ({ recipeId }: { recipeId: string | null }) => {
     },
   ];
 
+  const handleStartCooking = () => {
+    if (recipe) dispatch(startCooking(recipe));
+    router.push(`/cooking/${recipe?.id}` as any);
+  };
   function getTruncatedSummary(text: string): string {
     const words = text.split(" ");
     const wordLimit = words.slice(0, 10).join(" ");
@@ -130,6 +131,8 @@ const RecipeDetails = ({ recipeId }: { recipeId: string | null }) => {
       ? wordLimit + "..."
       : charLimit + "...";
   }
+
+  console.log(recipe);
 
   return (
     <>
@@ -163,14 +166,14 @@ const RecipeDetails = ({ recipeId }: { recipeId: string | null }) => {
               </View> */}
             </View>
           </View>
-          <View className="px-6 pt-6 pb-20 rounded-tl-[30px] rounded-tr-[30px] -mt-10 bg-gray-50 dark:bg-black">
+          <View className="pt-6 pb-20 rounded-tl-[30px] rounded-tr-[30px] -mt-10 bg-gray-50 dark:bg-black">
             {/* <Pressable
               className="flex flex-row justify-end py-1"
               onPress={() => bottomSheetMenuRef.current?.snapToIndex(1)}
             >
               <Ellipsis size={25} color={scheme === "dark" ? "#fff" : "#000"} />
             </Pressable> */}
-            <View className="w-full fex flex-row items-center justify-between">
+            <View className="px-6 w-full fex flex-row items-center justify-between">
               <Text className="text-primary font-bold text-2xl leading-8 mt-2 max-w-80">
                 {recipe?.title}
               </Text>
@@ -184,7 +187,7 @@ const RecipeDetails = ({ recipeId }: { recipeId: string | null }) => {
               </View>
             </View>
 
-            <View className="mt-3">
+            <View className="px-6 mt-3">
               <RenderHtml
                 contentWidth={width}
                 source={{
@@ -208,7 +211,7 @@ const RecipeDetails = ({ recipeId }: { recipeId: string | null }) => {
               </Pressable>
             </View>
 
-            <View className="flex flex-row flex-wrap mt-3 mb-3">
+            <View className="px-6 flex flex-row flex-wrap mt-3 mb-3">
               {gradientsInfo?.map((item) => {
                 return (
                   <View
@@ -230,7 +233,7 @@ const RecipeDetails = ({ recipeId }: { recipeId: string | null }) => {
             </View>
 
             <View
-              className="p-4 flex flex-row items-center justify-between rounded-2xl mb-5"
+              className="px-6 p-4 flex flex-row items-center justify-between rounded-2xl mb-5"
               style={{
                 boxShadow: "0px 2px 16px 0px #0633361A",
               }}
@@ -263,7 +266,7 @@ const RecipeDetails = ({ recipeId }: { recipeId: string | null }) => {
               </View>
             </View>
 
-            <View className="flex flex-row gap-1.5 bg-gray4 px-2 py-2 rounded-2xl mb-5">
+            <View className="mx-6 px-1.5 flex flex-row gap-1.5 bg-gray4  py-2 rounded-2xl mb-5">
               <Button
                 className={`basis-1/2 rounded-2xl ${
                   activeTab === "Ingredients" ? "bg-foreground" : "bg-gray4"
@@ -299,7 +302,7 @@ const RecipeDetails = ({ recipeId }: { recipeId: string | null }) => {
               </Button>
             </View>
 
-            <View>
+            <View className="px-6">
               {activeTab === "Ingredients" ? (
                 <IngredientDetails
                   ingredients={recipe?.ingredients ? recipe.ingredients : []}
@@ -314,19 +317,19 @@ const RecipeDetails = ({ recipeId }: { recipeId: string | null }) => {
 
             <Button
               action="secondary"
-              className="h-16 mt-6"
-              onPress={() => router.push(`/cooking/${recipe?.id}` as any)}
+              className="mx-6 h-16 mt-6"
+              onPress={handleStartCooking}
             >
               <ButtonText>Start Cooking</ButtonText>
             </Button>
 
-            <View className="mb-8">
+            <View className="mx-6 mb-8">
               <Review />
             </View>
 
             <View className="w-full h-[2px] bg-accent mb-7"></View>
 
-            <View className="flex flex-row gap-3.5 mb-10">
+            <View className="px-7 flex flex-row gap-3.5 mb-10">
               <Image
                 source={{ uri: recipe?.created_by?.image_url }}
                 resizeMode="cover"
@@ -342,8 +345,8 @@ const RecipeDetails = ({ recipeId }: { recipeId: string | null }) => {
               </View>
             </View>
 
-            <View className="mt-8">
-              <RelatedRecipes />
+            <View>
+              <RelatedRecipes recipe={recipe} />
             </View>
           </View>
         </ScrollView>
