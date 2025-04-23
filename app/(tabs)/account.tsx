@@ -6,7 +6,7 @@ import React from "react";
 const AccountScreen = () => {
   return (
     <>
-      <ComingSoonOverlay />
+      <Account />
     </>
   );
 };

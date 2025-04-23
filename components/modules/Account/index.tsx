@@ -9,7 +9,7 @@ import { Button, ButtonText } from "@/components/ui/button";
 
 import Cookbooks from "./Cookbooks";
 import Savedrecipes from "./SavedRecipes";
-import { deleteToken } from "@/redux/store/expoStore";
+import { deleteToken, resetOnboardStatus } from "@/redux/store/expoStore";
 
 const Account = () => {
   const scheme = useColorScheme();
@@ -19,6 +19,7 @@ const Account = () => {
 
   const clearToken = () => {
     deleteToken();
+    resetOnboardStatus();
     console.log("done");
   };
 
