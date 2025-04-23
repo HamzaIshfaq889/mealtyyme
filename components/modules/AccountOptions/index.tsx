@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Text, TouchableOpacity, View } from "react-native";
+import { Text, View } from "react-native";
 
 import { router } from "expo-router";
 
@@ -14,6 +14,8 @@ import Svg3 from "@/assets/svgs/apple-filled.svg";
 import Toast from "react-native-toast-message";
 import { setAuthToken } from "@/lib/apiClient";
 import { saveToken } from "@/redux/store/expoStore";
+
+import { AppConfig } from "@/constants";
 
 const AccountsOptions = () => {
   const { startSSOFlow } = useSSO();
@@ -101,7 +103,7 @@ const AccountsOptions = () => {
       }
 
       const response = await fetch(
-        `${process.env.EXPO_PUBLIC_API_URL}auth/clerk/`,
+        `${AppConfig.API_URL}auth/clerk/`,
         {
           method: "POST",
           headers: {

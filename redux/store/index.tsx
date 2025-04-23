@@ -7,6 +7,8 @@ import { persistStore, persistReducer } from "redux-persist";
 import authReducer from "../slices/Auth";
 import recipeReducer from "../slices/recipies";
 
+import { AppConfig } from "@/constants";
+
 const persistConfig = {
   key: "auth",
   storage: AsyncStorage,

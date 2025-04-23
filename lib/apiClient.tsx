@@ -1,8 +1,10 @@
 // apiClient.ts
 import { create } from "apisauce";
 
+import { AppConfig } from "@/constants";
+
 const apiClient = create({
-  baseURL: process.env.EXPO_PUBLIC_API_URL,
+  baseURL: AppConfig.API_URL,
   headers: {
     "Content-Type": "application/json",
   },

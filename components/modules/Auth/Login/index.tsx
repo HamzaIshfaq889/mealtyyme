@@ -31,8 +31,10 @@ import { setAuthToken } from "@/lib/apiClient";
 import { ArrowLeft } from "lucide-react-native";
 import * as WebBrowser from "expo-web-browser";
 import { useAuth, useSSO } from "@clerk/clerk-expo";
-import { SignedIn, useClerk } from "@clerk/clerk-react";
+import {  useClerk } from "@clerk/clerk-react";
 import { saveToken } from "@/redux/store/expoStore";
+
+import { AppConfig } from "@/constants";
 WebBrowser.maybeCompleteAuthSession();
 
 const Login = () => {
@@ -215,7 +217,7 @@ const Login = () => {
       }
 
       const response = await fetch(
-        `${process.env.EXPO_PUBLIC_API_URL}auth/clerk/`,
+        `${AppConfig.API_URL}auth/clerk/`,
         {
           method: "POST",
           headers: {

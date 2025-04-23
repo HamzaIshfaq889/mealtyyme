@@ -14,6 +14,8 @@ import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { useColorScheme } from "react-native";
 
+import { AppConfig } from "@/constants";
+
 import { AuthWrapper, Splash } from "@/components/modules";
 import { store, persistor } from "@/redux/store";
 import QueryProvider from "@/providers/QueryProvider";
@@ -62,7 +64,7 @@ export default function RootLayout() {
 
   return (
     <ClerkProvider
-      publishableKey="pk_test_b2JsaWdpbmctc3RvcmstNTQuY2xlcmsuYWNjb3VudHMuZGV2JA"
+      publishableKey={AppConfig.CLERK_PUBLISHABLE_KEY}
       tokenCache={tokenCache}
     >
       <Provider store={store}>

@@ -32,11 +32,11 @@ const HomeUser = () => {
   );
   const getGreeting = () => {
     if (currentHour < 12) {
-      return `Good Morning ${name}`;
+      return `Good Morning ${name ? name : ""}`;
     } else if (currentHour < 18) {
-      return `Good Afternoon ${name}`;
+      return `Good Afternoon ${name ? name : ""}`;
     } else {
-      return `Good Evening ${name}`;
+      return `Good Evening ${name ? name : ""}`;
     }
   };
 
