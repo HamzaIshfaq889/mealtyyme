@@ -38,7 +38,6 @@ import Review from "./review";
 import AddTimerModal from "./addTimerModal";
 import {
   startCooking,
-  stopCooking,
   setCurrentRecipe,
 } from "@/redux/slices/recipies";
 

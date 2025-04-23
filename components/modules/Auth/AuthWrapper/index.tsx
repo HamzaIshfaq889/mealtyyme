@@ -91,7 +91,7 @@ const AuthWrapper = () => {
 
   // Show nothing while checking SecureStore to prevent flashes
   if (isCheckingStore || isSigningIn) {
-    return <Splash />;
+    return <Slot />;
   }
 
   return <Slot />;

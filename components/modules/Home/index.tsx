@@ -53,9 +53,7 @@ const HomeUser = () => {
     signOut();
     dispatch(logout());
     deleteToken();
-    resetOnboardStatus();
     console.log("working");
-    deleteToken();
     router.push("/(auth)/login");
   };
 

@@ -1,29 +1,21 @@
-import { Link, Stack } from "expo-router";
-import { StyleSheet, Text, View } from "react-native";
+// components/ui/CenteredLoader.tsx
+import React from "react";
+import { ActivityIndicator, View } from "react-native";
 
-export default function NotFoundScreen() {
+const CenteredLoader = () => {
   return (
-    <>
-      <Stack.Screen options={{ title: "Oops!" }} />
-      <View style={styles.container}>
-        <Text>This screen doesn't exist.</Text>
-        <Link href="/" style={styles.link}>
-          <Text>Go to home screen!</Text>
-        </Link>
-      </View>
-    </>
+    <View
+      style={{
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "transparent",
+      }}
+    >
+      <ActivityIndicator size="large" color="#4F46E5" />{" "}
+      {/* Tailwind indigo-600 */}
+    </View>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 20,
-  },
-  link: {
-    marginTop: 15,
-    paddingVertical: 15,
-  },
-});
+export default CenteredLoader;
