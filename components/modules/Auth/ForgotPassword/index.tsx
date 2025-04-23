@@ -100,8 +100,9 @@ const ForgotPassword = () => {
   };
 
   return (
-    <View className="flex flex-col w-full h-full px-9 py-16">
-      <View className="flex flex-row justify-between items-center mb-12">
+    <View className="w-full h-full px-9 py-16 flex-col relative">
+      {/* Header row */}
+      <View className="flex-row items-center justify-between mb-8">
         <TouchableOpacity onPress={() => router.push("/(auth)/login")}>
           <ArrowLeft
             width={30}
@@ -109,10 +110,15 @@ const ForgotPassword = () => {
             color={scheme === "dark" ? "#fff" : "#000"}
           />
         </TouchableOpacity>
-        <Text className="block font-bold text-2xl text-primary">
-          Forgot Password
-        </Text>
-        <Text></Text>
+
+        <View className="flex-1 items-center">
+          <Text className="font-bold text-2xl text-primary">
+            Forgot Password
+          </Text>
+        </View>
+
+        {/* Invisible View to balance layout */}
+        <View style={{ width: 30 }} />
       </View>
       <View>
         <Text className="text-primary/70 leading-6 mb-6">

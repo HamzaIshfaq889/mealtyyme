@@ -19,6 +19,9 @@ import {
   ArrowRight,
   SlidersHorizontal,
   ArrowLeft,
+  Clock,
+  Flame,
+  Star,
 } from "lucide-react-native";
 
 import { Input, InputField, InputIcon, InputSlot } from "@/components/ui/input";
@@ -85,19 +88,19 @@ const Search = () => {
   return (
     <>
       <View className="w-full h-full">
-        <View className="px-6 pt-16 pb-5">
-          <View className="flex flex-row justify-between items-center mb-8">
-            <TouchableOpacity onPress={() => router.push("/(tabs)/Home")}>
-              <ArrowLeft
-                width={30}
-                height={30}
-                color={scheme === "dark" ? "#fff" : "#000"}
-              />
-            </TouchableOpacity>
-            <Text className="block font-bold text-2xl text-foreground">
-              Search
-            </Text>
-            <Text></Text>
+        <View className="px-6 pt-16 pb-5 relative">
+          <TouchableOpacity
+            onPress={() => router.push("/(tabs)/Home")}
+            className="absolute left-6 top-16 z-10"
+          >
+            <ArrowLeft
+              width={30}
+              height={30}
+              color={scheme === "dark" ? "#fff" : "#000"}
+            />
+          </TouchableOpacity>
+          <View className="flex items-center">
+            <Text className="font-bold text-2xl text-foreground">Search</Text>
           </View>
           <View className="flex flex-row items-center justify-between gap-2.5">
             <Input className="basis-4/5 my-3.5">
@@ -160,38 +163,70 @@ const Search = () => {
                   onPress={() => router.push(`/recipe/${recipe.id}` as const)}
                 >
                   <View
-                    className="flex flex-row justify-between items-center py-5 px-3 rounded-2xl mb-5 bg-background"
+                    className="flex flex-row justify-between items-center p-4 rounded-2xl mb-5 bg-background"
                     style={{
                       shadowColor: "#000",
-                      shadowOffset: { width: 0, height: 2 },
-                      shadowOpacity: 0.1,
-                      shadowRadius: 4,
-                      elevation: 2,
+                      shadowOffset: { width: 0, height: 4 },
+                      shadowOpacity: 0.05,
+                      shadowRadius: 6,
+                      elevation: 3,
                     }}
                   >
-                    <View className="flex flex-row gap-4">
-                      <Image
-                        source={{ uri: recipe?.image_url }}
-                        className="w-24 h-[80px] rounded-2xl"
-                      />
-                      <View className="flex flex-col justify-between max-w-60">
-                        <Text className="font-bold text-lg mb-1 leading-6 text-primary">
-                          {truncateChars(recipe?.title, 25)}
-                        </Text>
-                        <View className="flex flex-row gap-2">
-                          <Image
-                            source={{ uri: recipe?.created_by.image_url }}
-                            className="w-6 h-6 rounded-full"
-                          />
-                          <Text className="text-muted text-base ">
-                            {recipe?.created_by.first_name}{" "}
-                            {recipe?.created_by.last_name}
+                    <View className="flex flex-row gap-4 flex-1">
+                      <View className="relative">
+                        <Image
+                          source={{ uri: recipe?.image_url }}
+                          className="w-24 h-24 rounded-xl"
+                          resizeMode="cover"
+                        />
+                        {recipe?.is_featured && (
+                          <View className="absolute top-1 right-1 bg-yellow-400 p-1 rounded-full">
+                            <Star color="#fff" size={14} />
+                          </View>
+                        )}
+                      </View>
+
+                      <View className="flex flex-col justify-between flex-1">
+                        <View>
+                          <Text
+                            className="font-bold text-lg mb-1 text-primary"
+                            numberOfLines={1}
+                          >
+                            {recipe?.title}
                           </Text>
+
+                          <View className="flex flex-row items-center gap-2 mb-2">
+                            <Image
+                              source={{ uri: recipe?.created_by.image_url }}
+                              className="w-5 h-5 rounded-full"
+                            />
+                            <Text className="text-muted text-sm">
+                              {recipe?.created_by.first_name}{" "}
+                              {recipe?.created_by.last_name}
+                            </Text>
+                          </View>
+                        </View>
+
+                        <View className="flex flex-row gap-3">
+                          <View className="flex flex-row items-center gap-1">
+                            <Clock color="#6b7280" size={16} />
+                            <Text className="text-muted text-sm">
+                              {recipe?.ready_in_minutes} min
+                            </Text>
+                          </View>
+
+                          <View className="flex flex-row items-center gap-1">
+                            <Flame color="#6b7280" size={16} />
+                            <Text className="text-muted text-sm">
+                              {recipe?.calories} kcal
+                            </Text>
+                          </View>
                         </View>
                       </View>
                     </View>
-                    <View className="mr-2 p-0.5 bg-secondary rounded-md">
-                      <ArrowRight color="#fff" size={22} />
+
+                    <View className="ml-2 p-2 bg-secondary rounded-full">
+                      <ArrowRight color="#fff" size={18} />
                     </View>
                   </View>
                 </Pressable>

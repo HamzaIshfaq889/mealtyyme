@@ -99,6 +99,8 @@ const Filters = ({
     setCategoriesIds([]);
     setCuisinesIds([]);
     setDietIds([]);
+    bottomSheetRef.current?.close();
+    refetch();
     // setLow(25);
     // setHigh(75);
   }, []);
@@ -256,18 +258,21 @@ const Filters = ({
           />
         </View>
 
-        <View className="px-6">
-          <Button
-            action="secondary"
-            className="mb-3 !h-20"
-            onPress={handleApplyFilters}
-          >
-            <ButtonText>Apply Filters</ButtonText>
-          </Button>
-
-          <Button className="mb-10 !h-20" onPress={clearFilters}>
-            <ButtonText className="!text-secondary">Clear Filters</ButtonText>
-          </Button>
+        <View className="px-6 flex flex-row w-full space-x-4 gap-2">
+          <View className="flex-shrink">
+            <Button onPress={clearFilters} className="w-full">
+              <ButtonText className="!text-secondary">Clear Filters</ButtonText>
+            </Button>
+          </View>
+          <View className="flex-shrink">
+            <Button
+              action="secondary"
+              className="w-full"
+              onPress={handleApplyFilters}
+            >
+              <ButtonText>Apply Filters</ButtonText>
+            </Button>
+          </View>
         </View>
       </BottomSheetScrollView>
     </BottomSheet>

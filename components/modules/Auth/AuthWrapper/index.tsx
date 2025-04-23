@@ -79,7 +79,7 @@ const AuthWrapper = () => {
       }
     }, 3000); // delay in milliseconds
 
-    return () => clearTimeout(timeout); 
+    return () => clearTimeout(timeout);
   }, [
     secureStoreToken,
     reduxToken,

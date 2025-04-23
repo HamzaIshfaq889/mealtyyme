@@ -155,11 +155,14 @@ const Login = () => {
         await setActive({ session: createdSessionId });
         console.log("🔐 Clerk session activated");
 
-        // Send the session ID to the backend
         const data = await sendSessionIdToBackend(createdSessionId);
         console.log("Response from backend:", data);
 
-        router.push("/(tabs)/Home");
+        // ✅ Wait for next frame before navigating
+        setTimeout(() => {
+          router.push("/(tabs)/Home");
+          console.log("check 1 ");
+        }, 0); // You can also try requestAnimationFrame()
       } else {
         console.error("❌ setActive failed or undefined");
       }
@@ -169,7 +172,6 @@ const Login = () => {
       dispatch(setIsSigningIn(false));
     }
   };
-
   const handleSignApple = async () => {
     if (isSignedIn) {
       Toast.show({
@@ -250,8 +252,9 @@ const Login = () => {
   };
 
   return (
-    <View className="flex flex-col w-full h-full px-9 py-16">
-      <View className="flex flex-row justify-between items-center mb-14">
+    <View className="w-full h-full px-9 py-16 flex-col relative">
+      {/* Header row */}
+      <View className="flex-row items-center justify-between mb-8">
         <TouchableOpacity
           onPress={() => router.push("/(auth)/account-options")}
         >
@@ -261,8 +264,13 @@ const Login = () => {
             color={scheme === "dark" ? "#fff" : "#000"}
           />
         </TouchableOpacity>
-        <Text className="block font-bold text-2xl text-foreground">Login</Text>
-        <Text></Text>
+
+        <View className="flex-1 items-center">
+          <Text className="font-bold text-2xl text-primary">Login</Text>
+        </View>
+
+        {/* Invisible View to balance layout */}
+        <View style={{ width: 30 }} />
       </View>
 
       <View>
@@ -343,7 +351,7 @@ const Login = () => {
           Forgot Password?
         </Text>
       </TouchableOpacity>
-      <View className="mt-auto">
+      {/* <View className="mt-auto">
         <Text className="mb-5 text-center text-muted">or continue with</Text>
         <Button
           onPress={() => handleSignIn()}
@@ -361,7 +369,7 @@ const Login = () => {
           <Svg3 width={20} height={20} color="#fff" />
           <ButtonText>Login with Apple</ButtonText>
         </Button>
-      </View>
+      </View> */}
     </View>
   );
 };

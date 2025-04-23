@@ -32,8 +32,9 @@ const PickDiet = () => {
 
   return (
     <>
-      <View className="flex-col w-full h-full px-9 py-16">
-        <View className="flex flex-row justify-between items-center mb-20">
+      <View className="w-full h-full px-9 py-16 flex-col relative">
+        {/* Header row */}
+        <View className="flex-row items-center justify-between mb-8">
           <TouchableOpacity
             onPress={() => router.push("/(onboarding)/onboarding1")}
           >
@@ -43,11 +44,18 @@ const PickDiet = () => {
               color={scheme === "dark" ? "#fff" : "#000"}
             />
           </TouchableOpacity>
-          <Text className="block font-bold text-2xl text-primary">
-            Pick your diet
-          </Text>
-          <Text></Text>
+
+          <View className="flex-1 items-center">
+            <Text className="font-bold text-2xl text-primary">
+              Pick your diet
+            </Text>
+          </View>
+
+          {/* Invisible View to balance layout */}
+          <View style={{ width: 30 }} />
         </View>
+
+        {/* Buttons List */}
         <View>
           {buttons?.map((btn, index) => {
             const isSelected = selectedIndexes.includes(index);
@@ -56,9 +64,9 @@ const PickDiet = () => {
                 key={index}
                 onPress={() => handleSelection(index)}
               >
-                <View className="mb-4 ">
+                <View className="mb-4">
                   <Text
-                    className={`border-2 font-bold leading-6 border-border p-4 rounded-xl bg-background  ${
+                    className={`border-2 font-bold leading-6 border-border p-4 rounded-xl bg-background ${
                       isSelected
                         ? "text-background bg-secondary"
                         : "text-foreground bg-background"
@@ -71,6 +79,8 @@ const PickDiet = () => {
             );
           })}
         </View>
+
+        {/* Next Button */}
         <Button
           className="mt-2"
           action="primary"
