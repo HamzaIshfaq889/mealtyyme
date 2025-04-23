@@ -45,12 +45,7 @@ const IngredientDetails = ({
         {ingredients?.map((ing) => {
           return (
             <View
-              className="p-6 py-5 flex flex-row justify-between items-center rounded-2xl mb-4"
-              style={{
-                boxShadow: isDarkMode
-                  ? "0px 2px 12px 0px rgba(0,0,0,0.3)"
-                  : "0px 2px 12px 0px rgba(0,0,0,0.1)",
-              }}
+              className="p-6 py-5 flex flex-row justify-between items-center rounded-2xl mb-4 bg-background"
               key={ing?.ingredient?.id}
             >
               <View className="flex flex-row gap-6 items-center">

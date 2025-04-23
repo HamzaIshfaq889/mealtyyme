@@ -163,7 +163,7 @@ const RecipeDetails = ({ recipeId }: { recipeId: string | null }) => {
               </View>
             </View>
           </View>
-          <View className="px-6 pt-6 pb-20  rounded-tl-[30px] rounded-tr-[30] -mt-10 bg-background">
+          <View className="px-6 pt-6 pb-20 rounded-tl-[30px] rounded-tr-[30px] -mt-10 bg-gray-50 dark:bg-black">
             <Pressable
               className="flex flex-row justify-end py-1"
               onPress={() => bottomSheetMenuRef.current?.snapToIndex(1)}

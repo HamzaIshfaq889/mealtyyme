@@ -15,8 +15,12 @@ import { router } from "expo-router";
 import FeaturedRecipes from "./featuredRecipes";
 import { Ionicons } from "@expo/vector-icons";
 import PopularRecipes from "./popularRecipes";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Svg1 from "../../../assets/svgs/cookingfood.svg";
+import { Button, ButtonText } from "@/components/ui/button";
+import { useClerk } from "@clerk/clerk-expo";
+import { logout } from "@/redux/slices/Auth";
+import { deleteToken } from "@/redux/store/expoStore";
 
 const HomeUser = () => {
   const scheme = useColorScheme();
@@ -43,6 +47,15 @@ const HomeUser = () => {
       return "moon-outline"; // Evening
     }
   };
+  const dispatch = useDispatch();
+  const { signOut } = useClerk();
+  const handleSignOut = () => {
+    signOut();
+    dispatch(logout());
+    console.log("working");
+    deleteToken();
+    router.push("/(auth)/login");
+  };
 
   return (
     <View className="flex-1 relative">
@@ -61,7 +74,9 @@ const HomeUser = () => {
             </View>
             <Text className="text-2xl font-bold text-foreground">MealTyme</Text>
           </View>
-
+          <Button onPress={handleSignOut}>
+            <ButtonText>SIgn out</ButtonText>
+          </Button>
           <Pressable onPress={() => router.push("/(nested)/search")}>
             <Search color={scheme === "dark" ? "#fff" : "#000"} />
           </Pressable>

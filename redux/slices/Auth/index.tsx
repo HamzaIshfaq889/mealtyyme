@@ -51,6 +51,7 @@ const authSlice = createSlice({
       state.loginResponseType.email = null;
       state.loginResponseType.first_name = null;
       state.loginResponseType.role = null;
+      state.loginResponseType.role = null;
       state.loginResponseType.isAuthenticated = false;
     },
   },
