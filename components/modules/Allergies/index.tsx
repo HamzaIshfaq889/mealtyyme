@@ -47,19 +47,27 @@ const Allergies = () => {
   };
 
   return (
-    <View className="px-9 py-16 flex w-full h-full flex-col">
-      <View className="flex flex-row justify-between items-center mb-14">
-        <TouchableOpacity onPress={() => router.push("/pick-diet")}>
+    <View className="w-full h-full px-9 py-16 flex-col relative">
+      {/* Header row */}
+      <View className="flex-row items-center justify-between mb-8">
+        <TouchableOpacity
+          onPress={() => router.push("/(onboarding)/pick-diet")}
+        >
           <ArrowLeft
             width={30}
             height={30}
             color={scheme === "dark" ? "#fff" : "#000"}
           />
         </TouchableOpacity>
-        <Text className="block font-bold text-2xl text-primary">
-          Any allergies?
-        </Text>
-        <Text></Text>
+
+        <View className="flex-1 items-center">
+          <Text className="font-bold text-2xl text-primary">
+            Any Allergies?
+          </Text>
+        </View>
+
+        {/* Invisible View to balance layout */}
+        <View style={{ width: 30 }} />
       </View>
       <View className="flex-row flex-wrap">
         {allergies?.map((allergy, index) => {

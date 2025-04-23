@@ -21,18 +21,22 @@ import { Button, ButtonText } from "@/components/ui/button";
 import { useClerk } from "@clerk/clerk-expo";
 import { logout } from "@/redux/slices/Auth";
 import { deleteToken, resetOnboardStatus } from "@/redux/store/expoStore";
+import LogoAPP from "@/assets/svgs/logoapp.svg";
 
 const HomeUser = () => {
   const scheme = useColorScheme();
   const currentHour = new Date().getHours();
   const isCooking = useSelector((state: any) => state.recipe.isCooking);
+  const name = useSelector(
+    (state: any) => state.auth.loginResponseType.first_name
+  );
   const getGreeting = () => {
     if (currentHour < 12) {
-      return "Good Morning";
+      return `Good Morning ${name}`;
     } else if (currentHour < 18) {
-      return "Good Afternoon";
+      return `Good Afternoon ${name}`;
     } else {
-      return "Good Evening";
+      return `Good Evening ${name}`;
     }
   };
 
@@ -68,17 +72,23 @@ const HomeUser = () => {
           paddingTop: Platform.OS === "ios" ? 50 : 36, // Adjust for status bar
         }}
       >
-        <View className="flex flex-row justify-between items-center px-5">
-          <View className="space-y-1.5">
-            <View className="flex flex-row items-center gap-1">
-              <Ionicons name={getIconName()} size={24} color="orange" />
-              <Text className="text-sm text-foreground">{getGreeting()}</Text>
-            </View>
-            <Text className="text-2xl font-bold text-foreground">MealTyme</Text>
+        <View className="flex flex-row justify-between items-center px-5  bg-background">
+          {/* Left: Logo */}
+          <View className=" rounded-2xl bg-secondary p-1 ">
+            <LogoAPP width={29} height={29} />
           </View>
-          <Button onPress={handleSignOut}>
-            <ButtonText>SIgn out</ButtonText>
-          </Button>
+
+          {/* Center: Greeting & Title */}
+          <View className="items-center">
+            <View className="flex-row items-center ">
+              <Ionicons name={getIconName()} size={20} color="orange" />
+              <Text className="text-sm text-foreground ml-2 pt-1">
+                {getGreeting()}
+              </Text>
+            </View>
+          </View>
+
+          {/* Right: Search Icon */}
           <Pressable onPress={() => router.push("/(nested)/search")}>
             <Search color={scheme === "dark" ? "#fff" : "#000"} />
           </Pressable>
@@ -87,9 +97,9 @@ const HomeUser = () => {
 
       {/* Scrollable Content */}
       <ScrollView
-        className="flex-1 mt-2"
+        className="flex-1 "
         contentContainerStyle={{
-          paddingTop: Platform.OS === "ios" ? 130 : 110,
+          paddingTop: Platform.OS === "ios" ? 110 : 110,
         }}
         showsVerticalScrollIndicator={false}
       >

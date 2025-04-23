@@ -79,7 +79,7 @@ const AuthWrapper = () => {
       }
     }, 3000); // delay in milliseconds
 
-    return () => clearTimeout(timeout); 
+    return () => clearTimeout(timeout);
   }, [
     secureStoreToken,
     reduxToken,
@@ -91,7 +91,7 @@ const AuthWrapper = () => {
 
   // Show nothing while checking SecureStore to prevent flashes
   if (isCheckingStore || isSigningIn) {
-    return <Splash />;
+    return <Slot />;
   }
 
   return <Slot />;
