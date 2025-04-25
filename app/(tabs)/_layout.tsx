@@ -1,7 +1,8 @@
 import { Tabs } from "expo-router";
 
 import { House, CalendarDays, ShoppingCart, User } from "lucide-react-native";
-import { useColorScheme } from "react-native";
+import { useColorScheme, Platform } from "react-native";
+
 export default function TabsLayout() {
   const scheme = useColorScheme();
   return (
@@ -17,9 +18,9 @@ export default function TabsLayout() {
           backgroundColor: scheme === "dark" ? "#17181A" : "#FFFFFF",
           position: "absolute", // ensures it’s not floating
           bottom: 0, // stick to bottom
-          height: 75, // control height
+          height: Platform.OS === "android" ? 60 : 75, // control height
           paddingBottom: 10, // tweak as needed
-          paddingTop: 5,
+          paddingTop: Platform.OS === "android" ? 10 : 5,
         },
       }}
     >

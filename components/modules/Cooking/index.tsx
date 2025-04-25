@@ -1,4 +1,7 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+
+import { useDispatch, useSelector } from "react-redux";
+import { stopCooking } from "@/redux/slices/recipies";
 
 import { router } from "expo-router";
 
@@ -19,8 +22,7 @@ import BottomSheet, {
   BottomSheetView,
 } from "@gorhom/bottom-sheet";
 
-import Svg1 from "@/assets/svgs/arrow-left.svg";
-
+import { Recipe } from "@/lib/types/recipe";
 import { Button, ButtonText } from "@/components/ui/button";
 import {
   Slider,
@@ -36,36 +38,34 @@ import StepCompleted from "./stepCompleted";
 import Review from "./review";
 import AddTimerModal from "./addTimerModal";
 
-const recipeSteps = [
-  { stepNo: 1, stepDetail: "Preheat the oven to 375°F (190°C)." },
-  { stepNo: 2, stepDetail: "Chop all vegetables into bite-sized pieces." },
-  {
-    stepNo: 3,
-    stepDetail: "Heat olive oil in a pan and sauté onions for 3-4 minutes.",
-  },
-  {
-    stepNo: 4,
-    stepDetail: "Add tomatoes and spices, then simmer for 10 minutes.",
-  },
-  { stepNo: 5, stepDetail: "Serve hot with a sprinkle of fresh herbs on top." },
-  { stepNo: 6, stepDetail: "Preheat the oven to 375°F (190°C)." },
-  { stepNo: 7, stepDetail: "Chop all vegetables into bite-sized pieces." },
-  {
-    stepNo: 8,
-    stepDetail: "Heat olive oil in a pan and sauté onions for 3-4 minutes.",
-  },
-  {
-    stepNo: 9,
-    stepDetail: "Add tomatoes and spices, then simmer for 10 minutes.",
-  },
-  {
-    stepNo: 10,
-    stepDetail: "Serve hot with a sprinkle of fresh herbs on top.",
-  },
-];
-
 const Cooking = () => {
+  const dispatch = useDispatch();
+
+  const currentRecipe: Recipe = useSelector(
+    (state: any) => state.recipe.cookingRecipe
+  );
+  const isCooking: boolean = useSelector(
+    (state: any) => state.recipe.isCooking
+  );
+
+  // const dispatch = useDispatch();
+  // const hasStartedRef = useRef(false);
+
+  // useEffect(() => {
+  //   if (!hasStartedRef.current) {
+  //     hasStartedRef.current = true;
+
+  //     if (isCooking && cookingRecipe) {
+  //       dispatch(setCurrentRecipe(cookingRecipe));
+  //     } else if (currentRecipe) {
+  //       dispatch(startCooking(currentRecipe));
+  //     }
+  //   }
+  // }, [dispatch, isCooking, currentRecipe, cookingRecipe]);
+
   const scheme = useColorScheme();
+  const isDarkMode = scheme === "dark";
+
   const bottomSheetRef = useRef<BottomSheet>(null);
   const reviewBottomSheetRef = useRef<BottomSheet>(null);
 
@@ -77,14 +77,14 @@ const Cooking = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [isAllStepsComplete, setISAllStepsComplete] = useState(false);
 
-  const progress = (currentStep / recipeSteps.length) * 100;
+  const progress = (currentStep / currentRecipe?.instructions.length) * 100;
 
   const toggleTimer = () => {
     setIsPlaying((prev) => !prev);
   };
 
   const handleNextStep = () => {
-    if (currentStep < recipeSteps.length) {
+    if (currentStep < currentRecipe?.instructions.length) {
       setCurrentStep(currentStep + 1);
       return;
     }
@@ -97,26 +97,41 @@ const Cooking = () => {
     }
   };
 
+  const handleStopCooking = () => {
+    dispatch(stopCooking());
+    router.push("/(tabs)/Home");
+  };
+
+  console.log("currentRecipe", currentRecipe?.title);
+
   return (
     <View className="flex flex-col w-full h-full px-9 py-16 bg-background">
       <View className="flex flex-row justify-between items-center mb-12">
-        <TouchableOpacity onPress={() => router.push("/(tabs)/Home")}>
+        <TouchableOpacity onPress={() => router.back()}>
           <ArrowLeft
             width={30}
             height={30}
             color={scheme === "dark" ? "#fff" : "#000"}
           />
         </TouchableOpacity>
-        <Text className="block font-bold text-2xl text-foreground">
-          Healthy Taco Salad
-        </Text>
+        <View>
+          <Text
+            numberOfLines={1}
+            ellipsizeMode="tail"
+            className="flex-1 mx-4 font-bold text-2xl text-foreground w-48"
+          >
+            {currentRecipe?.title}
+          </Text>
+        </View>
+
         <Pressable onPress={() => bottomSheetRef.current?.snapToIndex(2)}>
-          <Logs color="#000" />
+          <Logs color={isDarkMode ? "#fff" : "#000"} />
         </Pressable>
       </View>
+
       {!isAllStepsComplete && (
         <View>
-          <Step step={recipeSteps[currentStep - 1]} />
+          <Step step={currentRecipe?.instructions[currentStep - 1]} />
         </View>
       )}
 
@@ -204,7 +219,7 @@ const Cooking = () => {
           <Text className="font-bold text-secondary leaidng-5 text-lg">
             Step
           </Text>
-          <Text className="font-bold text-secondary leaidng-5 text-lg">{`${currentStep} of ${recipeSteps?.length}`}</Text>
+          <Text className="font-bold text-secondary leaidng-5 text-lg">{`${currentStep} of ${currentRecipe?.instructions?.length}`}</Text>
         </View>
 
         <View>
@@ -246,10 +261,9 @@ const Cooking = () => {
             <Button
               action="secondary"
               className="w-full h-16"
-              onPress={handleNextStep}
-              disabled={currentStep === recipeSteps.length}
+              onPress={handleStopCooking}
             >
-              <ButtonText>Completed</ButtonText>
+              <ButtonText>Complete Cooking</ButtonText>
             </Button>
           </View>
         )}
@@ -270,6 +284,12 @@ const Cooking = () => {
         index={-1}
         snapPoints={["20%", "50%", "80%"]}
         backdropComponent={BottomSheetBackdrop}
+        handleStyle={{
+          backgroundColor: isDarkMode ? "#1f242a" : "#fff",
+        }}
+        handleIndicatorStyle={{
+          backgroundColor: isDarkMode ? "#888" : "#ccc",
+        }}
         onChange={(index) => {
           if (index === -1 || index === 0) {
             bottomSheetRef.current?.close();
@@ -277,7 +297,7 @@ const Cooking = () => {
         }}
       >
         <BottomSheetScrollView>
-          <AllSteps steps={recipeSteps} />
+          <AllSteps steps={currentRecipe?.instructions} />
         </BottomSheetScrollView>
       </BottomSheet>
 
@@ -290,6 +310,12 @@ const Cooking = () => {
           if (index === -1 || index === 0) {
             reviewBottomSheetRef.current?.close();
           }
+        }}
+        handleStyle={{
+          backgroundColor: isDarkMode ? "#1f242a" : "#fff",
+        }}
+        handleIndicatorStyle={{
+          backgroundColor: isDarkMode ? "#888" : "#ccc",
         }}
       >
         <BottomSheetView>

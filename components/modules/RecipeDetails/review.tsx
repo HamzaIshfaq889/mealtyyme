@@ -1,11 +1,14 @@
 import React from "react";
-import { Image, View } from "react-native";
+import { Image, useColorScheme, View } from "react-native";
 import { Text } from "react-native";
 
 import Stars from "@/assets/svgs/star.svg";
 import { ScrollView } from "react-native-gesture-handler";
 
 const Review = () => {
+  const scheme = useColorScheme();
+  const isDarkTheme = scheme === "dark";
+
   const ReviewDetails = [
     {
       id: 1,
@@ -19,13 +22,40 @@ const Review = () => {
       date: "July, 23 2023",
       reviewText: "Kid-approved",
     },
+    {
+      id: 3,
+      name: "Daisy Murphy",
+      date: "July, 23 2023",
+      reviewText: "Easy and Tasty",
+    },
+    {
+      id: 4,
+      name: "Maiki",
+      date: "July, 23 2023",
+      reviewText: "Kid-approved",
+    },
+    {
+      id: 5,
+      name: "Daisy Murphy",
+      date: "July, 23 2023",
+      reviewText: "Easy and Tasty",
+    },
+    {
+      id: 6,
+      name: "Maiki",
+      date: "July, 23 2023",
+      reviewText: "Kid-approved",
+    },
   ];
 
   return (
     <ScrollView
-      className="py-6 px-7 h-80 rounded-3xl"
+      className="pt-6 px-6 h-80 mt-8 rounded-3xl bg-accent"
+      showsVerticalScrollIndicator={false}
       style={{
-        boxShadow: "0px 2px 12px 0px rgba(0,0,0,0.1)",
+        boxShadow: isDarkTheme
+          ? "0px 2px 12px 0px rgba(0,0,0,0.4)"
+          : "0px 2px 12px 0px rgba(0,0,0,0.1)",
       }}
     >
       <Text className="text-primary font-bold text-2xl leading-6 mb-4">
@@ -36,7 +66,9 @@ const Review = () => {
         return (
           <View
             key={index}
-            className={`${index == ReviewDetails.length - 1 ? "" : " mb-5"}`}
+            className={`${
+              index == ReviewDetails.length - 1 ? "mb-12" : " mb-5"
+            }`}
           >
             <View className="flex flex-row justify-between items-center mb-5">
               <View className="flex flex-row gap-4">

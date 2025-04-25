@@ -9,12 +9,34 @@ import { Button, ButtonText } from "@/components/ui/button";
 
 import Cookbooks from "./Cookbooks";
 import Savedrecipes from "./SavedRecipes";
+import { deleteToken, resetOnboardStatus } from "@/redux/store/expoStore";
+import { setCredentials } from "@/redux/slices/Auth";
+import { useDispatch } from "react-redux";
+import { useClerk } from "@clerk/clerk-expo";
 
 const Account = () => {
+  const { signOut } = useClerk();
   const scheme = useColorScheme();
+  const dispatch = useDispatch();
   const [activeTab, setActiveTab] = useState<"cookbooks" | "savedrecipes">(
     "cookbooks"
   );
+
+  const clearToken = () => {
+    deleteToken();
+    dispatch(
+      setCredentials({
+        access: null,
+        refresh: null,
+        email: null,
+        first_name: null,
+        role: null,
+        isAuthenticated: false,
+      })
+    );
+    signOut();
+    console.log("done");
+  };
 
   return (
     <View className="w-full h-full px-6 py-16 ">
@@ -47,7 +69,8 @@ const Account = () => {
           </View>
         </View>
 
-        <Pressable onPress={() => router.push("/(nested)/edit-profile")}>
+        {/* <Pressable onPress={() => router.push("/(nested)/edit-profile")}> */}
+        <Pressable onPress={() => clearToken()}>
           <View className="flex flex-row gap-0.5 mr-2">
             <UserPen color={scheme === "dark" ? "#fff" : "#000"} size={30} />
           </View>

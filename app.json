@@ -1,19 +1,32 @@
 {
   "expo": {
-    "name": "mealtyyme",
-    "slug": "mealtyyme",
+    "name": "Mealtyme",
+    "slug": "mealtyme",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/global-icon.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.mealtyme.app",
+      "buildNumber": "1",
+      "infoPlist": {
+        "CFBundleURLTypes": [
+          {
+            "CFBundleURLSchemes": [
+              "com.googleusercontent.apps.878398669630-qnsp8rps2sqrouutee53lapnmcj5u7e4"
+            ]
+          }
+        ]
+      }
     },
     "android": {
+      "package": "com.mealtyme.app",
+      "versionCode": 5,
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "foregroundImage": "./assets/images/android-icon.png",
         "backgroundColor": "#ffffff"
       }
     },
@@ -27,15 +40,24 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/splash-icon.png",
+          "image": "./assets/images/global-icon.png",
           "imageWidth": 200,
           "resizeMode": "contain",
-          "backgroundColor": "#ffffff"
+          "backgroundColor": "#00C3FF"
         }
       ]
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "a86e20a1-d770-49f4-95bf-31f6fdc36e10"
+      }
+    },
+    "owner": "mealtyme"
   }
 }

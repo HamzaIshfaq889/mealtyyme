@@ -9,7 +9,7 @@ export default function RootLayout() {
         <Stack.Screen name="account-options" />
         <Stack.Screen name="forget-password" />
         <Stack.Screen name="login" />
-        <Stack.Screen name="otp" />
+        {/* <Stack.Screen name="otp" /> */}
         <Stack.Screen name="reset-password" />
         <Stack.Screen name="signup" />
       </Stack>

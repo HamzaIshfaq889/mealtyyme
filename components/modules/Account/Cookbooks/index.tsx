@@ -37,9 +37,9 @@ const Cookbooks = () => {
             />
           </View>
         </View>
-        <Pressable>
+        {/* <Pressable>
           <Text className="text-secondary pr-5 font-bold">See All</Text>
-        </Pressable>
+        </Pressable> */}
       </View>
       <FlatList
         data={RecipeData}

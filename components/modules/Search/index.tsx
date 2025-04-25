@@ -1,6 +1,7 @@
-import React, { useState, useRef, useCallback, useMemo } from "react";
+"use client";
 
-import SelectDropdown from "react-native-select-dropdown";
+import { useState, useRef, useCallback, useMemo, useEffect } from "react";
+import { useRecipesQuery } from "@/redux/queries/recipes/useRecipeQuery";
 
 import { router } from "expo-router";
 
@@ -11,117 +12,95 @@ import {
   TouchableOpacity,
   useColorScheme,
   View,
+  Image,
 } from "react-native";
 import {
   SearchIcon,
-  ChevronDown,
   ArrowRight,
   SlidersHorizontal,
   ArrowLeft,
+  Clock,
+  Flame,
+  Star,
 } from "lucide-react-native";
 
-import Svg1 from "@/assets/svgs/arrow-left.svg";
-
 import { Input, InputField, InputIcon, InputSlot } from "@/components/ui/input";
-import { Button, ButtonText } from "@/components/ui/button";
+import BottomSheet from "@gorhom/bottom-sheet";
 
-import BottomSheet, {
-  BottomSheetBackdrop,
-  BottomSheetFlatList,
-} from "@gorhom/bottom-sheet";
+import { RecipeSkeletonItem } from "../Skeletons";
+import Filters from "./filters";
+import { truncateChars } from "@/utils";
 
-import Slider from "rn-range-slider";
-import Thumb from "@/components/ui/slider/Thumb";
-import Label from "@/components/ui/slider/Label";
-import Rail from "@/components/ui/slider/Rail";
-import RailSelected from "@/components/ui/slider/RailSelected";
-import Notch from "@/components/ui/slider/Notch";
-
-const options = ["Categories", "Ingredients"];
-
-const categories = [
-  { id: "1", name: "Relax Dinner" },
-  { id: "2", name: "Kids Favourite" },
-  { id: "3", name: "Family Meals" },
-  { id: "4", name: "Quick Bites" },
-  { id: "5", name: "Relax Dinner" },
-  { id: "6", name: "Kids Favourite" },
-  { id: "7", name: "Family Meals" },
-  { id: "8", name: "Quick Bites" },
-];
-
-const savedRecipies = [
-  {
-    id: 1,
-    recipiesImage: "",
-    name: " Easy homemade beef burger",
-    chef: "James spader",
-  },
-  {
-    id: 2,
-    recipiesImage: "",
-    name: " Easy homemade beef burger",
-    chef: "James spader",
-  },
-  {
-    id: 3,
-    recipiesImage: "",
-    name: " Easy homemade beef burger",
-    chef: "James spader",
-  },
-];
-
-const recipesType = ["Salad", "Egg", "Cakes", "Chicken", "Meals", "Vegetable"];
 const Search = () => {
   const scheme = useColorScheme();
   const bottomSheetRef = useRef<BottomSheet>(null);
 
-  const [selectedIndexes, setSelectedIndexes] = useState<number[]>([]);
+  const [low, setLow] = useState<number>(0);
+  const [high, setHigh] = useState<number>(1000);
+  const [categoriesIds, setCategoriesIds] = useState<number[]>([]);
+  const [cusinesIds, setCuisinesIds] = useState<number[]>([]);
+  const [dietIds, setDietIds] = useState<number[]>([]);
+  const [inputValue, setInputValue] = useState<string>("");
   const [searchValue, setSearchValue] = useState<string>("");
-  const [selected, setSelected] = useState(options[0]);
-  const [low, setLow] = useState<number>(25);
-  const [high, setHigh] = useState<number>(75);
+  const [totalRecipes, setTotalRecipes] = useState(0);
 
-  const renderRail = useCallback(() => <Rail />, []);
-  const renderRailSelected = useCallback(() => <RailSelected />, []);
-  const renderLabel = useCallback((value: any) => <Label text={value} />, []);
-  const renderNotch = useCallback(() => <Notch />, []);
-  const renderThumb = useCallback(
-    (name: "high" | "low") => <Thumb name={name} />,
-    []
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading,
+    refetch,
+  } = useRecipesQuery(
+    searchValue,
+    categoriesIds,
+    cusinesIds,
+    dietIds,
+    low,
+    high
   );
 
-  const handleValueChange = useCallback((low: number, high: number) => {
-    setLow(low);
-    setHigh(high);
-  }, []);
+  const flattenedRecipes = useMemo(
+    () => data?.pages.flatMap((page) => page.results) ?? [],
+    [data]
+  );
 
-  const snapPoints = useMemo(() => ["80%"], []);
-
-  const handleSelection = (index: number) => {
-    if (selectedIndexes.includes(index)) {
-      setSelectedIndexes(selectedIndexes.filter((i) => i !== index));
-    } else {
-      setSelectedIndexes([...selectedIndexes, index]);
+  const handleLoadMore = useCallback(() => {
+    if (hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
     }
-  };
+  }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
+
+  useEffect(() => {
+    if (data?.pages?.[0]?.total) {
+      setTotalRecipes(data.pages[0].total);
+    }
+  }, [data]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setSearchValue(inputValue);
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [inputValue]);
 
   return (
     <>
-      <View className="bg-background w-full h-full">
-        <View className="px-6 pt-16 pb-5">
-          <View className="flex flex-row justify-between items-center mb-8">
-            <TouchableOpacity onPress={() => router.push("/(tabs)/Home")}>
-              <ArrowLeft
-                width={30}
-                height={30}
-                color={scheme === "dark" ? "#fff" : "#000"}
-              />
-            </TouchableOpacity>
-            <Text className="block font-bold text-2xl text-foreground">
-              Search
-            </Text>
-            <Text></Text>
+      <View className="w-full h-full">
+        <View className="px-6 pt-16 pb-5 relative">
+          <TouchableOpacity
+            onPress={() => router.push("/(tabs)/Home")}
+            className="absolute left-6 top-16 z-10"
+          >
+            <ArrowLeft
+              width={30}
+              height={30}
+              color={scheme === "dark" ? "#fff" : "#000"}
+            />
+          </TouchableOpacity>
+          <View className="flex items-center">
+            <Text className="font-bold text-2xl text-foreground">Search</Text>
           </View>
           <View className="flex flex-row items-center justify-between gap-2.5">
             <Input className="basis-4/5 my-3.5">
@@ -131,251 +110,150 @@ const Search = () => {
               <InputField
                 type="text"
                 placeholder="Search..."
-                value={searchValue}
-                onChangeText={(text) => setSearchValue(text)}
+                value={inputValue}
+                onChangeText={setInputValue}
               />
             </Input>
 
             <Pressable
-              onPress={() => bottomSheetRef.current?.snapToIndex(1)} // opens at 50%
+              onPress={() => bottomSheetRef.current?.snapToIndex(1)}
               className="bg-secondary flex items-center px-5 py-5 rounded-2xl"
             >
               <SlidersHorizontal color="#fff" />
             </Pressable>
           </View>
         </View>
-        <View className="pl-6 mb-6">
-          <FlatList
-            horizontal
-            data={categories}
-            keyExtractor={(item) => item.id}
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{ gap: 12 }}
-            renderItem={({ item, index }) => {
-              const isFirstItem = index === 0;
-              return isFirstItem ? (
-                <>
-                  <SelectDropdown
-                    data={options}
-                    defaultValue={selected}
-                    onSelect={(selectedItem) => {
-                      setSelected(selectedItem);
+
+        <View className="px-4">
+          <View className="flex-row justify-between items-center mb-4">
+            <Text className="text-xl font-bold text-foreground">Recipes</Text>
+            <Text className="text-xl font-bold text-foreground">
+              {totalRecipes}
+            </Text>
+          </View>
+
+          {searchValue && flattenedRecipes.length === 0 && !isLoading ? (
+            <View className="flex flex-col justify-center items-center p-4 mt-10">
+              <Text className="text-2xl font-semibold text-center text-primary">
+                No recipes found for "{searchValue}"
+              </Text>
+              <Text className="text-center mt-2 text-primary">
+                Try adjusting your search or filters
+              </Text>
+            </View>
+          ) : isLoading ? (
+            <View className="mt-3 space-y-6">
+              {[1, 2, 3, 4].map((item) => {
+                return <RecipeSkeletonItem key={item} />;
+              })}
+            </View>
+          ) : (
+            <FlatList
+              data={flattenedRecipes}
+              keyExtractor={(item) => item?.id.toString()}
+              contentContainerStyle={{
+                paddingHorizontal: 2,
+                paddingBottom: 400,
+              }}
+              onEndReached={handleLoadMore}
+              onEndReachedThreshold={0.4}
+              showsVerticalScrollIndicator={false}
+              renderItem={({ item: recipe }) => (
+                <Pressable
+                  onPress={() => router.push(`/recipe/${recipe.id}` as const)}
+                >
+                  <View
+                    className="flex flex-row justify-between items-center p-4 rounded-2xl mb-5 bg-background"
+                    style={{
+                      shadowColor: "#000",
+                      shadowOffset: { width: 0, height: 4 },
+                      shadowOpacity: 0.05,
+                      shadowRadius: 6,
+                      elevation: 3,
                     }}
-                    renderButton={(selectedItem, isOpened) => (
-                      <View className="flex-row items-center gap-4 px-6 py-2 bg-secondary rounded-full">
-                        <Text className="flex-1 text-lg leading-6 font-semibold text-primary">
-                          {selectedItem || "Select"}
-                        </Text>
-                        {isOpened ? (
-                          <ChevronDown color="#fff" size={22} />
-                        ) : (
-                          <ChevronDown color="#fff" size={22} />
+                  >
+                    <View className="flex flex-row gap-4 flex-1">
+                      <View className="relative">
+                        <Image
+                          source={{ uri: recipe?.image_url }}
+                          className="w-24 h-24 rounded-xl"
+                          resizeMode="cover"
+                        />
+                        {recipe?.is_featured && (
+                          <View className="absolute top-1 right-1 bg-yellow-400 p-1 rounded-full">
+                            <Star color="#fff" size={14} />
+                          </View>
                         )}
                       </View>
-                    )}
-                    renderItem={(selectedItem, item, isSelected) => {
-                      return (
-                        <View
-                          className={`px-4 py-2 ${
-                            isSelected ? "bg-secondary" : "bg-accent "
-                          }`}
-                        >
+
+                      <View className="flex flex-col justify-between flex-1">
+                        <View>
                           <Text
-                            className={`text-lg text-black ${
-                              isSelected
-                                ? "!text-background"
-                                : "text-foreground"
-                            }`}
+                            className="font-bold text-lg mb-1 text-primary"
+                            numberOfLines={1}
                           >
-                            {selectedItem}
+                            {recipe?.title}
                           </Text>
+
+                          <View className="flex flex-row items-center gap-2 mb-2">
+                            <Image
+                              source={{ uri: recipe?.created_by.image_url }}
+                              className="w-5 h-5 rounded-full"
+                            />
+                            <Text className="text-muted text-sm">
+                              {recipe?.created_by.first_name}{" "}
+                              {recipe?.created_by.last_name}
+                            </Text>
+                          </View>
                         </View>
-                      );
-                    }}
-                    dropdownStyle={{
-                      borderRadius: 18,
-                      backgroundColor: "#f1f3f5",
-                      marginTop: -25,
-                    }}
-                    showsVerticalScrollIndicator={false}
-                  />
-                  <View className="h-[80%] bg-secondary w-0.5 ml-4 mt-2"></View>
-                  <Button
-                    action="secondary"
-                    className={`rounded-full ml-4 px-10 py-2 bg-accent
-                                        `}
-                  >
-                    <ButtonText
-                      className={`text-base leading-6 !text-primary font-semibold`}
-                    >
-                      {item.name}
-                    </ButtonText>
-                  </Button>
-                </>
-              ) : (
-                <Button
-                  action="secondary"
-                  className={`rounded-full px-10 py-2 bg-accent`}
-                >
-                  <ButtonText
-                    className={`text-base leading-6 !text-primary font-semibold`}
-                  >
-                    {item.name}
-                  </ButtonText>
-                </Button>
-              );
-            }}
-          />
-        </View>
-        <View className="px-6">
-          <View className="flex-row justify-between items-center mb-4">
-            <Text className="text-xl font-bold text-foreground">
-              Popular Recipes
-            </Text>
-            <Pressable>
-              <Text className="text-secondary pr-5 font-bold">View All</Text>
-            </Pressable>
-          </View>
-          <View className="mt-3 space-y-10">
-            {savedRecipies.map((recipe) => {
-              return (
-                <View
-                  className="flex flex-row justify-between items-center py-5 px-3 rounded-2xl mb-5"
-                  style={{
-                    boxShadow: "0px 2px 12px 0px rgba(0,0,0,0.1)",
-                  }}
-                  key={recipe?.id}
-                >
-                  <View className="flex flex-row gap-4">
-                    {/* Will be replavce by image if the recipie */}
-                    <View className="w-24 h-[80px] rounded-2xl bg-gray3"></View>
-                    <View className="flex flex-col justify-between max-w-40">
-                      <Text className="font-bold text-lg mb-1 leading-6 text-primary">
-                        {recipe?.name}
-                      </Text>
-                      <View className="flex flex-row gap-2">
-                        <View className="bg-gray3 w-1 h-1 p-3.5 rounded-full"></View>
-                        <Text className="text-muted text-base ">
-                          {recipe?.chef}
-                        </Text>
+
+                        <View className="flex flex-row gap-3">
+                          <View className="flex flex-row items-center gap-1">
+                            <Clock color="#6b7280" size={16} />
+                            <Text className="text-muted text-sm">
+                              {recipe?.ready_in_minutes} min
+                            </Text>
+                          </View>
+
+                          <View className="flex flex-row items-center gap-1">
+                            <Flame color="#6b7280" size={16} />
+                            <Text className="text-muted text-sm">
+                              {recipe?.calories} kcal
+                            </Text>
+                          </View>
+                        </View>
                       </View>
                     </View>
+
+                    <View className="ml-2 p-2 bg-secondary rounded-full">
+                      <ArrowRight color="#fff" size={18} />
+                    </View>
                   </View>
-                  <View className="mr-2 p-0.5 bg-secondary rounded-md">
-                    <ArrowRight color="#fff" size={22} />
+                </Pressable>
+              )}
+              ListFooterComponent={
+                isFetchingNextPage ? (
+                  <View className="mt-3 space-y-6">
+                    {[1, 2].map((item) => (
+                      <RecipeSkeletonItem key={`footer-skeleton-${item}`} />
+                    ))}
                   </View>
-                </View>
-              );
-            })}
-          </View>
+                ) : null
+              }
+            />
+          )}
         </View>
-        <BottomSheet
-          ref={bottomSheetRef}
-          index={-1}
-          snapPoints={snapPoints}
-          backdropComponent={BottomSheetBackdrop}
-          enablePanDownToClose={true}
-          enableContentPanningGesture={false}
-          enableHandlePanningGesture={true}
-          onChange={(index) => {
-            if (index === -1 || index === 0) {
-              bottomSheetRef.current?.close();
-            }
-          }}
-        >
-          <View className="bg-background w-full h-full">
-            <Text className="font-bold text-2xl leading-8 text-foreground text-center mb-4 mt-8">
-              Filter
-            </Text>
-            <Text className="text-xl font-bold text-foreground px-6 mb-6">
-              Category
-            </Text>
 
-            <View className="mb-6">
-              <BottomSheetFlatList
-                data={categories}
-                keyExtractor={(item) => item.id}
-                horizontal
-                contentContainerStyle={{ gap: 12, paddingLeft: 24 }}
-                showsHorizontalScrollIndicator={false}
-                renderItem={({ item }) => (
-                  <Button
-                    action="secondary"
-                    className={`rounded-full px-10 py-2 bg-gray4`}
-                  >
-                    <ButtonText
-                      className={`!text-lg leading-6 !text-primary !font-medium`}
-                    >
-                      {item.name}
-                    </ButtonText>
-                  </Button>
-                )}
-              />
-            </View>
-
-            <View className="px-6 mb-6">
-              <Text className="text-xl font-bold text-foreground mb-6">
-                Recipe Type
-              </Text>
-
-              <View className="flex flex-row flex-wrap justify-between ">
-                {recipesType?.map((rec, index) => {
-                  const isSelected = selectedIndexes.includes(index);
-
-                  return (
-                    <TouchableOpacity
-                      key={index}
-                      className={`basis-[31%] rounded-full bg-gray4 py-3 px-3 flex items-center justify-center mb-4 ${
-                        isSelected ? "bg-secondary" : "bg-gray4"
-                      }`}
-                      onPress={() => handleSelection(index)}
-                    >
-                      <Text
-                        className={`text-center text-foreground leading-6 font-medium ${
-                          isSelected ? "!text-background" : "!text-foreground"
-                        }`}
-                      >
-                        {rec}
-                      </Text>
-                    </TouchableOpacity>
-                  );
-                })}
-              </View>
-            </View>
-
-            <View className="px-6 mb-10">
-              <View className="flex flex-row justify-between items-center mb-8">
-                <Text className="text-xl font-bold text-foreground">
-                  Calories Range
-                </Text>
-                <Text className="text-foreground text-lg">{`${low}-${high} KCal`}</Text>
-              </View>
-              <Slider
-                min={0}
-                max={300}
-                step={1}
-                floatingLabel
-                renderThumb={renderThumb}
-                renderRail={renderRail}
-                renderRailSelected={renderRailSelected}
-                renderLabel={renderLabel}
-                renderNotch={renderNotch}
-                onValueChanged={handleValueChange}
-              />
-            </View>
-
-            <View className="px-6">
-              <Button action="secondary" className="mb-3 !h-20">
-                <ButtonText>Apply Filters</ButtonText>
-              </Button>
-              <Button className="bg-background">
-                <ButtonText className="!text-secondary">
-                  Clear Filters
-                </ButtonText>
-              </Button>
-            </View>
-          </View>
-        </BottomSheet>
+        <Filters
+          bottomSheetRef={bottomSheetRef}
+          categoriesIds={categoriesIds}
+          setCategoriesIds={setCategoriesIds}
+          cusinesIds={cusinesIds}
+          setCuisinesIds={setCuisinesIds}
+          dietIds={dietIds}
+          setDietIds={setDietIds}
+          refetch={refetch}
+        />
       </View>
     </>
   );

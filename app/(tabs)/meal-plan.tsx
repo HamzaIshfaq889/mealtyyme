@@ -1,10 +1,9 @@
 import React from "react";
 
-import { MealPlan } from "@/components/modules";
-
+import ComingSoonOverlay from "@/components/modules/ComingSoonOverlay";
 
 const MealPlanScreen = () => {
-  return <MealPlan />;
+  return <ComingSoonOverlay />;
 };
 
 export default MealPlanScreen;

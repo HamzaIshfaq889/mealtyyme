@@ -4,6 +4,16 @@ export interface DishType {
   created_by: number;
 }
 
+export type User = {
+  email: string;
+  password: string;
+  role: string;
+  dob: string;
+  first_name: string;
+  last_name: string;
+  image_url: string;
+};
+
 export interface Cuisine {
   id: number;
   name: string;
@@ -34,7 +44,8 @@ export interface Recipe {
   is_featured: boolean;
   created_at: string;
   cuisines: Cuisine[];
-  created_by: number;
+  created_by: User;
+  calories: number;
 }
 
 export interface RecipeResponse {

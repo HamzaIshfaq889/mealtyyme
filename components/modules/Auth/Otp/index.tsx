@@ -114,8 +114,9 @@ const Otp = () => {
   };
 
   return (
-    <View className="flex flex-col w-full h-full px-9 py-16">
-      <View className="flex flex-row justify-between items-center mb-14">
+    <View className="w-full h-full px-9 py-16 flex-col relative">
+      {/* Header row */}
+      <View className="flex-row items-center justify-between mb-8">
         <TouchableOpacity
           onPress={() => router.push("/(auth)/forget-password")}
         >
@@ -125,8 +126,13 @@ const Otp = () => {
             color={scheme === "dark" ? "#fff" : "#000"}
           />
         </TouchableOpacity>
-        <Text className="block font-bold text-2xl text-primary">Otp</Text>
-        <Text></Text>
+
+        <View className="flex-1 items-center">
+          <Text className="font-bold text-2xl text-primary">OTP</Text>
+        </View>
+
+        {/* Invisible View to balance layout */}
+        <View style={{ width: 30 }} />
       </View>
       <View>
         <FormControl isInvalid={!!errors.otp} size="md" className="mb-1">

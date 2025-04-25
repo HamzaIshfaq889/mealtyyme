@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect } from "react";
 
 import { Text, View } from "react-native";
 
@@ -6,19 +6,11 @@ import Dish from "@/assets/svgs/Dish.svg";
 import Confetti from "@/assets/svgs/confetti.svg";
 import ConfettiRight from "@/assets/svgs/confetti-right.svg";
 
-import BottomSheet, {
-  BottomSheetBackdrop,
-  BottomSheetScrollView,
-  BottomSheetView,
-} from "@gorhom/bottom-sheet";
-
 type StepCompletedProps = {
   reviewBottomSheetRef: any;
 };
 
 const StepCompleted = ({ reviewBottomSheetRef }: StepCompletedProps) => {
-  const bottomSheetRef = useRef<BottomSheet>(null);
-
   useEffect(() => {
     reviewBottomSheetRef.current?.snapToIndex(2);
   }, []);

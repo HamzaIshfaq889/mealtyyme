@@ -8,7 +8,7 @@ import { router } from "expo-router";
 
 import { useDispatch } from "react-redux";
 
-import { setCredentials } from "@/redux/slices/Auth";
+import { setCredentials, setIsSigningIn } from "@/redux/slices/Auth";
 
 import {
   FormControl,
@@ -22,18 +22,29 @@ import { Input, InputField, InputIcon, InputSlot } from "@/components/ui/input";
 import { EyeIcon, EyeOffIcon, LockIcon, MailIcon } from "@/components/ui/icon";
 import { Spinner } from "@/components/ui/spinner";
 
-import Svg1 from "@/assets/svgs/arrow-left.svg";
 import Svg2 from "@/assets/svgs/google.svg";
-import Svg3 from "@/assets/svgs/facebook.svg";
+import Svg3 from "@/assets/svgs/apple-14.svg";
 import { LoginResponseTypes } from "@/lib/types";
 
 import { loginUser } from "@/services/authApi";
 import { setAuthToken } from "@/lib/apiClient";
 import { ArrowLeft } from "lucide-react-native";
+import * as WebBrowser from "expo-web-browser";
+import { useAuth, useSSO } from "@clerk/clerk-expo";
+import {  useClerk } from "@clerk/clerk-react";
+import { saveToken } from "@/redux/store/expoStore";
+
+import { AppConfig } from "@/constants";
+WebBrowser.maybeCompleteAuthSession();
 
 const Login = () => {
+  const { startSSOFlow } = useSSO();
+  const { signOut } = useClerk();
+  const { isSignedIn } = useAuth();
+
   const scheme = useColorScheme();
   const dispatch = useDispatch();
+
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
@@ -102,6 +113,9 @@ const Login = () => {
 
       setAuthToken(response.access);
 
+      if (response.access) {
+        await saveToken(response.access);
+      }
       dispatch(setCredentials({ ...response, isAuthenticated: true }));
       Toast.show({
         type: "success",
@@ -123,9 +137,126 @@ const Login = () => {
     }
   };
 
+  const handleSignIn = async () => {
+    if (isSignedIn) {
+      Toast.show({
+        type: "error",
+        text1: "You are already Signed in",
+      });
+      return;
+    }
+
+    dispatch(setIsSigningIn(true));
+
+    try {
+      const { createdSessionId, setActive } = await startSSOFlow({
+        strategy: "oauth_google",
+      });
+
+      if (createdSessionId && setActive) {
+        await setActive({ session: createdSessionId });
+        console.log("🔐 Clerk session activated");
+
+        const data = await sendSessionIdToBackend(createdSessionId);
+        console.log("Response from backend:", data);
+
+        // ✅ Wait for next frame before navigating
+        setTimeout(() => {
+          router.push("/(tabs)/Home");
+          console.log("check 1 ");
+        }, 0); // You can also try requestAnimationFrame()
+      } else {
+        console.error("❌ setActive failed or undefined");
+      }
+    } catch (error) {
+      console.error("SSO error:", error);
+    } finally {
+      dispatch(setIsSigningIn(false));
+    }
+  };
+  const handleSignApple = async () => {
+    if (isSignedIn) {
+      Toast.show({
+        type: "error",
+        text1: "You are already Signed in",
+      });
+      return;
+    }
+
+    dispatch(setIsSigningIn(true));
+
+    try {
+      const { createdSessionId, setActive } = await startSSOFlow({
+        strategy: "oauth_apple",
+      });
+
+      if (createdSessionId && setActive) {
+        await setActive({ session: createdSessionId });
+        console.log("🔐 Clerk session activated");
+
+        // Send the session ID to the backend
+        const data = await sendSessionIdToBackend(createdSessionId);
+        console.log("Response from backend:", data);
+
+        router.push("/(tabs)/Home");
+      } else {
+        console.error("❌ setActive failed or undefined");
+      }
+    } catch (error) {
+      console.error("SSO error:", error);
+    } finally {
+      dispatch(setIsSigningIn(false));
+    }
+  };
+
+  const sendSessionIdToBackend = async (sessionId: string) => {
+    try {
+      if (!sessionId) {
+        console.error("No session ID received from Clerk");
+        return;
+      }
+
+      const response = await fetch(
+        `${AppConfig.API_URL}auth/clerk/`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            token: sessionId,
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setAuthToken(data.access);
+        dispatch(setCredentials({ ...data, isAuthenticated: true }));
+        if (data.access) {
+          await saveToken(data.access);
+        }
+
+        Toast.show({
+          type: "success",
+          text1: "Login Successful!",
+        });
+      } else {
+        console.error("❌ Backend error:", data);
+      }
+    } catch (err) {
+      console.error("Error sending session ID to backend:", err);
+    }
+  };
+  const handleSignOut = () => {
+    signOut();
+  };
+
   return (
-    <View className="flex flex-col w-full h-full px-9 py-16">
-      <View className="flex flex-row justify-between items-center mb-14">
+    <View className="w-full h-full px-9 py-16 flex-col relative">
+      {/* Header row */}
+      <View className="flex-row items-center justify-between mb-8">
         <TouchableOpacity
           onPress={() => router.push("/(auth)/account-options")}
         >
@@ -135,8 +266,13 @@ const Login = () => {
             color={scheme === "dark" ? "#fff" : "#000"}
           />
         </TouchableOpacity>
-        <Text className="block font-bold text-2xl text-foreground">Login</Text>
-        <Text></Text>
+
+        <View className="flex-1 items-center">
+          <Text className="font-bold text-2xl text-primary">Login</Text>
+        </View>
+
+        {/* Invisible View to balance layout */}
+        <View style={{ width: 30 }} />
       </View>
 
       <View>
@@ -217,17 +353,25 @@ const Login = () => {
           Forgot Password?
         </Text>
       </TouchableOpacity>
-      <View className="mt-auto">
+      {/* <View className="mt-auto">
         <Text className="mb-5 text-center text-muted">or continue with</Text>
-        <Button action="negative" className="mb-5">
+        <Button
+          onPress={() => handleSignIn()}
+          action="negative"
+          className="mb-5"
+        >
           <Svg2 width={20} height={20} />
           <ButtonText>Login with Google</ButtonText>
         </Button>
-        <Button action="negative" className="bg-[#1E76D6]">
-          <Svg3 width={20} height={20} />
-          <ButtonText>Login with Facebbok</ButtonText>
+        <Button
+          action="negative"
+          onPress={() => handleSignApple()}
+          className="bg-gray-500"
+        >
+          <Svg3 width={20} height={20} color="#fff" />
+          <ButtonText>Login with Apple</ButtonText>
         </Button>
-      </View>
+      </View> */}
     </View>
   );
 };

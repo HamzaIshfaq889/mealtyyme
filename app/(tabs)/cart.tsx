@@ -1,9 +1,9 @@
 import React from "react";
 
-import { Text } from "react-native";
+import ComingSoonOverlay from "@/components/modules/ComingSoonOverlay";
 
 const CartScreen = () => {
-  return <Text>CartScreen</Text>;
+  return <ComingSoonOverlay />;
 };
 
 export default CartScreen;

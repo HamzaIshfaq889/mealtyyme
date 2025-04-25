@@ -1,6 +1,21 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 
-import { Pressable, Text, useColorScheme, View } from "react-native";
+import {
+  Image,
+  Pressable,
+  Text,
+  useColorScheme,
+  useWindowDimensions,
+  View,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { ScrollView } from "react-native";
+
+import RenderHtml from "react-native-render-html";
+
+import { useDispatch } from "react-redux";
+
+import { useQuery } from "@tanstack/react-query";
 
 import { router } from "expo-router";
 
@@ -14,67 +29,120 @@ import {
   Leaf,
   Flame,
   Pizza,
-  Ellipsis,
   X,
-  Heart,
-  Star,
 } from "lucide-react-native";
 
-import { Recipe } from "@/lib/types/recipe";
+import { convertMinutesToTimeLabel } from "@/utils";
+
+import { Button, ButtonText } from "@/components/ui/button";
 
 import Protien from "@/assets/svgs/Proteins.svg";
 
+import { getSingleRecipe } from "@/services/recipesAPI";
+
+import { setCurrentRecipe, startCooking } from "@/redux/slices/recipies";
+
+import RecipeDetailsSkeleton from "../Skeletons/recipeDetailsSkeleton";
 import InstructionDetails from "./instructionDetails";
 import RecipeMenuOptions from "./recipeMenuOptions";
 import IngredientDetails from "./ingredientDetails";
-
-import { Button, ButtonText } from "@/components/ui/button";
-import { getSingleRecipe } from "@/services/recipesAPI";
-import { ScrollView } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import RelatedRecipes from "./relatedRecipes";
+import Review from "./review";
+import Error from "../Error";
 
 const RecipeDetails = ({ recipeId }: { recipeId: string | null }) => {
   const bottomSheetMenuRef = useRef<BottomSheet>(null);
+
+  const { width } = useWindowDimensions();
+  const dispatch = useDispatch();
+  const scheme = useColorScheme();
+  const isDarkMode = scheme === "dark";
+
+  const [expanded, setExpanded] = useState(false);
+  const [serving, setServings] = useState<number>(1);
   const [activeTab, setActiveTab] = useState<"Ingredients" | "Instructions">(
     "Ingredients"
   );
-  const scheme = useColorScheme();
 
-  const [recipes, setRecipes] = useState<Recipe>();
-  const [loading, setLoading] = useState(true);
+  const {
+    data: recipe,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["recipe", recipeId],
+    queryFn: () => getSingleRecipe(recipeId),
+    enabled: !!recipeId,
+  });
 
-  useEffect(() => {
-    const fetchRecipes = async () => {
-      try {
-        console.log("recipe id", recipeId);
-        const data = await getSingleRecipe(recipeId);
-        setRecipes(data);
-        console.log("recipe data", recipes);
-      } catch (error) {
-        console.error("Failed to fetch recipes:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchRecipes();
-  }, []);
+  if (isLoading) {
+    return <RecipeDetailsSkeleton />;
+  }
+
+  if (isError) {
+    return (
+      <Error
+        errorButtonLink="/(tabs)/Home"
+        errorButtonText="Go to home"
+        errorMessage="Recipe Not Found"
+      />
+    );
+  }
+
+  if (recipe) {
+    dispatch(setCurrentRecipe(recipe));
+  }
 
   const gradientsInfo = [
-    { id: 1, icon: Leaf, text: "65 Carbs" },
-    { id: 2, icon: Protien, text: "27g Protiens" },
-    { id: 3, icon: Flame, text: "27g Protiens" },
-    { id: 4, icon: Pizza, text: "91g Protiens" },
+    {
+      id: 1,
+      icon: Leaf,
+      amount: recipe?.nutrition?.carbohydrates,
+      text: `g carbs`,
+    },
+    {
+      id: 2,
+      icon: Protien,
+      amount: recipe?.nutrition?.protein,
+      text: `g protiens`,
+    },
+    {
+      id: 3,
+      icon: Flame,
+      amount: recipe?.nutrition?.calories,
+      text: `g cal`,
+    },
+    {
+      id: 4,
+      icon: Pizza,
+      amount: recipe?.nutrition?.fat,
+      text: `g fat`,
+    },
   ];
+
+  const handleStartCooking = () => {
+    if (recipe) dispatch(startCooking(recipe));
+    router.push(`/cooking/${recipe?.id}` as any);
+  };
+  function getTruncatedSummary(text: string): string {
+    const words = text.split(" ");
+    const wordLimit = words.slice(0, 10).join(" ");
+    const charLimit = text.slice(0, 45);
+    return wordLimit.length < charLimit.length
+      ? wordLimit + "..."
+      : charLimit + "...";
+  }
+
+  console.log(recipe);
 
   return (
     <>
       <SafeAreaView style={{ flex: 1 }}>
         <ScrollView className="relative">
-          <View className="bg-gray-300 w-full h-80"></View>
-          {/* <Image
-          source={require("@/assets/images/review-person1.png")}
-          className="w-full h-80"
-        /> */}
+          <Image
+            source={{ uri: recipe?.image_url }}
+            resizeMode="cover"
+            className="w-full h-96 object-cover object-center"
+          />
 
           <View
             className="flex flex-row justify-between w-full absolute top-0 py-12 px-6"
@@ -84,45 +152,66 @@ const RecipeDetails = ({ recipeId }: { recipeId: string | null }) => {
               <X
                 color={scheme === "dark" ? "#fff" : "#000"}
                 size={22}
-                onPress={() => router.push("/(tabs)/Home")}
+                onPress={() => router.back()}
               />
             </View>
             <View className="flex flex-row gap-2 items-center">
-              <View className="bg-background w-20 h-10 p-1.5 flex flex-row justify-center gap-1.5 items-center rounded-md">
+              {/* <View className="bg-background w-20 h-10 p-1.5 flex flex-row justify-center gap-1.5 items-center rounded-md">
                 <Star color={scheme === "dark" ? "#fff" : "#000"} size={22} />
                 <Text className="text-primary">4.5</Text>
-              </View>
+              </View> */}
 
-              <View className="bg-background w-10 h-10 p-1.5 flex justify-center items-center rounded-md">
+              {/* <View className="bg-background w-10 h-10 p-1.5 flex justify-center items-center rounded-md">
                 <Heart color={scheme === "dark" ? "#fff" : "#000"} size={22} />
-              </View>
+              </View> */}
             </View>
           </View>
-          <View className="px-6 pt-6 pb-20  rounded-tl-[30px] rounded-tr-[30] -mt-10 bg-background">
-            <Pressable
+          <View className="pt-6 pb-20 rounded-tl-[30px] rounded-tr-[30px] -mt-10 bg-gray-50 dark:bg-black">
+            {/* <Pressable
               className="flex flex-row justify-end py-1"
               onPress={() => bottomSheetMenuRef.current?.snapToIndex(1)}
             >
               <Ellipsis size={25} color={scheme === "dark" ? "#fff" : "#000"} />
-            </Pressable>
-            <View className="w-full fex flex-row items-center justify-between">
-              <Text className="text-primary font-bold text-2xl leading-8 mt-2">
-                Healthy Taco Salad
+            </Pressable> */}
+            <View className="px-6 w-full fex flex-row items-center justify-between">
+              <Text className="text-primary font-bold text-2xl leading-8 mt-2 max-w-80">
+                {recipe?.title}
               </Text>
-              <View className="flex flex-row items-center justify-between">
+              <View className="flex flex-row items-center justify-between gap-1.5">
                 <Clock color="#96a1b0" size={18} />
-                <Text className="text-muted">15 Min</Text>
+                <Text className="text-muted">
+                  {recipe?.ready_in_minutes
+                    ? convertMinutesToTimeLabel(recipe?.ready_in_minutes)
+                    : "15min"}
+                </Text>
               </View>
             </View>
-            <Text className="text-muted mt-3">
-              This Healthy Taco Salad is the universal delight of taco night
-              <Text className="text-primary font-semibold leading-5">
-                {" "}
-                View More
-              </Text>
-            </Text>
 
-            <View className="flex flex-row flex-wrap mt-3 mb-3">
+            <View className="px-6 mt-3">
+              <RenderHtml
+                contentWidth={width}
+                source={{
+                  html:
+                    expanded && recipe
+                      ? recipe?.summary
+                      : getTruncatedSummary(recipe?.summary || ""),
+                }}
+                baseStyle={{
+                  color: "#9ca3af",
+                  fontSize: 14,
+                  lineHeight: 20,
+                  maxHeight: !expanded ? 20 : undefined,
+                  overflow: "hidden",
+                }}
+              />
+              <Pressable onPress={() => setExpanded(!expanded)}>
+                <Text className="text-primary font-semibold mt-1">
+                  {expanded ? "View Less" : "View More"}
+                </Text>
+              </Pressable>
+            </View>
+
+            <View className="px-6 flex flex-row flex-wrap mt-3 mb-3">
               {gradientsInfo?.map((item) => {
                 return (
                   <View
@@ -133,6 +222,9 @@ const RecipeDetails = ({ recipeId }: { recipeId: string | null }) => {
                       <item.icon color="#00C3FF" />
                     </View>
                     <Text className="font-semibold text-lg leading-5 text-primary">
+                      {item?.amount
+                        ? (item?.amount * serving).toFixed(2)
+                        : "N/A"}{" "}
                       {item.text}
                     </Text>
                   </View>
@@ -141,7 +233,7 @@ const RecipeDetails = ({ recipeId }: { recipeId: string | null }) => {
             </View>
 
             <View
-              className="p-4 flex flex-row items-center justify-between rounded-2xl mb-5"
+              className="px-6 p-4 flex flex-row items-center justify-between rounded-2xl mb-5"
               style={{
                 boxShadow: "0px 2px 16px 0px #0633361A",
               }}
@@ -150,19 +242,31 @@ const RecipeDetails = ({ recipeId }: { recipeId: string | null }) => {
                 Number of Servings
               </Text>
               <View className="flex flex-row gap-3 items-center">
-                <View className="border border-accent py-0.5 px-2 rounded-lg">
+                <Pressable
+                  className="border border-accent py-1 px-3 rounded-lg"
+                  onPress={() => {
+                    if (serving > 1) {
+                      setServings(serving - 1);
+                    } else {
+                      setServings(serving);
+                    }
+                  }}
+                >
                   <Text className="text-primary">-</Text>
-                </View>
+                </Pressable>
                 <Text className="font-bold text-lg leading-8 text-primary">
-                  1
+                  {serving}
                 </Text>
-                <View className="border border-secondary py-0.5 px-2 rounded-lg">
+                <Pressable
+                  className="border border-secondary py-1 px-3 rounded-lg"
+                  onPress={() => setServings(serving + 1)}
+                >
                   <Text className="text-secondary">+</Text>
-                </View>
+                </Pressable>
               </View>
             </View>
 
-            <View className="flex flex-row gap-1.5 bg-gray4 px-2 py-2 rounded-2xl mb-5">
+            <View className="mx-6 px-1.5 flex flex-row gap-1.5 bg-gray4  py-2 rounded-2xl mb-5">
               <Button
                 className={`basis-1/2 rounded-2xl ${
                   activeTab === "Ingredients" ? "bg-foreground" : "bg-gray4"
@@ -198,12 +302,51 @@ const RecipeDetails = ({ recipeId }: { recipeId: string | null }) => {
               </Button>
             </View>
 
-            <View>
+            <View className="px-6">
               {activeTab === "Ingredients" ? (
-                <IngredientDetails />
+                <IngredientDetails
+                  ingredients={recipe?.ingredients ? recipe.ingredients : []}
+                  serving={serving}
+                />
               ) : (
-                <InstructionDetails />
+                <InstructionDetails
+                  instructions={recipe?.instructions ? recipe.instructions : []}
+                />
               )}
+            </View>
+
+            <Button
+              action="secondary"
+              className="mx-6 h-16 mt-6"
+              onPress={handleStartCooking}
+            >
+              <ButtonText>Start Cooking</ButtonText>
+            </Button>
+
+            <View className="mx-6 mb-8">
+              <Review />
+            </View>
+
+            <View className="w-full h-[2px] bg-accent mb-7"></View>
+
+            <View className="px-7 flex flex-row gap-3.5 mb-10">
+              <Image
+                source={{ uri: recipe?.created_by?.image_url }}
+                resizeMode="cover"
+                className="w- w-16 h-16 object-cover object-center rounded-full"
+              />
+              <View>
+                <Text className="text-foreground font-semibold leading-5 text-lg mb-1.5">
+                  {recipe?.created_by.first_name}
+                </Text>
+                <Text className="font-medium text-gray-500">
+                  I'm the author and recipe developer.
+                </Text>
+              </View>
+            </View>
+
+            <View>
+              <RelatedRecipes recipe={recipe} />
             </View>
           </View>
         </ScrollView>
@@ -220,8 +363,15 @@ const RecipeDetails = ({ recipeId }: { recipeId: string | null }) => {
             bottomSheetMenuRef.current?.close();
           }
         }}
+        handleStyle={{
+          backgroundColor: isDarkMode ? "#1f242a" : "#fff",
+          borderWidth: 0,
+        }}
+        handleIndicatorStyle={{
+          backgroundColor: isDarkMode ? "#888" : "#ccc",
+        }}
       >
-        <BottomSheetView style={{ backgroundColor: "#000" }}>
+        <BottomSheetView>
           <RecipeMenuOptions />
         </BottomSheetView>
       </BottomSheet>

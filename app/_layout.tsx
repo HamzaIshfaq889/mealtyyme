@@ -14,14 +14,25 @@ import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { useColorScheme } from "react-native";
 
+import { AppConfig } from "@/constants";
+
 import { AuthWrapper, Splash } from "@/components/modules";
 import { store, persistor } from "@/redux/store";
 import QueryProvider from "@/providers/QueryProvider";
 import { View } from "react-native";
-
+import { ClerkProvider } from "@clerk/clerk-expo";
+import * as SecureStore from "expo-secure-store";
 import "@/global.css";
 
 SplashScreen.preventAutoHideAsync();
+const tokenCache = {
+  async getToken(key: string) {
+    return SecureStore.getItemAsync(key);
+  },
+  async saveToken(key: string, value: string) {
+    return SecureStore.setItemAsync(key, value);
+  },
+};
 
 export default function RootLayout() {
   const [isSplashVisible, setIsSplashVisible] = useState(true);
@@ -52,25 +63,30 @@ export default function RootLayout() {
   }
 
   return (
-    <Provider store={store}>
-      <PersistGate loading={null} persistor={persistor}>
-        <QueryProvider>
-          <GestureHandlerRootView style={{ flex: 1 }}>
-            <ThemeProvider value={scheme === "dark" ? DarkTheme : LightTheme}>
-              <StatusBar
-                style={scheme === "dark" ? "light" : "dark"}
-                backgroundColor="transparent"
-                translucent
-              />
-              {/* Apply the 'dark' class if needed */}
-              <View className={scheme === "dark" ? "dark flex-1" : "flex-1"}>
-                <AuthWrapper />
-                <Toast />
-              </View>
-            </ThemeProvider>
-          </GestureHandlerRootView>
-        </QueryProvider>
-      </PersistGate>
-    </Provider>
+    <ClerkProvider
+      publishableKey={AppConfig.CLERK_PUBLISHABLE_KEY}
+      tokenCache={tokenCache}
+    >
+      <Provider store={store}>
+        <PersistGate loading={null} persistor={persistor}>
+          <QueryProvider>
+            <GestureHandlerRootView style={{ flex: 1 }}>
+              <ThemeProvider value={scheme === "dark" ? DarkTheme : LightTheme}>
+                <StatusBar
+                  style={scheme === "dark" ? "light" : "dark"}
+                  backgroundColor="transparent"
+                  translucent
+                />
+                {/* Apply the 'dark' class if needed */}
+                <View className={scheme === "dark" ? "dark flex-1" : "flex-1"}>
+                  <AuthWrapper />
+                  <Toast />
+                </View>
+              </ThemeProvider>
+            </GestureHandlerRootView>
+          </QueryProvider>
+        </PersistGate>
+      </Provider>
+    </ClerkProvider>
   );
 }

@@ -1,160 +1,64 @@
 import React from "react";
 
-import { Pressable, Text, View } from "react-native";
+import { Pressable, Text, useColorScheme, View } from "react-native";
 
-import { router } from "expo-router";
-import { Button, ButtonText } from "@/components/ui/button";
-import { ScrollView } from "react-native-gesture-handler";
-import Review from "./review";
+import { Ingredient } from "@/lib/types/recipe";
+import { capitalizeFirstLetter, truncateChars } from "@/utils";
 
-const IngredientDetails = () => {
-  const ingredentDetail = [
-    {
-      ingredientName: "Honey",
-      ingredientAmount: "1 Cup",
-    },
-    {
-      ingredientName: "Avocado",
-      ingredientAmount: "1",
-    },
-    {
-      ingredientName: "Red Cabbage",
-      ingredientAmount: "9 ml",
-    },
-    {
-      ingredientName: "Peanuts",
-      ingredientAmount: "1",
-    },
-    {
-      ingredientName: "Red Onions",
-      ingredientAmount: "1",
-    },
-  ];
+type IngredientDetailsProps = {
+  ingredients: Ingredient[];
+  serving: number;
+};
 
-  const favouritesData = [
-    {
-      id: 1,
-      name: "Sunny Egg & Toast Avocado",
-      image: require("@/assets/svgs/Sun.svg"),
-    },
-    {
-      id: 2,
-      name: "Sunny Egg & Toast Avocado",
-      image: require("@/assets/svgs/Sun.svg"),
-    },
-    {
-      id: 3,
-      name: "Sunny Egg & Toast Avocado",
-      image: require("@/assets/svgs/Sun.svg"),
-    },
-    {
-      id: 4,
-      name: "Sunny Egg & Toast Avocado",
-      image: require("@/assets/svgs/Sun.svg"),
-    },
-    {
-      id: 5,
-      name: "Sunny Egg & Toast Avocado",
-      image: require("@/assets/svgs/Sun.svg"),
-    },
-    {
-      id: 6,
-      name: "Sunny Egg & Toast Avocado",
-      image: require("@/assets/svgs/Sun.svg"),
-    },
-  ];
+const IngredientDetails = ({
+  ingredients,
+  serving,
+}: IngredientDetailsProps) => {
+  const scheme = useColorScheme();
+  const isDarkMode = scheme === "dark";
 
-  const truncateName = (name: string): string => {
-    return name.length > 8 ? name.slice(0, 8) + "..." : name;
-  };
-
-  const handlePress = () => {
-    router.push("/(nested)/cooking");
-  };
+  if (ingredients.length === 0) {
+    return (
+      <View className="flex items-center justify-center">
+        <Text className="text-primary text-xl font-semibold">
+          No Ingredients
+        </Text>
+      </View>
+    );
+  }
 
   return (
-    <View className="">
+    <View>
       <View className="flex flex-row justify-between">
         <View>
           <Text className="text-primary font-bold text-xl leading-5 mb-1">
             Ingredients
           </Text>
-          <Text className="text-muted">6 Item</Text>
+          <Text className="text-muted">{`${ingredients?.length} Item`}</Text>
         </View>
         <Pressable>
-          <Text className="text-secondary pr-5 font-bold">Add All to Cart</Text>
+          {/* <Text className="text-secondary pr-5 font-bold">Add All to Cart</Text> */}
         </Pressable>
       </View>
 
-      <View className="mt-5 mb-5">
-        {ingredentDetail?.map((ing, index) => {
+      <View className="mt-5">
+        {ingredients?.map((ing) => {
           return (
             <View
-              className="p-2.5 flex flex-row justify-between items-center rounded-2xl mb-4"
-              style={{
-                boxShadow: "0px 2px 12px 0px rgba(0,0,0,0.1)",
-              }}
-              key={index}
+              className="p-6 py-5 flex flex-row justify-between items-center rounded-2xl mb-4 bg-background"
+              key={ing?.ingredient?.id}
             >
               <View className="flex flex-row gap-6 items-center">
-                <View className="bg-gray4 p-7 rounded-lg"></View>
-                <Text className="font-bold text-xl text-primary">
-                  {ing?.ingredientName}
+                <Text className="font-bold text-sm text-primary">
+                  {truncateChars(
+                    capitalizeFirstLetter(ing?.ingredient?.name),
+                    28
+                  )}
                 </Text>
               </View>
-              <Text className="font-semibold leading-5 text-lg text-primary">
-                {ing?.ingredientAmount}
+              <Text className="font-semibold leading-5 text-base text-primary">
+                {(ing?.amount * serving).toFixed(2)} {ing?.unit}
               </Text>
-            </View>
-          );
-        })}
-      </View>
-
-      {/* </View> */}
-
-      <Button action="secondary" className="mb-8 h-16" onPress={handlePress}>
-        <ButtonText>Start Cooking</ButtonText>
-      </Button>
-
-      <View className="mb-8">
-        <Review />
-      </View>
-
-      <View className="w-full h-[2px] bg-accent mb-7"></View>
-
-      <View className="flex flex-row gap-3.5 mb-10">
-        <View className="bg-accent p-7 border-2 border-secondary rounded-full"></View>
-        <View>
-          <Text className="text-foreground font-semibold leading-5 text-lg mb-1.5">
-            Natalia Luca
-          </Text>
-          <Text className="font-medium text-gray-500">
-            I'm the author and recipe developer.
-          </Text>
-        </View>
-      </View>
-
-      <View className="flex flex-row justify-between items-center">
-        <Text className="text-primary font-bold text-xl leading-7 mb-1">
-          Related Recipes
-        </Text>
-        <Pressable>
-          <Text className="text-secondary pr-5 font-bold">See All</Text>
-        </Pressable>
-      </View>
-
-      <View className="flex flex-row flex-wrap">
-        {favouritesData.map((item) => {
-          return (
-            <View key={item.id} className="basis-1/3 p-1">
-              <View className="bg-background rounded-2xl p-2 shadow-custom">
-                <View className="relative mb-4">
-                  <View className="h-24 w-full rounded-xl bg-gray4" />
-                </View>
-                <Text className="text-foreground font-bold text-base leading-5 mb-3">
-                  {truncateName(item.name)}
-                </Text>
-              </View>
             </View>
           );
         })}
