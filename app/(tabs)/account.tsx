@@ -25,7 +25,7 @@ const AccountScreen = () => {
       })
     );
     signOut();
-    router.push("/(auth)/account-options");
+    router.replace("/(auth)/account-options");
     console.log("done");
   };
   return (

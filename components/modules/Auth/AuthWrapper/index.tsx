@@ -7,7 +7,6 @@ import { useSelector } from "react-redux";
 
 import { getOnboardStatus, getToken } from "@/redux/store/expoStore";
 import { setAuthToken } from "@/lib/apiClient";
-import Splash from "../../Splash";
 
 const AuthWrapper = () => {
   const [secureStoreToken, setSecureStoreToken] = useState<string | null>(null);
