@@ -16,6 +16,11 @@
     }
   },
   "submit": {
-    "production": {}
+    "production": {
+      "ios": {
+        "ascAppId": "6745099920",
+        "appleId": "malek@mealtyme.co"
+      }
+    }
   }
 }

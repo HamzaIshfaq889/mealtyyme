@@ -12,14 +12,23 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.mealtyme.app",
       "buildNumber": "1",
+      "entitlements": {
+        "com.apple.developer.applesignin": ["Default"]
+      },
       "infoPlist": {
         "CFBundleURLTypes": [
           {
             "CFBundleURLSchemes": [
               "com.googleusercontent.apps.878398669630-qnsp8rps2sqrouutee53lapnmcj5u7e4"
             ]
+          },
+          {
+            "CFBundleURLSchemes": [
+              "com.googleusercontent.apps.878398669630-qnsp8rps2sqrouutee53lapnmcj5u7e4"
+            ]
           }
-        ]
+        ],
+        "ITSAppUsesNonExemptEncryption": false
       }
     },
     "android": {
