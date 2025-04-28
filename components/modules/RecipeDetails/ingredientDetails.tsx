@@ -8,11 +8,13 @@ import { capitalizeFirstLetter, truncateChars } from "@/utils";
 type IngredientDetailsProps = {
   ingredients: Ingredient[];
   serving: number;
+  defaultServings: number; // 👈 added this
 };
 
 const IngredientDetails = ({
   ingredients,
   serving,
+  defaultServings,
 }: IngredientDetailsProps) => {
   const scheme = useColorScheme();
   const isDarkMode = scheme === "dark";
@@ -34,7 +36,7 @@ const IngredientDetails = ({
           <Text className="text-primary font-bold text-xl leading-5 mb-1">
             Ingredients
           </Text>
-          <Text className="text-muted">{`${ingredients?.length} Item`}</Text>
+          <Text className="text-muted">{`${ingredients?.length} Item(s)`}</Text>
         </View>
         <Pressable>
           {/* <Text className="text-secondary pr-5 font-bold">Add All to Cart</Text> */}
@@ -43,6 +45,11 @@ const IngredientDetails = ({
 
       <View className="mt-5">
         {ingredients?.map((ing) => {
+          if (ing?.amount == null) return null;
+
+          const amountPerServing = ing.amount / defaultServings;
+          const totalAmount = amountPerServing * serving;
+
           return (
             <View
               className="p-6 py-5 flex flex-row justify-between items-center rounded-2xl mb-4 bg-background"
@@ -57,7 +64,7 @@ const IngredientDetails = ({
                 </Text>
               </View>
               <Text className="font-semibold leading-5 text-base text-primary">
-                {(ing?.amount * serving).toFixed(2)} {ing?.unit}
+                {Math.ceil(totalAmount)} {ing?.unit}
               </Text>
             </View>
           );

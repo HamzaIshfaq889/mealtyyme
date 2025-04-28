@@ -71,7 +71,6 @@ const PopularRecipes = () => {
     }
   };
 
-
   return (
     <>
       <View className="mb-6">
@@ -173,7 +172,10 @@ const PopularRecipes = () => {
                   <View className="flex flex-row items-center gap-2 mt-auto">
                     <View className="flex flex-row items-center gap-0.5">
                       <Flame color="#96a1b0" size={20} />
-                      <Text className="text-muted"> {item.calories} Kcal</Text>
+                      <Text className="text-muted">
+                        {" "}
+                        {Math.ceil(item.calories)} Kcal
+                      </Text>
                     </View>
                     <View className="bg-muted p-0.5" />
                     <View className="flex flex-row items-center gap-1">

@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import {
   Image,
@@ -24,13 +24,7 @@ import BottomSheet, {
   BottomSheetView,
 } from "@gorhom/bottom-sheet";
 
-import {
-  Clock,
-  Leaf,
-  Flame,
-  Pizza,
-  X,
-} from "lucide-react-native";
+import { Clock, Leaf, Flame, Pizza, X } from "lucide-react-native";
 
 import { convertMinutesToTimeLabel } from "@/utils";
 
@@ -74,6 +68,12 @@ const RecipeDetails = ({ recipeId }: { recipeId: string | null }) => {
     enabled: !!recipeId,
   });
 
+  useEffect(() => {
+    if (recipe?.servings) {
+      setServings(recipe.servings);
+    }
+  }, [recipe]);
+
   if (isLoading) {
     return <RecipeDetailsSkeleton />;
   }
@@ -103,7 +103,7 @@ const RecipeDetails = ({ recipeId }: { recipeId: string | null }) => {
       id: 2,
       icon: Protien,
       amount: recipe?.nutrition?.protein,
-      text: `g protiens`,
+      text: `g protien`,
     },
     {
       id: 3,
@@ -213,6 +213,27 @@ const RecipeDetails = ({ recipeId }: { recipeId: string | null }) => {
 
             <View className="px-6 flex flex-row flex-wrap mt-3 mb-3">
               {gradientsInfo?.map((item) => {
+                if (item.amount == null || recipe?.servings == null) {
+                  // If amount or servings are missing
+                  return (
+                    <View
+                      key={item.id}
+                      className="basis-1/2 flex flex-row items-center gap-3 py-2"
+                    >
+                      <View className="bg-accent p-2 rounded-md">
+                        <item.icon color="#00C3FF" />
+                      </View>
+                      <Text className="font-semibold text-lg leading-5 text-primary">
+                        N/A {item.text}
+                      </Text>
+                    </View>
+                  );
+                }
+
+                // Safe: both item.amount and recipe.servings exist
+                const amountPerServing = item.amount / recipe.servings;
+                const totalAmount = amountPerServing * serving;
+
                 return (
                   <View
                     key={item.id}
@@ -222,10 +243,7 @@ const RecipeDetails = ({ recipeId }: { recipeId: string | null }) => {
                       <item.icon color="#00C3FF" />
                     </View>
                     <Text className="font-semibold text-lg leading-5 text-primary">
-                      {item?.amount
-                        ? (item?.amount * serving).toFixed(2)
-                        : "N/A"}{" "}
-                      {item.text}
+                      {Math.ceil(totalAmount)} {item.text}
                     </Text>
                   </View>
                 );
@@ -307,6 +325,7 @@ const RecipeDetails = ({ recipeId }: { recipeId: string | null }) => {
                 <IngredientDetails
                   ingredients={recipe?.ingredients ? recipe.ingredients : []}
                   serving={serving}
+                  defaultServings={recipe?.servings ?? 1}
                 />
               ) : (
                 <InstructionDetails
