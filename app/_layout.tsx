@@ -28,6 +28,70 @@ import { Splash } from "@/components/modules";
 import QueryProvider from "@/providers/QueryProvider";
 import "@/global.css";
 
+import { JSX } from "react";
+import {
+  BaseToast,
+  BaseToastProps,
+  ErrorToast,
+} from "react-native-toast-message";
+
+const toastConfig = {
+  success: (props: JSX.IntrinsicAttributes & BaseToastProps) => (
+    <BaseToast
+      {...props}
+      style={{
+        borderLeftWidth: 5,
+        borderLeftColor: "#4CAF50", // softer green
+        backgroundColor: "#f0fdf4", // very soft green background
+        borderRadius: 12,
+        shadowColor: "#000",
+        shadowOpacity: 0.1,
+        shadowRadius: 6,
+        elevation: 5,
+        paddingVertical: 10,
+        paddingHorizontal: 15,
+      }}
+      contentContainerStyle={{ paddingHorizontal: 10 }}
+      text1Style={{
+        fontSize: 17,
+        fontWeight: "700",
+        color: "#2e7d32",
+      }}
+      text2Style={{
+        fontSize: 15,
+        color: "#6b7280", // subtle gray (tailwind slate-500 tone)
+      }}
+    />
+  ),
+  error: (props: JSX.IntrinsicAttributes & BaseToastProps) => (
+    <ErrorToast
+      {...props}
+      style={{
+        borderLeftWidth: 5,
+        borderLeftColor: "#f44336", // softer red
+        backgroundColor: "#fef2f2", // very soft red background
+        borderRadius: 12,
+        shadowColor: "#000",
+        shadowOpacity: 0.1,
+        shadowRadius: 6,
+        elevation: 5,
+        paddingVertical: 10,
+        paddingHorizontal: 15,
+      }}
+      contentContainerStyle={{ paddingHorizontal: 10 }}
+      text1Style={{
+        fontSize: 17,
+        fontWeight: "700",
+        color: "#b71c1c",
+      }}
+      text2Style={{
+        fontSize: 15,
+        color: "#6b7280",
+      }}
+    />
+  ),
+};
+
 SplashScreen.preventAutoHideAsync();
 const tokenCache = {
   async getToken(key: string) {
@@ -97,7 +161,7 @@ export default function RootLayout() {
                       }}
                     />
                   </Stack>
-                  <Toast />
+                  <Toast config={toastConfig} />
                 </View>
               </ThemeProvider>
             </GestureHandlerRootView>
