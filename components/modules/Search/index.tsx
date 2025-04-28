@@ -217,7 +217,7 @@ const Search = () => {
                           <View className="flex flex-row items-center gap-1">
                             <Flame color="#6b7280" size={16} />
                             <Text className="text-muted text-sm">
-                              {recipe?.calories} kcal
+                              {Math.ceil(recipe?.calories)} Kcal
                             </Text>
                           </View>
                         </View>

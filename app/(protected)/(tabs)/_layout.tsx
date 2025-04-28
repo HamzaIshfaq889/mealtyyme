@@ -28,29 +28,36 @@ export default function TabsLayout() {
         name="index"
         options={{
           title: "",
-          tabBarLabel: "Index",
-          tabBarIcon: ({ color }) => <House color={color} size={27} />,
+          tabBarIcon: ({ color }) => (
+            <House color={color} size={27} strokeWidth={1} />
+          ),
         }}
       />
       <Tabs.Screen
         name="meal-plan"
         options={{
           title: "",
-          tabBarIcon: ({ color }) => <CalendarDays color={color} size={27} />,
+          tabBarIcon: ({ color }) => (
+            <CalendarDays color={color} size={27} strokeWidth={1} />
+          ),
         }}
       />
       <Tabs.Screen
         name="cart"
         options={{
           title: "",
-          tabBarIcon: ({ color }) => <ShoppingCart color={color} size={27} />,
+          tabBarIcon: ({ color }) => (
+            <ShoppingCart color={color} size={27} strokeWidth={1} />
+          ),
         }}
       />
       <Tabs.Screen
         name="account"
         options={{
           title: "",
-          tabBarIcon: ({ color }) => <User color={color} size={27} />,
+          tabBarIcon: ({ color }) => (
+            <User color={color} size={27} strokeWidth={1} />
+          ),
         }}
       />
     </Tabs>

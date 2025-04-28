@@ -1,6 +1,6 @@
 import React, { RefObject, useCallback, useMemo, useState } from "react";
 
-import { Text, useColorScheme, View } from "react-native";
+import { Pressable, Text, useColorScheme, View } from "react-native";
 
 import BottomSheet, {
   BottomSheetBackdrop,
@@ -23,6 +23,7 @@ import RailSelected from "@/components/ui/slider/RailSelected";
 import Label from "@/components/ui/slider/Label";
 import Notch from "@/components/ui/slider/Notch";
 import Thumb from "@/components/ui/slider/Thumb";
+import { ChevronDown, ChevronUp } from "lucide-react-native";
 
 type FilterProps = {
   bottomSheetRef: RefObject<BottomSheet>;
@@ -60,6 +61,18 @@ const Filters = ({
     (name: "high" | "low") => <Thumb name={name} />,
     []
   );
+
+  const [isOpen, setIsOpen] = useState(false);
+  const [filterOne, setFilterOne] = useState([0, 500]);
+  const [filterTwo, setFilterTwo] = useState([10, 50]);
+  const [filterThree, setFilterThree] = useState([100, 700]);
+
+  const handleFilterOneChange = (low: number, high: number) =>
+    setFilterOne([low, high]);
+  const handleFilterTwoChange = (low: number, high: number) =>
+    setFilterTwo([low, high]);
+  const handleFilterThreeChange = (low: number, high: number) =>
+    setFilterThree([low, high]);
 
   const { data: cuisines = [] } = useCuisinesQuery();
   const { data: diets = [] } = useDietsQuery();
@@ -256,6 +269,98 @@ const Filters = ({
             renderNotch={renderNotch}
             onValueChanged={handleValueChange}
           />
+        </View>
+
+        <View className="px-6 mb-10">
+          <Pressable
+            className="flex flex-row justify-between items-center py-4 border-t border-foreground"
+            onPress={() => setIsOpen(!isOpen)}
+          >
+            <Text className="text-lg font-semibold text-foreground">
+              Advanced Filters
+            </Text>
+            {isOpen ? (
+              <ChevronUp size={20} color="gray" />
+            ) : (
+              <ChevronDown size={20} color="gray" />
+            )}
+          </Pressable>
+
+          {isOpen && (
+            <View className="mt-4 space-y-6">
+              {/* First Slider */}
+              <View>
+                <View className="flex flex-row justify-between mb-2">
+                  <Text className="text-base font-medium text-foreground">
+                    Protein Range
+                  </Text>
+                  <Text className="text-sm text-foreground">{`${filterOne[0]}-${filterOne[1]} g`}</Text>
+                </View>
+                <Slider
+                  min={0}
+                  max={500}
+                  step={5}
+                  onValueChanged={(low, high) =>
+                    handleFilterOneChange(low, high)
+                  }
+                  floatingLabel
+                  renderThumb={renderThumb}
+                  renderRail={renderRail}
+                  renderRailSelected={renderRailSelected}
+                  renderLabel={renderLabel}
+                  renderNotch={renderNotch}
+                />
+              </View>
+
+              {/* Second Slider */}
+              <View>
+                <View className="flex flex-row justify-between mb-2">
+                  <Text className="text-base font-medium text-foreground">
+                    Fat Range
+                  </Text>
+                  <Text className="text-sm text-foreground">{`${filterTwo[0]}-${filterTwo[1]} g`}</Text>
+                </View>
+                <Slider
+                  min={0}
+                  max={100}
+                  step={1}
+                  onValueChanged={(low, high) =>
+                    handleFilterTwoChange(low, high)
+                  }
+                  floatingLabel
+                  renderThumb={renderThumb}
+                  renderRail={renderRail}
+                  renderRailSelected={renderRailSelected}
+                  renderLabel={renderLabel}
+                  renderNotch={renderNotch}
+                />
+              </View>
+
+              {/* Third Slider */}
+              <View>
+                <View className="flex flex-row justify-between mb-2">
+                  <Text className="text-base font-medium text-foreground">
+                    Carbs Range
+                  </Text>
+                  <Text className="text-sm text-foreground">{`${filterThree[0]}-${filterThree[1]} g`}</Text>
+                </View>
+                <Slider
+                  min={0}
+                  max={700}
+                  step={10}
+                  onValueChanged={(low, high) =>
+                    handleFilterThreeChange(low, high)
+                  }
+                  floatingLabel
+                  renderThumb={renderThumb}
+                  renderRail={renderRail}
+                  renderRailSelected={renderRailSelected}
+                  renderLabel={renderLabel}
+                  renderNotch={renderNotch}
+                />
+              </View>
+            </View>
+          )}
         </View>
 
         <View className="px-6 flex flex-row w-full space-x-4 gap-2">
