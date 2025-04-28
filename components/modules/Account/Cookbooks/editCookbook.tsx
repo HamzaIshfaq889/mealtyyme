@@ -6,41 +6,61 @@ import Dialog from "react-native-dialog";
 import { Button, ButtonText } from "@/components/ui/button";
 import {
   FormControl,
-  FormControlError,
-  FormControlErrorText,
   FormControlLabel,
   FormControlLabelText,
 } from "@/components/ui/form-control";
 import { Input, InputField } from "@/components/ui/input";
 
 import { FilePenLine } from "lucide-react-native";
+import Toast from "react-native-toast-message";
+import { updateCookbookName } from "@/services/cookbooksApi";
+import { Spinner } from "@/components/ui/spinner";
 
 type EditCookbook = {
   showEditModal: boolean;
   setShowEditModal: (value: boolean) => void;
+  cookBookId: number | null;
 };
-const EditCookbook = ({ setShowEditModal, showEditModal }: EditCookbook) => {
+const EditCookbook = ({
+  setShowEditModal,
+  showEditModal,
+  cookBookId,
+}: EditCookbook) => {
   const scheme = useColorScheme();
-  const [errors, setErrors] = useState<{ [key: string]: string }>({});
-  const [formData, setFormData] = useState({ collectionName: "" });
+  const [collectionName, setCollectionName] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const validateField = (key: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [key]: value }));
-
-    let errorMessage = "";
-
-    // Validation rules for each field
-    switch (key) {
-      case "collectionName":
-        if (!value) {
-          errorMessage = "Email is required.";
-        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
-          errorMessage = "Please enter a valid email.";
-        }
-        break;
+  const handleEdit = async () => {
+    if (!collectionName || !cookBookId) {
+      Toast.show({
+        type: "error",
+        text1: "Please enter collection name.",
+      });
+      return;
     }
 
-    setErrors((prev) => ({ ...prev, [key]: errorMessage }));
+    try {
+      setLoading(true);
+
+      await updateCookbookName({
+        id: cookBookId,
+        name: collectionName,
+      });
+
+      Toast.show({
+        type: "success",
+        text1: "Cookbook edited successfully!",
+      });
+
+      setShowEditModal(false);
+    } catch (error: any) {
+      console.log(error);
+      Toast.show({
+        type: "success",
+        text1: error?.message || "Cookbook edited successfully!",
+      });
+    }
+    setLoading(false);
   };
 
   return (
@@ -51,6 +71,8 @@ const EditCookbook = ({ setShowEditModal, showEditModal }: EditCookbook) => {
           backgroundColor: scheme === "dark" ? "#000" : "#fff",
           paddingVertical: 50,
           borderRadius: 30,
+          marginLeft: 35,
+          marginRight: 20,
         }}
       >
         <View className="flex flex-row justify-center mb-6">
@@ -68,13 +90,10 @@ const EditCookbook = ({ setShowEditModal, showEditModal }: EditCookbook) => {
             <InputField
               type="text"
               placeholder="Enter Collection Name"
-              value={formData?.collectionName}
-              onChangeText={(text) => validateField("collectionName", text)}
+              value={collectionName}
+              onChangeText={(text) => setCollectionName(text)}
             />
           </Input>
-          <FormControlError>
-            <FormControlErrorText>{errors?.email}</FormControlErrorText>
-          </FormControlError>
         </FormControl>
         <View className="flex flex-row gap-2">
           <Button
@@ -85,7 +104,9 @@ const EditCookbook = ({ setShowEditModal, showEditModal }: EditCookbook) => {
             <ButtonText>Cancel</ButtonText>
           </Button>
           <Button action="secondary" className="basis-1/2 h-16">
-            <ButtonText>Save</ButtonText>
+            <ButtonText onPress={handleEdit}>
+              {loading ? <Spinner size={30} /> : "Edit"}
+            </ButtonText>
           </Button>
         </View>
       </Dialog.Container>

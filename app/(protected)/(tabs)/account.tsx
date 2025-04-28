@@ -26,13 +26,12 @@ const AccountScreen = () => {
     );
     signOut();
     clearUserDataFromStorage();
-
     router.replace("/(auth)/account-options");
   };
   return (
     <>
-      <ComingSoonOverlay onLogOut={handleLogout} isLogOut={true} />
-      {/* <Account /> */}
+      {/* <ComingSoonOverlay onLogOut={handleLogout} isLogOut={true} /> */}
+      <Account />
     </>
   );
 };

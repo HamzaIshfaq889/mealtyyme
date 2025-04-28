@@ -36,7 +36,7 @@ const PickDiet = () => {
         {/* Header row */}
         <View className="flex-row items-center justify-between mb-8">
           <TouchableOpacity
-            onPress={() => router.push("/(onboarding)/onboarding1")}
+            onPress={() => router.push("/(protected)/(onboarding)/onboarding1")}
           >
             <ArrowLeft
               width={30}
@@ -84,7 +84,7 @@ const PickDiet = () => {
         <Button
           className="mt-2"
           action="primary"
-          onPress={() => router.push("/allergies")}
+          onPress={() => router.push("/(protected)/(onboarding)/allergies")}
         >
           <ButtonText>Next</ButtonText>
         </Button>

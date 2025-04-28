@@ -153,7 +153,7 @@ const EditProfile = () => {
   return (
     <ScrollView className="min-w-sceen min-h-scr px-6 py-16">
       <View className="flex flex-row justify-between items-center mb-10">
-        <TouchableOpacity onPress={() => router.push("/(tabs)/account")}>
+        <TouchableOpacity onPress={() => router.push("/(protected)/(tabs)/account")}>
           <ArrowLeft
             width={30}
             height={30}

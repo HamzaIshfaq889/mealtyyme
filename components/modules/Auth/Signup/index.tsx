@@ -25,6 +25,7 @@ import Svg1 from "@/assets/svgs/arrow-left.svg";
 
 import Toast from "react-native-toast-message";
 import { ScrollView } from "react-native-gesture-handler";
+import { formatDateToYYYYMMDD } from "@/utils";
 
 const Signup = () => {
   const scheme = useColorScheme();
@@ -169,12 +170,13 @@ const Signup = () => {
     const payload = {
       email: formData?.email,
       password: formData?.password,
-      role: "user",
-      dob: formData?.dateOfBirth,
+      role: "CUSTOMER",
+      dob: formatDateToYYYYMMDD(formData?.dateOfBirth),
       first_name: formData?.firstName,
       last_name: formData?.lastName,
-      image_url: ""
     };
+
+    console.log(payload)
 
     try {
       await signupUser(payload);

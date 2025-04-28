@@ -10,7 +10,7 @@ import {
 } from "@/lib/types";
 
 export const loginUser = async (payload: LoginPayload) => {
-  const response = await apiClient.post("/auth/login/", {
+  const response = await apiClient.post("auth/login/", {
     ...payload,
   });
 
@@ -25,8 +25,10 @@ export const loginUser = async (payload: LoginPayload) => {
 };
 
 export const signupUser = async (payload: SignupPayload) => {
-  const response = await apiClient.post("/auth/signup/", payload);
-
+  const response = await apiClient.post("auth/signup/", payload);
+  
+  console.log(payload)
+  // console.log(response);
   if (!response.ok) {
     throw new Error(response?.originalError?.message || "Signup failed");
   }
@@ -35,7 +37,7 @@ export const signupUser = async (payload: SignupPayload) => {
 };
 
 export const forgotPassword = async (payload: ForgotPasswordPayload) => {
-  const response = await apiClient.post("/forgot-password/", payload);
+  const response = await apiClient.post("forgot-password/", payload);
 
   if (!response.ok) {
     if (response.status === 404) {
@@ -51,7 +53,7 @@ export const forgotPassword = async (payload: ForgotPasswordPayload) => {
 };
 
 export const verifyOtp = async (payload: OtpPayload) => {
-  const response = await apiClient.post("/verify-otp/", payload);
+  const response = await apiClient.post("verify-otp/", payload);
 
   if (!response.ok) {
     if (response.status === 404) {
@@ -70,7 +72,7 @@ export const verifyOtp = async (payload: OtpPayload) => {
 };
 
 export const resetPassword = async (payload: ResetPasswordPayload) => {
-  const response = await apiClient.post("/reset-password/", payload);
+  const response = await apiClient.post("reset-password/", payload);
 
   if (!response.ok) {
     if (response.status === 404) {
@@ -86,7 +88,7 @@ export const resetPassword = async (payload: ResetPasswordPayload) => {
 };
 
 export const refreshAccessToken = async (refreshToken: string) => {
-  const response = await apiClient.post("/token/refresh/", {
+  const response = await apiClient.post("token/refresh/", {
     refresh: refreshToken,
   });
 

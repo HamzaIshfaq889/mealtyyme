@@ -1,29 +1,61 @@
 import { Text, useColorScheme, View } from "react-native";
 import Dialog from "react-native-dialog";
 
-import React from "react";
+import React, { useState } from "react";
 
 import { Button, ButtonText } from "@/components/ui/button";
 import { Trash2 } from "lucide-react-native";
+import { deleteCookbook } from "@/services/cookbooksApi";
+import Toast from "react-native-toast-message";
+import { Spinner } from "@/components/ui/spinner";
 
 type DeleteCookbook = {
   showDeleteModal: boolean;
   setShowDeleteModal: (showEditModal: boolean) => void;
+  cookBookId: number | null;
 };
 
 const DeleteCookbook = ({
   setShowDeleteModal,
   showDeleteModal,
+  cookBookId,
 }: DeleteCookbook) => {
   const scheme = useColorScheme();
+  const [loading, setLoading] = useState(false);
+
+  const handleDelete = async () => {
+    try {
+      if (!cookBookId) return;
+
+      setLoading(true);
+
+      await deleteCookbook(cookBookId);
+
+      Toast.show({
+        type: "success",
+        text1: "Cookbook deleted successfully!",
+      });
+
+      setShowDeleteModal(false);
+    } catch (error: any) {
+      console.log(error);
+      Toast.show({
+        type: "success",
+        text1: error?.message || "Cookbook edited successfully!",
+      });
+    }
+    setLoading(false);
+  };
 
   return (
     <View>
       <Dialog.Container
         visible={showDeleteModal}
         contentStyle={{
-          backgroundColor: scheme === "dark" ? "#000" : "#fff",
+          backgroundColor: scheme === "dark" ? "#131414" : "#fff",
           paddingVertical: 50,
+          marginLeft:30,
+          marginRight:20,
           borderRadius: 30,
         }}
       >
@@ -49,7 +81,9 @@ const DeleteCookbook = ({
             <ButtonText>Cancel</ButtonText>
           </Button>
           <Button action="negative" className="basis-1/2 h-16">
-            <ButtonText>Delete</ButtonText>
+            <ButtonText onPress={handleDelete}>
+              {loading ? <Spinner size={30} /> : "Delete"}
+            </ButtonText>
           </Button>
         </View>
       </Dialog.Container>

@@ -9,8 +9,8 @@ import { Button, ButtonText } from "@/components/ui/button";
 
 type ErrorProps = {
   errorMessage: string;
-  errorButtonText: string;
-  errorButtonLink: string;
+  errorButtonText?: string;
+  errorButtonLink?: string;
 };
 
 const Error = ({
@@ -21,17 +21,19 @@ const Error = ({
   const scheme = useColorScheme();
   const isDarkMode = scheme === "dark";
   return (
-    <View className="flex justify-center items-center w-full h-full px-10">
+    <View className="flex justify-center items-center w-full h-full px-10 mt-10">
       <CircleAlert size={70} color={isDarkMode ? "#fff" : "#000"} />
       <Text className="text-primary text-3xl text-center font-semibold my-6">
         {errorMessage}
       </Text>
-      <Button
-        className="w-full"
-        onPress={() => router.push(errorButtonLink as any)}
-      >
-        <ButtonText>{errorButtonText}</ButtonText>
-      </Button>
+      {errorButtonText && errorButtonLink && (
+        <Button
+          className="w-full"
+          onPress={() => router.push(errorButtonLink as any)}
+        >
+          <ButtonText>{errorButtonText}</ButtonText>
+        </Button>
+      )}
     </View>
   );
 };

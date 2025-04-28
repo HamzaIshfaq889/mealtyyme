@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import { Pressable, Text, useColorScheme, View } from "react-native";
+import { Platform, Pressable, Text, useColorScheme, View } from "react-native";
 import Dialog from "react-native-dialog";
 
 import Toast from "react-native-toast-message";
@@ -8,8 +8,6 @@ import Toast from "react-native-toast-message";
 import { Button, ButtonText } from "@/components/ui/button";
 import {
   FormControl,
-  FormControlError,
-  FormControlErrorText,
   FormControlLabel,
   FormControlLabelText,
 } from "@/components/ui/form-control";
@@ -20,6 +18,7 @@ import SelectDropdown from "react-native-select-dropdown";
 import {
   useAddRecipeToCookbook,
   useCookBooks,
+  useCreateCookbook,
 } from "@/redux/queries/recipes/useCookbooksQuery";
 import { Spinner } from "@/components/ui/spinner";
 import { Recipe } from "@/lib/types/recipe";
@@ -34,62 +33,82 @@ const SaveCookbook = ({
   setShowSaveCookbookModal,
   showSaveCookbookModal,
 }: SaveCookbookProps) => {
-  const currentRecipe: Recipe = useSelector(
-    (state: any) => state.recipe.currentRecipe
-  );
-  const scheme = useColorScheme();
   const {
     data: cookBooks,
     isLoading: selectLoading,
     isError: selectError,
   } = useCookBooks();
-  const {
-    mutate: addRecipe,
-    isError: isaddCollectionError,
-    error: addCollectionError,
-  } = useAddRecipeToCookbook();
+  const { mutate: addRecipe } = useAddRecipeToCookbook();
+  const { mutate: createCookbook } = useCreateCookbook();
 
+  const currentRecipe: Recipe = useSelector(
+    (state: any) => state.recipe.currentRecipe
+  );
+  const scheme = useColorScheme();
   const options = cookBooks ? cookBooks?.map((cookbook) => cookbook?.name) : [];
   const [showExistingCollections, setShowExistingCOllections] = useState(false);
+  const [collectionName, setCollectionName] = useState("");
   const [selected, setSelected] = useState(options[0]);
-  const [errors, setErrors] = useState<{ [key: string]: string }>({});
-  const [formData, setFormData] = useState({ collectionName: "" });
+
   const [loading, setLoading] = useState(false);
 
-  const validateField = (key: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [key]: value }));
-
-    let errorMessage = "";
-
-    // Validation rules for each field
-    switch (key) {
-      case "collectionName":
-        if (!value) {
-          errorMessage = "Collection name is required.";
-        }
-        break;
-    }
-
-    setErrors((prev) => ({ ...prev, [key]: errorMessage }));
-  };
-  console.log('asa')
-  const handlexistingCollection = () => {
+  const handlexistingCollection = async () => {
     const cookbook =
       cookBooks && cookBooks.find((cookbook) => cookbook.name === selected);
 
-    if (!cookbook?.id) return;
-    if (!currentRecipe?.id) return;
+    const cookBookId = cookbook?.id;
+    const currentRecipeId = currentRecipe?.id;
+
+    if (!cookBookId) return;
+    if (!currentRecipeId) return;
     setLoading(true);
 
-    console.log(cookbook.id, currentRecipe.id);
+    addRecipeToCookBook(cookBookId, currentRecipeId);
+
+    setLoading(false);
+  };
+
+  const handleNewCollection = () => {
+    if (!collectionName) {
+      Toast.show({
+        type: "error",
+        text1: "Please enter collection name!",
+      });
+      return;
+    }
+    setLoading(true);
+
+    createCookbook(
+      { name: collectionName },
+      {
+        onSuccess: (data) => {
+          const cookBookId = data?.id;
+          const currentRecipeId = currentRecipe?.id;
+
+          addRecipeToCookBook(cookBookId, currentRecipeId);
+        },
+        onError: (error) => {
+          console.log("Error while adding new cookbook :", error);
+          Toast.show({
+            type: "error",
+            text1: "Something went wrong",
+          });
+        },
+      }
+    );
+
+    setLoading(false);
+  };
+
+  const addRecipeToCookBook = (cookBookId: number, currentRecipeId: number) => {
     addRecipe(
-      { cookbookId: cookbook.id, recipeId: currentRecipe.id },
+      { cookbookId: cookBookId, recipeId: currentRecipeId },
       {
         onSuccess: (data) => {
           console.log("Recipe added successfully!", data);
           Toast.show({
             type: "success",
-            text1: "Recipe added Successfully!",
+            text1: "Recipe saved Successfully!",
           });
           setShowSaveCookbookModal(false);
         },
@@ -102,12 +121,6 @@ const SaveCookbook = ({
         },
       }
     );
-
-    setLoading(false);
-  };
-
-  const handleNewCollection = () => {
-    console.log("will handle");
   };
 
   return (
@@ -115,7 +128,7 @@ const SaveCookbook = ({
       <Dialog.Container
         visible={showSaveCookbookModal}
         contentStyle={{
-          backgroundColor: scheme === "dark" ? "#000" : "#fff",
+          backgroundColor: scheme === "dark" ? "#131414" : "#fff",
           paddingVertical: 50,
           borderRadius: 30,
         }}
@@ -129,22 +142,21 @@ const SaveCookbook = ({
           <FormControl size="md" className="mb-1">
             <FormControlLabel>
               <FormControlLabelText className="font-bold leading-5 text-foreground text-center w-full h-full">
-                <Text>Save Cookbook</Text>
+                <Text>Add Cookbook</Text>
               </FormControlLabelText>
             </FormControlLabel>
-            <Input className="my-5">
+            <Input
+              className={`my-5 border border-secondary ${
+                Platform.OS === "ios" && "mx-4"
+              }`}
+            >
               <InputField
                 type="text"
                 placeholder="Add new collection"
-                value={formData?.collectionName}
-                onChangeText={(text) => validateField("collectionName", text)}
+                value={collectionName}
+                onChangeText={(text) => setCollectionName(text)}
               />
             </Input>
-            <FormControlError>
-              <FormControlErrorText>
-                {errors?.collectionName}
-              </FormControlErrorText>
-            </FormControlError>
           </FormControl>
         ) : selectLoading ? (
           <Spinner size={50} />
@@ -200,7 +212,7 @@ const SaveCookbook = ({
         {!showExistingCollections ? (
           <Pressable onPress={() => setShowExistingCOllections(true)}>
             <Text className="text-primary text-lg font-medium tracking-wider text-center mb-8">
-              Save From Existing
+              Add From Existing
             </Text>
           </Pressable>
         ) : (
@@ -210,7 +222,9 @@ const SaveCookbook = ({
             </Text>
           </Pressable>
         )}
-        <View className="flex flex-row gap-2">
+        <View
+          className={`flex flex-row gap-2 ${Platform.OS === "ios" && "mx-4"}`}
+        >
           <Button
             action="muted"
             className="basis-1/2 h-16"

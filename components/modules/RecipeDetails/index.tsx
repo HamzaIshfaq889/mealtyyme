@@ -13,7 +13,7 @@ import { ScrollView } from "react-native";
 
 import RenderHtml from "react-native-render-html";
 
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import { useQuery } from "@tanstack/react-query";
 
@@ -24,7 +24,16 @@ import BottomSheet, {
   BottomSheetView,
 } from "@gorhom/bottom-sheet";
 
-import { Clock, Leaf, Flame, Pizza, X, Ellipsis } from "lucide-react-native";
+import {
+  Clock,
+  Leaf,
+  Flame,
+  Pizza,
+  X,
+  Ellipsis,
+  Heart,
+  HeartHandshake,
+} from "lucide-react-native";
 
 import { convertMinutesToTimeLabel } from "@/utils";
 
@@ -43,10 +52,29 @@ import IngredientDetails from "./ingredientDetails";
 import RelatedRecipes from "./relatedRecipes";
 import Review from "./review";
 import Error from "../Error";
+import {
+  useRemoveRecipe,
+  useSaveRecipe,
+} from "@/redux/queries/recipes/useSaveRecipesQuery";
+import Toast from "react-native-toast-message";
+import { saveSavedRecipesInStorage } from "@/utils/storage/authStorage";
+import { setSavedRecipes, updateSavedRecipes } from "@/redux/slices/Auth";
+
+import HeartFilledSvg from "@/assets/svgs/heart-filled.svg";
 
 const RecipeDetails = ({ recipeId }: { recipeId: string | null }) => {
   const bottomSheetMenuRef = useRef<BottomSheet>(null);
 
+  const savedRecipes = useSelector(
+    (state: any) => state.auth.savedRecipes || []
+  );
+
+  const isRecipeSaved = savedRecipes.some(
+    (id: number) => id === Number(recipeId)
+  );
+
+  const { mutate: saveRecipe } = useSaveRecipe();
+  const { mutate: removeRecipe } = useRemoveRecipe();
   const { width } = useWindowDimensions();
   const dispatch = useDispatch();
   const scheme = useColorScheme();
@@ -57,7 +85,6 @@ const RecipeDetails = ({ recipeId }: { recipeId: string | null }) => {
   const [activeTab, setActiveTab] = useState<"Ingredients" | "Instructions">(
     "Ingredients"
   );
-
   const {
     data: recipe,
     isLoading,
@@ -132,7 +159,80 @@ const RecipeDetails = ({ recipeId }: { recipeId: string | null }) => {
       : charLimit + "...";
   }
 
-  console.log(recipe);
+  const handleFavourite = (id: number | undefined) => {
+    if (!id) return;
+
+    saveRecipe(id, {
+      onSuccess: (data) => {
+        storeinStorage(id);
+        dispatch(updateSavedRecipes(id));
+      },
+      onError: (error) => {
+        console.error("Failed to save recipe:", error);
+        Toast.show({
+          type: "error",
+          text1: "Something went wrong while saving recipe",
+        });
+      },
+    });
+  };
+
+  const handleUnfavourite = (id: number | undefined) => {
+    if (!id) return;
+
+    removeRecipe(id, {
+      onSuccess: () => {
+        const updatedRecipes = savedRecipes.filter(
+          (recipeId: number) => recipeId !== id
+        );
+        removeFromStorage(updatedRecipes);
+        dispatch(setSavedRecipes(updatedRecipes));
+      },
+      onError: (error) => {
+        console.error("Failed to delete recipe:", error);
+        Toast.show({
+          type: "error",
+          text1: "Something went wrong while deleting recipe",
+        });
+      },
+    });
+  };
+
+  const storeinStorage = async (id: number) => {
+    if (!savedRecipes.includes(id)) {
+      saveSavedRecipesInStorage([...savedRecipes, id])
+        .then(() => {
+          Toast.show({
+            type: "success",
+            text1: "Recipe saved successfully!",
+          });
+        })
+        .catch((error) => {
+          console.error("Error saving recipe to storage:", error);
+          Toast.show({
+            type: "error",
+            text1: "Something went wrong while saving the recipe",
+          });
+        });
+    }
+  };
+
+  const removeFromStorage = async (updatedRecipes: number[]) => {
+    saveSavedRecipesInStorage([...updatedRecipes])
+      .then(() => {
+        Toast.show({
+          type: "success",
+          text1: "Recipe removed from saved list!!",
+        });
+      })
+      .catch((error) => {
+        console.error("Error saving recipe to storage:", error);
+        Toast.show({
+          type: "error",
+          text1: "Something went wrong while saving the recipe",
+        });
+      });
+  };
 
   return (
     <>
@@ -161,9 +261,25 @@ const RecipeDetails = ({ recipeId }: { recipeId: string | null }) => {
                 <Text className="text-primary">4.5</Text>
               </View> */}
 
-              {/* <View className="bg-background w-10 h-10 p-1.5 flex justify-center items-center rounded-md">
-                <Heart color={scheme === "dark" ? "#fff" : "#000"} size={22} />
-              </View> */}
+              <Pressable
+                className="bg-background w-10 h-10 p-1.5 flex justify-center items-center rounded-md"
+                onPress={() => handleFavourite(recipe?.id)}
+              >
+                {isRecipeSaved ? (
+                  <Heart
+                    color={scheme === "dark" ? "#fff" : "#000"}
+                    size={22}
+                    onPress={() => handleUnfavourite(recipe?.id)}
+                    fill={"#fff"}
+                  />
+                ) : (
+                  <Heart
+                    color={scheme === "dark" ? "#fff" : "#000"}
+                    size={22}
+                    onPress={() => handleFavourite(recipe?.id)}
+                  />
+                )}
+              </Pressable>
             </View>
           </View>
           <View className="pt-6 pb-20 rounded-tl-[30px] rounded-tr-[30px] -mt-10 bg-gray-50 dark:bg-black">
@@ -374,7 +490,7 @@ const RecipeDetails = ({ recipeId }: { recipeId: string | null }) => {
       <BottomSheet
         ref={bottomSheetMenuRef}
         index={-1}
-        snapPoints={["50%"]}
+        snapPoints={["30%"]}
         backdropComponent={BottomSheetBackdrop}
         onChange={(index) => {
           console.log(index);

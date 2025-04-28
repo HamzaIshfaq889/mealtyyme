@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Pressable, Text, View } from "react-native";
+import { Pressable, Text, useColorScheme, View } from "react-native";
 
 import { Bookmark, Cookie, ShoppingCart, Soup } from "lucide-react-native";
 
@@ -10,15 +10,17 @@ import { SafeAreaView } from "react-native-safe-area-context";
 const RecipeMenuOptions = () => {
   const [showMealScheduleModal, setShowMealScheduleModal] = useState(false);
   const [showSaveCookbookModal, setShowSaveCookbookModal] = useState(false);
+  const scheme = useColorScheme();
+  const isDark = scheme === "dark";
 
   return (
-    <SafeAreaView className="flex flex-col w-full h-full pl-7 py-16 bg-background">
+    <SafeAreaView className="flex flex-col w-full h-full pl-7 py-5 bg-background">
       <View>
         <Pressable
           className="flex flex-row items-center mb-11 gap-4"
           onPress={() => setShowMealScheduleModal(true)}
         >
-          <Soup color="#000" size={25} />
+          <Soup color={isDark ? "#fff" : "#000"} size={25} />
           <Text className="text-foreground/80 text-lg font-medium">
             Meal Planning
           </Text>
@@ -27,17 +29,17 @@ const RecipeMenuOptions = () => {
           showMealScheduleModal={showMealScheduleModal}
           setShowMealScheduleModal={setShowMealScheduleModal}
         />
-        <Pressable className="flex flex-row items-center mb-11 gap-4">
-          <Bookmark color="#000" size={25} />
+        {/* <Pressable className="flex flex-row items-center mb-11 gap-4">
+          <Bookmark color={isDark ? "#fff" : "#000"} size={25} />
           <Text className="!text-foreground/80 text-lg font-medium">
             Save for later
           </Text>
-        </Pressable>
+        </Pressable> */}
         <Pressable
           className="flex flex-row items-center mb-11 gap-4"
           onPress={() => setShowSaveCookbookModal(true)}
         >
-          <Cookie color="#000" size={25} />
+          <Cookie color={isDark ? "#fff" : "#000"} size={25} />
           <Text className="text-foreground/80 text-lg font-medium">
             Save for cookbook
           </Text>
@@ -47,7 +49,7 @@ const RecipeMenuOptions = () => {
           setShowSaveCookbookModal={setShowSaveCookbookModal}
         />
         <Pressable className="flex flex-row items-center mb-11 gap-4">
-          <ShoppingCart color="#000" size={25} />
+          <ShoppingCart color={isDark ? "#fff" : "#000"} size={25} />
           <Text className="text-foreground/80 text-lg font-medium">
             Add to grocerylist
           </Text>

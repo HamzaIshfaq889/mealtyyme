@@ -2,11 +2,14 @@ import { Stack } from "expo-router";
 import { Redirect } from "expo-router";
 
 import { Splash } from "@/components/modules";
-import { getUserDataFromStorage } from "@/utils/storage/authStorage";
+import {
+  getSavedRecipesFromStorage,
+  getUserDataFromStorage,
+} from "@/utils/storage/authStorage";
 import { useEffect, useState } from "react";
 
 import { useDispatch } from "react-redux";
-import { setCredentials } from "@/redux/slices/Auth";
+import { setCredentials, setSavedRecipes } from "@/redux/slices/Auth";
 import { setAuthToken } from "@/lib/apiClient";
 
 export default function ProtectedLayout() {
@@ -17,8 +20,13 @@ export default function ProtectedLayout() {
   useEffect(() => {
     const checkUserData = async () => {
       const user = await getUserDataFromStorage();
+      const savedRecipes = await getSavedRecipesFromStorage();
+
+      console.log("savedddd", savedRecipes);
+
       if (user && user.access) {
         dispatch(setCredentials({ ...user, isAuthenticated: true }));
+        dispatch(setSavedRecipes(savedRecipes));
         setAuthToken(user.access);
         setIsAuthenticated(true);
       }

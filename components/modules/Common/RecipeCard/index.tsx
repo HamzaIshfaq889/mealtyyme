@@ -2,16 +2,11 @@ import React from "react";
 
 import { Clock, Flame, Heart } from "lucide-react-native";
 import { Image, Text, useColorScheme, View } from "react-native";
+import { Recipe } from "@/lib/types/recipe";
+import { truncateChars } from "@/utils";
 
 type RecipeItemT = {
-  recipeItem: {
-    id: string;
-    title: string;
-    author: string;
-    time: string;
-    image: string;
-    cal: string;
-  };
+  recipeItem: Recipe;
 };
 
 const RecipeCard = ({ recipeItem }: RecipeItemT) => {
@@ -19,7 +14,7 @@ const RecipeCard = ({ recipeItem }: RecipeItemT) => {
 
   return (
     <View
-      className="bg-background rounded-2xl w-64 p-3"
+      className="bg-background rounded-2xl w-64 h-60 p-3"
       style={{
         boxShadow:
           scheme === "dark"
@@ -29,7 +24,7 @@ const RecipeCard = ({ recipeItem }: RecipeItemT) => {
     >
       <View className="relative mb-4">
         <Image
-          source={{ uri: "abc" }}
+          source={{ uri: recipeItem.image_url }}
           className="h-36 w-full rounded-xl bg-gray-300"
           resizeMode="cover"
         />
@@ -38,18 +33,22 @@ const RecipeCard = ({ recipeItem }: RecipeItemT) => {
         </View>
       </View>
       <Text className="text-foreground font-bold text-base leading-5 mb-3">
-        {recipeItem?.title}
+        {truncateChars(recipeItem?.title, 22)}
       </Text>
 
       <View className="flex flex-row items-center gap-2">
         <View className="flex flex-row items-center gap-0.5">
           <Flame color="#96a1b0" size={20} />
-          <Text className="text-muted">{recipeItem?.cal}</Text>
+          <Text className="text-muted">
+            {recipeItem?.nutrition?.calories || "N/A"}
+          </Text>
         </View>
         <View className="bg-muted p-0.5 rounded-full"></View>
         <View className="flex flex-row items-center gap-1">
           <Clock color="#96a1b0" size={16} />
-          <Text className="text-muted text-sm">{recipeItem?.time}</Text>
+          <Text className="text-muted text-sm">
+            {recipeItem?.ready_in_minutes || "N/A"}
+          </Text>
         </View>
       </View>
     </View>

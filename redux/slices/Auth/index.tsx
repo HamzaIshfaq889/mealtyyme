@@ -11,7 +11,7 @@ const initialState: AuthSliceType = {
     role: null,
     isAuthenticated: false,
     customer_details: {
-      user: 17,
+      user: 0,
       diet_preferences: [],
       allergies: [],
       trial_start_date: null,
@@ -28,6 +28,7 @@ const initialState: AuthSliceType = {
   hasOnboarded: false,
   isSigningIn: false,
   "reset-token": null,
+  savedRecipes: [],
 };
 
 const authSlice = createSlice({
@@ -35,14 +36,22 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     setCredentials: (state, action: PayloadAction<LoginResponseTypes>) => {
-      const { access, refresh, email, first_name, role, isAuthenticated } =
-        action.payload;
+      const {
+        access,
+        refresh,
+        email,
+        first_name,
+        role,
+        isAuthenticated,
+        customer_details,
+      } = action.payload;
       state.loginResponseType.access = access;
       state.loginResponseType.refresh = refresh;
       state.loginResponseType.email = email;
       state.loginResponseType.first_name = first_name;
       state.loginResponseType.role = role;
       state.loginResponseType.isAuthenticated = isAuthenticated;
+      state.loginResponseType.customer_details = customer_details;
     },
     setResetToken: (state, action: PayloadAction<string>) => {
       state["reset-token"] = action.payload;
@@ -67,6 +76,19 @@ const authSlice = createSlice({
       state.loginResponseType.role = null;
       state.loginResponseType.role = null;
       state.loginResponseType.isAuthenticated = false;
+      state.loginResponseType.customer_details = null;
+    },
+
+    updateSavedRecipes: (state, action: PayloadAction<number>) => {
+      const currentSavedRecipes: number[] = state.savedRecipes;
+
+      if (!currentSavedRecipes.includes(action.payload)) {
+        state.savedRecipes = [...currentSavedRecipes, action.payload];
+      }
+    },
+    setSavedRecipes: (state, action: PayloadAction<number[] | null>) => {
+      if (!action.payload) return;
+      state.savedRecipes = action.payload;
     },
   },
 });
@@ -78,5 +100,7 @@ export const {
   clearResetToken,
   setOnboardingComplete,
   setIsSigningIn,
+  updateSavedRecipes,
+  setSavedRecipes,
 } = authSlice.actions;
 export default authSlice.reducer;

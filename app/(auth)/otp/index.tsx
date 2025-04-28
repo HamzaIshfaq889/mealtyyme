@@ -1,8 +1,9 @@
 import React from "react";
-import { Text } from "react-native";
+
+import { Otp } from "@/components/modules";
 
 const OtpPage = () => {
-  return <Text>Hello</Text>;
+  return <Otp />;
 };
 
 export default OtpPage;

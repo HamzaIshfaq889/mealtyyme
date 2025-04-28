@@ -9,6 +9,7 @@ import { Button, ButtonText } from "@/components/ui/button";
 
 import Cookbooks from "./Cookbooks";
 import Savedrecipes from "./SavedRecipes";
+import { ScrollView } from "react-native";
 
 const Account = () => {
   const scheme = useColorScheme();
@@ -17,8 +18,8 @@ const Account = () => {
   );
 
   return (
-    <View className="w-full h-full px-6 py-16 ">
-      <View className="flex flex-row justify-between items-center">
+    <View className="w-full h-full py-16">
+      <View className="flex flex-row justify-between items-center px-6">
         <Text></Text>
         <Text className="font-bold text-2xl text-foreground">Account</Text>
         <Pressable
@@ -29,7 +30,7 @@ const Account = () => {
       </View>
 
       <View
-        className="flex flex-row justify-between items-center p-4 mb-5 mt-12 rounded-2xl"
+        className="flex flex-row justify-between items-center py-4 mb-5 mt-12 rounded-2xl px-6 "
         style={{
           boxShadow: "0px 2px 12px 0px rgba(0,0,0,0.1)",
         }}
@@ -58,7 +59,7 @@ const Account = () => {
         </Pressable>
       </View>
 
-      <View className="flex flex-row gap-1.5 bg-gray4 px-2 py-2 rounded-2xl mb-5">
+      <View className="flex flex-row gap-1.5 bg-gray4 px-2 py-2 rounded-2xl mb-5 mx-6">
         <Button
           className={`basis-1/2 rounded-2xl ${
             activeTab === "cookbooks" ? "bg-foreground" : "bg-gray4"
@@ -90,7 +91,15 @@ const Account = () => {
         </Button>
       </View>
 
-      {activeTab === "cookbooks" ? <Cookbooks /> : <Savedrecipes />}
+      {activeTab === "cookbooks" ? (
+        <ScrollView>
+          <Cookbooks />
+        </ScrollView>
+      ) : (
+        <ScrollView>
+          <Savedrecipes />
+        </ScrollView>
+      )}
     </View>
   );
 };

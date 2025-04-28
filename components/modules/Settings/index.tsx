@@ -14,7 +14,7 @@ const Settings = () => {
   return (
     <View className="flex flex-col w-full h-full px-9 py-16 bg-background">
       <View className="flex flex-row justify-between items-center mb-14">
-        <TouchableOpacity onPress={() => router.push("/(tabs)/account")}>
+        <TouchableOpacity onPress={() => router.push("/(protected)/(tabs)/account")}>
           <ArrowLeft
             width={30}
             height={30}

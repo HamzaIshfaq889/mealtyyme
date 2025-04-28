@@ -23,7 +23,7 @@ const OnBoarding = () => {
         swiperRef.current.scrollBy(1);
       }
     } else {
-      router.push("/(onboarding)/pick-diet");
+      router.push("/(protected)/(onboarding)/pick-diet");
     }
   };
 

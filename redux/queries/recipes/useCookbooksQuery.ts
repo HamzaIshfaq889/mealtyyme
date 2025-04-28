@@ -1,5 +1,9 @@
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { getCookBooks, addRecipeToCookbook } from "@/services/cookbooksApi";
+import {
+  getCookBooks,
+  addRecipeToCookbook,
+  createCookbook,
+} from "@/services/cookbooksApi";
 
 export const useCookBooks = () => {
   return useQuery({
@@ -13,5 +17,11 @@ export const useCookBooks = () => {
 export const useAddRecipeToCookbook = () => {
   return useMutation({
     mutationFn: addRecipeToCookbook,
+  });
+};
+
+export const useCreateCookbook = () => {
+  return useMutation({
+    mutationFn: createCookbook,
   });
 };

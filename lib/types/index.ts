@@ -10,6 +10,7 @@ export type AuthSliceType = {
   hasOnboarded: boolean;
   isSigningIn: boolean;
   "reset-token": null | string;
+  savedRecipes: number[];
 };
 
 export type SignupPayload = {
@@ -19,7 +20,7 @@ export type SignupPayload = {
   dob: string;
   first_name: string;
   last_name: string;
-  image_url: string;
+  image_url?: string;
 };
 
 export type LoginPayload = {
@@ -83,4 +84,23 @@ export type cookbooks = {
 export type AddRecipePayload = {
   cookbookId: number;
   recipeId: number;
+};
+
+export type CreateCookbookPayload = {
+  name: string;
+};
+
+export type CreateCookBookResponse = {
+  id: number;
+  name: string;
+  customer: 13;
+  customer_email: string;
+  recipes: [];
+  created_at: "2025-04-28T10:11:58.301261Z";
+  recipe_thumbnails: [];
+};
+
+export type UpdateCookbookPayload = {
+  id: number;
+  name: string;
 };

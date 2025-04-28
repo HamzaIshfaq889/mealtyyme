@@ -20,7 +20,6 @@ import Svg1 from "../../../assets/svgs/cookingfood.svg";
 import { Button, ButtonText } from "@/components/ui/button";
 import { useClerk } from "@clerk/clerk-expo";
 import { logout } from "@/redux/slices/Auth";
-import { deleteToken, resetOnboardStatus } from "@/redux/store/expoStore";
 import LogoAPP from "@/assets/svgs/logoapp.svg";
 
 const HomeUser = () => {
@@ -76,7 +75,9 @@ const HomeUser = () => {
           </View>
 
           {/* Right: Search Icon */}
-          <Pressable onPress={() => router.push("/(nested)/search")}>
+          <Pressable
+            onPress={() => router.push("/(protected)/(nested)/search")}
+          >
             <Search color={scheme === "dark" ? "#fff" : "#000"} />
           </Pressable>
         </View>
