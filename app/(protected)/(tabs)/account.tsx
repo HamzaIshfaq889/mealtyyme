@@ -4,16 +4,15 @@ import { Account } from "@/components/modules";
 import { useDispatch } from "react-redux";
 
 import ComingSoonOverlay from "@/components/modules/ComingSoonOverlay";
-import { deleteToken } from "@/redux/store/expoStore";
 import { setCredentials } from "@/redux/slices/Auth";
 import { useClerk } from "@clerk/clerk-expo";
 import { router } from "expo-router";
+import { clearUserDataFromStorage } from "@/utils/storage/authStorage";
 
 const AccountScreen = () => {
   const { signOut } = useClerk();
   const dispatch = useDispatch();
   const handleLogout = () => {
-    deleteToken();
     dispatch(
       setCredentials({
         access: null,
@@ -25,12 +24,14 @@ const AccountScreen = () => {
       })
     );
     signOut();
+    clearUserDataFromStorage();
+
     router.replace("/(auth)/account-options");
-    console.log("done");
   };
   return (
     <>
       <ComingSoonOverlay onLogOut={handleLogout} isLogOut={true} />
+      {/* <Account /> */}
     </>
   );
 };

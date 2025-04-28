@@ -2,8 +2,8 @@ import React from "react";
 
 import { HomeUser } from "@/components/modules";
 
-const HomeScreen = () => {
+const Index = () => {
   return <HomeUser />;
 };
 
-export default HomeScreen;
+export default Index;

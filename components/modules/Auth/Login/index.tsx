@@ -4,11 +4,11 @@ import { Text, TouchableOpacity, useColorScheme, View } from "react-native";
 
 import Toast from "react-native-toast-message";
 
-import { router } from "expo-router";
+import { Redirect, router } from "expo-router";
 
 import { useDispatch } from "react-redux";
 
-import { setCredentials, setIsSigningIn } from "@/redux/slices/Auth";
+import { setCredentials } from "@/redux/slices/Auth";
 
 import {
   FormControl,
@@ -22,26 +22,17 @@ import { Input, InputField, InputIcon, InputSlot } from "@/components/ui/input";
 import { EyeIcon, EyeOffIcon, LockIcon, MailIcon } from "@/components/ui/icon";
 import { Spinner } from "@/components/ui/spinner";
 
-import Svg2 from "@/assets/svgs/google.svg";
-import Svg3 from "@/assets/svgs/apple-14.svg";
 import { LoginResponseTypes } from "@/lib/types";
 
 import { loginUser } from "@/services/authApi";
 import { setAuthToken } from "@/lib/apiClient";
 import { ArrowLeft } from "lucide-react-native";
 import * as WebBrowser from "expo-web-browser";
-import { useAuth, useSSO } from "@clerk/clerk-expo";
-import {  useClerk } from "@clerk/clerk-react";
-import { saveToken } from "@/redux/store/expoStore";
+import { saveUserDataInStorage } from "@/utils/storage/authStorage";
 
-import { AppConfig } from "@/constants";
 WebBrowser.maybeCompleteAuthSession();
 
 const Login = () => {
-  const { startSSOFlow } = useSSO();
-  const { signOut } = useClerk();
-  const { isSignedIn } = useAuth();
-
   const scheme = useColorScheme();
   const dispatch = useDispatch();
 
@@ -111,17 +102,18 @@ const Login = () => {
 
       const response = (await loginUser(payload)) as LoginResponseTypes;
 
-      setAuthToken(response.access);
-
       if (response.access) {
-        await saveToken(response.access);
+        await saveUserDataInStorage({ ...response, isAuthenticated: true });
       }
+      setAuthToken(response.access);
       dispatch(setCredentials({ ...response, isAuthenticated: true }));
+
       Toast.show({
         type: "success",
         text1: "Login Successful!",
       });
-      router.push("/(tabs)/Home");
+
+      router.replace("/(protected)/(tabs)");
     } catch (error: any) {
       const errorMessage =
         error.message || "Something went wrong. Please try again.";
@@ -135,122 +127,6 @@ const Login = () => {
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const handleSignIn = async () => {
-    if (isSignedIn) {
-      Toast.show({
-        type: "error",
-        text1: "You are already Signed in",
-      });
-      return;
-    }
-
-    dispatch(setIsSigningIn(true));
-
-    try {
-      const { createdSessionId, setActive } = await startSSOFlow({
-        strategy: "oauth_google",
-      });
-
-      if (createdSessionId && setActive) {
-        await setActive({ session: createdSessionId });
-        console.log("🔐 Clerk session activated");
-
-        const data = await sendSessionIdToBackend(createdSessionId);
-        console.log("Response from backend:", data);
-
-        // ✅ Wait for next frame before navigating
-        setTimeout(() => {
-          router.push("/(tabs)/Home");
-          console.log("check 1 ");
-        }, 0); // You can also try requestAnimationFrame()
-      } else {
-        console.error("❌ setActive failed or undefined");
-      }
-    } catch (error) {
-      console.error("SSO error:", error);
-    } finally {
-      dispatch(setIsSigningIn(false));
-    }
-  };
-  const handleSignApple = async () => {
-    if (isSignedIn) {
-      Toast.show({
-        type: "error",
-        text1: "You are already Signed in",
-      });
-      return;
-    }
-
-    dispatch(setIsSigningIn(true));
-
-    try {
-      const { createdSessionId, setActive } = await startSSOFlow({
-        strategy: "oauth_apple",
-      });
-
-      if (createdSessionId && setActive) {
-        await setActive({ session: createdSessionId });
-        console.log("🔐 Clerk session activated");
-
-        // Send the session ID to the backend
-        const data = await sendSessionIdToBackend(createdSessionId);
-        console.log("Response from backend:", data);
-
-        router.push("/(tabs)/Home");
-      } else {
-        console.error("❌ setActive failed or undefined");
-      }
-    } catch (error) {
-      console.error("SSO error:", error);
-    } finally {
-      dispatch(setIsSigningIn(false));
-    }
-  };
-
-  const sendSessionIdToBackend = async (sessionId: string) => {
-    try {
-      if (!sessionId) {
-        console.error("No session ID received from Clerk");
-        return;
-      }
-
-      const response = await fetch(
-        `${AppConfig.API_URL}auth/clerk/`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            token: sessionId,
-          }),
-        }
-      );
-
-      const data = await response.json();
-
-      if (response.ok) {
-        setAuthToken(data.access);
-        dispatch(setCredentials({ ...data, isAuthenticated: true }));
-        if (data.access) {
-          await saveToken(data.access);
-        }
-
-        Toast.show({
-          type: "success",
-          text1: "Login Successful!",
-        });
-      } else {
-        console.error("❌ Backend error:", data);
-      }
-    } catch (err) {
-      console.error("Error sending session ID to backend:", err);
-    }
-  };
-  const handleSignOut = () => {
-    signOut();
   };
 
   return (

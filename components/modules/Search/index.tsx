@@ -29,7 +29,6 @@ import BottomSheet from "@gorhom/bottom-sheet";
 
 import { RecipeSkeletonItem } from "../Skeletons";
 import Filters from "./filters";
-import { truncateChars } from "@/utils";
 
 const Search = () => {
   const scheme = useColorScheme();
@@ -90,7 +89,7 @@ const Search = () => {
       <View className="w-full h-full">
         <View className="px-6 pt-16 pb-5 relative">
           <TouchableOpacity
-            onPress={() => router.push("/(tabs)/Home")}
+            onPress={() => router.push("/(protected)/(tabs)")}
             className="absolute left-6 top-16 z-10"
           >
             <ArrowLeft

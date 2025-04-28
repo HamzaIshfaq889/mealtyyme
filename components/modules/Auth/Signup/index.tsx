@@ -170,10 +170,10 @@ const Signup = () => {
       email: formData?.email,
       password: formData?.password,
       role: "user",
-      // dob: formData?.dateOfBirth,
-      dob: "1999-07-19",
+      dob: formData?.dateOfBirth,
       first_name: formData?.firstName,
       last_name: formData?.lastName,
+      image_url: ""
     };
 
     try {

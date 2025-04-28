@@ -9,7 +9,10 @@ export default function RootLayout() {
     <>
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="recipe" />
+        <Stack.Screen name="cooking" />
         <Stack.Screen name="search" />
+        <Stack.Screen name="settings" />
+        <Stack.Screen name="edit-profile.tsx" />
       </Stack>
       <Toast />
     </>

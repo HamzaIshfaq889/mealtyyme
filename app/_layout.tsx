@@ -5,23 +5,27 @@ import {
   ThemeProvider,
 } from "@react-navigation/native";
 import "react-native-reanimated";
+
 import { Provider } from "react-redux";
+import { store, persistor } from "@/redux/store";
 import { PersistGate } from "redux-persist/integration/react";
+
+import { ClerkProvider } from "@clerk/clerk-expo";
+
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { useColorScheme, View } from "react-native";
 import Toast from "react-native-toast-message";
+
 import { useFonts } from "expo-font";
-import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
-import { useColorScheme } from "react-native";
+import { Stack } from "expo-router";
+import * as SecureStore from "expo-secure-store";
+import * as SplashScreen from "expo-splash-screen";
 
 import { AppConfig } from "@/constants";
 
-import { AuthWrapper, Splash } from "@/components/modules";
-import { store, persistor } from "@/redux/store";
+import { Splash } from "@/components/modules";
 import QueryProvider from "@/providers/QueryProvider";
-import { View } from "react-native";
-import { ClerkProvider } from "@clerk/clerk-expo";
-import * as SecureStore from "expo-secure-store";
 import "@/global.css";
 
 SplashScreen.preventAutoHideAsync();
@@ -77,9 +81,22 @@ export default function RootLayout() {
                   backgroundColor="transparent"
                   translucent
                 />
-                {/* Apply the 'dark' class if needed */}
                 <View className={scheme === "dark" ? "dark flex-1" : "flex-1"}>
-                  <AuthWrapper />
+                  <Stack>
+                    <Stack.Screen
+                      name="(protected)"
+                      options={{
+                        headerShown: false,
+                        animation: "none",
+                      }}
+                    />
+                    <Stack.Screen
+                      name="(auth)"
+                      options={{
+                        animation: "none",
+                      }}
+                    />
+                  </Stack>
                   <Toast />
                 </View>
               </ThemeProvider>

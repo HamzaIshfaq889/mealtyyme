@@ -13,7 +13,6 @@ import Svg2 from "@/assets/svgs/google.svg";
 import Svg3 from "@/assets/svgs/apple-filled.svg";
 import Toast from "react-native-toast-message";
 import { setAuthToken } from "@/lib/apiClient";
-import { saveToken } from "@/redux/store/expoStore";
 
 import { AppConfig } from "@/constants";
 
@@ -46,11 +45,10 @@ const AccountsOptions = () => {
         const data = await sendSessionIdToBackend(createdSessionId);
         console.log("Response from backend:", data);
 
-        // ✅ Wait for next frame before navigating
         setTimeout(() => {
-          router.push("/(tabs)/Home");
+          router.push("/(protected)/(tabs)");
           console.log("check 1 ");
-        }, 0); // You can also try requestAnimationFrame()
+        }, 0);
       } else {
         console.error("❌ setActive failed or undefined");
       }
@@ -60,6 +58,7 @@ const AccountsOptions = () => {
       dispatch(setIsSigningIn(false));
     }
   };
+
   const handleSignApple = async () => {
     if (isSignedIn) {
       Toast.show({
@@ -80,11 +79,10 @@ const AccountsOptions = () => {
         await setActive({ session: createdSessionId });
         console.log("🔐 Clerk session activated");
 
-        // Send the session ID to the backend
         const data = await sendSessionIdToBackend(createdSessionId);
         console.log("Response from backend:", data);
 
-        router.push("/(tabs)/Home");
+        router.push("/(protected)/(tabs)");
       } else {
         console.error("❌ setActive failed or undefined");
       }
@@ -102,18 +100,15 @@ const AccountsOptions = () => {
         return;
       }
 
-      const response = await fetch(
-        `${AppConfig.API_URL}auth/clerk/`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            token: sessionId,
-          }),
-        }
-      );
+      const response = await fetch(`${AppConfig.API_URL}auth/clerk/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          token: sessionId,
+        }),
+      });
 
       const data = await response.json();
 
@@ -121,7 +116,6 @@ const AccountsOptions = () => {
         setAuthToken(data.access);
         dispatch(setCredentials({ ...data, isAuthenticated: true }));
         if (data.access) {
-          await saveToken(data.access);
         }
 
         Toast.show({
@@ -135,6 +129,7 @@ const AccountsOptions = () => {
       console.error("Error sending session ID to backend:", err);
     }
   };
+
   return (
     <View className="bg-secondary w-full h-full flex flex-col px-6 pb-8">
       {/* Top Illustration - uses flex-grow to push content down */}

@@ -10,7 +10,6 @@ import { Button, ButtonText } from "@/components/ui/button";
 
 import { setOnboardingComplete } from "@/redux/slices/Auth";
 import { ArrowLeft } from "lucide-react-native";
-import { setOnboardComplete } from "@/redux/store/expoStore";
 
 const Allergies = () => {
   const dispatch = useDispatch();
@@ -42,7 +41,6 @@ const Allergies = () => {
 
   const handleNext = async () => {
     dispatch(setOnboardingComplete(true));
-    await setOnboardComplete();
     router.push("/(auth)/account-options");
   };
 
@@ -51,7 +49,7 @@ const Allergies = () => {
       {/* Header row */}
       <View className="flex-row items-center justify-between mb-8">
         <TouchableOpacity
-          onPress={() => router.push("/(onboarding)/pick-diet")}
+          onPress={() => router.push("/(protected)/(onboarding)/pick-diet")}
         >
           <ArrowLeft
             width={30}
