@@ -24,13 +24,7 @@ import BottomSheet, {
   BottomSheetView,
 } from "@gorhom/bottom-sheet";
 
-import {
-  Clock,
-  Leaf,
-  Flame,
-  Pizza,
-  X,
-} from "lucide-react-native";
+import { Clock, Leaf, Flame, Pizza, X, Ellipsis } from "lucide-react-native";
 
 import { convertMinutesToTimeLabel } from "@/utils";
 
@@ -167,12 +161,12 @@ const RecipeDetails = ({ recipeId }: { recipeId: string | null }) => {
             </View>
           </View>
           <View className="pt-6 pb-20 rounded-tl-[30px] rounded-tr-[30px] -mt-10 bg-gray-50 dark:bg-black">
-            {/* <Pressable
-              className="flex flex-row justify-end py-1"
+            <Pressable
+              className="flex flex-row justify-end py-1 pr-6"
               onPress={() => bottomSheetMenuRef.current?.snapToIndex(1)}
             >
-              <Ellipsis size={25} color={scheme === "dark" ? "#fff" : "#000"} />
-            </Pressable> */}
+              <Ellipsis size={30} color={scheme === "dark" ? "#fff" : "#000"} />
+            </Pressable>
             <View className="px-6 w-full fex flex-row items-center justify-between">
               <Text className="text-primary font-bold text-2xl leading-8 mt-2 max-w-80">
                 {recipe?.title}

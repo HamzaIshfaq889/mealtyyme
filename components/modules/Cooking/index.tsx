@@ -99,7 +99,7 @@ const Cooking = () => {
 
   const handleStopCooking = () => {
     dispatch(stopCooking());
-    router.push("/(tabs)/Home");
+    router.push("/(protected)/(tabs)");
   };
 
   console.log("currentRecipe", currentRecipe?.title);

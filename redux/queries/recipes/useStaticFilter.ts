@@ -1,11 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
-import { getCategories, getCusines, getDiets } from "@/services/recipesAPI"; // adjust path
+import { getCategories, getCusines, getDiets } from "@/services/recipesAPI"; 
 
 export const useCuisinesQuery = () => {
   return useQuery({
     queryKey: ["cuisines"],
     queryFn: getCusines,
-    staleTime: 1000 * 60 * 10, // 10 minutes
+    staleTime: 1000 * 60 * 10,
   });
 };
 
@@ -24,6 +24,3 @@ export const useCategoriesQuery = () => {
     staleTime: 1000 * 60 * 10,
   });
 };
-
-
-

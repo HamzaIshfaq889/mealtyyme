@@ -4,7 +4,7 @@ import { Text, TouchableOpacity, useColorScheme, View } from "react-native";
 
 import Toast from "react-native-toast-message";
 
-import { Redirect, router } from "expo-router";
+import { router } from "expo-router";
 
 import { useDispatch } from "react-redux";
 

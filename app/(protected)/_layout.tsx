@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 
 import { useDispatch } from "react-redux";
 import { setCredentials } from "@/redux/slices/Auth";
+import { setAuthToken } from "@/lib/apiClient";
 
 export default function ProtectedLayout() {
   const dispatch = useDispatch();
@@ -18,6 +19,7 @@ export default function ProtectedLayout() {
       const user = await getUserDataFromStorage();
       if (user && user.access) {
         dispatch(setCredentials({ ...user, isAuthenticated: true }));
+        setAuthToken(user.access);
         setIsAuthenticated(true);
       }
       setIsLoading(false);

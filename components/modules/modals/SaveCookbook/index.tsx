@@ -3,6 +3,8 @@ import React, { useState } from "react";
 import { Pressable, Text, useColorScheme, View } from "react-native";
 import Dialog from "react-native-dialog";
 
+import Toast from "react-native-toast-message";
+
 import { Button, ButtonText } from "@/components/ui/button";
 import {
   FormControl,
@@ -15,23 +17,44 @@ import { Input, InputField } from "@/components/ui/input";
 
 import { Bookmark, ChevronDown } from "lucide-react-native";
 import SelectDropdown from "react-native-select-dropdown";
+import {
+  useAddRecipeToCookbook,
+  useCookBooks,
+} from "@/redux/queries/recipes/useCookbooksQuery";
+import { Spinner } from "@/components/ui/spinner";
+import { Recipe } from "@/lib/types/recipe";
+import { useSelector } from "react-redux";
 
 type SaveCookbookProps = {
   showSaveCookbookModal: boolean;
   setShowSaveCookbookModal: (value: boolean) => void;
 };
+
 const SaveCookbook = ({
   setShowSaveCookbookModal,
   showSaveCookbookModal,
 }: SaveCookbookProps) => {
+  const currentRecipe: Recipe = useSelector(
+    (state: any) => state.recipe.currentRecipe
+  );
   const scheme = useColorScheme();
+  const {
+    data: cookBooks,
+    isLoading: selectLoading,
+    isError: selectError,
+  } = useCookBooks();
+  const {
+    mutate: addRecipe,
+    isError: isaddCollectionError,
+    error: addCollectionError,
+  } = useAddRecipeToCookbook();
+
+  const options = cookBooks ? cookBooks?.map((cookbook) => cookbook?.name) : [];
   const [showExistingCollections, setShowExistingCOllections] = useState(false);
-  const options = ["Collection1", "Collection2", "Collection3"];
-
   const [selected, setSelected] = useState(options[0]);
-
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [formData, setFormData] = useState({ collectionName: "" });
+  const [loading, setLoading] = useState(false);
 
   const validateField = (key: string, value: string) => {
     setFormData((prev) => ({ ...prev, [key]: value }));
@@ -48,6 +71,43 @@ const SaveCookbook = ({
     }
 
     setErrors((prev) => ({ ...prev, [key]: errorMessage }));
+  };
+
+  const handlexistingCollection = () => {
+    const cookbook =
+      cookBooks && cookBooks.find((cookbook) => cookbook.name === selected);
+
+    if (!cookbook?.id) return;
+    if (!currentRecipe?.id) return;
+    setLoading(true);
+
+    console.log(cookbook.id, currentRecipe.id);
+    addRecipe(
+      { cookbookId: cookbook.id, recipeId: currentRecipe.id },
+      {
+        onSuccess: (data) => {
+          console.log("Recipe added successfully!", data);
+          Toast.show({
+            type: "success",
+            text1: "Recipe added Successfully!",
+          });
+          setShowSaveCookbookModal(false);
+        },
+        onError: (error) => {
+          console.error("Error adding recipe:", error);
+          Toast.show({
+            type: "error",
+            text1: "Something went wrong",
+          });
+        },
+      }
+    );
+
+    setLoading(false);
+  };
+
+  const handleNewCollection = () => {
+    console.log("will handle");
   };
 
   return (
@@ -86,6 +146,12 @@ const SaveCookbook = ({
               </FormControlErrorText>
             </FormControlError>
           </FormControl>
+        ) : selectLoading ? (
+          <Spinner size={50} />
+        ) : selectError ? (
+          <Text className="text-3xl text-foreground text-cneter my-4">
+            Some thing went wrong.Please try again!
+          </Text>
         ) : (
           <SelectDropdown
             data={options}
@@ -113,7 +179,7 @@ const SaveCookbook = ({
                   }`}
                 >
                   <Text
-                    className={`text-lg text-black ${
+                    className={`text-lg text-foreground ${
                       isSelected ? "!text-background" : "text-foreground"
                     }`}
                   >
@@ -152,8 +218,18 @@ const SaveCookbook = ({
           >
             <ButtonText>Cancel</ButtonText>
           </Button>
-          <Button action="secondary" className="basis-1/2 h-16">
-            <ButtonText>Save</ButtonText>
+          <Button
+            action="secondary"
+            className="basis-1/2 h-16"
+            onPress={
+              showExistingCollections
+                ? handlexistingCollection
+                : handleNewCollection
+            }
+          >
+            <ButtonText>
+              {loading ? <Spinner /> : showExistingCollections ? "Save" : "Add"}
+            </ButtonText>
           </Button>
         </View>
       </Dialog.Container>

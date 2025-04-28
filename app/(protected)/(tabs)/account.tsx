@@ -21,6 +21,7 @@ const AccountScreen = () => {
         first_name: null,
         role: null,
         isAuthenticated: false,
+        customer_details: null,
       })
     );
     signOut();
