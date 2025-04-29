@@ -28,9 +28,6 @@ const RecipeCard = ({ recipeItem }: RecipeItemT) => {
           className="h-36 w-full rounded-xl bg-gray-300"
           resizeMode="cover"
         />
-        <View className="absolute top-2 right-2 bg-background rounded-md p-1.5">
-          <Heart color={scheme === "dark" ? "#fff" : "#000"} size={16} />
-        </View>
       </View>
       <Text className="text-foreground font-bold text-base leading-5 mb-3">
         {truncateChars(recipeItem?.title, 22)}
@@ -40,7 +37,7 @@ const RecipeCard = ({ recipeItem }: RecipeItemT) => {
         <View className="flex flex-row items-center gap-0.5">
           <Flame color="#96a1b0" size={20} />
           <Text className="text-muted">
-            {recipeItem?.nutrition?.calories || "N/A"}
+            {Math.ceil(recipeItem?.nutrition?.calories) || "N/A"}
           </Text>
         </View>
         <View className="bg-muted p-0.5 rounded-full"></View>

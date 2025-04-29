@@ -270,7 +270,7 @@ const RecipeDetails = ({ recipeId }: { recipeId: string | null }) => {
                     color={scheme === "dark" ? "#fff" : "#000"}
                     size={22}
                     onPress={() => handleUnfavourite(recipe?.id)}
-                    fill={"#fff"}
+                    fill={scheme === "dark" ? "#fff" : "#000"}
                   />
                 ) : (
                   <Heart

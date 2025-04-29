@@ -64,7 +64,7 @@ const Review = ({ review }: ReviewProps) => {
           : "0px 2px 12px 0px rgba(0,0,0,0.1)",
       }}
     >
-      <Text className="text-primary font-bold text-2xl leading-6 mb-4">
+      <Text className="text-primary font-bold text-2xl leading-14 mb-4">
         Reviews
       </Text>
 
@@ -72,12 +72,10 @@ const Review = ({ review }: ReviewProps) => {
         return (
           <View
             key={index}
-            className={`${
-              index === review.length - 1 ? "mb-12" : "mb-8"
-            } pb-6 border-b border-accent/10 hover:border-accent/30 transition-all duration-300 ease-in-out`}
+            className={`pb-6 border-b border-accent/10 hover:border-accent/30 transition-all duration-300 ease-in-out`}
           >
             {/* Header with user info and rating */}
-            <View className="flex flex-row justify-between items-start mb-4">
+            <View className="flex flex-row justify-between items-start mb-1">
               {/* User Section */}
               <View className="flex flex-row gap-3 items-center">
                 {rev?.user.image_url ? (
