@@ -161,11 +161,14 @@ export const searchRecipes = async (
   cusine_ids?: (string | number)[] | null,
   min_calories?: number,
   max_calories?: number,
-  diet_ids?: (string | number)[] | null
+  diet_ids?: (string | number)[] | null,
+  protien?: number[] | null,
+  fat?: number[] | null,
+  carbs?: number[] | null
 ): Promise<{ results: Recipe[]; total: number }> => {
   const params: string[] = [];
 
-  console.log(page)
+  console.log(page);
   console.log(search);
 
   if (category_ids && category_ids.length > 0) {
@@ -190,6 +193,20 @@ export const searchRecipes = async (
 
   if (max_calories !== undefined) {
     params.push(`max_calories=${max_calories}`);
+  }
+
+  if (protien && (protien[0] > 0 || protien[1] < 1000)) {
+    params.push(`min_protein=${protien[0]}`);
+    params.push(`max_protien=${protien[1]}`);
+  }
+
+  if (fat && (fat[0] > 0 || fat[1] < 100)) {
+    params.push(`min_fat=${fat[0]}`);
+    params.push(`max_fat=${fat[1]}`);
+  }
+  if (carbs && (carbs[0] > 0 || carbs[1] < 700)) {
+    params.push(`min_carbs=${carbs[0]}`);
+    params.push(`max_carbs==${carbs[1]}`);
   }
 
   params.push(`pageSize=10`);

@@ -6,6 +6,9 @@ export const useRecipesQuery = (
   categoriesIds: number[],
   cusinesIds: number[],
   dietIds: number[],
+  protien: number[],
+  fat: number[],
+  carbs: number[],
   low: number,
   high: number
 ) => {
@@ -16,6 +19,9 @@ export const useRecipesQuery = (
       categoriesIds,
       cusinesIds,
       dietIds,
+      protien,
+      fat,
+      carbs,
       low,
       high,
     ],
@@ -27,7 +33,10 @@ export const useRecipesQuery = (
         cusinesIds,
         low,
         high,
-        dietIds
+        dietIds,
+        protien,
+        fat,
+        carbs
       ),
     initialPageParam: 1,
     getNextPageParam: (lastPage, allPages) => {

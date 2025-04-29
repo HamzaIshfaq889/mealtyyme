@@ -42,6 +42,9 @@ const Search = () => {
   const [inputValue, setInputValue] = useState<string>("");
   const [searchValue, setSearchValue] = useState<string>("");
   const [totalRecipes, setTotalRecipes] = useState(0);
+  const [protien, setProtien] = useState([0, 1000]);
+  const [fat, setFat] = useState([0, 100]);
+  const [carbs, setCarbs] = useState([0, 700]);
 
   const {
     data,
@@ -55,6 +58,9 @@ const Search = () => {
     categoriesIds,
     cusinesIds,
     dietIds,
+    protien,
+    fat,
+    carbs,
     low,
     high
   );
@@ -84,13 +90,14 @@ const Search = () => {
     return () => clearTimeout(timer);
   }, [inputValue]);
 
+
   return (
     <>
       <View className="w-full h-full">
         <View className="px-6 pt-16 pb-5 relative">
           <TouchableOpacity
             onPress={() => router.push("/(protected)/(tabs)")}
-            className="absolute left-6 top-16 z-10"
+            className="absolute left-6 top-16"
           >
             <ArrowLeft
               width={30}
@@ -146,6 +153,10 @@ const Search = () => {
                 return <RecipeSkeletonItem key={item} />;
               })}
             </View>
+          ) : flattenedRecipes.length === 0 ? (
+            <Text className="text-xl text-foreground text-center mt-10 px-6">
+              No recipes Found with these filters.Please Update filters
+            </Text>
           ) : (
             <FlatList
               data={flattenedRecipes}
@@ -251,7 +262,12 @@ const Search = () => {
           setCuisinesIds={setCuisinesIds}
           dietIds={dietIds}
           setDietIds={setDietIds}
-          refetch={refetch}
+          protien={protien}
+          setProtien={setProtien}
+          fat={fat}
+          setFat={setFat}
+          carbs={carbs}
+          setCarbs={setCarbs}
         />
       </View>
     </>
