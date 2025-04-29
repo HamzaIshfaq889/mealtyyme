@@ -20,11 +20,13 @@ type EditCookbook = {
   showEditModal: boolean;
   setShowEditModal: (value: boolean) => void;
   cookBookId: number | null;
+  refetch: () => void;
 };
 const EditCookbook = ({
   setShowEditModal,
   showEditModal,
   cookBookId,
+  refetch,
 }: EditCookbook) => {
   const scheme = useColorScheme();
   const [collectionName, setCollectionName] = useState("");
@@ -51,7 +53,7 @@ const EditCookbook = ({
         type: "success",
         text1: "Cookbook edited successfully!",
       });
-
+      refetch();
       setShowEditModal(false);
     } catch (error: any) {
       console.log(error);
@@ -103,10 +105,12 @@ const EditCookbook = ({
           >
             <ButtonText>Cancel</ButtonText>
           </Button>
-          <Button action="secondary" className="basis-1/2 h-16">
-            <ButtonText onPress={handleEdit}>
-              {loading ? <Spinner size={30} /> : "Edit"}
-            </ButtonText>
+          <Button
+            onPress={handleEdit}
+            action="secondary"
+            className="basis-1/2 h-16"
+          >
+            <ButtonText>{loading ? <Spinner size={30} /> : "Edit"}</ButtonText>
           </Button>
         </View>
       </Dialog.Container>

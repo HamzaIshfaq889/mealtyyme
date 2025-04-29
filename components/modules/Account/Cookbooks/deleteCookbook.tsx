@@ -13,12 +13,14 @@ type DeleteCookbook = {
   showDeleteModal: boolean;
   setShowDeleteModal: (showEditModal: boolean) => void;
   cookBookId: number | null;
+  refetch: () => void;
 };
 
 const DeleteCookbook = ({
   setShowDeleteModal,
   showDeleteModal,
   cookBookId,
+  refetch,
 }: DeleteCookbook) => {
   const scheme = useColorScheme();
   const [loading, setLoading] = useState(false);
@@ -35,7 +37,7 @@ const DeleteCookbook = ({
         type: "success",
         text1: "Cookbook deleted successfully!",
       });
-
+      refetch();
       setShowDeleteModal(false);
     } catch (error: any) {
       console.log(error);
@@ -54,8 +56,8 @@ const DeleteCookbook = ({
         contentStyle={{
           backgroundColor: scheme === "dark" ? "#131414" : "#fff",
           paddingVertical: 50,
-          marginLeft:30,
-          marginRight:20,
+          marginLeft: 30,
+          marginRight: 20,
           borderRadius: 30,
         }}
       >
@@ -80,8 +82,12 @@ const DeleteCookbook = ({
           >
             <ButtonText>Cancel</ButtonText>
           </Button>
-          <Button action="negative" className="basis-1/2 h-16">
-            <ButtonText onPress={handleDelete}>
+          <Button
+            action="negative"
+            onPress={handleDelete}
+            className="basis-1/2 h-16"
+          >
+            <ButtonText>
               {loading ? <Spinner size={30} /> : "Delete"}
             </ButtonText>
           </Button>

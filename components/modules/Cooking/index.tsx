@@ -317,7 +317,10 @@ const Cooking = () => {
         }}
       >
         <BottomSheetView>
-          <Review />
+          <Review
+            currentRecipeId={currentRecipe?.id}
+            bottomSheetRef={reviewBottomSheetRef}
+          />
         </BottomSheetView>
       </BottomSheet>
     </View>

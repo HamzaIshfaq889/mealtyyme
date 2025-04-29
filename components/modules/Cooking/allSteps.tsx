@@ -16,7 +16,7 @@ const AllSteps = ({ steps }: AllSteps) => {
       <Text className="font-bold text-2xl leading-8 text-foreground text-center mb-4 mt-8">
         Steps
       </Text>
-      {steps.map((step) => {
+      {steps?.map((step) => {
         return (
           <View
             className="mt-6 flex flex-row items-start gap-4 p-5 rounded-2xl"
@@ -25,11 +25,11 @@ const AllSteps = ({ steps }: AllSteps) => {
                 ? "0px 2px 12px 0px rgba(0,0,0,0.3)"
                 : "0px 2px 12px 0px rgba(0,0,0,0.1)",
             }}
-            key={step.step_number}
+            key={step?.step_number}
           >
             <View className="bg-accent py-1.5 px-4 rounded-lg">
               <Text className="text-secondary font-bold text-2xl">
-                {step.step_number}
+                {step?.step_number}
               </Text>
             </View>
             <Text className="text-muted font-medium pr-16 leading-6">

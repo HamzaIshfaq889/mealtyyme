@@ -9,6 +9,7 @@ const initialState: AuthSliceType = {
     email: null,
     first_name: null,
     role: null,
+    image_url: null,
     isAuthenticated: false,
     customer_details: {
       user: 0,
@@ -44,12 +45,14 @@ const authSlice = createSlice({
         role,
         isAuthenticated,
         customer_details,
+        image_url,
       } = action.payload;
       state.loginResponseType.access = access;
       state.loginResponseType.refresh = refresh;
       state.loginResponseType.email = email;
       state.loginResponseType.first_name = first_name;
       state.loginResponseType.role = role;
+      state.loginResponseType.image_url = image_url;
       state.loginResponseType.isAuthenticated = isAuthenticated;
       state.loginResponseType.customer_details = customer_details;
     },
@@ -76,6 +79,7 @@ const authSlice = createSlice({
       state.loginResponseType.role = null;
       state.loginResponseType.role = null;
       state.loginResponseType.isAuthenticated = false;
+      state.loginResponseType.image_url = null;
       state.loginResponseType.customer_details = null;
     },
 

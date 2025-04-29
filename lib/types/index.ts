@@ -49,7 +49,7 @@ export type LoginResponseTypes = {
   first_name: string | null;
   role: string | null;
   isAuthenticated: boolean;
-  image_url?: string;
+  image_url?: string | null;
   avatar_url?: string;
   customer_details: {
     user: number | null;

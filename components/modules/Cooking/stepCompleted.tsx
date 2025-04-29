@@ -12,7 +12,11 @@ type StepCompletedProps = {
 
 const StepCompleted = ({ reviewBottomSheetRef }: StepCompletedProps) => {
   useEffect(() => {
-    reviewBottomSheetRef.current?.snapToIndex(2);
+    const timer = setTimeout(() => {
+      reviewBottomSheetRef.current?.snapToIndex(2); // Open at middle snap point
+    }, 1000); // 0.5s delay
+
+    return () => clearTimeout(timer); // Cleanup
   }, []);
 
   return (

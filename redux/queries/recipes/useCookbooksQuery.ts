@@ -10,6 +10,7 @@ export const useCookBooks = () => {
     queryKey: ["cookbooks"],
     queryFn: getCookBooks,
     staleTime: 0,
+    refetchOnMount: true,
     retry: 2,
   });
 };

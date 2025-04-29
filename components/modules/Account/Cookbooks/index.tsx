@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { FilePenLine, Trash } from "lucide-react-native";
 
 import { useCookBooks } from "@/redux/queries/recipes/useCookbooksQuery";
@@ -10,18 +10,27 @@ import { CookBookSkeleton } from "../../Skeletons";
 import { ScrollView } from "react-native-gesture-handler";
 import RecipesFlatList from "./recipesFlatList";
 import Error from "../../Error";
+import { useFocusEffect } from "expo-router";
 
-const Cookbooks = () => {
+const Cookbooks = ({ activeTab }: { activeTab: string }) => {
   const {
     data: cookBooks,
     isLoading: cookbooksLoading,
     isError: cookbooksError,
+    refetch,
   } = useCookBooks();
   const scheme = useColorScheme();
 
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [cookBookId, setCookBookId] = useState<null | number>(null);
+
+  useFocusEffect(
+    useCallback(() => {
+      refetch();
+      console.log("refetching on focus");
+    }, [])
+  );
 
   if (cookbooksLoading) {
     return <CookBookSkeleton />;
@@ -46,9 +55,11 @@ const Cookbooks = () => {
   return (
     <View className="mt-3">
       {cookBooks?.length === 0 ? (
-        <Text className="text-foreground text-xl text-center mt-5">
-          No cookbooks found, Add One now!
-        </Text>
+        <View className="flex-1 justify-center items-center p-7">
+          <Text className="text-gray-500 text-sm">
+            No cookbooks found. Add one by going to a recipe
+          </Text>
+        </View>
       ) : (
         cookBooks?.map((cookbook) => {
           return (
@@ -75,9 +86,11 @@ const Cookbooks = () => {
               {cookbook?.recipes.length > 0 ? (
                 <RecipesFlatList recipeIds={cookbook?.recipes} />
               ) : (
-                <Text className="text-xl text-foreground text-center my-7 px-8">
-                  No Recipes found, Add one now!
-                </Text>
+                <View className="flex-1 justify-center items-center p-7">
+                  <Text className="text-gray-500 text-sm">
+                    No recipes available.
+                  </Text>
+                </View>
               )}
             </ScrollView>
           );
@@ -90,6 +103,7 @@ const Cookbooks = () => {
           showEditModal={showEditModal}
           setShowEditModal={setShowEditModal}
           cookBookId={cookBookId}
+          refetch={refetch}
         />
       )}
       {showDeleteModal && (
@@ -97,6 +111,7 @@ const Cookbooks = () => {
           showDeleteModal={showDeleteModal}
           setShowDeleteModal={setShowDeleteModal}
           cookBookId={cookBookId}
+          refetch={refetch}
         />
       )}
     </View>

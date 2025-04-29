@@ -1,9 +1,17 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
 import { Image, Pressable, Text, useColorScheme, View } from "react-native";
-import { router } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 
-import { Settings, User, UserPen } from "lucide-react-native";
+import {
+  CircleUser,
+  CircleUserRound,
+  Settings,
+  User,
+  UserPen,
+  UserRound,
+  UserRoundIcon,
+} from "lucide-react-native";
 
 import { Button, ButtonText } from "@/components/ui/button";
 
@@ -23,10 +31,18 @@ const Account = () => {
     (state: any) => state.auth.loginResponseType
   );
 
+  useFocusEffect(
+    useCallback(() => {
+      // Runs every time the screen comes into focus
+      setActiveTab("cookbooks");
+      console.log("runing");
+    }, [])
+  );
+
   return (
     <View className="w-full h-full py-16">
-      <View className="flex flex-row justify-between items-center px-6">
-        <Text></Text>
+      <View className="flex flex-row justify-between items-center px-3 ">
+        <View style={{ width: 30 }} />
         <Text className="font-bold text-2xl text-foreground">Account</Text>
         <Pressable
           onPress={() => router.push("/(protected)/(nested)/settings")}
@@ -46,14 +62,18 @@ const Account = () => {
             auth?.avatar_url ? "gap-4" : "gap-2"
           } `}
         >
-          {auth?.avatar_url ? (
+          {auth?.image_url ? (
             <Image
-              source={{ uri: auth?.avatar_url }}
-              className="w-16 h-16"
+              source={{ uri: auth?.image_url }}
+              className="w-16 h-16 rounded-full"
               resizeMode="cover"
             />
           ) : (
-            <User size={36} color={scheme === "dark" ? "#fff" : "#000"} />
+            <CircleUserRound
+              size={36}
+              strokeWidth={1}
+              color={scheme === "dark" ? "#fff" : "#000"}
+            />
           )}
 
           <View>
@@ -72,31 +92,33 @@ const Account = () => {
         </Pressable> */}
       </View>
 
-      <View className="flex flex-row gap-1.5 bg-gray4 px-2 py-2 rounded-2xl mb-5 mx-6">
+      <View className="flex flex-row bg-gray4 p-1 rounded-full mb-5 mx-6 shadow-sm">
+        {/* Cookbooks Tab */}
         <Button
-          className={`basis-1/2 rounded-2xl ${
-            activeTab === "cookbooks" ? "bg-foreground" : "bg-gray4"
+          className={`flex-1 rounded-full transition-all duration-300 ${
+            activeTab === "cookbooks" ? "bg-primary" : "bg-transparent"
           }`}
           onPress={() => setActiveTab("cookbooks")}
         >
           <ButtonText
-            className={`${
-              activeTab === "cookbooks" ? "text-background" : "!text-primary"
+            className={`text-center font-semibold text-sm ${
+              activeTab === "cookbooks" ? "text-white" : "!text-primary"
             }`}
           >
             Cookbooks
           </ButtonText>
         </Button>
 
+        {/* Saved Recipes Tab */}
         <Button
-          className={`basis-1/2 rounded-2xl ${
-            activeTab === "savedrecipes" ? "bg-foreground" : "bg-gray4"
+          className={`flex-1 rounded-full transition-all duration-300 ${
+            activeTab === "savedrecipes" ? "bg-primary" : "bg-transparent"
           }`}
           onPress={() => setActiveTab("savedrecipes")}
         >
           <ButtonText
-            className={`${
-              activeTab === "savedrecipes" ? "text-background" : "!text-primary"
+            className={`text-center font-semibold text-sm ${
+              activeTab === "savedrecipes" ? "text-white" : "!text-primary"
             }`}
           >
             Saved Recipes
@@ -106,7 +128,7 @@ const Account = () => {
 
       {activeTab === "cookbooks" ? (
         <ScrollView>
-          <Cookbooks />
+          <Cookbooks activeTab={activeTab} />
         </ScrollView>
       ) : (
         <ScrollView>

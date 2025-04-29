@@ -40,6 +40,16 @@ const Savedrecipes = () => {
     return <Error errorMessage="No Saved Recipes found, Add One now!" />;
   }
 
+  if (!savedRecipes || savedRecipes.length === 0) {
+    return (
+      <View className="flex-1 justify-center items-center p-7 mt-3">
+        <Text className="text-gray-500 text-sm">
+          No saved recipes found. Add one by going to a recipe
+        </Text>
+      </View>
+    );
+  }
+
   return (
     <View className="mt-6 space-y-7 px-6">
       <FlatList

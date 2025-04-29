@@ -400,34 +400,34 @@ const RecipeDetails = ({ recipeId }: { recipeId: string | null }) => {
               </View>
             </View>
 
-            <View className="mx-6 px-1.5 flex flex-row gap-1.5 bg-gray4  py-2 rounded-2xl mb-5">
+            <View className="flex flex-row bg-gray4 p-1 rounded-full mb-5 mx-6 shadow-sm">
+              {/* Ingredients Tab */}
               <Button
-                className={`basis-1/2 rounded-2xl ${
-                  activeTab === "Ingredients" ? "bg-foreground" : "bg-gray4"
+                className={`flex-1 rounded-full transition-all duration-300 ${
+                  activeTab === "Ingredients" ? "bg-primary" : "bg-transparent"
                 }`}
                 onPress={() => setActiveTab("Ingredients")}
               >
                 <ButtonText
-                  className={`${
-                    activeTab === "Ingredients"
-                      ? "text-background"
-                      : "!text-primary"
+                  className={`text-center font-semibold text-sm ${
+                    activeTab === "Ingredients" ? "text-white" : "!text-primary"
                   }`}
                 >
                   Ingredients
                 </ButtonText>
               </Button>
 
+              {/* Instructions Tab */}
               <Button
-                className={`basis-1/2 rounded-2xl ${
-                  activeTab === "Instructions" ? "bg-foreground" : "bg-gray4"
+                className={`flex-1 rounded-full transition-all duration-300 ${
+                  activeTab === "Instructions" ? "bg-primary" : "bg-transparent"
                 }`}
                 onPress={() => setActiveTab("Instructions")}
               >
                 <ButtonText
-                  className={`${
+                  className={`text-center font-semibold text-sm ${
                     activeTab === "Instructions"
-                      ? "text-background"
+                      ? "text-white"
                       : "!text-primary"
                   }`}
                 >

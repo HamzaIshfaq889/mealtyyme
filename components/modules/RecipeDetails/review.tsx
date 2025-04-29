@@ -5,7 +5,7 @@ import { Text } from "react-native";
 import Stars from "@/assets/svgs/star.svg";
 import { ScrollView } from "react-native-gesture-handler";
 import { Recipe } from "@/lib/types/recipe";
-import { Star } from "lucide-react-native";
+import { CircleUserRound, Star } from "lucide-react-native";
 
 type ReviewProps = {
   review: Recipe["reviews"];
@@ -65,50 +65,64 @@ const Review = ({ review }: ReviewProps) => {
       }}
     >
       <Text className="text-primary font-bold text-2xl leading-6 mb-4">
-        Review
+        Reviews
       </Text>
 
       {review.map((rev, index) => {
         return (
           <View
             key={index}
-            className={`${index == review.length - 1 ? "mb-12" : " mb-5"}`}
+            className={`${
+              index === review.length - 1 ? "mb-12" : "mb-8"
+            } pb-6 border-b border-accent/10 hover:border-accent/30 transition-all duration-300 ease-in-out`}
           >
-            <View className="flex flex-row justify-between items-center mb-5">
-              <View className="flex flex-row gap-4">
-                <Image
-                  source={require("@/assets/images/review-person1.png")}
-                  className="w-14 h-14"
-                />
-                <View>
-                  <Text className="font-semibold text-base leading-5 mb-1.5 text-primary">
-                    {rev.user?.first_name || "N/A"}
-                  </Text>
-                  <Text className="text-muted text-base">
-                    {rev?.created_at.split("T")[0]}
+            {/* Header with user info and rating */}
+            <View className="flex flex-row justify-between items-start mb-4">
+              {/* User Section */}
+              <View className="flex flex-row gap-3 items-center">
+                {rev?.user.image_url ? (
+                  <Image
+                    source={{ uri: rev?.user?.image_url }}
+                    className="w-12 h-12 rounded-full shadow-md"
+                    resizeMode="cover"
+                  />
+                ) : (
+                  <View className="p-2 rounded-full bg-secondary/10">
+                    <CircleUserRound
+                      size={32}
+                      strokeWidth={1.5}
+                      color={scheme === "dark" ? "#fff" : "#000"}
+                    />
+                  </View>
+                )}
+
+                <View className="ml-1">
+                  <Text className="font-medium text-lg text-primary">
+                    {rev?.user.first_name || "Anonymous User"}
                   </Text>
                 </View>
               </View>
 
-              <View className="flex flex-row gap-0.5">
-                <Star fill="#e8b015" size={20} />
-                {[...Array(rev.rating - 1)].map((_, index) => (
+              {/* Star Rating */}
+              <View className="flex flex-row gap-1 items-center bg-accent/5 px-2 py-1 mt-2 rounded-full">
+                {[...Array(5)].map((_, i) => (
                   <Star
-                    key={index}
-                    fill={"#e8b015"}
-                    stroke="#e8b015"
-                    size={20}
+                    key={i}
+                    fill={i < rev.rating ? "#e8b015" : "transparent"}
+                    stroke={i < rev.rating ? "#e8b015" : "#e8b015"}
+                    size={18}
                   />
                 ))}
+                <Text className="ml-1 text-sm font-medium text-accent">
+                  {rev.rating.toFixed(1)}
+                </Text>
               </View>
             </View>
-            <Text className="leading-6 font-semibold text-lg text-primary mb-4">
+
+            {/* Review Text */}
+            <Text className="text-primary/90 leading-relaxed text-base mb-4">
               {rev?.review_text}
             </Text>
-
-            {index !== review.length - 1 && (
-              <View className="w-full h-[2px] bg-accent"></View>
-            )}
           </View>
         );
       })}

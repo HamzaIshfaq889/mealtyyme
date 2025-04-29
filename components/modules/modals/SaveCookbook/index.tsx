@@ -172,8 +172,8 @@ const SaveCookbook = ({
               setSelected(selectedItem);
             }}
             renderButton={(selectedItem, isOpened) => (
-              <View className="flex-row items-center gap-4 px-6 py-4 bg-secondary rounded-full mb-8">
-                <Text className="flex-1 text-lg leading-6 font-semibold text-background">
+              <View className="flex-row items-center gap-4 px-6 py-4 bg-background rounded-full mb-8">
+                <Text className="flex-1 text-lg leading-6 font-semibold text-primary">
                   {selectedItem || "Select"}
                 </Text>
                 {isOpened ? (
@@ -187,7 +187,7 @@ const SaveCookbook = ({
               return (
                 <View
                   className={`px-4 py-2  ${
-                    isSelected ? "bg-secondary" : "bg-[#1c1f1f]"
+                    isSelected ? "bg-secondary" : "bg-background"
                   }`}
                 >
                   <Text

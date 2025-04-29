@@ -233,3 +233,36 @@ export const searchRecipes = async (
 
   return { results, total };
 };
+
+export const addReview = async ({
+  recipeId,
+  rating,
+  reviewText,
+}: {
+  recipeId: number;
+  rating: number;
+  reviewText?: string; // Make optional if not always required
+}) => {
+  console.log("recipe id", recipeId);
+  const response = await apiClient.post(`/recipe-reviews/`, {
+    recipe: recipeId,
+    rating: rating,
+    review_text: reviewText || "", // Send empty string if not provided
+  });
+
+  console.log("response", response);
+
+  if (!response.ok) {
+    if (response.status === 401) {
+      throw new Error("You need to be logged in to submit a review");
+    }
+    if (response.status === 404) {
+      throw new Error("Recipe not found");
+    }
+    throw new Error(
+      response?.originalError?.message || "Failed to submit review"
+    );
+  }
+
+  return response.data;
+};
