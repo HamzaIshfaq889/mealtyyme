@@ -14,7 +14,7 @@ const RecipeMenuOptions = () => {
   const isDark = scheme === "dark";
 
   return (
-    <SafeAreaView className="flex flex-col w-full h-full pl-7 py-5 bg-background">
+    <SafeAreaView className="flex flex-col w-full h-full pl-7 bg-background">
       <View>
         <Pressable
           className="flex flex-row items-center mb-11 gap-4"

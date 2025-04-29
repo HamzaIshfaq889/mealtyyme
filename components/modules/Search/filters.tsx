@@ -185,8 +185,8 @@ const Filters = ({
         }
       }}
     >
-      <SafeAreaView style={{ flex: 1 }}>
-        <ScrollView className="w-full h-full bg-background">
+      <SafeAreaView style={{ flex: 1 }} className="bg-background">
+        <ScrollView className="w-full h-full ">
           <Text className="font-bold text-2xl leading-8 text-foreground text-center mb-4 mt-4">
             Filter
           </Text>

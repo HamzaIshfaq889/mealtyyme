@@ -4,49 +4,55 @@ import { Text } from "react-native";
 
 import Stars from "@/assets/svgs/star.svg";
 import { ScrollView } from "react-native-gesture-handler";
+import { Recipe } from "@/lib/types/recipe";
+import { Star } from "lucide-react-native";
 
-const Review = () => {
+type ReviewProps = {
+  review: Recipe["reviews"];
+};
+
+const Review = ({ review }: ReviewProps) => {
   const scheme = useColorScheme();
   const isDarkTheme = scheme === "dark";
 
-  const ReviewDetails = [
-    {
-      id: 1,
-      name: "Daisy Murphy",
-      date: "July, 23 2023",
-      reviewText: "Easy and Tasty",
-    },
-    {
-      id: 2,
-      name: "Maiki",
-      date: "July, 23 2023",
-      reviewText: "Kid-approved",
-    },
-    {
-      id: 3,
-      name: "Daisy Murphy",
-      date: "July, 23 2023",
-      reviewText: "Easy and Tasty",
-    },
-    {
-      id: 4,
-      name: "Maiki",
-      date: "July, 23 2023",
-      reviewText: "Kid-approved",
-    },
-    {
-      id: 5,
-      name: "Daisy Murphy",
-      date: "July, 23 2023",
-      reviewText: "Easy and Tasty",
-    },
-    {
-      id: 6,
-      name: "Maiki",
-      date: "July, 23 2023",
-      reviewText: "Kid-approved",
-    },
-  ];
+  // const ReviewDetails = [
+  //   {
+  //     id: 1,
+  //     name: "Daisy Murphy",
+  //     date: "July, 23 2023",
+  //     reviewText: "Easy and Tasty",
+  //   },
+  //   {
+  //     id: 2,
+  //     name: "Maiki",
+  //     date: "July, 23 2023",
+  //     reviewText: "Kid-approved",
+  //   },
+  //   {
+  //     id: 3,
+  //     name: "Daisy Murphy",
+  //     date: "July, 23 2023",
+  //     reviewText: "Easy and Tasty",
+  //   },
+  //   {
+  //     id: 4,
+  //     name: "Maiki",
+  //     date: "July, 23 2023",
+  //     reviewText: "Kid-approved",
+  //   },
+  //   {
+  //     id: 5,
+  //     name: "Daisy Murphy",
+  //     date: "July, 23 2023",
+  //     reviewText: "Easy and Tasty",
+  //   },
+  //   {
+  //     id: 6,
+  //     name: "Maiki",
+  //     date: "July, 23 2023",
+  //     reviewText: "Kid-approved",
+  //   },
+  // ];
 
   return (
     <ScrollView
@@ -62,13 +68,11 @@ const Review = () => {
         Review
       </Text>
 
-      {ReviewDetails.map((review, index) => {
+      {review.map((rev, index) => {
         return (
           <View
             key={index}
-            className={`${
-              index == ReviewDetails.length - 1 ? "mb-12" : " mb-5"
-            }`}
+            className={`${index == review.length - 1 ? "mb-12" : " mb-5"}`}
           >
             <View className="flex flex-row justify-between items-center mb-5">
               <View className="flex flex-row gap-4">
@@ -78,21 +82,31 @@ const Review = () => {
                 />
                 <View>
                   <Text className="font-semibold text-base leading-5 mb-1.5 text-primary">
-                    {review.name}
+                    {rev.user?.first_name || "N/A"}
                   </Text>
-                  <Text className="text-muted text-sm">{review.date}</Text>
+                  <Text className="text-muted text-base">
+                    {rev?.created_at.split("T")[0]}
+                  </Text>
                 </View>
               </View>
 
               <View className="flex flex-row gap-0.5">
-                <Stars />
+                <Star fill="#e8b015" size={20} />
+                {[...Array(rev.rating - 1)].map((_, index) => (
+                  <Star
+                    key={index}
+                    fill={"#e8b015"}
+                    stroke="#e8b015"
+                    size={20}
+                  />
+                ))}
               </View>
             </View>
             <Text className="leading-6 font-semibold text-lg text-primary mb-4">
-              {review.reviewText}
+              {rev?.review_text}
             </Text>
 
-            {index !== ReviewDetails.length - 1 && (
+            {index !== review.length - 1 && (
               <View className="w-full h-[2px] bg-accent"></View>
             )}
           </View>

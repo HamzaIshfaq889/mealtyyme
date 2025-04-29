@@ -8,7 +8,7 @@ import {
 } from "@/utils/storage/authStorage";
 import { useEffect, useState } from "react";
 
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setCredentials, setSavedRecipes } from "@/redux/slices/Auth";
 import { setAuthToken } from "@/lib/apiClient";
 
@@ -16,6 +16,10 @@ export default function ProtectedLayout() {
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  const isSigningIn = useSelector((state: any) => state.auth.isSigningIn);
+
+  console.log("IsSIII",isSigningIn);
 
   useEffect(() => {
     const checkUserData = async () => {
@@ -33,7 +37,7 @@ export default function ProtectedLayout() {
     checkUserData();
   }, []);
 
-  if (isLoading) {
+  if (isLoading || isSigningIn) {
     return <Splash />;
   }
 

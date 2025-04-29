@@ -90,7 +90,6 @@ const Search = () => {
     return () => clearTimeout(timer);
   }, [inputValue]);
 
-
   return (
     <>
       <View className="w-full h-full">
@@ -133,9 +132,9 @@ const Search = () => {
         <View className="px-4">
           <View className="flex-row justify-between items-center mb-4">
             <Text className="text-xl font-bold text-foreground">Recipes</Text>
-            <Text className="text-xl font-bold text-foreground">
+            {/* <Text className="text-xl font-bold text-foreground">
               {totalRecipes}
-            </Text>
+            </Text> */}
           </View>
 
           {searchValue && flattenedRecipes.length === 0 && !isLoading ? (

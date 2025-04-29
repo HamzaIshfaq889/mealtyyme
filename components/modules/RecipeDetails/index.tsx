@@ -459,7 +459,11 @@ const RecipeDetails = ({ recipeId }: { recipeId: string | null }) => {
             </Button>
 
             <View className="mx-6 mb-8">
-              <Review />
+              {recipe?.reviews && recipe?.reviews.length > 0 ? (
+                <Review review={recipe.reviews} />
+              ) : (
+                ""
+              )}
             </View>
 
             <View className="w-full h-[2px] bg-accent mb-7"></View>

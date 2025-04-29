@@ -7,7 +7,7 @@ import { router } from "expo-router";
 import Svg1 from "../../../assets/svgs/account-option.svg";
 import { Button, ButtonText } from "@/components/ui/button";
 import { useDispatch } from "react-redux";
-import { useAuth, useClerk, useSSO } from "@clerk/clerk-expo";
+import { useAuth, useClerk, useSSO, useSignIn } from "@clerk/clerk-expo";
 import { setCredentials, setIsSigningIn } from "@/redux/slices/Auth";
 import Svg2 from "@/assets/svgs/google.svg";
 import Svg3 from "@/assets/svgs/apple-filled.svg";
@@ -22,6 +22,7 @@ const AccountsOptions = () => {
   const { signOut } = useClerk();
   const { isSignedIn } = useAuth();
   const dispatch = useDispatch();
+  const { signIn } = useSignIn();
 
   const handleSignIn = async () => {
     if (isSignedIn) {

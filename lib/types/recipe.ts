@@ -39,7 +39,7 @@ export interface Recipe {
   diets: Diet[];
   ingredients: Ingredient[];
   instructions: Instruction[];
-  reviews: any[];
+  reviews: Review[];
   spoonacular_id: number;
   is_featured: boolean;
   created_at: string;
@@ -109,4 +109,17 @@ export type Categories = {
 
   name: string;
   created_by: number;
+};
+
+type Review = {
+  id: number;
+  recipe: number;
+  user: {
+    first_name: string;
+    last_name: string | null;
+    image_url: string;
+  };
+  rating: number;
+  review_text: string;
+  created_at: string;
 };

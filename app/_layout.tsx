@@ -103,6 +103,8 @@ const tokenCache = {
 };
 
 export default function RootLayout() {
+  console.log("checkpost2");
+
   const [isSplashVisible, setIsSplashVisible] = useState(true);
   const scheme = useColorScheme(); // <- ✅ Get OS theme
 
@@ -146,7 +148,7 @@ export default function RootLayout() {
                   translucent
                 />
                 <View className={scheme === "dark" ? "dark flex-1" : "flex-1"}>
-                  <Stack>
+                  <Stack screenOptions={{ headerShown: false }}>
                     <Stack.Screen
                       name="(protected)"
                       options={{
@@ -158,6 +160,7 @@ export default function RootLayout() {
                       name="(auth)"
                       options={{
                         animation: "none",
+                        headerShown: false,
                       }}
                     />
                   </Stack>
