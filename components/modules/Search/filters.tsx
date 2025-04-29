@@ -345,7 +345,7 @@ const Filters = ({
 
                   <Slider
                     min={0}
-                    max={1000}
+                    max={500}
                     step={10}
                     floatingLabel
                     renderThumb={renderThumb}

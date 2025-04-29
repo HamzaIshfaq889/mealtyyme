@@ -6,10 +6,10 @@ import {
   Text,
   ScrollView,
   useColorScheme,
-  ActivityIndicator,
   Pressable,
   Image,
   SafeAreaView,
+  Platform,
 } from "react-native";
 import Calendar from "./Calander";
 import { ArrowRight, Clock, Flame, Star } from "lucide-react-native";
@@ -151,17 +151,24 @@ const MealPlan = () => {
 
   return (
     <>
-      <SafeAreaView style={{ flex: 1 }}>
+      <SafeAreaView
+        style={{ flex: 1 }}
+        className={`${Platform.OS === "android" && "mt-16"}`}
+      >
         <View className="flex flex-row justify-center px-9 pb-4">
-          <Text className="block font-bold text-2xl text-foreground">
+          <Text
+            className={`block font-bold text-2xl text-foreground ${
+              Platform.OS === "android" && "mb-8"
+            }`}
+          >
             Meal Planning
           </Text>
         </View>
         <View>
           <Calendar onSelectDate={setSelectedDate} selected={selectedDate} />
         </View>
-        <ScrollView className="w-full   mb-8">
-          <View className="mt-8 px-8">
+        <ScrollView className="w-full mb-8">
+          <View className="mt-8 px-7">
             <Text className="text-xl leading-6 text-secondary">Breakfast</Text>
             {renderMeal("BREAKFAST")}
 

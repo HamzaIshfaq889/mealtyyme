@@ -34,7 +34,6 @@ export const createCookbook = async ({ name }: CreateCookbookPayload) => {
     }
     throw new Error(response?.originalError?.message || "Something went wrong");
   }
-  console.log(response);
 
   return response.data as CreateCookBookResponse;
 };

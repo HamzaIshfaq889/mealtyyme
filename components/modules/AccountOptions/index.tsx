@@ -15,6 +15,7 @@ import Toast from "react-native-toast-message";
 import { setAuthToken } from "@/lib/apiClient";
 
 import { AppConfig } from "@/constants";
+import { saveUserDataInStorage } from "@/utils/storage/authStorage";
 
 const AccountsOptions = () => {
   const { startSSOFlow } = useSSO();
@@ -40,15 +41,10 @@ const AccountsOptions = () => {
 
       if (createdSessionId && setActive) {
         await setActive({ session: createdSessionId });
-        console.log("🔐 Clerk session activated");
 
         const data = await sendSessionIdToBackend(createdSessionId);
-        console.log("Response from backend:", data);
 
-        setTimeout(() => {
-          router.push("/(protected)/(tabs)");
-          console.log("check 1 ");
-        }, 0);
+        router.replace("/(protected)/(tabs)");
       } else {
         console.error("❌ setActive failed or undefined");
       }
@@ -82,7 +78,7 @@ const AccountsOptions = () => {
         const data = await sendSessionIdToBackend(createdSessionId);
         console.log("Response from backend:", data);
 
-        router.push("/(protected)/(tabs)");
+        router.replace("/(protected)/(tabs)");
       } else {
         console.error("❌ setActive failed or undefined");
       }
@@ -116,6 +112,7 @@ const AccountsOptions = () => {
         setAuthToken(data.access);
         dispatch(setCredentials({ ...data, isAuthenticated: true }));
         if (data.access) {
+          await saveUserDataInStorage({ ...data, isAuthenticated: true });
         }
 
         Toast.show({

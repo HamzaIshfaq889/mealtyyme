@@ -60,14 +60,14 @@ import Toast from "react-native-toast-message";
 import { saveSavedRecipesInStorage } from "@/utils/storage/authStorage";
 import { setSavedRecipes, updateSavedRecipes } from "@/redux/slices/Auth";
 
-import HeartFilledSvg from "@/assets/svgs/heart-filled.svg";
-
 const RecipeDetails = ({ recipeId }: { recipeId: string | null }) => {
   const bottomSheetMenuRef = useRef<BottomSheet>(null);
 
   const savedRecipes = useSelector(
     (state: any) => state.auth.savedRecipes || []
   );
+
+  console.log("savedFromRedux", savedRecipes);
 
   const isRecipeSaved = savedRecipes.some(
     (id: number) => id === Number(recipeId)
@@ -202,10 +202,10 @@ const RecipeDetails = ({ recipeId }: { recipeId: string | null }) => {
     if (!savedRecipes.includes(id)) {
       saveSavedRecipesInStorage([...savedRecipes, id])
         .then(() => {
-          Toast.show({
-            type: "success",
-            text1: "Recipe saved successfully!",
-          });
+          // Toast.show({
+          //   type: "success",
+          //   text1: "Recipe saved successfully!",
+          // });
         })
         .catch((error) => {
           console.error("Error saving recipe to storage:", error);
@@ -220,10 +220,10 @@ const RecipeDetails = ({ recipeId }: { recipeId: string | null }) => {
   const removeFromStorage = async (updatedRecipes: number[]) => {
     saveSavedRecipesInStorage([...updatedRecipes])
       .then(() => {
-        Toast.show({
-          type: "success",
-          text1: "Recipe removed from saved list!!",
-        });
+        // Toast.show({
+        //   type: "success",
+        //   text1: "Recipe removed from saved list!!",
+        // });
       })
       .catch((error) => {
         console.error("Error saving recipe to storage:", error);

@@ -3,18 +3,24 @@ import React, { useState } from "react";
 import { Image, Pressable, Text, useColorScheme, View } from "react-native";
 import { router } from "expo-router";
 
-import { Settings, UserPen } from "lucide-react-native";
+import { Settings, User, UserPen } from "lucide-react-native";
 
 import { Button, ButtonText } from "@/components/ui/button";
 
 import Cookbooks from "./Cookbooks";
 import Savedrecipes from "./SavedRecipes";
 import { ScrollView } from "react-native";
+import { useSelector } from "react-redux";
+import { LoginResponseTypes } from "@/lib/types";
 
 const Account = () => {
   const scheme = useColorScheme();
   const [activeTab, setActiveTab] = useState<"cookbooks" | "savedrecipes">(
     "cookbooks"
+  );
+
+  const auth: LoginResponseTypes = useSelector(
+    (state: any) => state.auth.loginResponseType
   );
 
   return (
@@ -35,28 +41,35 @@ const Account = () => {
           boxShadow: "0px 2px 12px 0px rgba(0,0,0,0.1)",
         }}
       >
-        <View className="flex flex-row items-center gap-4">
-          <Image
-            source={require("@/assets/images/review-person1.png")}
-            className="w-16 h-16"
-          />
+        <View
+          className={`flex flex-row items-center  ${
+            auth?.avatar_url ? "gap-4" : "gap-2"
+          } `}
+        >
+          {auth?.avatar_url ? (
+            <Image
+              source={{ uri: auth?.avatar_url }}
+              className="w-16 h-16"
+              resizeMode="cover"
+            />
+          ) : (
+            <User size={36} color={scheme === "dark" ? "#fff" : "#000"} />
+          )}
+
           <View>
-            <Text className="font-bold text-lg leading-5 mb-0.5 text-primary">
-              Username
-            </Text>
-            <Text className="text-primary/60 text-base leading-6">
-              Recipe Developer
+            <Text className="font-bold text-xl leading-5 mb-0.5 text-primary">
+              {auth?.first_name || "User"}
             </Text>
           </View>
         </View>
 
-        <Pressable
+        {/* <Pressable
           onPress={() => router.push("/(protected)/(nested)/edit-profile")}
         >
           <View className="flex flex-row gap-0.5 mr-2">
             <UserPen color={scheme === "dark" ? "#fff" : "#000"} size={30} />
           </View>
-        </Pressable>
+        </Pressable> */}
       </View>
 
       <View className="flex flex-row gap-1.5 bg-gray4 px-2 py-2 rounded-2xl mb-5 mx-6">

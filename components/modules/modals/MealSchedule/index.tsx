@@ -86,6 +86,7 @@ const MealSchedule = ({
       };
 
       const response = await AddMealSchedule(payload);
+      console.log("mealRes", response);
       Toast.show({
         type: "success",
         text1: "Meal added succesfully!",
@@ -101,7 +102,7 @@ const MealSchedule = ({
       <Dialog.Container
         visible={showMealScheduleModal}
         contentStyle={{
-          backgroundColor: scheme === "dark" ? "#000" : "#fff",
+          backgroundColor: scheme === "dark" ? "#171615" : "#fff",
           paddingVertical: Platform.OS === "ios" ? 40 : 30,
           borderRadius: Platform.OS === "ios" ? 30 : 20,
           width: Platform.OS === "ios" ? "90%" : "85%",
@@ -141,11 +142,13 @@ const MealSchedule = ({
                 className="flex-row items-center justify-between px-6 py-4 bg-background rounded-2xl"
                 style={{
                   paddingVertical: 16,
+                  marginBottom: 16,
                   shadowColor: "#000",
                   shadowOffset: { width: 0, height: 2 },
                   shadowOpacity: 0.1,
                   shadowRadius: 4,
                   elevation: 3,
+                  borderWidth: 0,
                 }}
               >
                 <Text
@@ -163,24 +166,16 @@ const MealSchedule = ({
                 </View>
               </View>
             )}
-            renderItem={(item, index, isSelected) => (
-              <View
-                className={`px-6 py-4 ${
-                  isSelected ? "bg-background" : "bg-background"
-                }`}
-              >
-                <Text
-                  className={`text-base ${
-                    isSelected ? "font-semibold text-primary" : "text-muted"
-                  }`}
-                >
+            renderItem={(item, isSelected) => (
+              <View className={`px-6 py-4 bg-background`}>
+                <Text className={`text-base "font-semibold text-primary`}>
                   {item}
                 </Text>
               </View>
             )}
             dropdownStyle={{
               borderRadius: 12,
-              backgroundColor: "white",
+              backgroundColor: scheme === "dark" ? "#000" : "#fff",
               marginTop: 8,
               shadowColor: "#000",
               shadowOffset: { width: 0, height: 4 },
@@ -193,7 +188,7 @@ const MealSchedule = ({
           />
 
           <SafeAreaView>
-            {/* <TouchableOpacity
+            <TouchableOpacity
               onPress={showDatepicker}
               className="bg-background px-4 border border-border rounded-xl py-5 mb-7"
               style={{
@@ -219,22 +214,23 @@ const MealSchedule = ({
                 is24Hour={true}
                 onChange={onChange}
                 display={Platform.OS === "ios" ? "compact" : "default"}
+                minimumDate={new Date()}
+                themeVariant="dark"
               />
-            )} */}
-            <View style={{ width: "100%" }}>
-              <DateTimePicker
-                testID="dateTimePicker"
-                value={date}
-                mode={mode as any}
-                is24Hour={true}
-                onChange={onChange}
-                display={Platform.OS === "ios" ? "inline" : "default"}
-                minimumDate={new Date()} // This disables past dates
-                style={
-                  Platform.OS === "android" ? { width: "100%" } : undefined
-                }
-              />
-            </View>
+            )}
+            {Platform.OS === "ios" && (
+              <View style={{ width: "100%" }}>
+                <DateTimePicker
+                  testID="dateTimePicker"
+                  value={date}
+                  mode={mode as any}
+                  is24Hour={true}
+                  onChange={onChange}
+                  display={Platform.OS === "ios" ? "inline" : "spinner"}
+                  minimumDate={new Date()} // This disables past dates
+                />
+              </View>
+            )}
           </SafeAreaView>
 
           <View

@@ -42,7 +42,7 @@ const Search = () => {
   const [inputValue, setInputValue] = useState<string>("");
   const [searchValue, setSearchValue] = useState<string>("");
   const [totalRecipes, setTotalRecipes] = useState(0);
-  const [protien, setProtien] = useState([0, 1000]);
+  const [protien, setProtien] = useState([0, 500]);
   const [fat, setFat] = useState([0, 100]);
   const [carbs, setCarbs] = useState([0, 700]);
 

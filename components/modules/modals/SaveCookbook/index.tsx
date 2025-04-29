@@ -186,8 +186,8 @@ const SaveCookbook = ({
             renderItem={(selectedItem, item, isSelected) => {
               return (
                 <View
-                  className={`px-4 py-2 ${
-                    isSelected ? "bg-secondary" : "bg-accent "
+                  className={`px-4 py-2  ${
+                    isSelected ? "bg-secondary" : "bg-[#1c1f1f]"
                   }`}
                 >
                   <Text
@@ -201,9 +201,13 @@ const SaveCookbook = ({
               );
             }}
             dropdownStyle={{
-              borderRadius: 18,
-              backgroundColor: "#f1f3f5",
-              marginTop: -25,
+              borderRadius: 12,
+              backgroundColor: scheme === "dark" ? "#1c1f1f" : "#fff",
+              shadowColor: "#000",
+              shadowOffset: { width: 0, height: 4 },
+              shadowOpacity: 0.1,
+              shadowRadius: 12,
+              elevation: 5,
             }}
             showsVerticalScrollIndicator={false}
           />

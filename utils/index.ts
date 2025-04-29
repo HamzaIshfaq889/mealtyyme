@@ -33,3 +33,6 @@ export const formatDateToYYYYMMDD = (dateString: string): string => {
 
   return `${year}-${month}-${day}`;
 };
+
+
+

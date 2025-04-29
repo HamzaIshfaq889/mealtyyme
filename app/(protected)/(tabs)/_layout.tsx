@@ -1,10 +1,30 @@
+import { useSavedRecipes } from "@/redux/queries/recipes/useSaveRecipesQuery";
+import { setSavedRecipes } from "@/redux/slices/Auth";
+import { saveSavedRecipesInStorage } from "@/utils/storage/authStorage";
 import { Tabs } from "expo-router";
 
 import { House, CalendarDays, ShoppingCart, User } from "lucide-react-native";
 import { useColorScheme, Platform } from "react-native";
+import { useDispatch } from "react-redux";
 
 export default function TabsLayout() {
   const scheme = useColorScheme();
+  const dispatch = useDispatch();
+
+  const { data: savedRecipes } = useSavedRecipes();
+  const savedRecipeIds = savedRecipes?.map((recipe) => recipe.id);
+  console.log("ids", savedRecipeIds);
+  if (savedRecipeIds && savedRecipeIds?.length > 0) {
+    saveSavedRecipesInStorage([...savedRecipeIds])
+      .then(() => {
+        console.log("Saved Recipes retrieved successfully");
+      })
+      .catch((error) => {
+        console.error("Error saving recipe to storage:", error);
+      });
+    dispatch(setSavedRecipes(savedRecipeIds));
+  }
+
   return (
     <Tabs
       screenOptions={{

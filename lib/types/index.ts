@@ -50,6 +50,7 @@ export type LoginResponseTypes = {
   role: string | null;
   isAuthenticated: boolean;
   image_url?: string;
+  avatar_url?: string;
   customer_details: {
     user: number | null;
     diet_preferences: number[] | [];

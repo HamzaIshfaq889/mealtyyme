@@ -20,13 +20,10 @@ export default function ProtectedLayout() {
   useEffect(() => {
     const checkUserData = async () => {
       const user = await getUserDataFromStorage();
-      const savedRecipes = await getSavedRecipesFromStorage();
-
-      console.log("savedddd", savedRecipes);
 
       if (user && user.access) {
         dispatch(setCredentials({ ...user, isAuthenticated: true }));
-        dispatch(setSavedRecipes(savedRecipes));
+
         setAuthToken(user.access);
         setIsAuthenticated(true);
       }

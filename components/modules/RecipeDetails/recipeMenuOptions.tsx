@@ -48,12 +48,12 @@ const RecipeMenuOptions = () => {
           showSaveCookbookModal={showSaveCookbookModal}
           setShowSaveCookbookModal={setShowSaveCookbookModal}
         />
-        <Pressable className="flex flex-row items-center mb-11 gap-4">
+        {/* <Pressable className="flex flex-row items-center mb-11 gap-4">
           <ShoppingCart color={isDark ? "#fff" : "#000"} size={25} />
           <Text className="text-foreground/80 text-lg font-medium">
             Add to grocerylist
           </Text>
-        </Pressable>
+        </Pressable> */}
       </View>
     </SafeAreaView>
   );
