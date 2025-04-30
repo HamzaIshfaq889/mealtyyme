@@ -2,7 +2,7 @@
   "expo": {
     "name": "Mealtyme",
     "slug": "mealtyme",
-    "version": "1.0.0",
+    "version": "1.2.1",
     "orientation": "portrait",
     "icon": "./assets/images/global-icon.png",
     "scheme": "myapp",
@@ -33,7 +33,7 @@
     },
     "android": {
       "package": "com.mealtyme.app",
-      "versionCode": 5,
+      "versionCode": 7,
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/android-icon.png",
         "backgroundColor": "#ffffff"
