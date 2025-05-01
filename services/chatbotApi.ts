@@ -1,12 +1,11 @@
 import apiClient from "@/lib/apiClient";
-import { AddMealSchedulePayload, MealData } from "@/lib/types/mealschedule";
 import { ChatbotResponse } from "@/lib/types/recipe";
 
 export const sendChatBotMessage = async (
-  message: string
+  chatHistory: string[]
 ): Promise<ChatbotResponse> => {
   const response = await apiClient.post<ChatbotResponse>(`chatbot/recipes/`, {
-    message,
+    chat_history: chatHistory,
   });
 
   if (!response.ok) {
