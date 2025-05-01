@@ -52,7 +52,7 @@ const ChatBot = () => {
   const scheme = useColorScheme();
   const tabBarHeight = useBottomTabBarHeight();
   const [isLoading, setIsLoading] = useState(false);
-
+  const [inputHistory, setInputHistory] = useState<string[]>([]);
   const [messageIndex, setMessageIndex] = useState(0);
   const messagesBOT = [
     "ChatBot is typing...",
@@ -91,7 +91,7 @@ const ChatBot = () => {
   useEffect(() => {
     const defaultMessage: ChatMessage = {
       _id: Date.now(),
-      text: "👋 Hi there! I’m Nibbles, your friendly recipe assistant. Craving something specific—like “a vegan pasta under 500 calories” or “a chicken dish without tomatoes”? Just tell me what you're in the mood for, and I’ll whip up a smart search to match!",
+      text: "👋 Well, well, whisk me away and call me a spatula—it’s Nibbles! Your pun-slinging, recipe-wrangling, flavor-blasting kitchen sidekick! 🎉 \nGot a beet-iful craving? Maybe thyme-travel to a cozy dish? Or perhaps lettuce tempt you with something egg-ceptional? Just say the word—I’ll olive to help! 🫒🔥 \nDish it out, and I’ll pan-handle the rest! (No knead to thank me… unless you’re dough inclined.) 😆 \n (Stuck? Type “clear” to zest-art fresh!) 🍋✨",
       createdAt: new Date(),
       user: {
         _id: 2,
@@ -102,11 +102,23 @@ const ChatBot = () => {
   }, []);
 
   const handleSend = async () => {
-    if (!inputText.trim()) return;
+    const trimmedInput = inputText.trim();
 
+    // Case 1: If input is blank, do nothing
+    if (!trimmedInput) return;
+
+    // Case 2: If input is "clear", reset messages and history
+    if (trimmedInput.toLowerCase() === "clear") {
+      setMessages((prev) => (prev.length > 0 ? [prev[prev.length - 1]] : []));
+      setInputText("");
+      setInputHistory([]);
+      return;
+    }
+
+    // Case 3: Send user message
     const userMessage: ChatMessage = {
       _id: Date.now(),
-      text: inputText,
+      text: trimmedInput,
       createdAt: new Date(),
       user: {
         _id: 1,
@@ -117,7 +129,10 @@ const ChatBot = () => {
     setMessages((prev) => [userMessage, ...prev]);
     setInputText("");
 
-    // Add loading message before fetching response
+    const updatedHistory = [...inputHistory, trimmedInput];
+    setInputHistory(updatedHistory);
+
+    // Add loading message
     const loadingMessage: ChatMessage = {
       _id: Date.now() + 2,
       text: "ChatBot is typing...",
@@ -132,14 +147,14 @@ const ChatBot = () => {
     setIsLoading(true);
 
     try {
-      const response = await sendChatBotMessage(inputText);
+      const response = await sendChatBotMessage(updatedHistory);
 
-      // Remove the "ChatBot is typing..." message once the response is received
+      // Remove loading message
       setMessages((prev) =>
         prev.filter((msg) => msg.text !== "ChatBot is typing...")
       );
 
-      // Bot's main reply
+      // Main bot message
       const botMessage: ChatMessage = {
         _id: Date.now() + 1,
         text: response.reply,
@@ -152,7 +167,7 @@ const ChatBot = () => {
 
       const updatedMessages = [botMessage];
 
-      // Append recipes as cards
+      // Add recipe cards
       if (response.recipes && response.recipes.length > 0) {
         response.recipes.forEach((recipe: any, index: number) => {
           const recipeCard: ChatMessage = {
@@ -163,22 +178,32 @@ const ChatBot = () => {
               _id: 2,
               name: "ChatBot",
             },
-            recipe: recipe, // Add the entire recipe object to the message
+            recipe: recipe,
           };
-
           updatedMessages.push(recipeCard);
         });
+      } else {
+        // Add a message if no recipes are found
+        const noRecipesMessage: ChatMessage = {
+          _id: Date.now() + 100,
+          text: "Don’t worry, I’ve got a-peel (get it?) for this! If you’re craving something specific, just say “clear” to wipe the slate clean—like a freshly scrubbed skillet! I’m Nibbles, your pun-loving kitchen sidekick, here to knead your questions into tasty answers. Let’s taco ‘bout what you’re hungry for! 🌮✨ (Too cheesy? Nah, just gouda ‘nuff.) 🧀😉",
+          createdAt: new Date(),
+          user: {
+            _id: 2,
+            name: "ChatBot",
+          },
+        };
+        updatedMessages.push(noRecipesMessage);
       }
 
       setMessages((prev) => [...updatedMessages, ...prev]);
     } catch (error: any) {
-      // Handle error by removing the typing message and showing an error
       setMessages((prev) =>
         prev.filter((msg) => msg.text !== "ChatBot is typing...")
       );
       const errorMessage: ChatMessage = {
         _id: Date.now() + 3,
-        text: "Error: " + error.message,
+        text: "Uh-oh! 🐾 Nibbles just had a full meal 🍽️ and is now too stuffed to process your request. 😅 Give Nibbles a moment to digest, and we’ll be back to serving you with a bite of fun in no time! 🐾🍴",
         createdAt: new Date(),
         user: {
           _id: 2,
