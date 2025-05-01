@@ -71,7 +71,7 @@ const DeleteCookbook = ({
             Delete Collection
           </Text>
           <Text className="font-bold leading-5 text-foreground text-lg text-center mb-7 ">
-            Are you sure to delte this collections
+            Are you sure to delete this collection
           </Text>
         </View>
         <View className="flex flex-row gap-2">

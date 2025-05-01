@@ -1,9 +1,9 @@
 import React from "react";
 
-import ComingSoonOverlay from "@/components/modules/ComingSoonOverlay";
+import { Cart } from "@/components/modules";
 
 const CartScreen = () => {
-  return <ComingSoonOverlay />;
+  return <Cart />;
 };
 
 export default CartScreen;

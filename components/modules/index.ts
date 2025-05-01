@@ -18,7 +18,7 @@ import Settings from "./Settings";
 import Search from "./Search";
 import Cooking from "./Cooking";
 import MealPlan from "./MealPlan";
-
+import Cart from "./Cart";
 
 import { RecipeCard } from "./Common";
 
@@ -43,5 +43,6 @@ export {
   Settings,
   Search,
   Cooking,
-  MealPlan
+  MealPlan,
+  Cart,
 };

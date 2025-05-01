@@ -2,13 +2,17 @@ import React from "react";
 
 import { Pressable, Text, useColorScheme, View } from "react-native";
 
+import { addIngredients } from "@/redux/slices/cart";
+import { useDispatch } from "react-redux";
+
 import { Ingredient } from "@/lib/types/recipe";
 import { capitalizeFirstLetter, truncateChars } from "@/utils";
+import Toast from "react-native-toast-message";
 
 type IngredientDetailsProps = {
   ingredients: Ingredient[];
   serving: number;
-  defaultServings: number; // 👈 added this
+  defaultServings: number;
 };
 
 const IngredientDetails = ({
@@ -16,8 +20,27 @@ const IngredientDetails = ({
   serving,
   defaultServings,
 }: IngredientDetailsProps) => {
+  const dispatch = useDispatch();
   const scheme = useColorScheme();
   const isDarkMode = scheme === "dark";
+
+  const handleAddCart = () => {
+    const adjustedIngredients = ingredients.map((ing) => {
+      const amountPerServing = ing.amount / defaultServings;
+      const totalAmount = amountPerServing * serving;
+
+      return {
+        ...ing,
+        amount: totalAmount,
+      };
+    });
+
+    dispatch(addIngredients(adjustedIngredients));
+    Toast.show({
+      type: "success",
+      text1: "Items added to the gorcery list successfully!",
+    });
+  };
 
   if (ingredients.length === 0) {
     return (
@@ -29,6 +52,7 @@ const IngredientDetails = ({
     );
   }
 
+
   return (
     <View>
       <View className="flex flex-row justify-between">
@@ -38,8 +62,8 @@ const IngredientDetails = ({
           </Text>
           <Text className="text-muted">{`${ingredients?.length} Item(s)`}</Text>
         </View>
-        <Pressable>
-          {/* <Text className="text-secondary pr-5 font-bold">Add All to Cart</Text> */}
+        <Pressable onPress={handleAddCart}>
+          <Text className="text-secondary pr-5 font-bold">Add to grocery list</Text>
         </Pressable>
       </View>
 
