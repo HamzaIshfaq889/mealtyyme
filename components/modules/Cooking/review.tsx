@@ -24,36 +24,28 @@ const Review = ({ currentRecipeId, bottomSheetRef }: ReviewProps) => {
   console.log("id", currentRecipeId);
 
   const handleSelection = (index: number) => {
-    if (selectedIndex === index) {
-      setSelectedIndex(null); // Deselect if same button is clicked
-    } else {
-      setSelectedIndex(index); // Select new button
-    }
-    handleRate(); // Trigger the review submission automatically when text is selected
+    const newIndex = selectedIndex === index ? null : index;
+    setSelectedIndex(newIndex);
+    handleRate(newIndex); // Pass the updated index directly
   };
-
   const handleStarRating = (rating: number) => {
     setStarRating(rating);
   };
 
-  const handleRate = async () => {
+  const handleRate = async (index: number | null) => {
     try {
-      // Get the selected tag text if any
-      const reviewText =
-        selectedIndex !== null ? buttons[selectedIndex] : undefined;
-      console.log("Rating:", currentRecipeId);
-      // Call the API to submit the review
+      const reviewText = index !== null ? buttons[index] : undefined;
+
       await addReview({
         recipeId: currentRecipeId,
         rating: starRating,
-        reviewText: reviewText,
+        reviewText,
       });
 
       console.log("Review submitted successfully");
       console.log("Rating:", starRating);
       console.log("Tag:", reviewText || "None");
 
-      // Close the bottom sheet
       bottomSheetRef.current?.close();
     } catch (error) {
       console.error("Failed to submit review:", error);

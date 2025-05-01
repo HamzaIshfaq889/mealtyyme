@@ -123,3 +123,8 @@ type Review = {
   review_text: string;
   created_at: string;
 };
+
+export type ChatbotResponse = {
+  reply: string;
+  recipes: Recipe[];
+};
