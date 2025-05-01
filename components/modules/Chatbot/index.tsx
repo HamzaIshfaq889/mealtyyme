@@ -316,7 +316,7 @@ const ChatBot = () => {
         // keyboardVerticalOffset={tabBarHeight + 10} // lift content above tab
       >
         <View className="flex-1">
-          <View className="p-4">
+          <View className="px-4 pt-16">
             <Text className="text-2xl font-bold text-center text-primary">
               Chat with Nibbles
             </Text>
@@ -337,7 +337,7 @@ const ChatBot = () => {
 
           <View
             className="flex-row items-center px-3 py-2 "
-            style={{ paddingBottom: tabBarHeight - 20 }}
+            style={{ paddingBottom: tabBarHeight + 20 }}
           >
             <Input className="flex-1 mr-2">
               <InputSlot className="ml-1">

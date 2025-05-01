@@ -1,7 +1,7 @@
 import { useSavedRecipes } from "@/redux/queries/recipes/useSaveRecipesQuery";
 import { setSavedRecipes } from "@/redux/slices/Auth";
 import { saveSavedRecipesInStorage } from "@/utils/storage/authStorage";
-import { router, Tabs, useNavigation } from "expo-router";
+import { router, Tabs } from "expo-router";
 
 import {
   House,
@@ -22,10 +22,9 @@ import { useDispatch } from "react-redux";
 export default function TabsLayout() {
   const scheme = useColorScheme();
   const dispatch = useDispatch();
-  const navigation = useNavigation();
+
   const { data: savedRecipes } = useSavedRecipes();
   const savedRecipeIds = savedRecipes?.map((recipe) => recipe.id);
-  console.log("ids", savedRecipeIds);
   if (savedRecipeIds && savedRecipeIds?.length > 0) {
     saveSavedRecipesInStorage([...savedRecipeIds])
       .then(() => {
@@ -79,7 +78,7 @@ export default function TabsLayout() {
         <Tabs.Screen
           name="chat-bot"
           options={{
-            tabBarButton: () => null, // This hides the tab button but creates a gap
+            tabBarButton: () => null, 
           }}
         />
         <Tabs.Screen
@@ -116,7 +115,7 @@ export default function TabsLayout() {
 const styles = StyleSheet.create({
   fab: {
     position: "absolute",
-    bottom: Platform.OS === "android" ? 70 : 48,
+    bottom: Platform.OS === "android" ? 30 : 48,
     alignSelf: "center",
     backgroundColor: "#00C3FF",
     padding: 16,
