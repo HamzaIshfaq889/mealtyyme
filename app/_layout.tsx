@@ -123,7 +123,7 @@ export default function RootLayout() {
     if (isSplashVisible) {
       const timer = setTimeout(() => {
         setIsSplashVisible(false);
-      }, 3000);
+      }, 5100);
       return () => clearTimeout(timer);
     }
   }, [isSplashVisible]);

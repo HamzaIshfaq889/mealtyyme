@@ -1,6 +1,5 @@
-// components/Calendar.js
 import React, { useState, useEffect, useRef } from "react";
-import { ScrollView, View, StyleSheet, Dimensions } from "react-native";
+import { ScrollView, StyleSheet, Dimensions } from "react-native";
 import moment from "moment";
 import DateComponent from "./DateComponent";
 
@@ -11,7 +10,7 @@ const Calendar = ({ onSelectDate, selected }: any) => {
   useEffect(() => {
     const tempDates: moment.Moment[] = [];
 
-    const startDate = moment().subtract(7, "days");
+    const startDate = moment().subtract(3, "days");
     const endDate = moment().add(21, "days");
 
     let currentDate = startDate.clone();
@@ -22,18 +21,22 @@ const Calendar = ({ onSelectDate, selected }: any) => {
 
     setDates(tempDates);
 
-    // Now scroll immediately after setting
+    // Default select today
+    const today = moment().format("YYYY-MM-DD");
+    onSelectDate(today);
+
+    // Scroll to today
     setTimeout(() => {
       if (scrollViewRef.current) {
-        const todayIndex = 7; // Since 1 week before today
-        const itemWidth = 70; // Adjust if your DateComponent is different
+        const todayIndex = 3; // index in the tempDates array (3 days before today)
+        const itemWidth = 70;
         const screenWidth = Dimensions.get("window").width;
         const targetOffset =
           itemWidth * todayIndex - screenWidth / 2 + itemWidth / 2;
 
         scrollViewRef.current.scrollTo({ x: targetOffset, animated: false });
       }
-    }, 0); // Delay slightly to ensure ScrollView has rendered
+    }, 0);
   }, []);
 
   return (
@@ -43,14 +46,18 @@ const Calendar = ({ onSelectDate, selected }: any) => {
       showsHorizontalScrollIndicator={false}
       style={styles.container}
     >
-      {dates.map((date, index) => (
-        <DateComponent
-          key={index}
-          date={date}
-          onSelectDate={onSelectDate}
-          selected={selected}
-        />
-      ))}
+      {dates.map((date, index) => {
+        const isBeforeToday = date.isBefore(moment(), "day");
+        return (
+          <DateComponent
+            key={index}
+            date={date}
+            onSelectDate={onSelectDate}
+            selected={selected}
+            disabled={isBeforeToday}
+          />
+        );
+      })}
     </ScrollView>
   );
 };

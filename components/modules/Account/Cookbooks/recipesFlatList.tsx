@@ -1,22 +1,34 @@
 import React from "react";
+
+import Toast from "react-native-toast-message";
+import { Pressable, FlatList, Text } from "react-native";
+
 import { router } from "expo-router";
 
 import { useCookbookRecipes } from "@/services/cookbooksApi";
-import { Pressable, FlatList, Text } from "react-native";
 
-import { FeaturedRecipeSketon } from "../../Skeletons";
-import { RecipeCard } from "../../Common";
+import { FeaturedRecipeSketon } from "@/components/modules/Skeletons";
+import { RecipeCard } from "@/components/modules/Common";
+
+import { useDeleteRecipeFromCookbook } from "@/redux/queries/recipes/useCookbooksQuery";
 
 type RecipeFlatListProps = {
   recipeIds: [];
+  cookbookId: number;
+  refetch: () => void;
 };
 
-const RecipesFlatList = ({ recipeIds }: RecipeFlatListProps) => {
+const RecipesFlatList = ({
+  recipeIds,
+  cookbookId,
+  refetch,
+}: RecipeFlatListProps) => {
   const {
     data: recipes,
     isLoading: recipesLoading,
     isError: recipesError,
   } = useCookbookRecipes(recipeIds);
+  const { mutate: deleteRecipe } = useDeleteRecipeFromCookbook();
 
   if (recipesLoading) {
     return (
@@ -49,6 +61,29 @@ const RecipesFlatList = ({ recipeIds }: RecipeFlatListProps) => {
     );
   }
 
+  const handleRecipeDelete = (recipeId: number) => {
+    if (!cookbookId || !recipeId) {
+      console.log("No cookbookId or recipeId provided");
+      return;
+    }
+
+    deleteRecipe(
+      { cookbookId: cookbookId, recipeId: recipeId },
+      {
+        onSuccess: () => {
+          refetch();
+        },
+        onError: (error: any) => {
+          Toast.show({
+            type: "error",
+            text1:
+              error?.message || "Error while deleting recipe.Please try again!",
+          });
+        },
+      }
+    );
+  };
+
   return (
     <FlatList
       data={recipes}
@@ -60,7 +95,11 @@ const RecipesFlatList = ({ recipeIds }: RecipeFlatListProps) => {
           className={`mr-4 ${index === 0 ? "ml-6" : ""}`}
           onPress={() => router.push(`/recipe/${item.id}` as const)}
         >
-          <RecipeCard recipeItem={item} />
+          <RecipeCard
+            recipeItem={item}
+            showDelete={true}
+            handleRecipeDelete={handleRecipeDelete}
+          />
         </Pressable>
       )}
     />

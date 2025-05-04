@@ -1,5 +1,10 @@
-import { useInfiniteQuery } from "@tanstack/react-query";
-import { searchRecipes } from "@/services/recipesAPI";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import {
+  getFeaturedRecipes,
+  getPopularRecipes,
+  searchRecipes,
+} from "@/services/recipesAPI";
+import { Recipe } from "@/lib/types/recipe";
 
 export const useRecipesQuery = (
   searchValue: string,
@@ -43,5 +48,21 @@ export const useRecipesQuery = (
       const totalFetched = allPages.flatMap((p) => p.results).length;
       return totalFetched < lastPage.total ? allPages.length + 1 : undefined;
     },
+  });
+};
+
+export const useFeaturedRecipes = () => {
+  return useQuery<Recipe[]>({
+    queryKey: ["featuredRecipes"],
+    queryFn: getFeaturedRecipes,
+    staleTime: 1000 * 60 * 5,
+  });
+};
+
+export const usePopularRecipes = (categoryId: string | number | null) => {
+  return useQuery<Recipe[]>({
+    queryKey: ["popularRecipes", categoryId || "all"],
+    queryFn: () => getPopularRecipes(categoryId === "all" ? null : categoryId),
+    staleTime: 1000 * 60 * 5,
   });
 };

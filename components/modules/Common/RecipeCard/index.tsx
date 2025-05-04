@@ -1,15 +1,30 @@
 import React from "react";
 
-import { Clock, Flame, Heart } from "lucide-react-native";
-import { Image, Text, useColorScheme, View } from "react-native";
+import {
+  Image,
+  Text,
+  TouchableOpacity,
+  useColorScheme,
+  View,
+} from "react-native";
+
+import { Clock, Flame, Trash } from "lucide-react-native";
+
 import { Recipe } from "@/lib/types/recipe";
+
 import { truncateChars } from "@/utils";
 
 type RecipeItemT = {
   recipeItem: Recipe;
+  showDelete?: boolean;
+  handleRecipeDelete: (id: number) => void;
 };
 
-const RecipeCard = ({ recipeItem }: RecipeItemT) => {
+const RecipeCard = ({
+  recipeItem,
+  showDelete = false,
+  handleRecipeDelete,
+}: RecipeItemT) => {
   const scheme = useColorScheme();
 
   return (
@@ -28,6 +43,15 @@ const RecipeCard = ({ recipeItem }: RecipeItemT) => {
           className="h-36 w-full rounded-xl bg-gray-300"
           resizeMode="cover"
         />
+
+        {showDelete && (
+          <TouchableOpacity
+            className="absolute top-2 right-2 bg-white px-2 py-2.5 rounded-lg"
+            onPress={() => handleRecipeDelete(recipeItem?.id)}
+          >
+            <Trash color="#ff0000" size={18} />
+          </TouchableOpacity>
+        )}
       </View>
       <Text className="text-foreground font-bold text-base leading-5 mb-3">
         {truncateChars(recipeItem?.title, 22)}

@@ -3,6 +3,7 @@ import {
   getCookBooks,
   addRecipeToCookbook,
   createCookbook,
+  deleteRecipeFromCookbook,
 } from "@/services/cookbooksApi";
 
 export const useCookBooks = () => {
@@ -24,5 +25,11 @@ export const useAddRecipeToCookbook = () => {
 export const useCreateCookbook = () => {
   return useMutation({
     mutationFn: createCookbook,
+  });
+};
+
+export const useDeleteRecipeFromCookbook = () => {
+  return useMutation({
+    mutationFn: deleteRecipeFromCookbook,
   });
 };

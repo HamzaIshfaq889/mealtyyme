@@ -4,6 +4,7 @@ import {
   cookbooks,
   CreateCookbookPayload,
   CreateCookBookResponse,
+  DeleteRecipeFromCookbookPayload,
   UpdateCookbookPayload,
 } from "@/lib/types";
 import { Recipe } from "@/lib/types/recipe";
@@ -106,6 +107,30 @@ export const deleteCookbook = async (id: number) => {
     }
     throw new Error(
       response?.originalError?.message || "Something went wrong while deleting."
+    );
+  }
+
+  return response.data;
+};
+
+export const deleteRecipeFromCookbook = async ({
+  cookbookId,
+  recipeId,
+}: DeleteRecipeFromCookbookPayload) => {
+  const response = await apiClient.post(
+    `customer-cookbooks/${cookbookId}/remove_recipe/`,
+    {
+      recipe_id: recipeId,
+    }
+  );
+
+  if (!response.ok) {
+    if (response.status === 401 || response.status === 404) {
+      throw new Error("Recipe not found or unauthorized to delete.");
+    }
+    throw new Error(
+      response?.originalError?.message ||
+        "Something went wrong while deleting recipe."
     );
   }
 

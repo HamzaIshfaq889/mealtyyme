@@ -1,7 +1,8 @@
 import React from "react";
-import { Instruction } from "@/lib/types/recipe";
 
 import { Text, useColorScheme, View } from "react-native";
+
+import { Instruction } from "@/lib/types/recipe";
 
 type AllSteps = {
   steps: Instruction[];

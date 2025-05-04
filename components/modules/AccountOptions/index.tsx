@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Text, View } from "react-native";
+import { Platform, Text, View } from "react-native";
 
 import { router } from "expo-router";
 
@@ -167,14 +167,16 @@ const AccountsOptions = () => {
             <ButtonText className="text-white">Google</ButtonText>
           </Button>
 
-          <Button
-            onPress={() => handleSignApple()}
-            action="muted"
-            className="flex-row justify-center items-center gap-2 bg-gray-700"
-          >
-            <Svg3 width={20} height={20} color="#fff" />
-            <ButtonText className="text-white">Apple</ButtonText>
-          </Button>
+          {Platform.OS === "ios" ? (
+            <Button
+              onPress={() => handleSignApple()}
+              action="muted"
+              className="flex-row justify-center items-center gap-2 bg-gray-700"
+            >
+              <Svg3 width={20} height={20} color="#fff" />
+              <ButtonText className="text-white">Apple</ButtonText>
+            </Button>
+          ) : null}
         </View>
       </View>
     </View>

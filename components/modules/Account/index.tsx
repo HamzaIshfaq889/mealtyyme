@@ -1,16 +1,11 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 
 import { Image, Pressable, Text, useColorScheme, View } from "react-native";
 import { router, useFocusEffect } from "expo-router";
 
 import {
-  CircleUser,
   CircleUserRound,
   Settings,
-  User,
-  UserPen,
-  UserRound,
-  UserRoundIcon,
 } from "lucide-react-native";
 
 import { Button, ButtonText } from "@/components/ui/button";
@@ -33,9 +28,7 @@ const Account = () => {
 
   useFocusEffect(
     useCallback(() => {
-      // Runs every time the screen comes into focus
       setActiveTab("cookbooks");
-      console.log("runing");
     }, [])
   );
 
@@ -59,7 +52,7 @@ const Account = () => {
       >
         <View
           className={`flex flex-row items-center  ${
-            auth?.avatar_url ? "gap-4" : "gap-2"
+            auth?.avatar_url ? "gap-4" : "gap-4"
           } `}
         >
           {auth?.image_url ? (

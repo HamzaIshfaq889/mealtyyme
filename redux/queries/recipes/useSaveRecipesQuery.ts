@@ -9,6 +9,7 @@ export const useSavedRecipes = () => {
     retry: 2,
   });
 };
+
 export const useSaveRecipe = () => {
   return useMutation({
     mutationFn: (recipeId: number) => saveRecipe(recipeId),

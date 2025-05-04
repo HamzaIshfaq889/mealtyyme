@@ -1,20 +1,22 @@
 import React, { useState } from "react";
+
 import { View, Text, TouchableOpacity, useColorScheme } from "react-native";
-import { ArrowLeft, Trash2 } from "lucide-react-native";
-import { router } from "expo-router";
+import { ScrollView } from "react-native-gesture-handler";
+import Toast from "react-native-toast-message";
+import { Trash2 } from "lucide-react-native";
 
 import { useSelector, useDispatch } from "react-redux";
+
+import * as Linking from "expo-linking";
+
 import { Ingredient } from "@/lib/types/recipe";
+import { sendIngredients } from "@/services/cartApi";
+import { capitalizeWords } from "@/utils";
+
 import { removeIngredient } from "@/redux/slices/cart";
 import { Button, ButtonText } from "@/components/ui/button";
 
 import InstacartLogo from "@/assets/svgs/instacart.svg";
-import { sendIngredients } from "@/services/cartApi";
-import Toast from "react-native-toast-message";
-import { ScrollView } from "react-native-gesture-handler";
-
-import * as Linking from "expo-linking";
-import { capitalizeWords } from "@/utils";
 import { Spinner } from "@/components/ui/spinner";
 
 const Cart = () => {
@@ -111,7 +113,7 @@ const Cart = () => {
                   isDark ? "!text-[#FAF1E5]" : "!text-[#003D29]"
                 } !leading-10`}
               >
-                {loading ? <Spinner /> : "Order with Instacart"}
+                {loading ? <Spinner size={30}/> : "Order with Instacart"}
               </ButtonText>
             </Button>
           </View>

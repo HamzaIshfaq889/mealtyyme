@@ -19,7 +19,7 @@ export default function ProtectedLayout() {
 
   const isSigningIn = useSelector((state: any) => state.auth.isSigningIn);
 
-  console.log("IsSIII",isSigningIn);
+  console.log("IsSIII", isSigningIn);
 
   useEffect(() => {
     const checkUserData = async () => {
@@ -38,7 +38,7 @@ export default function ProtectedLayout() {
   }, []);
 
   if (isLoading || isSigningIn) {
-    return <Splash />;
+    return null;
   }
 
   if (!isAuthenticated) {

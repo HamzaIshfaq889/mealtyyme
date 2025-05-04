@@ -147,7 +147,6 @@ const Login = () => {
           <Text className="font-bold text-2xl text-primary">Login</Text>
         </View>
 
-        {/* Invisible View to balance layout */}
         <View style={{ width: 30 }} />
       </View>
 
@@ -229,25 +228,6 @@ const Login = () => {
           Forgot Password?
         </Text>
       </TouchableOpacity>
-      {/* <View className="mt-auto">
-        <Text className="mb-5 text-center text-muted">or continue with</Text>
-        <Button
-          onPress={() => handleSignIn()}
-          action="negative"
-          className="mb-5"
-        >
-          <Svg2 width={20} height={20} />
-          <ButtonText>Login with Google</ButtonText>
-        </Button>
-        <Button
-          action="negative"
-          onPress={() => handleSignApple()}
-          className="bg-gray-500"
-        >
-          <Svg3 width={20} height={20} color="#fff" />
-          <ButtonText>Login with Apple</ButtonText>
-        </Button>
-      </View> */}
     </View>
   );
 };

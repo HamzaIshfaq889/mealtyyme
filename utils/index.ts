@@ -34,5 +34,58 @@ export const formatDateToYYYYMMDD = (dateString: string): string => {
   return `${year}-${month}-${day}`;
 };
 
+export const getGreeting = (name: string) => {
+  const currentHour = new Date().getHours();
 
+  if (currentHour < 12) {
+    return `Good Morning ${name ? name : ""}`;
+  } else if (currentHour < 18) {
+    return `Good Afternoon ${name ? name : ""}`;
+  } else {
+    return `Good Evening ${name ? name : ""}`;
+  }
+};
+
+export const getIconName = () => {
+  const currentHour = new Date().getHours();
+
+  if (currentHour < 12) {
+    return "sunny-outline";
+  } else if (currentHour < 18) {
+    return "partly-sunny-outline";
+  } else {
+    return "moon-outline";
+  }
+};
+
+export const ReviewButtons = [
+  "Easy and tasty",
+  "A bit bland",
+  "Flexitarian",
+  "Paleo",
+  "Vegetarian",
+  "Pescatarian",
+  "Vegan",
+];
+
+export function getCleanDescription(raw: string): string {
+  // Remove HTML tags
+  const plainText = raw.replace(/<[^>]*>/g, "");
+
+  // Find the index of the second period
+  let periodCount = 0;
+  let endIndex = plainText.length;
+
+  for (let i = 0; i < plainText.length; i++) {
+    if (plainText[i] === ".") {
+      periodCount++;
+      if (periodCount === 2) {
+        endIndex = i + 1;
+        break;
+      }
+    }
+  }
+
+  return plainText.slice(0, endIndex).trim();
+}
 

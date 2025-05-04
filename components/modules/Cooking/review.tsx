@@ -1,16 +1,13 @@
 import React, { useState } from "react";
+
 import { Text, TouchableOpacity, View } from "react-native";
 
-import StarEmpty from "@/assets/svgs/star-empty.svg";
-import StarReview from "@/assets/svgs/star-review.svg";
-import { Button, ButtonText } from "@/components/ui/button";
 import { Star } from "lucide-react-native";
-import BottomSheet, {
-  BottomSheetBackdrop,
-  BottomSheetScrollView,
-  BottomSheetView,
-} from "@gorhom/bottom-sheet";
+
+import BottomSheet from "@gorhom/bottom-sheet";
+
 import { addReview } from "@/services/recipesAPI";
+import { ReviewButtons } from "@/utils";
 
 type ReviewProps = {
   currentRecipeId: number;
@@ -18,23 +15,22 @@ type ReviewProps = {
 };
 
 const Review = ({ currentRecipeId, bottomSheetRef }: ReviewProps) => {
-  const [selectedIndex, setSelectedIndex] = useState<number | null>(null); // Changed to single index
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [starRating, setStarRating] = useState<number>(0);
-
-  console.log("id", currentRecipeId);
 
   const handleSelection = (index: number) => {
     const newIndex = selectedIndex === index ? null : index;
     setSelectedIndex(newIndex);
-    handleRate(newIndex); // Pass the updated index directly
+    handleRate(newIndex);
   };
+
   const handleStarRating = (rating: number) => {
     setStarRating(rating);
   };
 
   const handleRate = async (index: number | null) => {
     try {
-      const reviewText = index !== null ? buttons[index] : undefined;
+      const reviewText = index !== null ? ReviewButtons[index] : undefined;
 
       await addReview({
         recipeId: currentRecipeId,
@@ -42,25 +38,11 @@ const Review = ({ currentRecipeId, bottomSheetRef }: ReviewProps) => {
         reviewText,
       });
 
-      console.log("Review submitted successfully");
-      console.log("Rating:", starRating);
-      console.log("Tag:", reviewText || "None");
-
       bottomSheetRef.current?.close();
     } catch (error) {
       console.error("Failed to submit review:", error);
     }
   };
-
-  const buttons = [
-    "Easy and tasty",
-    "A bit bland",
-    "Flexitarian",
-    "Paleo",
-    "Vegetarian",
-    "Pescatarian",
-    "Vegan",
-  ];
 
   return (
     <View className="flex flex-col w-full h-full py-4 px-6 bg-background">
@@ -68,7 +50,6 @@ const Review = ({ currentRecipeId, bottomSheetRef }: ReviewProps) => {
         Rate Recipe
       </Text>
 
-      {/* Star Review Component */}
       <View className="flex flex-row justify-center gap-1.5 mt-5">
         {[1, 2, 3, 4, 5].map((starIndex) => (
           <TouchableOpacity
@@ -84,9 +65,8 @@ const Review = ({ currentRecipeId, bottomSheetRef }: ReviewProps) => {
         ))}
       </View>
 
-      {/* Buttons for additional reviews */}
       <View className="flex flex-row flex-wrap gap-4 mt-12">
-        {buttons?.map((btn, index) => {
+        {ReviewButtons?.map((btn, index) => {
           const isSelected = selectedIndex === index;
           return (
             <TouchableOpacity

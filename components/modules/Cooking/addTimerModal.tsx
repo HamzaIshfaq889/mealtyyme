@@ -1,18 +1,15 @@
 import React, { useState } from "react";
 
+import { useColorScheme } from "react-native";
 import { Text } from "react-native";
+
 import Dialog from "react-native-dialog";
 
-import { Clock, FilePenLine, View } from "lucide-react-native";
+import { View } from "lucide-react-native";
 
 import { Button, ButtonText } from "@/components/ui/button";
-import {
-  FormControl,
-  FormControlLabel,
-  FormControlLabelText,
-} from "@/components/ui/form-control";
+import { FormControl } from "@/components/ui/form-control";
 import { Input, InputField } from "@/components/ui/input";
-import { useColorScheme } from "react-native";
 
 type AddTimeModalProps = {
   showTimerModal: boolean;
@@ -33,14 +30,12 @@ const AddTimerModal = ({
 
   const [formData, setFormData] = useState({ time: "" });
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
-  const systemColorScheme = useColorScheme();
 
   const validateField = (key: string, value: string) => {
     setFormData((prev) => ({ ...prev, [key]: value }));
 
     let errorMessage = "";
 
-    // Validation rules for each field
     switch (key) {
       case "time":
         if (!value) {
@@ -123,7 +118,7 @@ const AddTimerModal = ({
           className="!w-full py-3 mt-4"
           onPress={() => setShowTimerModal(false)}
         >
-          <ButtonText className="text-black">Cancel</ButtonText>
+          <ButtonText className="text-foreground">Cancel</ButtonText>
         </Button>
       </Dialog.Container>
     </View>

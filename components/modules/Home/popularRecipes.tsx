@@ -1,6 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 import { router } from "expo-router";
+
+import { Clock, Flame } from "lucide-react-native";
 
 import {
   Text,
@@ -11,64 +13,26 @@ import {
   useColorScheme,
 } from "react-native";
 
-import { Clock, Flame } from "lucide-react-native";
-import { getCategories, getPopularRecipes } from "@/services/recipesAPI";
-
-import { Categories, Recipe } from "@/lib/types/recipe";
 import { capitalizeWords, truncateChars } from "@/utils";
 
 import { Button, ButtonText } from "@/components/ui/button";
-import { FeaturedRecipeSketon } from "../Skeletons";
+import { FeaturedRecipeSketon } from "@/components/modules/Skeletons";
+import { useCategories } from "@/redux/queries/recipes/useCategoryQuery";
+import { usePopularRecipes } from "@/redux/queries/recipes/useRecipeQuery";
 
 const PopularRecipes = () => {
-  const [categories, setCategories] = useState<Categories[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const scheme = useColorScheme();
-  const [recipes, setRecipes] = useState<Recipe[]>([]);
-  const [loadingRecipe, setLoadingRecipe] = useState(true);
-
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | number>(
     "all"
   );
 
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const data = await getCategories();
-        setCategories(data);
-      } catch (err: any) {
-        console.log(err);
-        setError(err.message || "Error fetching categories");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchCategories();
-  }, []);
-
-  useEffect(() => {
-    fetchRecipes(null);
-  }, []);
+  const { data: categories = [], isLoading: loadingCategories } =
+    useCategories();
+  const { data: recipes = [], isLoading: loadingRecipes } =
+    usePopularRecipes(selectedCategoryId);
 
   const handlePress = (id: string | number) => {
     setSelectedCategoryId(id);
-
-    const categoryIdToPass = id === "all" || id === "" ? null : id;
-    fetchRecipes(categoryIdToPass);
-  };
-
-  const fetchRecipes = async (categoryIdToPass: string | number | null) => {
-    setLoadingRecipe(true);
-    try {
-      const data = await getPopularRecipes(categoryIdToPass);
-      setRecipes(data);
-    } catch (error) {
-      console.error("Failed to fetch recipes:", error);
-    } finally {
-      setLoadingRecipe(false);
-    }
   };
 
   return (
@@ -78,46 +42,61 @@ const PopularRecipes = () => {
           <Text className="text-lg font-bold text-primary">Category</Text>
         </View>
 
-        <FlatList
-          horizontal
-          data={[{ id: "all", name: "All" }, ...categories]}
-          keyExtractor={(item) => item.id.toString()}
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{ gap: 12 }}
-          renderItem={({ item, index }) => (
-            <Button
-              action="secondary"
-              className={`rounded-full px-10 py-2 ${
-                index === 0 ? "ml-7" : ""
-              } ${
-                selectedCategoryId === item.id ? "bg-secondary" : "bg-gray3/60"
-              }`}
-              onPress={() => handlePress(item.id)}
-            >
-              <ButtonText
-                className={`text-base leading-6 ${
+        {!loadingCategories ? (
+          <FlatList
+            horizontal
+            data={[{ id: "all", name: "All" }, ...categories]}
+            keyExtractor={(item) => item.id.toString()}
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{ gap: 12 }}
+            renderItem={({ item, index }) => (
+              <Button
+                action="secondary"
+                className={`rounded-full px-10 py-2 ${
+                  index === 0 ? "ml-7" : ""
+                } ${
                   selectedCategoryId === item.id
-                    ? "text-background"
-                    : "!text-primary font-semibold"
+                    ? "bg-secondary"
+                    : "bg-gray3/60"
                 }`}
+                onPress={() => handlePress(item.id)}
               >
-                {capitalizeWords(item.name)}
-              </ButtonText>
-            </Button>
-          )}
-        />
+                <ButtonText
+                  className={`text-base leading-6 ${
+                    selectedCategoryId === item.id
+                      ? "text-background"
+                      : "!text-primary font-semibold"
+                  }`}
+                >
+                  {capitalizeWords(item.name)}
+                </ButtonText>
+              </Button>
+            )}
+          />
+        ) : (
+          <FlatList
+            horizontal
+            data={Array.from({ length: 6 })}
+            keyExtractor={(_, index) => index.toString()}
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{ gap: 12, paddingLeft: 28 }}
+            renderItem={({ index }) => (
+              <View
+                key={index}
+                className="rounded-full bg-gray3/50 h-10 w-24 animate-pulse"
+              />
+            )}
+          />
+        )}
       </View>
       <View className="flex flex-row justify-between">
         <Text className="text-foreground font-bold text-xl leading-5 mb-1 pl-7">
           Popular Recipies
         </Text>
-        {/* <Pressable>
-          <Text className="text-secondary pr-5 font-bold">See All</Text>
-        </Pressable> */}
       </View>
 
       <View>
-        {loading ? (
+        {loadingRecipes ? (
           <FlatList
             horizontal
             data={Array.from({ length: 3 })}

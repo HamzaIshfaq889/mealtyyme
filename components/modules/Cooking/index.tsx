@@ -1,7 +1,5 @@
-import React, { useEffect, useRef, useState } from "react";
-
+import React, { useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { stopCooking } from "@/redux/slices/recipies";
 
 import { router } from "expo-router";
 
@@ -13,8 +11,7 @@ import {
   View,
 } from "react-native";
 import { CountdownCircleTimer } from "react-native-countdown-circle-timer";
-
-import { ArrowLeft, Logs, Pause, Play, Plus } from "lucide-react-native";
+import { stopCooking } from "@/redux/slices/recipies";
 
 import BottomSheet, {
   BottomSheetBackdrop,
@@ -22,7 +19,10 @@ import BottomSheet, {
   BottomSheetView,
 } from "@gorhom/bottom-sheet";
 
+import { ArrowLeft, Logs, Pause, Play, Plus } from "lucide-react-native";
+
 import { Recipe } from "@/lib/types/recipe";
+
 import { Button, ButtonText } from "@/components/ui/button";
 import {
   Slider,
@@ -31,7 +31,6 @@ import {
   SliderFilledTrack,
 } from "@/components/ui/slider";
 
-// import AddTimerModal from "./addTimerModal";
 import Step from "./step";
 import AllSteps from "./allSteps";
 import StepCompleted from "./stepCompleted";
@@ -40,28 +39,9 @@ import AddTimerModal from "./addTimerModal";
 
 const Cooking = () => {
   const dispatch = useDispatch();
-
   const currentRecipe: Recipe = useSelector(
     (state: any) => state.recipe.cookingRecipe
   );
-  const isCooking: boolean = useSelector(
-    (state: any) => state.recipe.isCooking
-  );
-
-  // const dispatch = useDispatch();
-  // const hasStartedRef = useRef(false);
-
-  // useEffect(() => {
-  //   if (!hasStartedRef.current) {
-  //     hasStartedRef.current = true;
-
-  //     if (isCooking && cookingRecipe) {
-  //       dispatch(setCurrentRecipe(cookingRecipe));
-  //     } else if (currentRecipe) {
-  //       dispatch(startCooking(currentRecipe));
-  //     }
-  //   }
-  // }, [dispatch, isCooking, currentRecipe, cookingRecipe]);
 
   const scheme = useColorScheme();
   const isDarkMode = scheme === "dark";
@@ -97,7 +77,7 @@ const Cooking = () => {
     }
   };
 
-  const handleStopCooking = () => {
+  const handleStopCooking = () => { 
     dispatch(stopCooking());
     router.push("/(protected)/(tabs)");
   };
@@ -136,8 +116,6 @@ const Cooking = () => {
       {isAllStepsComplete && (
         <StepCompleted reviewBottomSheetRef={reviewBottomSheetRef} />
       )}
-
-      {/* View for the timer steps and button */}
 
       <View className="mt-auto">
         {!isAllStepsComplete && (

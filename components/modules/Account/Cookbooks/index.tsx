@@ -84,7 +84,11 @@ const Cookbooks = ({ activeTab }: { activeTab: string }) => {
               </View>
 
               {cookbook?.recipes.length > 0 ? (
-                <RecipesFlatList recipeIds={cookbook?.recipes} />
+                <RecipesFlatList
+                  recipeIds={cookbook?.recipes}
+                  cookbookId={cookbook?.id}
+                  refetch={refetch}
+                />
               ) : (
                 <View className="flex-1 justify-center items-center p-7">
                   <Text className="text-gray-500 text-sm">

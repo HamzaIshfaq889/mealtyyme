@@ -91,6 +91,11 @@ export type CreateCookbookPayload = {
   name: string;
 };
 
+export type DeleteRecipeFromCookbookPayload = {
+  cookbookId: number;
+  recipeId: number;
+};
+
 export type CreateCookBookResponse = {
   id: number;
   name: string;

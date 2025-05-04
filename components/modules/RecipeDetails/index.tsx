@@ -32,10 +32,9 @@ import {
   X,
   Ellipsis,
   Heart,
-  HeartHandshake,
 } from "lucide-react-native";
 
-import { convertMinutesToTimeLabel } from "@/utils";
+import { convertMinutesToTimeLabel, getCleanDescription } from "@/utils";
 
 import { Button, ButtonText } from "@/components/ui/button";
 
@@ -95,11 +94,11 @@ const RecipeDetails = ({ recipeId }: { recipeId: string | null }) => {
     enabled: !!recipeId,
   });
 
-  useEffect(() => {
-    if (recipe?.servings) {
-      setServings(recipe.servings);
-    }
-  }, [recipe]);
+  // useEffect(() => {
+  //   if (recipe?.servings) {
+  //     setServings(recipe.servings);
+  //   }
+  // }, [recipe]);
 
   if (isLoading) {
     return <RecipeDetailsSkeleton />;
@@ -150,14 +149,6 @@ const RecipeDetails = ({ recipeId }: { recipeId: string | null }) => {
     if (recipe) dispatch(startCooking(recipe));
     router.push(`/cooking/${recipe?.id}` as any);
   };
-  function getTruncatedSummary(text: string): string {
-    const words = text.split(" ");
-    const wordLimit = words.slice(0, 10).join(" ");
-    const charLimit = text.slice(0, 45);
-    return wordLimit.length < charLimit.length
-      ? wordLimit + "..."
-      : charLimit + "...";
-  }
 
   const handleFavourite = (id: number | undefined) => {
     if (!id) return;
@@ -307,10 +298,7 @@ const RecipeDetails = ({ recipeId }: { recipeId: string | null }) => {
               <RenderHtml
                 contentWidth={width}
                 source={{
-                  html:
-                    expanded && recipe
-                      ? recipe?.summary
-                      : getTruncatedSummary(recipe?.summary || ""),
+                  html: getCleanDescription(recipe?.summary || ""),
                 }}
                 baseStyle={{
                   color: "#9ca3af",
