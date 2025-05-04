@@ -13,7 +13,9 @@
       "bundleIdentifier": "com.mealtyme.app",
       "buildNumber": "1",
       "entitlements": {
-        "com.apple.developer.applesignin": ["Default"]
+        "com.apple.developer.applesignin": [
+          "Default"
+        ]
       },
       "infoPlist": {
         "CFBundleURLTypes": [
@@ -54,7 +56,10 @@
           "resizeMode": "contain",
           "backgroundColor": "#00C3FF"
         }
-      ]
+      ],
+      "expo-font",
+      "expo-secure-store",
+      "expo-web-browser"
     ],
     "experiments": {
       "typedRoutes": true
