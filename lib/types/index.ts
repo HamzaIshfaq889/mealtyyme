@@ -55,17 +55,23 @@ export type LoginResponseTypes = {
     user: number | null;
     diet_preferences: number[] | [];
     allergies: string[] | [];
-    trial_start_date: string | null;
-    trial_used: boolean;
-    is_pro_user: boolean;
-    avatar: string | null;
-    subscription_type: string | null;
-    subscription_expiry: string | null;
+    subscription: Subscription | null;
+    first_time_user: boolean;
     created_at: string;
     updated_at: string;
     saved_recipes: number[] | [];
   } | null;
 };
+
+export interface Subscription {
+  stripe_customer_id: string | null;
+  stripe_subscription_id: string | null;
+  status: string | null;
+  subscription_type: string | null;
+  subscription_expiry: string | null;
+  string: Date;
+  updated_at: string;
+}
 
 export type OtpResponseTypes = {
   reset_token: string;

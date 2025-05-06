@@ -88,4 +88,3 @@ export function getCleanDescription(raw: string): string {
 
   return plainText.slice(0, endIndex).trim();
 }
-

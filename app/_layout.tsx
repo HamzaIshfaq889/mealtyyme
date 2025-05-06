@@ -21,7 +21,7 @@ import { StatusBar } from "expo-status-bar";
 import { Stack } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import * as SplashScreen from "expo-splash-screen";
-
+import { StripeProvider } from "@stripe/stripe-react-native";
 import { AppConfig } from "@/constants";
 
 import { Splash } from "@/components/modules";
@@ -133,44 +133,53 @@ export default function RootLayout() {
   }
 
   return (
-    <ClerkProvider
-      publishableKey={AppConfig.CLERK_PUBLISHABLE_KEY}
-      tokenCache={tokenCache}
+    <StripeProvider
+      publishableKey="pk_test_51RLiYoQ9GhZlI30ssstOKRRdnVqc2U1TLlLcbLkBlc7QIOuKsYb8HjXL81VtwaTkZMPunuNeRuPS3736dEjfjGcH00emK8MZG2" // 🔐 Replace with your actual Stripe publishable key
+      merchantIdentifier="merchant.co.mealtyme.app" // for Apple Pay (optional)
     >
-      <Provider store={store}>
-        <PersistGate loading={null} persistor={persistor}>
-          <QueryProvider>
-            <GestureHandlerRootView style={{ flex: 1 }}>
-              <ThemeProvider value={scheme === "dark" ? DarkTheme : LightTheme}>
-                <StatusBar
-                  style={scheme === "dark" ? "light" : "dark"}
-                  backgroundColor="transparent"
-                  translucent
-                />
-                <View className={scheme === "dark" ? "dark flex-1" : "flex-1"}>
-                  <Stack screenOptions={{ headerShown: false }}>
-                    <Stack.Screen
-                      name="(protected)"
-                      options={{
-                        headerShown: false,
-                        animation: "none",
-                      }}
-                    />
-                    <Stack.Screen
-                      name="(auth)"
-                      options={{
-                        animation: "none",
-                        headerShown: false,
-                      }}
-                    />
-                  </Stack>
-                  <Toast config={toastConfig} />
-                </View>
-              </ThemeProvider>
-            </GestureHandlerRootView>
-          </QueryProvider>
-        </PersistGate>
-      </Provider>
-    </ClerkProvider>
+      <ClerkProvider
+        publishableKey={AppConfig.CLERK_PUBLISHABLE_KEY}
+        tokenCache={tokenCache}
+      >
+        <Provider store={store}>
+          <PersistGate loading={null} persistor={persistor}>
+            <QueryProvider>
+              <GestureHandlerRootView style={{ flex: 1 }}>
+                <ThemeProvider
+                  value={scheme === "dark" ? DarkTheme : LightTheme}
+                >
+                  <StatusBar
+                    style={scheme === "dark" ? "light" : "dark"}
+                    backgroundColor="transparent"
+                    translucent
+                  />
+                  <View
+                    className={scheme === "dark" ? "dark flex-1" : "flex-1"}
+                  >
+                    <Stack screenOptions={{ headerShown: false }}>
+                      <Stack.Screen
+                        name="(protected)"
+                        options={{
+                          headerShown: false,
+                          animation: "none",
+                        }}
+                      />
+                      <Stack.Screen
+                        name="(auth)"
+                        options={{
+                          animation: "none",
+                          headerShown: false,
+                        }}
+                      />
+                    </Stack>
+                    <Toast config={toastConfig} />
+                  </View>
+                </ThemeProvider>
+              </GestureHandlerRootView>
+            </QueryProvider>
+          </PersistGate>
+        </Provider>
+      </ClerkProvider>
+    </StripeProvider>
   );
 }

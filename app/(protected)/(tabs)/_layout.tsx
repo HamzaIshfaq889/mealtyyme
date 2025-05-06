@@ -78,7 +78,7 @@ export default function TabsLayout() {
         <Tabs.Screen
           name="chat-bot"
           options={{
-            tabBarButton: () => null, 
+            tabBarButton: () => null,
           }}
         />
         <Tabs.Screen

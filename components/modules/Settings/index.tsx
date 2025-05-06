@@ -15,6 +15,7 @@ import {
   ArrowLeft,
   Info,
   FileTerminal,
+  WalletCardsIcon,
 } from "lucide-react-native";
 
 import { Switch } from "@/components/ui/switch";
@@ -126,6 +127,13 @@ const Settings = () => {
           icon={<FileTerminal color="#00C3FF" size={30} />}
           text="Terms and Conditions"
           onPress={() => router.push("/(protected)/(nested)/terms-conditions")}
+          scheme={scheme}
+        />
+
+        <SettingCard
+          icon={<WalletCardsIcon color="#00C3FF" size={30} />}
+          text="Manage Subscription"
+          onPress={() => router.push("/(protected)/(nested)/subscription")}
           scheme={scheme}
         />
 

@@ -15,12 +15,8 @@ const initialState: AuthSliceType = {
       user: 0,
       diet_preferences: [],
       allergies: [],
-      trial_start_date: null,
-      trial_used: false,
-      is_pro_user: false,
-      avatar: null,
-      subscription_type: null,
-      subscription_expiry: null,
+      subscription: null,
+      first_time_user: true,
       created_at: "",
       updated_at: "",
       saved_recipes: [],
@@ -47,6 +43,11 @@ const authSlice = createSlice({
         customer_details,
         image_url,
       } = action.payload;
+
+      // Log the incoming customer details
+      console.log("Incoming Customer Details:", customer_details);
+
+      // Set the credentials
       state.loginResponseType.access = access;
       state.loginResponseType.refresh = refresh;
       state.loginResponseType.email = email;
@@ -55,7 +56,14 @@ const authSlice = createSlice({
       state.loginResponseType.image_url = image_url;
       state.loginResponseType.isAuthenticated = isAuthenticated;
       state.loginResponseType.customer_details = customer_details;
+
+      // Log the set customer details in the state
+      console.log(
+        "Set Customer Details in State:",
+        state.loginResponseType.customer_details
+      );
     },
+
     setResetToken: (state, action: PayloadAction<string>) => {
       state["reset-token"] = action.payload;
     },
