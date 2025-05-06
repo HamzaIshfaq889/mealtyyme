@@ -3,10 +3,7 @@ import React, { useCallback, useState } from "react";
 import { Image, Pressable, Text, useColorScheme, View } from "react-native";
 import { router, useFocusEffect } from "expo-router";
 
-import {
-  CircleUserRound,
-  Settings,
-} from "lucide-react-native";
+import { CircleUserRound, Settings, UserPen } from "lucide-react-native";
 
 import { Button, ButtonText } from "@/components/ui/button";
 
@@ -76,13 +73,13 @@ const Account = () => {
           </View>
         </View>
 
-        {/* <Pressable
+        <Pressable
           onPress={() => router.push("/(protected)/(nested)/edit-profile")}
         >
           <View className="flex flex-row gap-0.5 mr-2">
             <UserPen color={scheme === "dark" ? "#fff" : "#000"} size={30} />
           </View>
-        </Pressable> */}
+        </Pressable>
       </View>
 
       <View className="flex flex-row bg-gray4 p-1 rounded-full mb-5 mx-6 shadow-sm">
