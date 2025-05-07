@@ -77,7 +77,7 @@ const Cooking = () => {
     }
   };
 
-  const handleStopCooking = () => { 
+  const handleStopCooking = () => {
     dispatch(stopCooking());
     router.push("/(protected)/(tabs)");
   };
@@ -297,7 +297,7 @@ const Cooking = () => {
         <BottomSheetView>
           <Review
             currentRecipeId={currentRecipe?.id}
-            bottomSheetRef={reviewBottomSheetRef}
+            bottomSheetRef={reviewBottomSheetRef as any}
           />
         </BottomSheetView>
       </BottomSheet>

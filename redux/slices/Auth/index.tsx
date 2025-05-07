@@ -24,8 +24,8 @@ const initialState: AuthSliceType = {
   },
   hasOnboarded: false,
   isSigningIn: false,
-  "reset-token": null,
   savedRecipes: [],
+  "reset-token": null,
 };
 
 const authSlice = createSlice({
@@ -44,10 +44,8 @@ const authSlice = createSlice({
         image_url,
       } = action.payload;
 
-      // Log the incoming customer details
-      console.log("Incoming Customer Details:", customer_details);
+      // console.log("Incoming Customer Details:", customer_details);
 
-      // Set the credentials
       state.loginResponseType.access = access;
       state.loginResponseType.refresh = refresh;
       state.loginResponseType.email = email;
@@ -57,7 +55,6 @@ const authSlice = createSlice({
       state.loginResponseType.isAuthenticated = isAuthenticated;
       state.loginResponseType.customer_details = customer_details;
 
-      // Log the set customer details in the state
       console.log(
         "Set Customer Details in State:",
         state.loginResponseType.customer_details

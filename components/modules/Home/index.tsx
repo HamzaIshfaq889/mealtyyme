@@ -19,30 +19,17 @@ import PopularRecipes from "./popularRecipes";
 import Svg1 from "@/assets/svgs/cookingfood.svg";
 import LogoAPP from "@/assets/svgs/logoapp.svg";
 import { getGreeting, getIconName } from "@/utils";
-import FirstTimeUserBottomSheet from "./subscribe_drawer";
-import RecipeMenuOptions from "../RecipeDetails/recipeMenuOptions";
 import SubscribeDrawer from "./subscribe_drawer";
+import SubcriptionCTA from "../SubscriptionsCTA";
 
 const HomeUser = () => {
   const scheme = useColorScheme();
-  const isCooking = useSelector((state: any) => state.recipe.isCooking);
 
+  const subscriptionBottomSheetRef = useRef<BottomSheet>(null);
+  const isCooking = useSelector((state: any) => state.recipe.isCooking);
   const name = useSelector(
     (state: any) => state.auth.loginResponseType.first_name
   );
-
-  const firstTimeUser = useSelector(
-    (state: any) =>
-      state.auth.loginResponseType.customer_details.first_time_user
-  );
-
-  const bottomSheetMenuRef = useRef<BottomSheet>(null);
-
-  // useEffect(() => {
-  //   if (firstTimeUser) {
-  //     bottomSheetMenuRef.current?.snapToIndex(1);
-  //   }
-  // }, [firstTimeUser]);
 
   return (
     <View className="flex-1 relative">
@@ -99,16 +86,18 @@ const HomeUser = () => {
       )}
 
       {/* Test button to manually show the bottom sheet */}
-      <Pressable
+      {/* <Pressable
         className="absolute bottom-5 right-5 z-20 mb-36"
         onPress={() => bottomSheetMenuRef.current?.snapToIndex(1)}
       >
         <View className="bg-secondary p-1 rounded-full shadow-lg">
           <Svg1 width={50} height={50} color="#fff" />
         </View>
-      </Pressable>
+      </Pressable> */}
 
-      <BottomSheet
+      <SubcriptionCTA bottomSheetRef={subscriptionBottomSheetRef as any} />
+
+      {/* <BottomSheet
         ref={bottomSheetMenuRef}
         index={-1}
         snapPoints={["30%"]}
@@ -119,18 +108,18 @@ const HomeUser = () => {
             bottomSheetMenuRef.current?.close();
           }
         }}
-        // handleStyle={{
-        //   backgroundColor: isDarkMode ? "#1f242a" : "#fff",
-        //   borderWidth: 0,
-        // }}
-        // handleIndicatorStyle={{
-        //   backgroundColor: isDarkMode ? "#888" : "#ccc",
-        // }}
+        handleStyle={{
+          backgroundColor: isDarkMode ? "#1f242a" : "#fff",
+          borderWidth: 0,
+        }}
+        handleIndicatorStyle={{
+          backgroundColor: isDarkMode ? "#888" : "#ccc",
+        }}
       >
         <BottomSheetView>
           <SubscribeDrawer />
         </BottomSheetView>
-      </BottomSheet>
+      </BottomSheet> */}
     </View>
   );
 };

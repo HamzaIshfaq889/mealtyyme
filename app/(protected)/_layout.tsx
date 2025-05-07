@@ -19,8 +19,6 @@ export default function ProtectedLayout() {
 
   const isSigningIn = useSelector((state: any) => state.auth.isSigningIn);
 
-  console.log("IsSIII", isSigningIn);
-
   useEffect(() => {
     const checkUserData = async () => {
       const user = await getUserDataFromStorage();

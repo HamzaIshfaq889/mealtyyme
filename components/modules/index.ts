@@ -19,6 +19,7 @@ import Search from "./Search";
 import Cooking from "./Cooking";
 import MealPlan from "./MealPlan";
 import Cart from "./Cart";
+import SubcriptionCTA from "./SubscriptionsCTA";
 
 import { RecipeCard } from "./Common";
 
@@ -45,4 +46,5 @@ export {
   Cooking,
   MealPlan,
   Cart,
+  SubcriptionCTA,
 };

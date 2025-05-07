@@ -19,6 +19,7 @@ import {
 } from "lucide-react-native";
 import { useSelector } from "react-redux";
 import { router } from "expo-router";
+import { AppConfig } from "@/constants";
 
 interface Subscription {
   id: string;
@@ -44,16 +45,13 @@ const SubscriptionStatusScreen: React.FC = () => {
   const fetchSubscriptions = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await fetch(
-        "http://192.168.0.102:8000/api/subscriptions/",
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await fetch(`${AppConfig.API_URL}/subscriptions/`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       if (!response.ok) {
         console.log("response", response);
@@ -76,19 +74,16 @@ const SubscriptionStatusScreen: React.FC = () => {
     try {
       setLoading(true);
 
-      const response = await fetch(
-        "http://192.168.0.102:8000/api/retry-subscription/",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            subscriptionId,
-          }),
-        }
-      );
+      const response = await fetch(`${AppConfig.API_URL}retry-subscription/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          subscriptionId,
+        }),
+      });
 
       const result = await response.json();
 
@@ -171,7 +166,7 @@ const SubscriptionStatusScreen: React.FC = () => {
       setLoading(true);
 
       const response = await fetch(
-        "http://192.168.0.102:8000/api/cancel-subscription/",
+        `${AppConfig.API_URL}/cancel-subscription/`,
         {
           method: "POST",
           headers: {

@@ -16,6 +16,7 @@ import {
   PlusCircle,
 } from "lucide-react-native";
 import { useSelector } from "react-redux";
+import { AppConfig } from "@/constants";
 
 interface PaymentMethod {
   id: string;
@@ -38,16 +39,13 @@ const PaymentMethodsScreen: React.FC = () => {
   // Fetch customer's saved payment methods
   const fetchPaymentMethods = useCallback(async () => {
     try {
-      const response = await fetch(
-        "http://192.168.0.102:8000/api/payment-methods/",
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await fetch(`${AppConfig.API_URL}payment-methods/`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       if (!response.ok) {
         throw new Error("Failed to fetch payment methods");
@@ -70,7 +68,7 @@ const PaymentMethodsScreen: React.FC = () => {
 
       // 1. Fetch setup intent from backend
       const response = await fetch(
-        "http://192.168.0.102:8000/api/setup-payment-method/",
+        `${AppConfig.API_URL}setup-payment-method/`,
         {
           method: "POST",
           headers: {
@@ -125,7 +123,7 @@ const PaymentMethodsScreen: React.FC = () => {
       setLoading(true);
 
       const response = await fetch(
-        "http://192.168.0.102:8000/api/set-default-payment-method/",
+        `${AppConfig.API_URL}set-default-payment-method/`,
         {
           method: "POST",
           headers: {
@@ -167,7 +165,7 @@ const PaymentMethodsScreen: React.FC = () => {
               setLoading(true);
 
               const response = await fetch(
-                "http://192.168.0.102:8000/api/delete-payment-method/",
+                `${AppConfig.API_URL}delete-payment-method/`,
                 {
                   method: "DELETE",
                   headers: {

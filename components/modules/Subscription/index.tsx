@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { View, Button, Alert } from "react-native";
 import { useStripe } from "@stripe/stripe-react-native";
+import { AppConfig } from "@/constants";
 
 interface PaymentSheetParams {
   paymentIntent: string;
@@ -17,16 +18,13 @@ const SubscriptionScreen: React.FC = () => {
 
   // 1. Fetch SetupIntent, EphemeralKey, and Customer from your backend
   const fetchPaymentSheetParams = async () => {
-    const response = await fetch(
-      "http://192.168.0.102:8000/api/payment-intent/",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email: customerEmail, interval: "year" }),
-      }
-    );
+    const response = await fetch(`${AppConfig.API_URL}payment-intent/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email: customerEmail, interval: "year" }),
+    });
 
     if (!response.ok) {
       throw new Error("Failed to fetch setup intent parameters.");
@@ -79,7 +77,7 @@ const SubscriptionScreen: React.FC = () => {
     } else {
       // Notify backend to create subscription for this customer
       const response = await fetch(
-        "http://192.168.0.102:8000/api/confirm-payment/",
+        `${AppConfig.API_URL}confirm-payment/`,
         {
           method: "POST",
           headers: {

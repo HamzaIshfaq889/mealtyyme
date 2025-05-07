@@ -101,7 +101,6 @@ export default function TabsLayout() {
         />
       </Tabs>
       <View style={styles.tabBarCutout} />
-      {/* Floating Button for Chat Bot */}
       <TouchableOpacity
         style={styles.fab}
         onPress={() => router.replace("/(protected)/(tabs)/chat-bot")}

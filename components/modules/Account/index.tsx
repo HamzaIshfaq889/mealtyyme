@@ -74,7 +74,7 @@ const Account = () => {
         </View>
 
         <Pressable
-          onPress={() => router.push("/(protected)/(nested)/edit-profile")}
+          onPress={() => router.push("/(protected)/(nested)/subscriptioncta")}
         >
           <View className="flex flex-row gap-0.5 mr-2">
             <UserPen color={scheme === "dark" ? "#fff" : "#000"} size={30} />

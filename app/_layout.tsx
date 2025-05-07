@@ -10,6 +10,8 @@ import { Provider } from "react-redux";
 import { store, persistor } from "@/redux/store";
 import { PersistGate } from "redux-persist/integration/react";
 
+import { PortalProvider } from "@gorhom/portal";
+
 import { ClerkProvider } from "@clerk/clerk-expo";
 
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -148,32 +150,34 @@ export default function RootLayout() {
                 <ThemeProvider
                   value={scheme === "dark" ? DarkTheme : LightTheme}
                 >
-                  <StatusBar
-                    style={scheme === "dark" ? "light" : "dark"}
-                    backgroundColor="transparent"
-                    translucent
-                  />
-                  <View
-                    className={scheme === "dark" ? "dark flex-1" : "flex-1"}
-                  >
-                    <Stack screenOptions={{ headerShown: false }}>
-                      <Stack.Screen
-                        name="(protected)"
-                        options={{
-                          headerShown: false,
-                          animation: "none",
-                        }}
-                      />
-                      <Stack.Screen
-                        name="(auth)"
-                        options={{
-                          animation: "none",
-                          headerShown: false,
-                        }}
-                      />
-                    </Stack>
-                    <Toast config={toastConfig} />
-                  </View>
+                  <PortalProvider>
+                    <StatusBar
+                      style={scheme === "dark" ? "light" : "dark"}
+                      backgroundColor="transparent"
+                      translucent
+                    />
+                    <View
+                      className={scheme === "dark" ? "dark flex-1" : "flex-1"}
+                    >
+                      <Stack screenOptions={{ headerShown: false }}>
+                        <Stack.Screen
+                          name="(protected)"
+                          options={{
+                            headerShown: false,
+                            animation: "none",
+                          }}
+                        />
+                        <Stack.Screen
+                          name="(auth)"
+                          options={{
+                            animation: "none",
+                            headerShown: false,
+                          }}
+                        />
+                      </Stack>
+                      <Toast config={toastConfig} />
+                    </View>
+                  </PortalProvider>
                 </ThemeProvider>
               </GestureHandlerRootView>
             </QueryProvider>

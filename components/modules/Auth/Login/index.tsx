@@ -101,7 +101,7 @@ const Login = () => {
       };
 
       const response = (await loginUser(payload)) as LoginResponseTypes;
-      console.log("response", response);
+   
       if (response.access) {
         await saveUserDataInStorage({ ...response, isAuthenticated: true });
       }

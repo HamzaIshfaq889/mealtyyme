@@ -11,6 +11,8 @@ import {
 } from "@stripe/stripe-react-native";
 import { Platform } from "react-native";
 
+import { AppConfig } from "@/constants";
+
 const SubscribeDrawer = () => {
   const scheme = useColorScheme();
   const isDark = scheme === "dark";
@@ -28,7 +30,7 @@ const SubscribeDrawer = () => {
 
   const productPrices = async () => {
     try {
-      const response = await fetch("http://192.168.0.102:8000/api/products/", {
+      const response = await fetch(`${AppConfig.API_URL}products/`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -60,17 +62,15 @@ const SubscribeDrawer = () => {
 
     fetchData();
   }, []); // You can add token or other dependencies if needed
+
   const fetchPaymentSheetParams = async (token: string) => {
-    const response = await fetch(
-      "http://192.168.0.102:8000/api/payment-intent/",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    const response = await fetch(`${AppConfig.API_URL}payment-intent/"`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
     if (!response.ok) {
       throw new Error("Failed to fetch setup intent parameters.");
@@ -165,7 +165,7 @@ const SubscribeDrawer = () => {
       } else {
         // Confirm on backend
         const confirmResponse = await fetch(
-          "http://192.168.0.102:8000/api/confirm-payment/",
+          `${AppConfig.API_URL}confirm-payment/`,
           {
             method: "POST",
             headers: {
