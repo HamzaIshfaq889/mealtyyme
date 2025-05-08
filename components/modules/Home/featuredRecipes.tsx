@@ -89,7 +89,7 @@ const FeaturedRecipes = () => {
                 />
                 <View className="absolute bottom-0 w-full p-4">
                   <Text
-                    className="font-semibold text-lg text-foreground mb-2"
+                    className="font-semibold text-lg text-white mb-2"
                     numberOfLines={1}
                     ellipsizeMode="tail"
                   >
@@ -101,13 +101,13 @@ const FeaturedRecipes = () => {
                         source={{ uri: item.created_by.image_url }}
                         className="w-6 h-6 rounded-full"
                       />
-                      <Text className="text-foreground text-sm">
+                      <Text className="text-white text-sm">
                         {item.created_by.first_name} {item.created_by.last_name}
                       </Text>
                     </View>
                     <View className="flex-row items-center gap-1">
                       <Clock color="white" size={14} />
-                      <Text className="text-foreground text-sm">
+                      <Text className="text-white text-sm">
                         {item.ready_in_minutes}m
                       </Text>
                     </View>

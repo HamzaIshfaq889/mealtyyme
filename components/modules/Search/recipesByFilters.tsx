@@ -6,6 +6,7 @@ import {
   useCuisinesQuery,
   useDietsQuery,
 } from "@/redux/queries/recipes/useStaticFilter";
+import { router } from "expo-router";
 
 const MAX_VISIBLE = 10;
 
@@ -42,6 +43,13 @@ const FilterSection = ({
             <TouchableOpacity
               key={item.id ?? `${item.name}-${index}`}
               className="bg-background px-3 py-1.5 rounded-full mr-2 mb-2"
+              onPress={() =>
+                router.push({
+                  pathname:
+                    `/(protected)/(nested)/all-recipes/${item?.id}` as any,
+                  params: { name: title?.toLowerCase() },
+                })
+              }
             >
               <Text className="text-foreground font-medium">{item.name}</Text>
             </TouchableOpacity>
@@ -49,10 +57,10 @@ const FilterSection = ({
         </View>
         {shouldShowMoreButton && (
           <TouchableOpacity
-            className="w-16 flex justify-center items-center rounded-full bg-gray-200"
+            className="w-16 flex justify-center items-center rounded-full bg-gray3"
             onPress={handleShowAll}
           >
-            <Text className="text-gray-600 font-medium pb-2.5">...</Text>
+            <Text className="text-foreground font-medium pb-2.5">...</Text>
           </TouchableOpacity>
         )}
       </View>
@@ -61,7 +69,7 @@ const FilterSection = ({
 };
 
 const FilterSectionSkeleton = ({ title }: { title: string }) => (
-  <>
+  <View className="px-6">
     <Text className="text-foreground font-semibold text-base mb-2">
       {title}
     </Text>
@@ -73,7 +81,7 @@ const FilterSectionSkeleton = ({ title }: { title: string }) => (
         />
       ))}
     </View>
-  </>
+  </View>
 );
 
 export default function RecipesByFilters() {
@@ -86,7 +94,7 @@ export default function RecipesByFilters() {
   if (cuisinesLoading || dietsLoading || categoriesLoading) {
     return <FilterSectionSkeleton title="Diets" />;
   }
-  
+
   return (
     <ScrollView className="px-6 pt-2.5 pb-40">
       <FilterSection title="Diets" items={diets} />

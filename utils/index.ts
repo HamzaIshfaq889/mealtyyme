@@ -1,3 +1,5 @@
+import { SubscriptionStatus } from "@/lib/types/subscription";
+
 export function capitalizeWords(text: string): string {
   return text.replace(/\b\w/g, (char) => char.toUpperCase());
 }
@@ -89,4 +91,6 @@ export function getCleanDescription(raw: string): string {
   return plainText.slice(0, endIndex).trim();
 }
 
-
+export const checkisProUser = (status: SubscriptionStatus): boolean => {
+  return status === "active" || status === "past_due";
+};

@@ -20,6 +20,8 @@ import Cooking from "./Cooking";
 import MealPlan from "./MealPlan";
 import Cart from "./Cart";
 import SubcriptionCTA from "./SubscriptionsCTA";
+import AllRecipes from "./AllRecipes";
+import ManageSubscriptions from "./ManageSubscriptions";
 
 import { RecipeCard } from "./Common";
 
@@ -47,4 +49,6 @@ export {
   MealPlan,
   Cart,
   SubcriptionCTA,
+  AllRecipes,
+  ManageSubscriptions,
 };

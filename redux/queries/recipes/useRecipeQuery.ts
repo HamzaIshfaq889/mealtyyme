@@ -1,48 +1,20 @@
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import { Recipe, SearchRecipeQueryOptions } from "@/lib/types/recipe";
+
 import {
   getFeaturedRecipes,
   getPopularRecipes,
   searchRecipes,
 } from "@/services/recipesAPI";
-import { Recipe } from "@/lib/types/recipe";
 
-export const useRecipesQuery = (
-  searchValue: string,
-  categoriesIds: number[],
-  cusinesIds: number[],
-  dietIds: number[],
-  protien: number[],
-  fat: number[],
-  carbs: number[],
-  low: number,
-  high: number
-) => {
+export const useRecipesQuery = (options: SearchRecipeQueryOptions = {}) => {
   return useInfiniteQuery({
-    queryKey: [
-      "recipes",
-      searchValue,
-      categoriesIds,
-      cusinesIds,
-      dietIds,
-      protien,
-      fat,
-      carbs,
-      low,
-      high,
-    ],
-    queryFn: ({ pageParam }: { pageParam?: number }) =>
-      searchRecipes(
-        categoriesIds,
-        pageParam ?? 1,
-        searchValue,
-        cusinesIds,
-        low,
-        high,
-        dietIds,
-        protien,
-        fat,
-        carbs
-      ),
+    queryKey: ["recipes", options],
+    queryFn: ({ pageParam = 1 }) =>
+      searchRecipes({
+        ...options,
+        page: pageParam,
+      }),
     initialPageParam: 1,
     getNextPageParam: (lastPage, allPages) => {
       const totalFetched = allPages.flatMap((p) => p.results).length;

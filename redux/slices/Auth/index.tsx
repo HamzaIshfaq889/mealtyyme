@@ -64,6 +64,7 @@ const authSlice = createSlice({
     setResetToken: (state, action: PayloadAction<string>) => {
       state["reset-token"] = action.payload;
     },
+
     clearResetToken: (state) => {
       state["reset-token"] = null;
     },

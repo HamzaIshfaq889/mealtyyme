@@ -52,7 +52,7 @@ const PopularRecipes = () => {
             renderItem={({ item, index }) => (
               <Button
                 action="secondary"
-                className={`rounded-full px-10 py-2 ${
+                className={`rounded-full px-10  ${
                   index === 0 ? "ml-7" : ""
                 } ${
                   selectedCategoryId === item.id

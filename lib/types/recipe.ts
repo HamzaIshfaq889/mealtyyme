@@ -128,3 +128,15 @@ export type ChatbotResponse = {
   reply: string;
   recipes: Recipe[];
 };
+
+export type SearchRecipeQueryOptions = {
+  searchValue?: string;
+  categoryIds?: number[];
+  cuisineIds?: number[];
+  dietIds?: number[];
+  protein?: number[];
+  fat?: number[];
+  carbs?: number[];
+  calories?: number[];
+  readyInMinutes?: number[];
+};

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useCallback, useMemo, useEffect } from "react";
+import { useState, useRef, useCallback, useMemo } from "react";
 
 import { router } from "expo-router";
 
@@ -21,22 +21,24 @@ import { Input, InputField, InputIcon, InputSlot } from "@/components/ui/input";
 import RecipesBySearch from "./recipesBySearch";
 import Filters from "./filters";
 import RecipesByFilters from "./recipesByFilters";
+import { useSelector } from "react-redux";
+import { checkisProUser } from "@/utils";
 
 const Search = () => {
   const scheme = useColorScheme();
   const bottomSheetRef = useRef<BottomSheet>(null);
+  const [isFiltersApplied, setIsFiltersApplied] = useState(false);
 
-  const [low, setLow] = useState<number>(0);
-  const [high, setHigh] = useState<number>(1000);
   const [categoriesIds, setCategoriesIds] = useState<number[]>([]);
   const [cusinesIds, setCuisinesIds] = useState<number[]>([]);
   const [dietIds, setDietIds] = useState<number[]>([]);
   const [inputValue, setInputValue] = useState<string>("");
   const [searchValue, setSearchValue] = useState<string>("");
-  const [totalRecipes, setTotalRecipes] = useState(0);
   const [protien, setProtien] = useState([0, 500]);
   const [fat, setFat] = useState([0, 100]);
   const [carbs, setCarbs] = useState([0, 700]);
+  const [calories, setCalories] = useState([0, 2000]);
+  const [readyInMinutes, setReadyInMinutes] = useState([0, 300]);
 
   const {
     data,
@@ -45,22 +47,32 @@ const Search = () => {
     isFetchingNextPage,
     isLoading: recipesLoading,
     refetch,
-  } = useRecipesQuery(
+  } = useRecipesQuery({
     searchValue,
-    categoriesIds,
-    cusinesIds,
+    categoryIds: categoriesIds,
+    cuisineIds: cusinesIds,
     dietIds,
-    protien,
+    protein: protien,
     fat,
     carbs,
-    low,
-    high
-  );
+  });
 
   const flattenedRecipes = useMemo(
     () => data?.pages.flatMap((page) => page.results) ?? [],
     [data]
   );
+
+  const status = useSelector(
+    (state: any) =>
+      state.auth.loginResponseType.customer_details?.subscription?.status
+  );
+  const isProUser = checkisProUser(status);
+
+  const handleApplyFilters = useCallback(() => {
+    setIsFiltersApplied(true);
+    bottomSheetRef.current?.close();
+    refetch();
+  }, [bottomSheetRef?.current]);
 
   const handleLoadMore = useCallback(() => {
     if (hasNextPage && !isFetchingNextPage) {
@@ -68,11 +80,19 @@ const Search = () => {
     }
   }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 
-  useEffect(() => {
-    if (data?.pages?.[0]?.total) {
-      setTotalRecipes(data.pages[0].total);
-    }
-  }, [data]);
+  const handleClearFilters = () => {
+    setCategoriesIds([]);
+    setCuisinesIds([]);
+    setDietIds([]);
+    setProtien([0, 1000]);
+    setCarbs([0, 700]);
+    setFat([0, 100]);
+    setCalories([0, 2000]);
+    setReadyInMinutes([0, 300]);
+
+    setIsFiltersApplied(false);
+    bottomSheetRef.current?.close();
+  };
 
   // useEffect(() => {
   //   const timer = setTimeout(() => {
@@ -99,8 +119,8 @@ const Search = () => {
           <View className="flex items-center">
             <Text className="font-bold text-2xl text-foreground">Search</Text>
           </View>
-          <View className="flex flex-row items-center justify-between ">
-            <Input className="basis-4/5 my-3.5">
+          <View className="flex flex-row items-center justify-between">
+            <Input className={`${isProUser ? "basis-4/5" : "w-full"} my-3.5`}>
               <InputSlot className="ml-1">
                 <InputIcon className="!w-6 !h-6 text-primary" as={SearchIcon} />
               </InputSlot>
@@ -112,16 +132,18 @@ const Search = () => {
               />
             </Input>
 
-            <Pressable
-              onPress={() => bottomSheetRef.current?.snapToIndex(1)}
-              className="bg-secondary flex items-center px-3.5 py-4 rounded-2xl"
-            >
-              <SlidersHorizontal color="#fff" />
-            </Pressable>
+            {isProUser && (
+              <Pressable
+                onPress={() => bottomSheetRef.current?.snapToIndex(1)}
+                className="bg-secondary flex items-center px-3.5 py-4 rounded-2xl"
+              >
+                <SlidersHorizontal color="#fff" />
+              </Pressable>
+            )}
           </View>
         </View>
 
-        {!!searchValue && (
+        {(!!searchValue || isFiltersApplied) && (
           <RecipesBySearch
             flattenedRecipes={flattenedRecipes}
             searchValue={searchValue}
@@ -147,6 +169,12 @@ const Search = () => {
           setFat={setFat}
           carbs={carbs}
           setCarbs={setCarbs}
+          calories={calories}
+          setCalories={setCalories}
+          readyInMinutes={readyInMinutes}
+          setReadyInMinutes={setReadyInMinutes}
+          handleApplyFilters={handleApplyFilters}
+          handleClearFilters={handleClearFilters}
         />
       </View>
     </>

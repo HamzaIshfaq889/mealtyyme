@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import {
   Alert,
-  SafeAreaView,
   ScrollView,
   Text,
   TouchableOpacity,
@@ -34,7 +33,7 @@ import { ProductPrice } from "@/lib/types/subscription";
 
 import Pro from "@/assets/svgs/pro-svg.svg";
 import { Button, ButtonText } from "@/components/ui/button";
-
+import { SafeAreaView } from "react-native-safe-area-context";
 
 type PlanType = "monthly" | "yearly";
 
@@ -81,9 +80,11 @@ const SubcriptionCTA = ({ bottomSheetRef }: SubcriptionCTAProps) => {
         token,
         interval: selectedPlan === "monthly" ? "month" : "year",
         customerEmail,
+        isDarkMode,
       },
       {
-        onSuccess: () => {
+        onSuccess: (data) => {
+          console.log("subscriptionData", data);
           Alert.alert(
             "Success",
             `Subscription for ${
@@ -108,8 +109,10 @@ const SubcriptionCTA = ({ bottomSheetRef }: SubcriptionCTAProps) => {
 
   const pricingOptions = packagesData?.[0]?.prices ?? [];
 
+  console.log(isFirstTimeUser);
+
   return isFirstTimeUser ? (
-    <Portal>
+    <Portal hostName="root-host">
       <BottomSheet
         ref={bottomSheetRef}
         snapPoints={["95%"]}
@@ -123,7 +126,7 @@ const SubcriptionCTA = ({ bottomSheetRef }: SubcriptionCTAProps) => {
       >
         <BottomSheetView className="bg-background w-full h-full">
           <SafeAreaView className="flex-1">
-            <ScrollView className="flex-1">
+            <ScrollView className="bg-background flex-1">
               <View className="px-6 pt-4 pb-10">
                 <TouchableOpacity onPress={handleCloseBottomSheet}>
                   <X color={isDarkMode ? "#fff" : "#000"} size={30} />
@@ -170,7 +173,9 @@ const SubcriptionCTA = ({ bottomSheetRef }: SubcriptionCTAProps) => {
                   ].map((item, index) => (
                     <View
                       key={index}
-                      className="bg- p-4 rounded-2xl flex-row items-center overflow-hidden mb-5 bg-background"
+                      className={`bg- p-4 rounded-2xl flex-row items-center overflow-hidden mb-5  ${
+                        isDarkMode ? "bg-gray4" : "bg-background"
+                      }`}
                       style={{
                         boxShadow: "0px 2px 16px 0px rgba(6, 51, 54, 0.10)",
                       }}
@@ -179,7 +184,11 @@ const SubcriptionCTA = ({ bottomSheetRef }: SubcriptionCTAProps) => {
                         <Text className="text-foreground text-lg font-semibold">
                           {item.title}
                         </Text>
-                        <Text className="text-muted text-sm mt-1">
+                        <Text
+                          className={`${
+                            isDarkMode ? "text-foreground/60" : "text-muted"
+                          } text-sm mt-1`}
+                        >
                           {item.subtitle}
                         </Text>
                       </View>

@@ -150,15 +150,15 @@ export default function RootLayout() {
                 <ThemeProvider
                   value={scheme === "dark" ? DarkTheme : LightTheme}
                 >
-                  <PortalProvider>
-                    <StatusBar
-                      style={scheme === "dark" ? "light" : "dark"}
-                      backgroundColor="transparent"
-                      translucent
-                    />
-                    <View
-                      className={scheme === "dark" ? "dark flex-1" : "flex-1"}
-                    >
+                  <StatusBar
+                    style={scheme === "dark" ? "light" : "dark"}
+                    backgroundColor="transparent"
+                    translucent
+                  />
+                  <View
+                    className={scheme === "dark" ? "dark flex-1" : "flex-1"}
+                  >
+                    <PortalProvider rootHostName="root-host">
                       <Stack screenOptions={{ headerShown: false }}>
                         <Stack.Screen
                           name="(protected)"
@@ -175,9 +175,9 @@ export default function RootLayout() {
                           }}
                         />
                       </Stack>
-                      <Toast config={toastConfig} />
-                    </View>
-                  </PortalProvider>
+                    </PortalProvider>
+                    <Toast config={toastConfig} />
+                  </View>
                 </ThemeProvider>
               </GestureHandlerRootView>
             </QueryProvider>

@@ -15,10 +15,12 @@ export const useSubscribe = () => {
       token,
       interval,
       customerEmail,
+      isDarkMode,
     }: {
       token: string;
       interval: "month" | "year";
       customerEmail: string;
-    }) => subscribe(token, interval, customerEmail),
+      isDarkMode: boolean;
+    }) => subscribe(token, interval, customerEmail, isDarkMode),
   });
 };

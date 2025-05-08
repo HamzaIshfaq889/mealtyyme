@@ -13,3 +13,11 @@ export type Packages = {
   active: boolean;
   prices: ProductPrice[];
 }[];
+
+export type SubscriptionStatus =
+  | "active"
+  | "past_due"
+  | "unpaid"
+  | "canceled"
+  | "incomplete"
+  | "trialing";

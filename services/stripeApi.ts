@@ -5,7 +5,7 @@ import {
   initPaymentSheet,
   presentPaymentSheet,
 } from "@stripe/stripe-react-native";
-import { Alert, Platform } from "react-native";
+import { Alert, Platform, useColorScheme } from "react-native";
 
 export const getPackagePrices = async () => {
   const response = await apiClient.get(`${AppConfig.API_URL}products/`);
@@ -42,7 +42,8 @@ export const fetchPaymentSheetParams = async () => {
 export const subscribe = async (
   token: string,
   interval: "year" | "month",
-  customerEmail: string
+  customerEmail: string,
+  isDarkMode: boolean
 ): Promise<void> => {
   try {
     const { setupIntent, ephemeralKey, customer }: any =
@@ -93,13 +94,13 @@ export const subscribe = async (
       appearance: {
         colors: {
           primary: "#3A83F1",
-          background: "#FFFFFF",
-          componentBackground: "#F3F8FF",
-          componentBorder: "#C1D9FA",
-          componentDivider: "#E3EFFF",
-          primaryText: "#1A1A1A",
-          secondaryText: "#7A7A7A",
-          placeholderText: "#AAAAAA",
+          background: isDarkMode ? "#121212" : "#FFFFFF",
+          componentBackground: isDarkMode ? "#1E1E1E" : "#F3F8FF",
+          componentBorder: isDarkMode ? "#333333" : "#C1D9FA",
+          componentDivider: isDarkMode ? "#2C2C2E" : "#E3EFFF",
+          primaryText: isDarkMode ? "#FFFFFF" : "#1A1A1A",
+          secondaryText: isDarkMode ? "#CCCCCC" : "#7A7A7A",
+          placeholderText: isDarkMode ? "#888888" : "#AAAAAA",
         },
       },
       paymentMethodOrder: ["card", "apple_pay", "google_pay"],
@@ -131,7 +132,9 @@ export const subscribe = async (
     );
 
     if (!confirmResponse.ok) {
-      throw new Error(confirmResponse.originalError?.message || "Unknown error");
+      throw new Error(
+        confirmResponse.originalError?.message || "Unknown error"
+      );
     }
   } catch (error: any) {
     Alert.alert("Error", error.message);

@@ -14,6 +14,7 @@ import {
   Diet,
   Recipe,
   RecipeResponse,
+  SearchRecipeQueryOptions,
 } from "@/lib/types/recipe";
 
 export const getFeaturedRecipes = async (): Promise<Recipe[]> => {
@@ -154,59 +155,62 @@ export const getDiets = async (): Promise<Diet[]> => {
   return result;
 };
 
-export const searchRecipes = async (
-  category_ids?: (string | number)[] | null,
-  page: string | number = 1,
-  search: string | "" = "",
-  cusine_ids?: (string | number)[] | null,
-  min_calories?: number,
-  max_calories?: number,
-  diet_ids?: (string | number)[] | null,
-  protien?: number[] | null,
-  fat?: number[] | null,
-  carbs?: number[] | null
-): Promise<{ results: Recipe[]; total: number }> => {
+export const searchRecipes = async ({
+  searchValue = "",
+  categoryIds,
+  cuisineIds,
+  dietIds,
+  protein,
+  fat,
+  carbs,
+  calories,
+  page,
+  readyInMinutes,
+}: SearchRecipeQueryOptions & { page: number }): Promise<{
+  results: Recipe[];
+  total: number;
+}> => {
   const params: string[] = [];
 
-  console.log(page);
-  console.log(search);
-
-  if (category_ids && category_ids.length > 0) {
-    params.push(...category_ids.map((id) => `dish_types=${id}`));
+  if (categoryIds?.length) {
+    params.push(...categoryIds.map((id) => `dish_types=${id}`));
   }
 
-  if (cusine_ids && cusine_ids.length > 0) {
-    params.push(...cusine_ids.map((id) => `cuisines=${id}`));
+  if (cuisineIds?.length) {
+    params.push(...cuisineIds.map((id) => `cuisines=${id}`));
   }
 
-  if (diet_ids && diet_ids.length > 0) {
-    params.push(...diet_ids.map((id) => `diets=${id}`));
+  if (dietIds?.length) {
+    params.push(...dietIds.map((id) => `diets=${id}`));
   }
 
-  if (search.trim() !== "") {
-    params.push(`search=${encodeURIComponent(search.trim())}`);
+  if (searchValue.trim() !== "") {
+    params.push(`search=${encodeURIComponent(searchValue.trim())}`);
   }
 
-  if (min_calories !== undefined) {
-    params.push(`min_calories=${min_calories}`);
+  if (protein && (protein[0] > 0 || protein[1] < 1000)) {
+    params.push(`min_protein=${protein[0]}`);
+    params.push(`max_protein=${protein[1]}`);
   }
 
-  if (max_calories !== undefined) {
-    params.push(`max_calories=${max_calories}`);
-  }
-
-  if (protien && (protien[0] > 0 || protien[1] < 1000)) {
-    params.push(`min_protein=${protien[0]}`);
-    params.push(`max_protien=${protien[1]}`);
+  if (calories && (calories[0] > 0 || calories[1] < 500)) {
+    params.push(`min_calories=${calories[0]}`);
+    params.push(`max_calories=${calories[1]}`);
   }
 
   if (fat && (fat[0] > 0 || fat[1] < 100)) {
     params.push(`min_fat=${fat[0]}`);
     params.push(`max_fat=${fat[1]}`);
   }
+
   if (carbs && (carbs[0] > 0 || carbs[1] < 700)) {
     params.push(`min_carbs=${carbs[0]}`);
-    params.push(`max_carbs==${carbs[1]}`);
+    params.push(`max_carbs=${carbs[1]}`);
+  }
+
+  if (readyInMinutes && (readyInMinutes[0] > 0 || readyInMinutes[1] < 300)) {
+    params.push(`min_ready_in_minutes=${readyInMinutes[0]}`);
+    params.push(`max_ready_in_minutes=${readyInMinutes[1]}`);
   }
 
   params.push(`pageSize=10`);
@@ -215,7 +219,7 @@ export const searchRecipes = async (
   const query = `/recipes/?${params.join("&")}`;
   console.log("query", query);
 
-  const response = await apiClient.get<RecipeResponse>(query, {});
+  const response = await apiClient.get<RecipeResponse>(query);
 
   if (!response.ok) {
     if (response.status === 401 || response.status === 404) {

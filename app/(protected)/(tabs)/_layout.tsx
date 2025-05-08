@@ -101,12 +101,12 @@ export default function TabsLayout() {
         />
       </Tabs>
       <View style={styles.tabBarCutout} />
-      <TouchableOpacity
+      {/* <TouchableOpacity
         style={styles.fab}
         onPress={() => router.replace("/(protected)/(tabs)/chat-bot")}
       >
         <BotMessageSquare color="#fff" size={24} />
-      </TouchableOpacity>
+      </TouchableOpacity> */}
     </>
   );
 }
