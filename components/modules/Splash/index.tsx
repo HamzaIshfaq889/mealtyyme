@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 
 import SVG3 from "../../../assets/svgs/Vector3.svg";
 import SVG1 from "../../../assets/svgs/splash-1.svg";
@@ -18,12 +18,11 @@ const Splash = () => {
       </View>
 
       <View className="flex justify-center items-center w-screen h-screen">
-        <View>
-          <Logo width={201} height={278} />
-        </View>
+        <Logo width={150} height={220} />
+        <Text className="text-white text-xl font-semibold text-center mt-5">Making Home Cooking Effortless</Text>
       </View>
 
-      <View className="absolute bottom-0 right-0 left-0">
+      <View className="absolute -bottom-2 right-0 left-0">
         <SVG2 width={410} />
       </View>
       <View className="absolute bottom-0 right-14">

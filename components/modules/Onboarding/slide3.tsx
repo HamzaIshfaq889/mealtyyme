@@ -1,12 +1,17 @@
 import React from "react";
 
-import { Text, View } from "react-native";
+import { Text, useColorScheme, View } from "react-native";
 
 import Svg1 from "../../../assets/svgs/Vector11.svg";
+import Svg1Dark from "@/assets/svgs/illus3.svg";
+
 import Svg2 from "../../../assets/svgs/Vector12.svg";
 import Svg3 from "../../../assets/svgs/Vector13.svg";
 
 const Slide3 = () => {
+  const theme = useColorScheme();
+  const isDarkMode = theme === "dark";
+
   return (
     <>
       <View className="relative h-[71%]">
@@ -14,7 +19,7 @@ const Slide3 = () => {
           <Svg2 />
         </View>
         <View className="relative flex justify-center items-center py-44">
-          <Svg1 />
+          {isDarkMode ? <Svg1Dark /> : <Svg1 />}
         </View>
         <View className="absolute left-0 right-0 -bottom-44">
           <Svg3 />

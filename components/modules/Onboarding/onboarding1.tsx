@@ -1,4 +1,5 @@
 import React, { useRef, useState } from "react";
+import { useDispatch } from "react-redux";
 
 import { router } from "expo-router";
 
@@ -10,12 +11,15 @@ import { Button, ButtonText } from "@/components/ui/button";
 import Slide1 from "./slide1";
 import Slide2 from "./slide2";
 import Slide3 from "./slide3";
+import { setOnboardingComplete } from "@/redux/slices/Auth";
+import { setOnboardingComplete as setOnboardingCompleteStorage } from "@/utils/storage/authStorage";
 
 const OnBoarding = () => {
+  const dispatch = useDispatch();
   const swiperRef = useRef<any>(null);
   const [currentSlide, setCurrentSlide] = useState(0);
 
-  const handleNext = () => {
+  const handleNext = async () => {
     setCurrentSlide(currentSlide + 1);
 
     if (currentSlide < 2) {
@@ -23,7 +27,10 @@ const OnBoarding = () => {
         swiperRef.current.scrollBy(1);
       }
     } else {
-      router.push("/(protected)/(onboarding)/pick-diet");
+      dispatch(setOnboardingComplete(true));
+      await setOnboardingCompleteStorage();
+
+      router.replace("/(auth)/account-options");
     }
   };
 

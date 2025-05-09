@@ -49,7 +49,7 @@ const SubscriptionHistory = () => {
           onChangePlan={handleChangePlan}
         /> */}
 
-        {/* <ManageSubscription
+        <ManageSubscription
           status="active"
           planName="Premium Annual"
           startDate="Jun 15, 2023"
@@ -57,7 +57,7 @@ const SubscriptionHistory = () => {
           nextBillingDate="2025-06-06 11:32 UTC"
           subscriptionId="sub_tr1JjEQ9"
           onChangePlan={handleChangePlan}
-        /> */}
+        />
         
       </View>
     </View>

@@ -20,12 +20,14 @@ const initialState: AuthSliceType = {
       created_at: "",
       updated_at: "",
       saved_recipes: [],
+      id: null,
     },
   },
   hasOnboarded: false,
   isSigningIn: false,
   savedRecipes: [],
   "reset-token": null,
+  showSubscribeCTA: true,
 };
 
 const authSlice = createSlice({
@@ -77,6 +79,22 @@ const authSlice = createSlice({
       state.hasOnboarded = action.payload;
     },
 
+    updateSavedRecipes: (state, action: PayloadAction<number>) => {
+      const currentSavedRecipes: number[] = state.savedRecipes;
+
+      if (!currentSavedRecipes.includes(action.payload)) {
+        state.savedRecipes = [...currentSavedRecipes, action.payload];
+      }
+    },
+
+    setSavedRecipes: (state, action: PayloadAction<number[] | null>) => {
+      if (!action.payload) return;
+      state.savedRecipes = action.payload;
+    },
+
+    setShowSubscribeCTA: (state, action: PayloadAction<boolean>) => {
+      state.showSubscribeCTA = action.payload;
+    },
     logout: (state) => {
       state.loginResponseType.access = null;
       state.loginResponseType.refresh = null;
@@ -87,18 +105,6 @@ const authSlice = createSlice({
       state.loginResponseType.isAuthenticated = false;
       state.loginResponseType.image_url = null;
       state.loginResponseType.customer_details = null;
-    },
-
-    updateSavedRecipes: (state, action: PayloadAction<number>) => {
-      const currentSavedRecipes: number[] = state.savedRecipes;
-
-      if (!currentSavedRecipes.includes(action.payload)) {
-        state.savedRecipes = [...currentSavedRecipes, action.payload];
-      }
-    },
-    setSavedRecipes: (state, action: PayloadAction<number[] | null>) => {
-      if (!action.payload) return;
-      state.savedRecipes = action.payload;
     },
   },
 });
@@ -112,5 +118,6 @@ export const {
   setIsSigningIn,
   updateSavedRecipes,
   setSavedRecipes,
+  setShowSubscribeCTA,
 } = authSlice.actions;
 export default authSlice.reducer;

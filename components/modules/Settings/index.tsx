@@ -26,7 +26,7 @@ import { Button, ButtonText } from "@/components/ui/button";
 import { useDispatch } from "react-redux";
 
 import ComingSoonOverlay from "@/components/modules/ComingSoonOverlay";
-import { setCredentials, setSavedRecipes } from "@/redux/slices/Auth";
+import { setCredentials, setSavedRecipes, setShowSubscribeCTA } from "@/redux/slices/Auth";
 import { useClerk } from "@clerk/clerk-expo";
 import { clearUserDataFromStorage } from "@/utils/storage/authStorage";
 import { Spinner } from "@/components/ui/spinner";
@@ -84,6 +84,8 @@ const Settings = () => {
         customer_details: null,
       })
     );
+
+    dispatch(setShowSubscribeCTA(true));
     dispatch(setSavedRecipes(null));
     signOut();
     clearUserDataFromStorage();
@@ -130,12 +132,35 @@ const Settings = () => {
           scheme={scheme}
         />
 
-        <SettingCard
+        {/* <SettingCard
           icon={<WalletCardsIcon color="#00C3FF" size={30} />}
           text="Manage Subscription"
-          onPress={() => router.push("/(protected)/(nested)/subscription")}
+          onPress={() => router.push("/(protected)/(nested)/manage-subscriptions")}
           scheme={scheme}
-        />
+        /> */}
+
+        <Pressable
+          className="flex flex-row justify-between items-center py-5 px-5 rounded-2xl bg-background mt-4"
+          style={{
+            boxShadow:
+              scheme === "dark"
+                ? "0px 2px 12px rgba(0,0,0,0.2)"
+                : "0px 2px 12px rgba(0,0,0,0.1)",
+          }}
+          onPress={() =>
+            router.push("/(protected)/(nested)/manage-subscriptions")
+          }
+        >
+          <View className="flex flex-row items-center gap-4">
+            <WalletCardsIcon color="#00C3FF" size={30} />
+            <Text className="text-base font-medium text-primary">
+              Manage Subscriptions
+            </Text>
+          </View>
+          <View className="bg-secondary p-2 rounded-md">
+            <ArrowRight size={18} color="#fff" />
+          </View>
+        </Pressable>
 
         {/* Logout Button */}
         <View className="mt-12 px-2">

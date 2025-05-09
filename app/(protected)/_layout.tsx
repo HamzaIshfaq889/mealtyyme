@@ -1,10 +1,9 @@
 import { Stack } from "expo-router";
 import { Redirect } from "expo-router";
 
-import { Splash } from "@/components/modules";
 import {
-  getSavedRecipesFromStorage,
   getUserDataFromStorage,
+  isOnboardingComplete,
 } from "@/utils/storage/authStorage";
 import { useEffect, useState } from "react";
 
@@ -16,12 +15,16 @@ export default function ProtectedLayout() {
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isOnboardingProcessComplete, setisOnboardingProcessComplete] =
+    useState(false);
 
   const isSigningIn = useSelector((state: any) => state.auth.isSigningIn);
 
   useEffect(() => {
     const checkUserData = async () => {
       const user = await getUserDataFromStorage();
+      const onboardingComplete = await isOnboardingComplete();
+      setisOnboardingProcessComplete(onboardingComplete);
 
       if (user && user.access) {
         dispatch(setCredentials({ ...user, isAuthenticated: true }));
@@ -29,6 +32,7 @@ export default function ProtectedLayout() {
         setAuthToken(user.access);
         setIsAuthenticated(true);
       }
+
       setIsLoading(false);
     };
 
@@ -40,7 +44,11 @@ export default function ProtectedLayout() {
   }
 
   if (!isAuthenticated) {
-    return <Redirect href="/(auth)/account-options" />;
+    return isOnboardingProcessComplete ? (
+      <Redirect href="/(auth)/account-options" />
+    ) : (
+      <Redirect href="/(auth)/onboarding/onboarding1" />
+    );
   }
 
   return (

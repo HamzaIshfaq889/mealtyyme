@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, useColorScheme } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import {
   useCategoriesQuery,
@@ -7,6 +7,10 @@ import {
   useDietsQuery,
 } from "@/redux/queries/recipes/useStaticFilter";
 import { router } from "expo-router";
+import ProFeaturesCard from "./proFeaturesCard";
+import SubcriptionCTA from "../SubscriptionsCTA";
+import { useSelector } from "react-redux";
+import { checkisProUser } from "@/utils";
 
 const MAX_VISIBLE = 10;
 
@@ -42,7 +46,7 @@ const FilterSection = ({
           {visibleItems.map((item, index) => (
             <TouchableOpacity
               key={item.id ?? `${item.name}-${index}`}
-              className="bg-background px-3 py-1.5 rounded-full mr-2 mb-2"
+              className="bg-background px-3 py-2.5 rounded-full mr-2 mb-2"
               onPress={() =>
                 router.push({
                   pathname:
@@ -68,21 +72,28 @@ const FilterSection = ({
   );
 };
 
-const FilterSectionSkeleton = ({ title }: { title: string }) => (
-  <View className="px-6">
-    <Text className="text-foreground font-semibold text-base mb-2">
-      {title}
-    </Text>
-    <View className="flex-row flex-wrap mb-6">
-      {Array.from({ length: 6 }).map((_, i) => (
-        <View
-          key={i}
-          className="w-20 h-7 rounded-full bg-gray-200 mr-2 mb-2 animate-pulse"
-        />
-      ))}
+const FilterSectionSkeleton = ({ title }: { title: string }) => {
+  const scheme = useColorScheme();
+  const isDarkMode = scheme === "dark";
+
+  return (
+    <View className="px-6">
+      <Text className="text-foreground font-semibold text-2xl mb-4">
+        {title}
+      </Text>
+      <View className="flex-row flex-wrap mb-6">
+        {Array.from({ length: 12 }).map((_, i) => (
+          <View
+            key={i}
+            className={`w-20 h-7 rounded-full mr-2 mb-2 animate-pulse ${
+              isDarkMode ? "bg-gray-700" : "bg-gray-300"
+            }`}
+          />
+        ))}
+      </View>
     </View>
-  </View>
-);
+  );
+};
 
 export default function RecipesByFilters() {
   const { data: cuisines = [], isLoading: cuisinesLoading } =
@@ -90,9 +101,20 @@ export default function RecipesByFilters() {
   const { data: diets = [], isLoading: dietsLoading } = useDietsQuery();
   const { data: categories = [], isLoading: categoriesLoading } =
     useCategoriesQuery();
+  const status = useSelector(
+    (state: any) =>
+      state.auth.loginResponseType.customer_details?.subscription?.status
+  );
+  const isProUser = checkisProUser(status);
+
+  const [showSubscribeCTA, setShowSubscribeCTA] = useState(false);
+
+  const handleNonPro = () => {
+    setShowSubscribeCTA(true);
+  };
 
   if (cuisinesLoading || dietsLoading || categoriesLoading) {
-    return <FilterSectionSkeleton title="Diets" />;
+    return <FilterSectionSkeleton title="Filters" />;
   }
 
   return (
@@ -100,6 +122,14 @@ export default function RecipesByFilters() {
       <FilterSection title="Diets" items={diets} />
       <FilterSection title="Categories" items={categories} />
       <FilterSection title="Cuisines" items={cuisines} />
+      {!isProUser && <ProFeaturesCard handleNonPro={handleNonPro} />}
+
+      {showSubscribeCTA && (
+        <SubcriptionCTA
+          setShowSubscribeCTA={setShowSubscribeCTA}
+          forceShow={true}
+        />
+      )}
     </ScrollView>
   );
 }

@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Search } from "lucide-react-native";
 import {
   Text,
@@ -29,6 +29,13 @@ const HomeUser = () => {
   const name = useSelector(
     (state: any) => state.auth.loginResponseType.first_name
   );
+  const [showSubscriptionCTA, setShowSubscriptionCTA] = useState(false);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setShowSubscriptionCTA(true);
+    }, 3000);
+  }, []);
 
   return (
     <View className="flex-1 relative">
@@ -84,7 +91,9 @@ const HomeUser = () => {
         </Pressable>
       )}
 
-      <SubcriptionCTA bottomSheetRef={subscriptionBottomSheetRef as any} />
+      {showSubscriptionCTA && (
+        <SubcriptionCTA  />
+      )}
     </View>
   );
 };

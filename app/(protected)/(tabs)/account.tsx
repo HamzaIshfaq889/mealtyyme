@@ -5,7 +5,7 @@ import SubscriptionHistory from "@/components/modules/ManageSubscriptions/subscr
 import PreviousSubscriptions from "@/components/modules/ManageSubscriptions/subscriptionHistory/previousSubscriptions";
 
 const AccountScreen = () => {
-  return <PreviousSubscriptions />;
+  return <Account />;
 };
 
 export default AccountScreen;

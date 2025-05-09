@@ -44,7 +44,7 @@ export const subscribe = async (
   interval: "year" | "month",
   customerEmail: string,
   isDarkMode: boolean
-): Promise<void> => {
+): Promise<any> => {
   try {
     const { setupIntent, ephemeralKey, customer }: any =
       await fetchPaymentSheetParams();
@@ -133,9 +133,12 @@ export const subscribe = async (
 
     if (!confirmResponse.ok) {
       throw new Error(
-        confirmResponse.originalError?.message || "Unknown error"
+        confirmResponse.originalError?.message ||
+          "Something went wrong while subscribing."
       );
     }
+
+    return confirmResponse;
   } catch (error: any) {
     Alert.alert("Error", error.message);
   }

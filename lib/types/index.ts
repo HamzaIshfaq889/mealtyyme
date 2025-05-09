@@ -11,6 +11,7 @@ export type AuthSliceType = {
   isSigningIn: boolean;
   "reset-token": null | string;
   savedRecipes: number[];
+  showSubscribeCTA: boolean;
 };
 
 export type SignupPayload = {
@@ -60,6 +61,7 @@ export type LoginResponseTypes = {
     created_at: string;
     updated_at: string;
     saved_recipes: number[] | [];
+    id: number | null;
   } | null;
 };
 

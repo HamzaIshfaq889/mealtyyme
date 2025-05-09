@@ -1,5 +1,5 @@
 import React from "react";
-import { OnBoarding } from "@/components/modules";
+import { OnBoarding,Splash } from "@/components/modules";
 
 const OnboardingScreen1 = () => {
   return <OnBoarding />;

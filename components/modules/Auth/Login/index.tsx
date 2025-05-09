@@ -101,7 +101,8 @@ const Login = () => {
       };
 
       const response = (await loginUser(payload)) as LoginResponseTypes;
-   
+      const isFirstTimeUser = response?.customer_details?.first_time_user;
+
       if (response.access) {
         await saveUserDataInStorage({ ...response, isAuthenticated: true });
       }
@@ -113,7 +114,11 @@ const Login = () => {
         text1: "Login Successful!",
       });
 
-      router.replace("/(protected)/(tabs)");
+      if (isFirstTimeUser) {
+        router.replace("/(protected)/(onboarding)/pick-diet");
+      } else {
+        router.replace("/(protected)/(tabs)");
+      }
     } catch (error: any) {
       const errorMessage =
         error.message || "Something went wrong. Please try again.";

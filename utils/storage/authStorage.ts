@@ -4,6 +4,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LoginResponseTypes } from "@/lib/types";
 
 const USER_DATA_KEY = "USER_DATA";
+const ONBOARDING_COMPLETE_KEY = "onboarding_complete";
 
 export const saveUserDataInStorage = async (
   userData: LoginResponseTypes
@@ -62,5 +63,24 @@ export const getSavedRecipesFromStorage = async (): Promise<
   } catch (error) {
     console.error("Error retrieving saved recipes:", error);
     return null;
+  }
+};
+
+export const setOnboardingComplete = async (): Promise<void> => {
+  try {
+    await AsyncStorage.setItem(ONBOARDING_COMPLETE_KEY, JSON.stringify(true));
+  } catch (error) {
+    console.error("Error setting onboarding complete:", error);
+    throw error;
+  }
+};
+
+export const isOnboardingComplete = async (): Promise<boolean> => {
+  try {
+    const value = await AsyncStorage.getItem(ONBOARDING_COMPLETE_KEY);
+    return value === "true";
+  } catch (error) {
+    console.error("Error checking onboarding status:", error);
+    return false;
   }
 };

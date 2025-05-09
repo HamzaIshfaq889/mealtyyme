@@ -4,16 +4,22 @@ import { Text, TouchableOpacity, useColorScheme, View } from "react-native";
 
 import { router } from "expo-router";
 
-import { useDispatch } from "react-redux";
-
 import { Button, ButtonText } from "@/components/ui/button";
 
-import { setOnboardingComplete } from "@/redux/slices/Auth";
 import { ArrowLeft } from "lucide-react-native";
+import { useUpdateCustomer } from "@/redux/queries/recipes/useCustomerQuery";
+import { useDispatch, useSelector } from "react-redux";
+import { setCredentials } from "@/redux/slices/Auth";
 
 const Allergies = () => {
-  const dispatch = useDispatch();
   const scheme = useColorScheme();
+  const dispatch = useDispatch();
+
+  const customerId = useSelector(
+    (state: any) => state.auth.loginResponseType.customer_details?.id
+  );
+  const { mutate: updateIsFirstTimeUser } = useUpdateCustomer();
+  const credentials = useSelector((state: any) => state.auth.loginResponseType);
 
   const [selectedIndexes, setSelectedIndexes] = useState<number[]>([]);
 
@@ -40,13 +46,40 @@ const Allergies = () => {
   };
 
   const handleNext = async () => {
-    dispatch(setOnboardingComplete(true));
-    router.push("/(auth)/account-options");
+    //todo ==> set allergies and  diets here
+
+    updateIsFirstTimeUser(
+      {
+        customerId,
+        data: {
+          first_time_user: false,
+        },
+      },
+      {
+        onSuccess: () => {
+          const updatedCustomerDetails = {
+            ...credentials.customer_details,
+            first_time_user: false,
+          };
+
+          const updatedLoginResponse = {
+            ...credentials,
+            customer_details: updatedCustomerDetails,
+          };
+
+          dispatch(setCredentials(updatedLoginResponse));
+        },
+        onError: (error) => {
+          console.error("Error while updating customer!", error);
+        },
+      }
+    );
+
+    router.push("/(protected)/(tabs)");
   };
 
   return (
     <View className="w-full h-full px-9 py-16 flex-col relative">
-      {/* Header row */}
       <View className="flex-row items-center justify-between mb-8">
         <TouchableOpacity
           onPress={() => router.push("/(protected)/(onboarding)/pick-diet")}
@@ -64,7 +97,6 @@ const Allergies = () => {
           </Text>
         </View>
 
-        {/* Invisible View to balance layout */}
         <View style={{ width: 30 }} />
       </View>
       <View className="flex-row flex-wrap">

@@ -6,6 +6,8 @@ import { router } from "expo-router";
 
 import BottomSheet from "@gorhom/bottom-sheet";
 
+import { useSelector } from "react-redux";
+
 import {
   Pressable,
   Text,
@@ -13,21 +15,36 @@ import {
   useColorScheme,
   View,
 } from "react-native";
-import { SearchIcon, SlidersHorizontal, ArrowLeft } from "lucide-react-native";
+import {
+  SearchIcon,
+  SlidersHorizontal,
+  ArrowLeft,
+  User2,
+} from "lucide-react-native";
 
 import { useRecipesQuery } from "@/redux/queries/recipes/useRecipeQuery";
 
-import { Input, InputField, InputIcon, InputSlot } from "@/components/ui/input";
-import RecipesBySearch from "./recipesBySearch";
-import Filters from "./filters";
-import RecipesByFilters from "./recipesByFilters";
-import { useSelector } from "react-redux";
 import { checkisProUser } from "@/utils";
+
+import { Input, InputField, InputIcon, InputSlot } from "@/components/ui/input";
+
+import Filters from "./filters";
+import RecipesBySearch from "./recipesBySearch";
+import RecipesByFilters from "./recipesByFilters";
 
 const Search = () => {
   const scheme = useColorScheme();
   const bottomSheetRef = useRef<BottomSheet>(null);
   const [isFiltersApplied, setIsFiltersApplied] = useState(false);
+
+  const [tempCategoriesIds, setTempCategoriesIds] = useState<number[]>([]);
+  const [tempCusinesIds, setTempCuisinesIds] = useState<number[]>([]);
+  const [tempDietIds, setTempDietIds] = useState<number[]>([]);
+  const [tempProtein, setTempProtein] = useState([0, 500]);
+  const [tempFat, setTempFat] = useState([0, 100]);
+  const [tempCarbs, setTempCarbs] = useState([0, 700]);
+  const [tempCalories, setTempCalories] = useState([0, 700]);
+  const [tempReadyInMinutes, setTempReadyInMinutes] = useState([0, 700]);
 
   const [categoriesIds, setCategoriesIds] = useState<number[]>([]);
   const [cusinesIds, setCuisinesIds] = useState<number[]>([]);
@@ -55,6 +72,8 @@ const Search = () => {
     protein: protien,
     fat,
     carbs,
+    calories,
+    readyInMinutes,
   });
 
   const flattenedRecipes = useMemo(
@@ -69,6 +88,15 @@ const Search = () => {
   const isProUser = checkisProUser(status);
 
   const handleApplyFilters = useCallback(() => {
+    setCategoriesIds(tempCategoriesIds);
+    setCuisinesIds(tempCusinesIds);
+    setDietIds(tempDietIds);
+    setProtien(tempProtein);
+    setFat(tempFat);
+    setCarbs(tempCarbs);
+    setCalories(tempCalories);
+    setReadyInMinutes(tempReadyInMinutes);
+
     setIsFiltersApplied(true);
     bottomSheetRef.current?.close();
     refetch();
@@ -89,6 +117,15 @@ const Search = () => {
     setFat([0, 100]);
     setCalories([0, 2000]);
     setReadyInMinutes([0, 300]);
+
+    setTempCategoriesIds([]);
+    setTempCuisinesIds([]);
+    setTempDietIds([]);
+    setTempProtein([0, 1000]);
+    setTempCarbs([0, 700]);
+    setTempFat([0, 100]);
+    setTempCalories([0, 2000]);
+    setTempReadyInMinutes([0, 300]);
 
     setIsFiltersApplied(false);
     bottomSheetRef.current?.close();
@@ -119,7 +156,7 @@ const Search = () => {
           <View className="flex items-center">
             <Text className="font-bold text-2xl text-foreground">Search</Text>
           </View>
-          <View className="flex flex-row items-center justify-between">
+          <View className="flex flex-row items-center justify-between mt-2.5">
             <Input className={`${isProUser ? "basis-4/5" : "w-full"} my-3.5`}>
               <InputSlot className="ml-1">
                 <InputIcon className="!w-6 !h-6 text-primary" as={SearchIcon} />
@@ -132,14 +169,14 @@ const Search = () => {
               />
             </Input>
 
-            {isProUser && (
+            {isProUser ? (
               <Pressable
                 onPress={() => bottomSheetRef.current?.snapToIndex(1)}
                 className="bg-secondary flex items-center px-3.5 py-4 rounded-2xl"
               >
                 <SlidersHorizontal color="#fff" />
               </Pressable>
-            )}
+            ) : null}
           </View>
         </View>
 
@@ -157,23 +194,23 @@ const Search = () => {
 
         <Filters
           bottomSheetRef={bottomSheetRef as any}
-          categoriesIds={categoriesIds}
-          setCategoriesIds={setCategoriesIds}
-          cusinesIds={cusinesIds}
-          setCuisinesIds={setCuisinesIds}
-          dietIds={dietIds}
-          setDietIds={setDietIds}
-          protien={protien}
-          setProtien={setProtien}
-          fat={fat}
-          setFat={setFat}
-          carbs={carbs}
-          setCarbs={setCarbs}
-          calories={calories}
-          setCalories={setCalories}
-          readyInMinutes={readyInMinutes}
-          setReadyInMinutes={setReadyInMinutes}
+          categoriesIds={tempCategoriesIds}
+          setCategoriesIds={setTempCategoriesIds}
+          cusinesIds={tempCusinesIds}
+          setCuisinesIds={setTempCuisinesIds}
+          dietIds={tempDietIds}
+          setDietIds={setTempDietIds}
+          protien={tempProtein}
+          setProtien={setTempProtein}
+          fat={tempFat}
+          setFat={setTempFat}
+          carbs={tempCarbs}
+          setCarbs={setTempCarbs}
           handleApplyFilters={handleApplyFilters}
+          calories={tempCalories}
+          setCalories={setTempCalories}
+          readyInMinutes={tempReadyInMinutes}
+          setReadyInMinutes={setTempReadyInMinutes}
           handleClearFilters={handleClearFilters}
         />
       </View>
