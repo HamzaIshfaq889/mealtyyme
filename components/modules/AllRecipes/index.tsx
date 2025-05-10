@@ -10,6 +10,7 @@ import React, {
 import {
   FlatList,
   Image,
+  Pressable,
   Text,
   TouchableOpacity,
   useColorScheme,
@@ -18,8 +19,10 @@ import {
 import { RecipeSkeletonItem } from "../Skeletons";
 import { router } from "expo-router";
 import {
+  ArrowLeft,
   ArrowRight,
   Clock,
+  CrownIcon,
   Flame,
   SlidersHorizontal,
   Star,
@@ -28,6 +31,9 @@ import { useSelector } from "react-redux";
 import Filters from "../Search/filters";
 import BottomSheet from "@gorhom/bottom-sheet";
 import { useRecipesQuery } from "@/redux/queries/recipes/useRecipeQuery";
+import { useModal } from "@/hooks/useModal";
+import ProSubscribeModal from "@/components/ui/modals/proModal";
+import ProFeaturesCard from "../Search/proFeaturesCard";
 
 type QueryOptions = {
   dietIds?: number[];
@@ -97,7 +103,20 @@ const AllRecipes = ({ queryOptions }: AllRecipesProps) => {
     readyInMinutes,
   ]);
 
-  console.log(queryOptions);
+  const {
+    isVisible: showProModal,
+    showModal,
+    hideModal,
+    backdropAnim,
+    modalAnim,
+  } = useModal();
+
+  const handleUpgrade = () => {
+    hideModal();
+    setTimeout(() => {
+      router.push("/(protected)/(nested)/buy-subscription");
+    }, 100);
+  };
 
   const {
     data,
@@ -176,9 +195,14 @@ const AllRecipes = ({ queryOptions }: AllRecipesProps) => {
     return (
       <View className="pt-20 px-6 pb-4 space-y-6">
         <View>
-          <Text className="text-foreground text-4xl font-semibold mb-6">
-            {capitalizeFirstLetter("Recipes")}
-          </Text>
+          <View className="flex flex-row items-center gap-3">
+            <TouchableOpacity onPress={() => router.back()}>
+              <ArrowLeft color="#FFF" size={24} />
+            </TouchableOpacity>
+            <Text className="text-foreground text-2xl font-semibold">
+              {capitalizeFirstLetter("Recipes")}
+            </Text>
+          </View>
           {[1, 2, 3, 4, 5].map((item) => {
             return <RecipeSkeletonItem key={item} />;
           })}
@@ -201,17 +225,28 @@ const AllRecipes = ({ queryOptions }: AllRecipesProps) => {
     <View>
       <View className="pt-20 px-5 pb-4">
         <View className="flex flex-row justify-between items-center mb-6">
-          <Text className="text-foreground text-4xl font-semibold">
-            {capitalizeFirstLetter("Recipes")}
-          </Text>
-          {isProUser && (
-            <TouchableOpacity
-              onPress={handleOpenFilter}
-              className="bg-secondary flex items-center px-3.5 py-4 rounded-2xl"
-            >
-              <SlidersHorizontal color="#fff" />
+          <View className="flex flex-row items-center gap-3">
+            <TouchableOpacity onPress={() => router.back()}>
+              <ArrowLeft color="#FFF" size={24} />
             </TouchableOpacity>
-          )}
+            <Text className="text-foreground text-2xl font-semibold">
+              {capitalizeFirstLetter("Recipes")}
+            </Text>
+          </View>
+
+          <Pressable
+            onPress={() => (isProUser ? handleOpenFilter() : showModal())}
+            className={`flex items-center px-3.5 py-4 rounded-2xl ${
+              isProUser ? "bg-secondary" : "bg-secondary"
+            } relative`}
+          >
+            <SlidersHorizontal color={isProUser ? "#fff" : "#fff"} />
+            {!isProUser && (
+              <View className="absolute -top-4 -right-4 bg-yellow-400 rounded-full p-2">
+                <CrownIcon size={18} strokeWidth={2} color={"#fff"} />
+              </View>
+            )}
+          </Pressable>
         </View>
         {flattenedRecipes.length === 0 ? (
           <View className="w-full h-full">
@@ -337,6 +372,21 @@ const AllRecipes = ({ queryOptions }: AllRecipesProps) => {
         setReadyInMinutes={setTempReadyInMinutes}
         handleClearFilters={handleClearFilters}
       />
+
+      {/* Pro Upgrade Modal */}
+      {showProModal && (
+        <ProSubscribeModal
+          visible={showProModal}
+          hideModal={hideModal}
+          backdropAnim={backdropAnim}
+          modalAnim={modalAnim}
+        >
+          <ProFeaturesCard
+            handleNonPro={handleUpgrade}
+            handleLater={hideModal}
+          />
+        </ProSubscribeModal>
+      )}
     </View>
   );
 };

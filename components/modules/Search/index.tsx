@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useCallback, useMemo } from "react";
+import { useState, useRef, useCallback, useMemo, useEffect } from "react";
 
 import { router } from "expo-router";
 
@@ -9,16 +9,21 @@ import BottomSheet from "@gorhom/bottom-sheet";
 import { useSelector } from "react-redux";
 
 import {
+  Modal,
   Pressable,
   Text,
   TouchableOpacity,
   useColorScheme,
   View,
+  Animated,
+  Dimensions,
 } from "react-native";
 import {
   SearchIcon,
   SlidersHorizontal,
   ArrowLeft,
+  Lock,
+  Crown,
 } from "lucide-react-native";
 
 import { useRecipesQuery } from "@/redux/queries/recipes/useRecipeQuery";
@@ -30,6 +35,10 @@ import { Input, InputField, InputIcon, InputSlot } from "@/components/ui/input";
 import Filters from "./filters";
 import RecipesBySearch from "./recipesBySearch";
 import RecipesByFilters from "./recipesByFilters";
+import ProFeaturesCard from "./proFeaturesCard";
+import { SafeAreaView } from "react-native-safe-area-context";
+import ProSubscribeModal from "@/components/ui/modals/proModal";
+import { useModal } from "@/hooks/useModal";
 
 const Search = () => {
   const scheme = useColorScheme();
@@ -138,6 +147,21 @@ const Search = () => {
   //   return () => clearTimeout(timer);
   // }, [searchValue]);
 
+  const {
+    isVisible: showProModal,
+    showModal,
+    hideModal,
+    backdropAnim,
+    modalAnim,
+  } = useModal();
+
+  const handleUpgrade = () => {
+    hideModal();
+    setTimeout(() => {
+      router.push("/(protected)/(nested)/buy-subscription");
+    }, 100);
+  };
+
   return (
     <>
       <View className="w-full h-full">
@@ -156,7 +180,7 @@ const Search = () => {
             <Text className="font-bold text-2xl text-foreground">Search</Text>
           </View>
           <View className="flex flex-row items-center justify-between mt-2.5">
-            <Input className={`${isProUser ? "basis-4/5" : "w-full"} my-3.5`}>
+            <Input className="basis-4/5 my-3.5">
               <InputSlot className="ml-1">
                 <InputIcon className="!w-6 !h-6 text-primary" as={SearchIcon} />
               </InputSlot>
@@ -168,14 +192,21 @@ const Search = () => {
               />
             </Input>
 
-            {isProUser ? (
-              <Pressable
-                onPress={() => bottomSheetRef.current?.snapToIndex(1)}
-                className="bg-secondary flex items-center px-3.5 py-4 rounded-2xl"
-              >
-                <SlidersHorizontal color="#fff" />
-              </Pressable>
-            ) : null}
+            <Pressable
+              onPress={() =>
+                isProUser ? bottomSheetRef.current?.snapToIndex(1) : showModal()
+              }
+              className={`flex items-center px-3.5 py-4 rounded-2xl ${
+                isProUser ? "bg-secondary" : "bg-secondary"
+              } relative`}
+            >
+              <SlidersHorizontal color={isProUser ? "#fff" : "#fff"} />
+              {!isProUser && (
+                <View className="absolute -top-4 -right-4 bg-yellow-400 rounded-full p-2">
+                  <Crown size={18} strokeWidth={2} color={"#fff"} />
+                </View>
+              )}
+            </Pressable>
           </View>
         </View>
 
@@ -212,6 +243,21 @@ const Search = () => {
           setReadyInMinutes={setTempReadyInMinutes}
           handleClearFilters={handleClearFilters}
         />
+
+        {/* Pro Upgrade Modal */}
+        {showProModal && (
+          <ProSubscribeModal
+            visible={showProModal}
+            hideModal={hideModal}
+            backdropAnim={backdropAnim}
+            modalAnim={modalAnim}
+          >
+            <ProFeaturesCard
+              handleNonPro={handleUpgrade}
+              handleLater={hideModal}
+            />
+          </ProSubscribeModal>
+        )}
       </View>
     </>
   );
