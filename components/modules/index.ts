@@ -21,7 +21,11 @@ import MealPlan from "./MealPlan";
 import Cart from "./Cart";
 import SubcriptionCTA from "./SubscriptionsCTA";
 import AllRecipes from "./AllRecipes";
-import ManageSubscriptions from "./ManageSubscriptions";
+import BuySubscriptions from "./ManageSubscriptions/buySubscription";
+import ActiveSubscription from "./ManageSubscriptions/activeSubscription";
+import ManageSubscription from "./ManageSubscriptions/manageSubscription";
+import PreviousSubscriptions from "./ManageSubscriptions/previousSubscriptions";
+import PaymentMethods from "./ManageSubscriptions/PaymentMethod";
 
 import { RecipeCard } from "./Common";
 
@@ -50,5 +54,9 @@ export {
   Cart,
   SubcriptionCTA,
   AllRecipes,
-  ManageSubscriptions,
+  BuySubscriptions,
+  ActiveSubscription,
+  ManageSubscription,
+  PreviousSubscriptions,
+  PaymentMethods,
 };

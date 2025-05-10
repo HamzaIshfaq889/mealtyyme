@@ -2,8 +2,18 @@ import React, { useState, useEffect, useRef } from "react";
 import { ScrollView, StyleSheet, Dimensions } from "react-native";
 import moment from "moment";
 import DateComponent from "./DateComponent";
+import { useSelector } from "react-redux";
+import { checkisProUser } from "@/utils";
 
 const Calendar = ({ onSelectDate, selected }: any) => {
+  const status = useSelector(
+    (state: any) =>
+      state.auth.loginResponseType.customer_details?.subscription?.status
+  );
+  const isProUser = checkisProUser(status);
+
+  const daysTOShow = isProUser ? 6 : 3;
+
   const [dates, setDates] = useState<moment.Moment[]>([]);
   const scrollViewRef = useRef<ScrollView>(null);
 
@@ -11,7 +21,7 @@ const Calendar = ({ onSelectDate, selected }: any) => {
     const tempDates: moment.Moment[] = [];
 
     const startDate = moment().subtract(3, "days");
-    const endDate = moment().add(21, "days");
+    const endDate = moment().add(daysTOShow, "days");
 
     let currentDate = startDate.clone();
     while (currentDate.isSameOrBefore(endDate, "day")) {

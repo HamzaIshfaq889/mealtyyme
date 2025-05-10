@@ -13,7 +13,11 @@ export default function RootLayout() {
         <Stack.Screen name="search" />
         <Stack.Screen name="settings" />
         <Stack.Screen name="edit-profile" />
-        <Stack.Screen name="manage-subscriptions" />
+        <Stack.Screen name="active-subscription" />
+        <Stack.Screen name="buy-subscription" />
+        <Stack.Screen name="manage-subscription" />
+        <Stack.Screen name="previous-subscription" />
+        <Stack.Screen name="payment-methods" />
       </Stack>
       <Toast />
     </>

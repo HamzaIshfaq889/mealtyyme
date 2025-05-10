@@ -8,7 +8,7 @@ import {
 import { useEffect, useState } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
-import { setCredentials, setSavedRecipes } from "@/redux/slices/Auth";
+import { setCredentials } from "@/redux/slices/Auth";
 import { setAuthToken } from "@/lib/apiClient";
 
 export default function ProtectedLayout() {

@@ -38,7 +38,7 @@ const FilterSection = ({
 
   return (
     <>
-      <Text className="text-foreground font-semibold text-base mb-2">
+      <Text className="text-foreground font-semibold text-xl mb-2">
         {title}
       </Text>
       <View className="mb-6">

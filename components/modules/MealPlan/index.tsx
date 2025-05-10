@@ -23,21 +23,21 @@ const MealPlan = () => {
   const [selectedDate, setSelectedDate] = useState(
     moment().format("YYYY-MM-DD")
   );
-  const [meals, setMeals] = useState<MealData | null>(null); // Use MealData type
+  const [meals, setMeals] = useState<MealData | null>(null); 
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
   const fetchMeals = async () => {
     setLoading(true);
     setError(null); // Clear previous errors
-    console.log("Fetching meals for date:", selectedDate); // Log the selected date
+    console.log("Fetching meals for date:", selectedDate); 
 
     try {
       const data = await GetMealsByDate(selectedDate);
-      setMeals(data); // data is typed as MealData
-      console.log("Fetched meals:", data); // Log the fetched data directly
+      setMeals(data);
+      console.log("Fetched meals:", data);
     } catch (err) {
-      console.error("Error fetching meals:", err); // Log the error for debugging
+      console.error("Error fetching meals:", err);
       setError("Failed to load meals. Please try again later.");
     } finally {
       setLoading(false);
@@ -45,7 +45,7 @@ const MealPlan = () => {
   };
 
   useEffect(() => {
-    console.log("Selected Date:", selectedDate); // Log selected date changes
+    console.log("Selected Date:", selectedDate);
     fetchMeals();
   }, [selectedDate]);
 

@@ -196,8 +196,6 @@ const SubcriptionCTA = ({
   const pricingOptions = packagesData?.[0]?.prices ?? [];
   const isProUser = checkisProUser(status);
 
-  console.log(customerId);
-
   return (
     (forceShow || showSubscribeCTA) &&
     !isProUser && (

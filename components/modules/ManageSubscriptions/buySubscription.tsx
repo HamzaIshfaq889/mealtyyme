@@ -1,6 +1,6 @@
 import { router } from "expo-router";
 import { ArrowLeft } from "lucide-react-native";
-import React from "react";
+import React, { useState } from "react";
 import {
   Image,
   Text,
@@ -13,10 +13,16 @@ import NoSubscriptionSVG from "@/assets/svgs/np-subscription.svg";
 import NoSubscriptionSVGLight from "@/assets/svgs/no-subscription-light.svg";
 
 import { Button, ButtonText } from "@/components/ui/button";
+import SubcriptionCTA from "../SubscriptionsCTA";
 
-const ManageSubscriptions = () => {
+const BuySubscriptions = () => {
   const theme = useColorScheme();
   const isDarkMode = theme === "dark";
+  const [showSubscribeCTA, setShowSubscribeCTA] = useState(false);
+
+  const handleBuySubscription = () => {
+    setShowSubscribeCTA(true);
+  };
 
   return (
     <View
@@ -25,7 +31,9 @@ const ManageSubscriptions = () => {
       }`}
     >
       <View className="flex-row items-center justify-between mb-8">
-        <TouchableOpacity onPress={() => router.push("/")}>
+        <TouchableOpacity
+          onPress={() => router.push("/(protected)/(nested)/settings")}
+        >
           <ArrowLeft
             width={30}
             height={30}
@@ -48,12 +56,19 @@ const ManageSubscriptions = () => {
         <Text className="font-bold text-3xl leading-10 text-foreground text-center mb-4">
           You don't have an active subscription
         </Text>
-        <Button>
+        <Button onPress={handleBuySubscription}>
           <ButtonText>Buy Subscription</ButtonText>
         </Button>
       </View>
+
+      {showSubscribeCTA && (
+        <SubcriptionCTA
+          setShowSubscribeCTA={setShowSubscribeCTA}
+          forceShow={true}
+        />
+      )}
     </View>
   );
 };
 
-export default ManageSubscriptions;
+export default BuySubscriptions;

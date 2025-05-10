@@ -2,7 +2,7 @@ import { router } from "expo-router";
 import { ArrowLeft } from "lucide-react-native";
 import React from "react";
 import { Text, TouchableOpacity, useColorScheme, View } from "react-native";
-import SubscriptionCard from "./subscriptionCard";
+import SubscriptionCard from "./activeSubscription";
 import ManageSubscription from "./manageSubscription";
 
 const SubscriptionHistory = () => {

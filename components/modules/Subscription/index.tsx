@@ -48,7 +48,7 @@ const SubscriptionScreen: React.FC = () => {
         merchantDisplayName: "Mealtyme",
         customerId: customer,
         customerEphemeralKeySecret: ephemeralKey,
-        setupIntentClientSecret: setupIntent, // use setupIntent instead of paymentIntent
+        setupIntentClientSecret: setupIntent, 
         allowsDelayedPaymentMethods: false,
         defaultBillingDetails: { email: customerEmail },
       });

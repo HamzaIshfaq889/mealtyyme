@@ -8,7 +8,6 @@ import {
   useColorScheme,
   View,
 } from "react-native";
-import { Button, ButtonText } from "@/components/ui/button";
 
 const PreviousSubscriptions = () => {
   const theme = useColorScheme();
@@ -70,7 +69,7 @@ const PreviousSubscriptions = () => {
       }`}
     >
       <View className="flex-row items-center justify-between mb-8">
-        <TouchableOpacity onPress={() => router.push("/")}>
+        <TouchableOpacity onPress={() => router.push("/(protected)/(nested)/active-subscription")}>
           <ArrowLeft
             width={30}
             height={30}

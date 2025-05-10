@@ -1,8 +1,10 @@
 import { Button, ButtonText } from "@/components/ui/button";
+import { router } from "expo-router";
+import { ArrowLeft } from "lucide-react-native";
 import React from "react";
 import { View, Text, TouchableOpacity, useColorScheme } from "react-native";
 
-interface SubscriptionCardProps {
+interface ActiveSubscriptionProps {
   status: "active" | "inactive" | "expired";
   planName: string;
   price: string;
@@ -12,7 +14,7 @@ interface SubscriptionCardProps {
   onChangePlan: () => void;
 }
 
-export default function SubscriptionCard({
+export default function ActiveSubscription({
   status = "active",
   planName = "Premium Annual",
   price = "$50/Year",
@@ -20,12 +22,31 @@ export default function SubscriptionCard({
   nextBillingDate = "2025-06-06 11:32 UTC",
   subscriptionId = "sub_tr1JjEQ9",
   onChangePlan = () => console.log("Change plan pressed"),
-}: SubscriptionCardProps) {
+}: ActiveSubscriptionProps) {
   const scheme = useColorScheme();
   const isDarkMode = scheme === "dark";
 
   return (
-    <View>
+    <View className="flex flex-col w-full h-full px-6 py-16">
+      <View className="flex-row items-center justify-between mb-8">
+        <TouchableOpacity
+          onPress={() => router.push("/(protected)/(nested)/settings")}
+        >
+          <ArrowLeft
+            width={30}
+            height={30}
+            color={scheme === "dark" ? "#fff" : "#000"}
+          />
+        </TouchableOpacity>
+
+        <View className="flex-1 items-center">
+          <Text className="font-bold text-2xl text-primary">
+            Active Subscription
+          </Text>
+        </View>
+
+        <View style={{ width: 30 }} />
+      </View>
       <View
         className={`${
           isDarkMode ? "bg-gray4/50" : "bg-background"
@@ -75,10 +96,14 @@ export default function SubscriptionCard({
           </View>
         </View>
 
-        {/* Change Plan Button */}
-        <Button className="w-full !h-14">
+        <Button
+          className="w-full !h-14"
+          onPress={() =>
+            router.push("/(protected)/(nested)/manage-subscription")
+          }
+        >
           <ButtonText className="!text-lg !font-semibold">
-            Change Plan
+            Manage Subscription
           </ButtonText>
         </Button>
       </View>
@@ -94,7 +119,11 @@ export default function SubscriptionCard({
         <Text className="text-foreground font-bold leading-5 text-lg">
           Previous Subscriptions
         </Text>
-        <TouchableOpacity>
+        <TouchableOpacity
+          onPress={() =>
+            router.push("/(protected)/(nested)/previous-subscription")
+          }
+        >
           <Text className="font-bold text-secondary">View All</Text>
         </TouchableOpacity>
       </View>

@@ -19,7 +19,6 @@ import {
   SearchIcon,
   SlidersHorizontal,
   ArrowLeft,
-  User2,
 } from "lucide-react-native";
 
 import { useRecipesQuery } from "@/redux/queries/recipes/useRecipeQuery";
