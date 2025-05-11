@@ -94,3 +94,11 @@ export function getCleanDescription(raw: string): string {
 export const checkisProUser = (status: SubscriptionStatus): boolean => {
   return status === "active" || status === "past_due";
 };
+
+export const supportOptions = [
+  "Technical Issue",
+  "Account Help",
+  "Billing Questions",
+  "Feedback/Suggestions",
+  "Others",
+];

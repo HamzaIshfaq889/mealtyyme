@@ -18,6 +18,11 @@ export default function RootLayout() {
         <Stack.Screen name="manage-subscription" />
         <Stack.Screen name="previous-subscription" />
         <Stack.Screen name="payment-methods" />
+        <Stack.Screen name="ingredient-based-search" />
+        <Stack.Screen name="contact-support" />
+        <Stack.Screen name="no-wifi" />
+        <Stack.Screen name="404.tsx" />
+        <Stack.Screen name="find-recipe" />
       </Stack>
       <Toast />
     </>

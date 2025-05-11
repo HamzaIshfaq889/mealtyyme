@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   DefaultTheme as LightTheme,
   DarkTheme,
@@ -25,6 +25,8 @@ import * as SecureStore from "expo-secure-store";
 import * as SplashScreen from "expo-splash-screen";
 import { StripeProvider } from "@stripe/stripe-react-native";
 import { AppConfig } from "@/constants";
+
+import { AutocompleteDropdownContextProvider } from 'react-native-autocomplete-dropdown'
 
 import { Splash } from "@/components/modules";
 import QueryProvider from "@/providers/QueryProvider";
@@ -147,38 +149,40 @@ export default function RootLayout() {
           <PersistGate loading={null} persistor={persistor}>
             <QueryProvider>
               <GestureHandlerRootView style={{ flex: 1 }}>
-                <ThemeProvider
-                  value={scheme === "dark" ? DarkTheme : LightTheme}
-                >
-                  <StatusBar
-                    style={scheme === "dark" ? "light" : "dark"}
-                    backgroundColor="transparent"
-                    translucent
-                  />
-                  <View
-                    className={scheme === "dark" ? "dark flex-1" : "flex-1"}
+                <AutocompleteDropdownContextProvider>
+                  <ThemeProvider
+                    value={scheme === "dark" ? DarkTheme : LightTheme}
                   >
-                    <PortalProvider rootHostName="root-host">
-                      <Stack screenOptions={{ headerShown: false }}>
-                        <Stack.Screen
-                          name="(protected)"
-                          options={{
-                            headerShown: false,
-                            animation: "none",
-                          }}
-                        />
-                        <Stack.Screen
-                          name="(auth)"
-                          options={{
-                            animation: "none",
-                            headerShown: false,
-                          }}
-                        />
-                      </Stack>
-                    </PortalProvider>
-                    <Toast config={toastConfig} />
-                  </View>
-                </ThemeProvider>
+                    <StatusBar
+                      style={scheme === "dark" ? "light" : "dark"}
+                      backgroundColor="transparent"
+                      translucent
+                    />
+                    <View
+                      className={scheme === "dark" ? "dark flex-1" : "flex-1"}
+                    >
+                      <PortalProvider rootHostName="root-host">
+                        <Stack screenOptions={{ headerShown: false }}>
+                          <Stack.Screen
+                            name="(protected)"
+                            options={{
+                              headerShown: false,
+                              animation: "none",
+                            }}
+                          />
+                          <Stack.Screen
+                            name="(auth)"
+                            options={{
+                              animation: "none",
+                              headerShown: false,
+                            }}
+                          />
+                        </Stack>
+                      </PortalProvider>
+                      <Toast config={toastConfig} />
+                    </View>
+                  </ThemeProvider>
+                </AutocompleteDropdownContextProvider>
               </GestureHandlerRootView>
             </QueryProvider>
           </PersistGate>

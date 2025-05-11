@@ -139,4 +139,5 @@ export type SearchRecipeQueryOptions = {
   carbs?: number[];
   calories?: number[];
   readyInMinutes?: number[];
+  includeIngredientIDs?: number[];
 };

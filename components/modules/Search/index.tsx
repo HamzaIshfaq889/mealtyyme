@@ -19,6 +19,7 @@ import {
   SearchIcon,
   SlidersHorizontal,
   ArrowLeft,
+  ChefHat,
 } from "lucide-react-native";
 
 import { useRecipesQuery } from "@/redux/queries/recipes/useRecipeQuery";
@@ -178,6 +179,21 @@ const Search = () => {
             ) : null}
           </View>
         </View>
+
+        <TouchableOpacity
+          className="mx-6 p-3 mb-6 flex flex-row items-center justify-between border border-foreground rounded-lg"
+          onPress={() =>
+            router.push("/(protected)/(nested)/ingredient-based-search")
+          }
+        >
+          <View className="flex flex-row items-center gap-3">
+            <ChefHat color={scheme === "dark" ? "#fff" : "#000"} size={30} />
+            <Text className="font-medium text-base font-sofia text-foreground w-64">
+              Find Recipies based on what you already have at home
+            </Text>
+          </View>
+          <Text className="text-secondary text-3xl"> {`>`} </Text>
+        </TouchableOpacity>
 
         {(!!searchValue || isFiltersApplied) && (
           <RecipesBySearch

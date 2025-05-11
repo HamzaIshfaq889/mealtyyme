@@ -16,6 +16,7 @@ import {
   Info,
   FileTerminal,
   WalletCardsIcon,
+  MessageCircle,
 } from "lucide-react-native";
 
 import { Switch } from "@/components/ui/switch";
@@ -140,6 +141,25 @@ const Settings = () => {
           icon={<FileTerminal color="#00C3FF" size={30} />}
           text="Terms and Conditions"
           onPress={() => router.push("/(protected)/(nested)/terms-conditions")}
+          scheme={scheme}
+        />
+
+        <SettingCard
+          icon={<MessageCircle color="#00C3FF" size={30} />}
+          text="Contact Support"
+          onPress={() => router.push("/(protected)/(nested)/contact-support")}
+          scheme={scheme}
+        />
+        <SettingCard
+          icon={<MessageCircle color="#00C3FF" size={30} />}
+          text="No wifi"
+          onPress={() => router.push("/(protected)/(nested)/no-wifi")}
+          scheme={scheme}
+        />
+        <SettingCard
+          icon={<MessageCircle color="#00C3FF" size={30} />}
+          text="Error"
+          onPress={() => router.push("/(protected)/(nested)/404")}
           scheme={scheme}
         />
 

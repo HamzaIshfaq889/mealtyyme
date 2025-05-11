@@ -26,6 +26,9 @@ import ActiveSubscription from "./ManageSubscriptions/activeSubscription";
 import ManageSubscription from "./ManageSubscriptions/manageSubscription";
 import PreviousSubscriptions from "./ManageSubscriptions/previousSubscriptions";
 import PaymentMethods from "./ManageSubscriptions/PaymentMethod";
+import IngredientBasedSearch from "./IngredientBasedSearch";
+import ContactSupport from "./ContactSupport";
+import IngredientBasedrecipes from "./IngredientBasedSearch/ingredientBasedrecipes";
 
 import { RecipeCard } from "./Common";
 
@@ -59,4 +62,7 @@ export {
   ManageSubscription,
   PreviousSubscriptions,
   PaymentMethods,
+  IngredientBasedSearch,
+  ContactSupport,
+  IngredientBasedrecipes,
 };

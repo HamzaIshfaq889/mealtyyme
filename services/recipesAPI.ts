@@ -166,6 +166,7 @@ export const searchRecipes = async ({
   calories,
   page,
   readyInMinutes,
+  includeIngredientIDs,
 }: SearchRecipeQueryOptions & { page: number }): Promise<{
   results: Recipe[];
   total: number;
@@ -182,6 +183,10 @@ export const searchRecipes = async ({
 
   if (dietIds?.length) {
     params.push(...dietIds.map((id) => `diets=${id}`));
+  }
+
+  if (includeIngredientIDs?.length) {
+    params.push(...includeIngredientIDs.map((id) => `include_ingredient_ids=${id}`));
   }
 
   if (searchValue.trim() !== "") {
