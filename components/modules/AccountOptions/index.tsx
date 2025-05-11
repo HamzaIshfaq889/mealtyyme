@@ -13,7 +13,7 @@ import Svg2 from "@/assets/svgs/google.svg";
 import Svg3 from "@/assets/svgs/apple-filled.svg";
 import Toast from "react-native-toast-message";
 import { setAuthToken } from "@/lib/apiClient";
-
+import LottieView from "lottie-react-native";
 import { AppConfig } from "@/constants";
 import { saveUserDataInStorage } from "@/utils/storage/authStorage";
 
@@ -132,7 +132,12 @@ const AccountsOptions = () => {
     <View className="bg-secondary w-full h-full flex flex-col px-6 pb-8">
       {/* Top Illustration - uses flex-grow to push content down */}
       <View className="flex-grow flex items-center justify-center">
-        <Svg1 width={280} height={280} />
+        <LottieView
+          source={require("../../../assets/lottie/loginanimation.json")}
+          autoPlay
+          loop
+          style={{ width: 350, height: 350 }}
+        />
       </View>
 
       {/* Auth Sections at Bottom */}

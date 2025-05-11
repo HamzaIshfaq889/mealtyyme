@@ -10,7 +10,7 @@ import { router } from "expo-router";
 import ProFeaturesCard from "./proFeaturesCard";
 import SubcriptionCTA from "../SubscriptionsCTA";
 import { useSelector } from "react-redux";
-import { checkisProUser } from "@/utils";
+import { capitalizeFirstLetter, checkisProUser } from "@/utils";
 
 const MAX_VISIBLE = 10;
 
@@ -46,7 +46,7 @@ const FilterSection = ({
           {visibleItems.map((item, index) => (
             <TouchableOpacity
               key={item.id ?? `${item.name}-${index}`}
-              className="bg-background px-3 py-2.5 rounded-full mr-2 mb-2"
+              className="bg-background px-4 py-5 rounded-full mr-1 mb-2"
               onPress={() =>
                 router.push({
                   pathname:
@@ -55,13 +55,15 @@ const FilterSection = ({
                 })
               }
             >
-              <Text className="text-foreground font-medium">{item.name}</Text>
+              <Text className="text-foreground font-medium">
+                {capitalizeFirstLetter(item.name)}
+              </Text>
             </TouchableOpacity>
           ))}
         </View>
         {shouldShowMoreButton && (
           <TouchableOpacity
-            className="w-16 flex justify-center items-center rounded-full bg-gray3"
+            className="w-16 flex justify-center items-center rounded-full bg-gray3 px-4 py-2"
             onPress={handleShowAll}
           >
             <Text className="text-foreground font-medium pb-2.5">...</Text>
@@ -122,7 +124,6 @@ export default function RecipesByFilters() {
       <FilterSection title="Diets" items={diets} />
       <FilterSection title="Categories" items={categories} />
       <FilterSection title="Cuisines" items={cuisines} />
-      {!isProUser && <ProFeaturesCard handleNonPro={handleNonPro} />}
 
       {showSubscribeCTA && (
         <SubcriptionCTA
