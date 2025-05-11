@@ -37,6 +37,7 @@ import { clearUserDataFromStorage } from "@/utils/storage/authStorage";
 import { Spinner } from "@/components/ui/spinner";
 import { ScrollView } from "react-native-gesture-handler";
 import { checkisProUser } from "@/utils";
+import { useUserGamification } from "@/hooks/useUserGamification";
 
 interface SettingCardProps {
   icon: React.ReactNode;
@@ -81,10 +82,10 @@ const Settings = () => {
       state.auth.loginResponseType.customer_details?.subscription?.status
   );
   const isProUser = checkisProUser(status);
-
+  const { clearCheckInDate } = useUserGamification();
   const handleLogout = () => {
     setLoading(true);
-
+    clearCheckInDate();
     dispatch(
       setCredentials({
         access: null,
