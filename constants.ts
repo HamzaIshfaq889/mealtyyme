@@ -1,5 +1,5 @@
 export const AppConfig = {
-  API_URL: "http://192.168.0.100:8000/api/",
+  API_URL: "https://backend.mealtyme.co/api/",
   CLIENT_ID_IOS:
     "878398669630-qnsp8rps2sqrouutee53lapnmcj5u7e4.apps.googleusercontent.com",
   CLERK_PUBLISHABLE_KEY:
