@@ -12,6 +12,7 @@ import {
   Categories,
   Cuisine,
   Diet,
+  Ingredient,
   Recipe,
   RecipeResponse,
   SearchRecipeQueryOptions,
@@ -186,7 +187,9 @@ export const searchRecipes = async ({
   }
 
   if (includeIngredientIDs?.length) {
-    params.push(...includeIngredientIDs.map((id) => `include_ingredient_ids=${id}`));
+    params.push(
+      ...includeIngredientIDs.map((id) => `include_ingredient_ids=${id}`)
+    );
   }
 
   if (searchValue.trim() !== "") {
@@ -274,4 +277,22 @@ export const addReview = async ({
   }
 
   return response.data;
+};
+
+type SearchIngredient = {
+  results: Ingredient["ingredient"][];
+  total: number;
+};
+
+export const searchIngredients = async ({
+  search = "",
+}: {
+  search?: string;
+}): Promise<SearchIngredient> => {
+  const response = await apiClient.get(`ingredients/?search=${search}`, {
+    params: {
+      search,
+    },
+  });
+  return response.data as SearchIngredient;
 };

@@ -1,4 +1,4 @@
-import { AuthSliceType, LoginResponseTypes } from "@/lib/types";
+import { AuthSliceType, LoginResponseTypes, Subscription } from "@/lib/types";
 
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
@@ -46,8 +46,6 @@ const authSlice = createSlice({
         image_url,
       } = action.payload;
 
-      // console.log("Incoming Customer Details:", customer_details);
-
       state.loginResponseType.access = access;
       state.loginResponseType.refresh = refresh;
       state.loginResponseType.email = email;
@@ -56,11 +54,6 @@ const authSlice = createSlice({
       state.loginResponseType.image_url = image_url;
       state.loginResponseType.isAuthenticated = isAuthenticated;
       state.loginResponseType.customer_details = customer_details;
-
-      console.log(
-        "Set Customer Details in State:",
-        state.loginResponseType.customer_details
-      );
     },
 
     setResetToken: (state, action: PayloadAction<string>) => {
@@ -79,6 +72,12 @@ const authSlice = createSlice({
       state.hasOnboarded = action.payload;
     },
 
+    updateSubscription: (state, action: PayloadAction<Subscription>) => {
+      if (state.loginResponseType.customer_details) {
+        state.loginResponseType.customer_details.subscription = action.payload;
+      }
+    },
+
     updateSavedRecipes: (state, action: PayloadAction<number>) => {
       const currentSavedRecipes: number[] = state.savedRecipes;
 
@@ -95,6 +94,7 @@ const authSlice = createSlice({
     setShowSubscribeCTA: (state, action: PayloadAction<boolean>) => {
       state.showSubscribeCTA = action.payload;
     },
+
     logout: (state) => {
       state.loginResponseType.access = null;
       state.loginResponseType.refresh = null;
@@ -119,5 +119,6 @@ export const {
   updateSavedRecipes,
   setSavedRecipes,
   setShowSubscribeCTA,
+  updateSubscription,
 } = authSlice.actions;
 export default authSlice.reducer;

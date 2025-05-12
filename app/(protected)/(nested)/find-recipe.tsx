@@ -7,7 +7,7 @@ import { Ingredient } from "@/lib/types/recipe";
 const IngredientBasedRecipesScreen = () => {
   const { ingredients } = useLocalSearchParams();
 
-  const parsedIngredients: Ingredient[] = useMemo(() => {
+  const parsedIngredients: Ingredient["ingredient"][] = useMemo(() => {
     try {
       return ingredients
         ? JSON.parse(decodeURIComponent(ingredients as string))
@@ -19,11 +19,9 @@ const IngredientBasedRecipesScreen = () => {
   }, [ingredients]);
 
   const ingredientIds = useMemo(() => {
-    const ids = parsedIngredients.map((i) => i.ingredient.id);
+    const ids = parsedIngredients.map((i) => i.id);
     return [...new Set(ids)];
   }, [parsedIngredients]);
-
-  console.log("Parsed Ingredients", ingredientIds);
 
   return <IngredientBasedrecipes ingredients={ingredientIds} />;
 };

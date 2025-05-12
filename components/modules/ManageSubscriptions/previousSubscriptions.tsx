@@ -1,3 +1,5 @@
+import { PreviousSubscription } from "@/lib/types/subscription";
+import { capitalizeFirstLetter, formatDate, formatUnixTimestamp, formatUtcDateString } from "@/utils";
 import { router } from "expo-router";
 import { ArrowLeft } from "lucide-react-native";
 import React from "react";
@@ -9,58 +11,15 @@ import {
   View,
 } from "react-native";
 
-const PreviousSubscriptions = () => {
+type PreviousSubscriptionsProps = {
+  subscriptions: PreviousSubscription[];
+};
+
+const PreviousSubscriptions = ({
+  subscriptions,
+}: PreviousSubscriptionsProps) => {
   const theme = useColorScheme();
   const isDarkMode = theme === "dark";
-
-  // Dummy data for subscriptions
-  const subscriptions = [
-    {
-      id: "sub_12345",
-      status: "active",
-      planName: "Pro Monthly",
-      price: "$9.99/month",
-      startDate: "Jan 15, 2023",
-      nextBillingDate: "Feb 15, 2023",
-      subscriptionId: "sub_12345",
-    },
-    {
-      id: "sub_67890",
-      status: "inactive",
-      planName: "Pro Annual",
-      price: "$99.99/year",
-      startDate: "Mar 1, 2022",
-      nextBillingDate: "Mar 1, 2023",
-      subscriptionId: "sub_67890",
-    },
-    {
-      id: "sub_54321",
-      status: "expired",
-      planName: "Basic Monthly",
-      price: "$4.99/month",
-      startDate: "Nov 10, 2022",
-      nextBillingDate: "Dec 10, 2022",
-      subscriptionId: "sub_54321",
-    },
-    {
-      id: "sub_09876",
-      status: "active",
-      planName: "Pro Annual",
-      price: "$99.99/year",
-      startDate: "Jul 5, 2022",
-      nextBillingDate: "Jul 5, 2023",
-      subscriptionId: "sub_09876",
-    },
-    {
-      id: "sub_13579",
-      status: "inactive",
-      planName: "Basic Monthly",
-      price: "$4.99/month",
-      startDate: "Sep 20, 2022",
-      nextBillingDate: "Oct 20, 2022",
-      subscriptionId: "sub_13579",
-    },
-  ];
 
   return (
     <View
@@ -69,7 +28,11 @@ const PreviousSubscriptions = () => {
       }`}
     >
       <View className="flex-row items-center justify-between mb-8">
-        <TouchableOpacity onPress={() => router.push("/(protected)/(nested)/active-subscription")}>
+        <TouchableOpacity
+          onPress={() =>
+            router.push("/(protected)/(nested)/active-subscription")
+          }
+        >
           <ArrowLeft
             width={30}
             height={30}
@@ -119,9 +82,9 @@ const PreviousSubscriptions = () => {
                           : "text-[#F87171]"
                       }`}
                     >
-                      {subscription.status === "active"
+                      {subscription?.status === "active"
                         ? "Active"
-                        : subscription.status === "inactive"
+                        : subscription?.status === "inactive"
                         ? "Inactive"
                         : "Expired"}
                     </Text>
@@ -130,10 +93,12 @@ const PreviousSubscriptions = () => {
 
                 <View className="flex-row justify-between items-center">
                   <Text className="text-foreground text-lg font-semibold">
-                    {subscription.planName}
+                    {capitalizeFirstLetter(subscription?.plan?.interval) || "N/A"}
                   </Text>
                   <Text className="text-foreground text-lg">
-                    {subscription.price}
+                    {`$${subscription?.plan?.amount / 100}/${
+                      subscription?.plan?.interval
+                    }` || "N/A"}
                   </Text>
                 </View>
               </View>
@@ -142,7 +107,7 @@ const PreviousSubscriptions = () => {
                 <View className="flex-row justify-between mb-2">
                   <Text className="text-foreground/60 text-sm">Started:</Text>
                   <Text className="text-foreground text-sm">
-                    {subscription.startDate}
+                    {formatUnixTimestamp(subscription?.created) || "N/A"}
                   </Text>
                 </View>
 
@@ -151,7 +116,8 @@ const PreviousSubscriptions = () => {
                     Next Billing Date:
                   </Text>
                   <Text className="text-foreground text-sm">
-                    {subscription.nextBillingDate}
+                    {formatUtcDateString(subscription?.next_billing_date) ||
+                      "N/A"}
                   </Text>
                 </View>
 
@@ -160,7 +126,7 @@ const PreviousSubscriptions = () => {
                     Subscription ID:
                   </Text>
                   <Text className="text-foreground text-sm">
-                    {subscription.subscriptionId}
+                    {subscription?.id || "N/A"}
                   </Text>
                 </View>
               </View>

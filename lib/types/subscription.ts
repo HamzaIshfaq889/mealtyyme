@@ -14,6 +14,35 @@ export type Packages = {
   prices: ProductPrice[];
 }[];
 
+export type PreviousSubscription = {
+  id: string;
+  status: 'active' | 'canceled' | 'incomplete' | string;
+  current_period_start: string | null;
+  current_period_end: string;
+  next_billing_date: string;
+  created: number;
+  canceled_at: string | null;
+  plan: {
+    id: string;
+    interval: 'month' | 'year';
+    amount: number;
+    currency: string;
+    product_id: string;
+  };
+  payment_method: {
+    id: string;
+    type: string;
+    brand: string;
+    last4: string;
+    exp_month: number;
+    exp_year: number;
+  };
+};
+
+export type SubscriptionsResponse = {
+  subscriptions: PreviousSubscription[];
+};
+
 export type SubscriptionStatus =
   | "active"
   | "past_due"

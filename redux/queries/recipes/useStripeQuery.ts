@@ -1,6 +1,11 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 
-import { getPackagePrices, subscribe } from "@/services/stripeApi";
+import {
+  cancelSubscription,
+  fetchPreviousSubscriptions,
+  getPackagePrices,
+  subscribe,
+} from "@/services/stripeApi";
 
 export const useProductPrices = () => {
   return useQuery({
@@ -22,5 +27,18 @@ export const useSubscribe = () => {
       customerEmail: string;
       isDarkMode: boolean;
     }) => subscribe(token, interval, customerEmail, isDarkMode),
+  });
+};
+
+export const useCancelSubscription = () => {
+  return useMutation({
+    mutationFn: (subscriptionId: string) => cancelSubscription(subscriptionId),
+  });
+};
+
+export const usePreviousSubscriptions = () => {
+  return useQuery({
+    queryKey: ["previousSubscriptions"],
+    queryFn: fetchPreviousSubscriptions,
   });
 };

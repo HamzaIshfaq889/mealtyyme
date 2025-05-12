@@ -13,7 +13,6 @@ import { RecipeSkeletonItem } from "../Skeletons";
 import { router } from "expo-router";
 import { ArrowRight, Clock, Flame, Star } from "lucide-react-native";
 import { useRecipesQuery } from "@/redux/queries/recipes/useRecipeQuery";
-import { Ingredient } from "@/lib/types/recipe";
 
 type QueryOptions = {
   dietIds?: number[];

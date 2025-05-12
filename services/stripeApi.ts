@@ -1,11 +1,11 @@
 import { AppConfig } from "@/constants";
 import apiClient from "@/lib/apiClient";
-import { Packages } from "@/lib/types/subscription";
+import { Packages, SubscriptionsResponse } from "@/lib/types/subscription";
 import {
   initPaymentSheet,
   presentPaymentSheet,
 } from "@stripe/stripe-react-native";
-import { Alert, Platform, useColorScheme } from "react-native";
+import { Alert, Platform } from "react-native";
 
 export const getPackagePrices = async () => {
   const response = await apiClient.get(`${AppConfig.API_URL}products/`);
@@ -142,4 +142,40 @@ export const subscribe = async (
   } catch (error: any) {
     Alert.alert("Error", error.message);
   }
+};
+
+export const cancelSubscription = async (subscriptionId: string) => {
+  const response = await apiClient.post(
+    `${AppConfig.API_URL}cancel-subscription/`,
+    {
+      subscriptionId,
+    }
+  );
+
+  if (!response.ok) {
+    if (response.status === 401 || response.status === 404) {
+      throw new Error("Error while cancelling subscription.");
+    }
+    throw new Error(
+      response?.originalError?.message || "Failed to cancel subscription."
+    );
+  }
+
+  return response.data;
+};
+
+export const fetchPreviousSubscriptions = async () => {
+  const response = await apiClient.get(`${AppConfig.API_URL}subscriptions/`);
+
+  if (!response.ok) {
+    if (response.status === 401 || response.status === 404) {
+      throw new Error("Error while fetching previous subscriptions.");
+    }
+    throw new Error(
+      response?.originalError?.message ||
+        "Failed to fetch previous subscriptions."
+    );
+  }
+
+  return response.data as SubscriptionsResponse;
 };

@@ -1,30 +1,29 @@
 import { Button, ButtonText } from "@/components/ui/button";
+import { formatDate, getNextBillingDate, PackagesPrice } from "@/utils";
 import { router } from "expo-router";
 import { ArrowLeft } from "lucide-react-native";
 import React from "react";
 import { View, Text, TouchableOpacity, useColorScheme } from "react-native";
 
 interface ActiveSubscriptionProps {
-  status: "active" | "inactive" | "expired";
-  planName: string;
-  price: string;
-  startDate: string;
-  nextBillingDate: string;
-  subscriptionId: string;
-  onChangePlan: () => void;
+  status: string | null;
+  planName: "month" | "year" | null;
+  startDate: string | null;
+  subscriptionId: string | null;
 }
 
 export default function ActiveSubscription({
   status = "active",
-  planName = "Premium Annual",
-  price = "$50/Year",
-  startDate = "Jun 15, 2023",
-  nextBillingDate = "2025-06-06 11:32 UTC",
-  subscriptionId = "sub_tr1JjEQ9",
-  onChangePlan = () => console.log("Change plan pressed"),
+  planName = "month",
+  startDate = null,
+  subscriptionId = "",
 }: ActiveSubscriptionProps) {
   const scheme = useColorScheme();
   const isDarkMode = scheme === "dark";
+
+  const price = planName && PackagesPrice[planName];
+
+  console.log(typeof startDate);
 
   return (
     <View className="flex flex-col w-full h-full px-6 py-16">
@@ -50,7 +49,7 @@ export default function ActiveSubscription({
       <View
         className={`${
           isDarkMode ? "bg-gray4/50" : "bg-background"
-        } rounded-3xl p-4 w-full max-w-sm mb-8`}
+        } rounded-3xl p-4 w-full mb-8`}
         style={{
           boxShadow: isDarkMode ? "" : "0px 2px 12px 0px rgba(0,0,0,0.1)",
         }}
@@ -71,28 +70,36 @@ export default function ActiveSubscription({
 
           <View className="flex-row justify-between items-center">
             <Text className="text-foreground text-lg font-semibold">
-              {planName}
+              {planName === "month" ? "Monthly" : "Yearly"}
             </Text>
-            <Text className="text-foreground text-lg">{price}</Text>
+            <Text className="text-foreground text-lg">{`$${price}/${planName}`}</Text>
           </View>
         </View>
 
         <View className="space-y-2 mb-6">
           <View className="flex-row justify-between mb-2">
             <Text className="text-foreground/60 text-sm">Started:</Text>
-            <Text className="text-foreground text-sm">{startDate}</Text>
+            <Text className="text-foreground text-sm">
+              {startDate ? formatDate(startDate) : "N/A"}
+            </Text>
           </View>
 
           <View className="flex-row justify-between mb-2">
             <Text className="text-foreground/60 text-sm">
               Next Billing Date:
             </Text>
-            <Text className="text-foreground text-sm">{nextBillingDate}</Text>
+            <Text className="text-foreground text-sm">
+              {startDate && planName
+                ? getNextBillingDate(startDate, planName)
+                : "N/A"}
+            </Text>
           </View>
 
           <View className="flex-row justify-between">
             <Text className="text-foreground/60 text-sm">Subscription ID:</Text>
-            <Text className="text-foreground text-sm">{subscriptionId}</Text>
+            <Text className="text-foreground text-sm">
+              {subscriptionId ? subscriptionId : "N/A"}
+            </Text>
           </View>
         </View>
 
@@ -111,7 +118,7 @@ export default function ActiveSubscription({
       <View
         className={`${
           isDarkMode ? "bg-gray4/50" : "bg-background"
-        } flex flex-row justify-between items-center rounded-xl px-4 py-6 w-full`}
+        } flex flex-row justify-between items-center rounded-xl px-4 py-5 w-full`}
         style={{
           boxShadow: isDarkMode ? "" : "0px 2px 12px 0px rgba(0,0,0,0.1)",
         }}

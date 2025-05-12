@@ -71,7 +71,7 @@ export interface Subscription {
   status: string | null;
   subscription_type: string | null;
   subscription_expiry: string | null;
-  string: Date;
+  created_at: string;
   updated_at: string;
 }
 

@@ -1,13 +1,16 @@
 import { Button, ButtonText } from "@/components/ui/button";
+import { useIngredientsQuery } from "@/redux/queries/recipes/useStaticFilter";
 import { capitalizeWords } from "@/utils";
 import { router } from "expo-router";
 import { ArrowLeft, Trash2 } from "lucide-react-native";
-import React, { useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { Text, TouchableOpacity, useColorScheme, View } from "react-native";
-import { AutocompleteDropdown } from "react-native-autocomplete-dropdown";
+import {
+  AutocompleteDropdown,
+  IAutocompleteDropdownRef,
+} from "react-native-autocomplete-dropdown";
 import { ScrollView } from "react-native-gesture-handler";
 
-// Ingredient type
 export type Ingredient = {
   ingredient: {
     id: number;
@@ -23,322 +26,51 @@ export type Ingredient = {
   recipe_id: number;
 };
 
-// Dummy dataset
-const dummyIngredients: Ingredient[] = [
-  {
-    ingredient: {
-      id: 1,
-      spoonacular_id: 101,
-      name: "Tomato",
-      created_at: "2024-01-01",
-      created_by: 1,
-    },
-    amount: 2,
-    unit: "pieces",
-    created_at: "2024-01-01",
-    created_by: 1,
-    recipe_id: 10,
-  },
-  {
-    ingredient: {
-      id: 2,
-      spoonacular_id: 102,
-      name: "Cheese",
-      created_at: "2024-01-01",
-      created_by: 1,
-    },
-    amount: 100,
-    unit: "grams",
-    created_at: "2024-01-01",
-    created_by: 1,
-    recipe_id: 10,
-  },
-  {
-    ingredient: {
-      id: 3,
-      spoonacular_id: 103,
-      name: "Basil",
-      created_at: "2024-01-01",
-      created_by: 1,
-    },
-    amount: 5,
-    unit: "leaves",
-    created_at: "2024-01-01",
-    created_by: 1,
-    recipe_id: 10,
-  },
-  {
-    ingredient: {
-      id: 4,
-      spoonacular_id: 104,
-      name: "Garlic",
-      created_at: "2024-01-01",
-      created_by: 1,
-    },
-    amount: 3,
-    unit: "cloves",
-    created_at: "2024-01-01",
-    created_by: 1,
-    recipe_id: 10,
-  },
-  {
-    ingredient: {
-      id: 5,
-      spoonacular_id: 105,
-      name: "Onion",
-      created_at: "2024-01-01",
-      created_by: 1,
-    },
-    amount: 1,
-    unit: "piece",
-    created_at: "2024-01-01",
-    created_by: 1,
-    recipe_id: 10,
-  },
-  {
-    ingredient: {
-      id: 6,
-      spoonacular_id: 106,
-      name: "Olive Oil",
-      created_at: "2024-01-01",
-      created_by: 1,
-    },
-    amount: 2,
-    unit: "tbsp",
-    created_at: "2024-01-01",
-    created_by: 1,
-    recipe_id: 10,
-  },
-  {
-    ingredient: {
-      id: 7,
-      spoonacular_id: 107,
-      name: "Salt",
-      created_at: "2024-01-01",
-      created_by: 1,
-    },
-    amount: 1,
-    unit: "tsp",
-    created_at: "2024-01-01",
-    created_by: 1,
-    recipe_id: 10,
-  },
-  {
-    ingredient: {
-      id: 8,
-      spoonacular_id: 108,
-      name: "Black Pepper",
-      created_at: "2024-01-01",
-      created_by: 1,
-    },
-    amount: 0.5,
-    unit: "tsp",
-    created_at: "2024-01-01",
-    created_by: 1,
-    recipe_id: 10,
-  },
-  {
-    ingredient: {
-      id: 9,
-      spoonacular_id: 109,
-      name: "Mushroom",
-      created_at: "2024-01-01",
-      created_by: 1,
-    },
-    amount: 150,
-    unit: "grams",
-    created_at: "2024-01-01",
-    created_by: 1,
-    recipe_id: 10,
-  },
-  {
-    ingredient: {
-      id: 10,
-      spoonacular_id: 110,
-      name: "Chicken Breast",
-      created_at: "2024-01-01",
-      created_by: 1,
-    },
-    amount: 200,
-    unit: "grams",
-    created_at: "2024-01-01",
-    created_by: 1,
-    recipe_id: 10,
-  },
-  {
-    ingredient: {
-      id: 11,
-      spoonacular_id: 111,
-      name: "Milk",
-      created_at: "2024-01-01",
-      created_by: 1,
-    },
-    amount: 1,
-    unit: "cup",
-    created_at: "2024-01-01",
-    created_by: 1,
-    recipe_id: 10,
-  },
-  {
-    ingredient: {
-      id: 12,
-      spoonacular_id: 112,
-      name: "Egg",
-      created_at: "2024-01-01",
-      created_by: 1,
-    },
-    amount: 2,
-    unit: "pieces",
-    created_at: "2024-01-01",
-    created_by: 1,
-    recipe_id: 10,
-  },
-  {
-    ingredient: {
-      id: 13,
-      spoonacular_id: 113,
-      name: "Butter",
-      created_at: "2024-01-01",
-      created_by: 1,
-    },
-    amount: 1,
-    unit: "tbsp",
-    created_at: "2024-01-01",
-    created_by: 1,
-    recipe_id: 10,
-  },
-  {
-    ingredient: {
-      id: 14,
-      spoonacular_id: 114,
-      name: "Carrot",
-      created_at: "2024-01-01",
-      created_by: 1,
-    },
-    amount: 1,
-    unit: "piece",
-    created_at: "2024-01-01",
-    created_by: 1,
-    recipe_id: 10,
-  },
-  {
-    ingredient: {
-      id: 15,
-      spoonacular_id: 115,
-      name: "Potato",
-      created_at: "2024-01-01",
-      created_by: 1,
-    },
-    amount: 2,
-    unit: "pieces",
-    created_at: "2024-01-01",
-    created_by: 1,
-    recipe_id: 10,
-  },
-  {
-    ingredient: {
-      id: 16,
-      spoonacular_id: 116,
-      name: "Cumin",
-      created_at: "2024-01-01",
-      created_by: 1,
-    },
-    amount: 1,
-    unit: "tsp",
-    created_at: "2024-01-01",
-    created_by: 1,
-    recipe_id: 10,
-  },
-  {
-    ingredient: {
-      id: 17,
-      spoonacular_id: 117,
-      name: "Paprika",
-      created_at: "2024-01-01",
-      created_by: 1,
-    },
-    amount: 1,
-    unit: "tsp",
-    created_at: "2024-01-01",
-    created_by: 1,
-    recipe_id: 10,
-  },
-  {
-    ingredient: {
-      id: 18,
-      spoonacular_id: 118,
-      name: "Spinach",
-      created_at: "2024-01-01",
-      created_by: 1,
-    },
-    amount: 1,
-    unit: "cup",
-    created_at: "2024-01-01",
-    created_by: 1,
-    recipe_id: 10,
-  },
-  {
-    ingredient: {
-      id: 19,
-      spoonacular_id: 119,
-      name: "Rice",
-      created_at: "2024-01-01",
-      created_by: 1,
-    },
-    amount: 100,
-    unit: "grams",
-    created_at: "2024-01-01",
-    created_by: 1,
-    recipe_id: 10,
-  },
-  {
-    ingredient: {
-      id: 20,
-      spoonacular_id: 120,
-      name: "Yogurt",
-      created_at: "2024-01-01",
-      created_by: 1,
-    },
-    amount: 0.5,
-    unit: "cup",
-    created_at: "2024-01-01",
-    created_by: 1,
-    recipe_id: 10,
-  },
-];
-
 const IngredientBasedSearch = () => {
   const scheme = useColorScheme();
   const isDarkMode = scheme === "dark";
 
-  const [selectedItem, setSelectedItem] = useState<Ingredient | null>(null);
-  const [ingredients, setIngredients] = useState<Ingredient[]>([]);
+  const [selectedItem, setSelectedItem] = useState<
+    Ingredient["ingredient"] | null
+  >(null);
+  const [addedIngredients, setAddedIngredients] = useState<
+    Ingredient["ingredient"][]
+  >([]);
+  const [searchText, setSearchText] = useState("");
+  const dropdownController = useRef<IAutocompleteDropdownRef>(null);
+
+  const { data: response, isLoading } = useIngredientsQuery({
+    search: searchText,
+  });
+  const fetchedIngredients = response?.results || [];
+
+  useEffect(() => {
+    if (fetchedIngredients.length > 0) {
+      dropdownController.current?.open();
+    }
+  }, [fetchedIngredients]);
 
   const handleAddIngredient = () => {
-    if (
-      selectedItem &&
-      !ingredients.some((i) => i.ingredient.id === selectedItem.ingredient.id)
-    ) {
-      setIngredients((prev) => [...prev, selectedItem]);
-      setSelectedItem(null);
-    }
+    if (!selectedItem || addedIngredients.some((i) => i.id === selectedItem.id))
+      return;
+    setAddedIngredients((prev) => [...prev, selectedItem]);
+    setSelectedItem(null);
+    setSearchText("");
   };
 
   const handleRemoveIngredient = (id: number) => {
-    setIngredients((prev) => prev.filter((item) => item.ingredient.id !== id));
+    setAddedIngredients((prev) => prev.filter((item) => item.id !== id));
   };
 
   const handleFindRecipes = () => {
-    if (!ingredients?.length) return;
-
-    const encodedIngredients = encodeURIComponent(JSON.stringify(ingredients));
-
+    if (!addedIngredients.length) return;
+    const encodedIngredients = encodeURIComponent(
+      JSON.stringify(addedIngredients)
+    );
     router.push(
       `/(protected)/(nested)/find-recipe?ingredients=${encodedIngredients}`
     );
   };
-
-  console.log(ingredients);
 
   return (
     <View className="w-full h-full px-6 py-16 flex flex-col relative">
@@ -364,16 +96,19 @@ const IngredientBasedSearch = () => {
       <View className="my-4">
         <AutocompleteDropdown
           clearOnFocus={false}
-          closeOnBlur={true}
+          closeOnBlur={false}
           closeOnSubmit={false}
-          initialValue={{ id: "1" }}
           inputHeight={55}
+          useFilter={false}
+          controller={(controller) => {
+            dropdownController.current = controller;
+          }}
           containerStyle={{
-            borderRadius: 16, // outermost wrapper
-            overflow: "hidden", // ensures children respect the border radius
+            borderRadius: 16,
+            overflow: "hidden",
           }}
           inputContainerStyle={{
-            borderRadius: 16, // input container wrapper
+            borderRadius: 16,
             borderWidth: 2,
             borderColor: isDarkMode ? "#fff" : "#000",
             backgroundColor: isDarkMode ? "#000" : "#fff",
@@ -382,19 +117,49 @@ const IngredientBasedSearch = () => {
             placeholder: "Type to find ingredient...",
             placeholderTextColor: isDarkMode ? "#aaa" : "#666",
             style: {
+              color: isDarkMode ? "#fff" : "#000",
               paddingHorizontal: 10,
             },
+            onChangeText: setSearchText,
+            value: searchText,
           }}
           onSelectItem={(item) => {
-            const matched = dummyIngredients.find(
-              (i) => i.ingredient.id.toString() === item?.id
+            const matched = fetchedIngredients.find(
+              (i) => i.id.toString() === item?.id
             );
             setSelectedItem(matched ?? null);
           }}
-          dataSet={dummyIngredients.map((item) => ({
-            id: item.ingredient.id.toString(),
-            title: item.ingredient.name,
+          loading={isLoading}
+          dataSet={fetchedIngredients.map((item) => ({
+            id: item.id.toString(),
+            title: capitalizeWords(item.name),
           }))}
+          suggestionsListTextStyle={{
+            color: isDarkMode ? "#fff" : "#000",
+          }}
+          suggestionsListContainerStyle={{
+            backgroundColor: isDarkMode ? "#1D232B" : "#fff",
+          }}
+          renderItem={(item) => (
+            <Text
+              className="p-3"
+              style={{ color: isDarkMode ? "#fff" : "#000" }}
+            >
+              {item.title}
+            </Text>
+          )}
+          emptyResultText="No ingredients found"
+          EmptyResultComponent={
+            <View>
+              <Text
+                className={`text-white text-center p-2 text-lg ${
+                  isDarkMode ? "text-white" : "text-black"
+                }`}
+              >
+                No Ingredients Found
+              </Text>
+            </View>
+          }
         />
       </View>
 
@@ -407,29 +172,28 @@ const IngredientBasedSearch = () => {
       </Button>
 
       <ScrollView className="mt-6 px-1.5">
-        {ingredients.map((item, index) => (
+        {addedIngredients.map((item, index) => (
           <View
             key={index}
-            className={`rounded-2xl ${
-              index === ingredients?.length - 1 ? "mb-6" : "mb-6"
-            } ${isDarkMode && "bg-[#1D232B]"}`}
+            className={`rounded-2xl mb-6 ${isDarkMode && "bg-[#1D232B]"}`}
             style={{
-              boxShadow: !isDarkMode ? "0px 2px 12px 0px rgba(0,0,0,0.05)" : "",
+              shadowColor: "#000",
+              shadowOffset: { width: 0, height: 2 },
+              shadowOpacity: 0.05,
+              shadowRadius: 12,
+              elevation: 3,
             }}
           >
             <View className="px-5 py-4">
               <View className="flex flex-row justify-between">
                 <View className="flex flex-col gap-3">
                   <Text className="text-foreground text-xl font-medium leading-6">
-                    {capitalizeWords(item?.ingredient?.name)}
+                    {capitalizeWords(item?.name)}
                   </Text>
-                  {/* <Text className="text-muted text-sm">
-                    {Math.ceil(item?.amount)} {item?.unit}
-                  </Text> */}
                 </View>
                 <TouchableOpacity
                   className="ml-4"
-                  onPress={() => handleRemoveIngredient(item?.ingredient?.id)}
+                  onPress={() => handleRemoveIngredient(item?.id)}
                 >
                   <Trash2 size={20} color="#FF3B30" />
                 </TouchableOpacity>
@@ -443,7 +207,7 @@ const IngredientBasedSearch = () => {
         <Button
           action="secondary"
           onPress={handleFindRecipes}
-          className={`${!ingredients.length && "!bg-muted"}`}
+          className={`${!addedIngredients.length && "!bg-muted"}`}
         >
           <ButtonText>Find me a recipe</ButtonText>
         </Button>

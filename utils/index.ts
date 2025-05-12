@@ -102,3 +102,58 @@ export const supportOptions = [
   "Feedback/Suggestions",
   "Others",
 ];
+
+export const PackagesPrice = {
+  month: 4.0,
+  year: 99.0,
+};
+
+export const formatDate = (isoDate: string): string => {
+  const date = new Date(isoDate);
+  return date.toLocaleDateString(undefined, {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+};
+
+export const getNextBillingDate = (
+  startDate: string,
+  interval: "month" | "year"
+): string => {
+  const date = new Date(startDate);
+
+  if (interval === "month") {
+    date.setMonth(date.getMonth() + 1);
+  } else if (interval === "year") {
+    date.setFullYear(date.getFullYear() + 1);
+  } else {
+    throw new Error('Invalid interval. Must be "month" or "year".');
+  }
+
+  return date.toLocaleDateString(undefined, {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+};
+
+export const formatUnixTimestamp = (timestamp: number): string => {
+  const date = new Date(timestamp * 1000);
+  return date.toLocaleDateString(undefined, {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+};
+
+export const formatUtcDateString = (dateString: string): string => {
+  const isoFormatted = dateString.replace(" ", "T").replace(" UTC", "Z");
+  const date = new Date(isoFormatted);
+
+  return date.toLocaleDateString(undefined, {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+};

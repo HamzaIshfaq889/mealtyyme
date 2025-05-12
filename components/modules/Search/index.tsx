@@ -37,7 +37,6 @@ import Filters from "./filters";
 import RecipesBySearch from "./recipesBySearch";
 import RecipesByFilters from "./recipesByFilters";
 import ProFeaturesCard from "./proFeaturesCard";
-import { SafeAreaView } from "react-native-safe-area-context";
 import ProSubscribeModal from "@/components/ui/modals/proModal";
 import { useModal } from "@/hooks/useModal";
 

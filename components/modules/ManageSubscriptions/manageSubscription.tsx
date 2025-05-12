@@ -1,30 +1,60 @@
 import { Button, ButtonText } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
+import { useCancelSubscription } from "@/redux/queries/recipes/useStripeQuery";
+import { getNextBillingDate, PackagesPrice } from "@/utils";
 import { router } from "expo-router";
 import { ArrowLeft } from "lucide-react-native";
-import React from "react";
-import { View, Text, useColorScheme, TouchableOpacity } from "react-native";
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  useColorScheme,
+  TouchableOpacity,
+  Alert,
+} from "react-native";
 
 interface ManageSubscriptionProps {
-  status: "active" | "inactive" | "expired";
-  planName: string;
-  price: string;
-  startDate: string;
-  nextBillingDate: string;
-  subscriptionId: string;
-  onChangePlan: () => void;
+  status: string | null;
+  planName: "month" | "year" | null;
+  startDate: string | null;
+  subscriptionId: string | null;
 }
 
 export default function ManageSubscription({
-  status = "active",
-  planName = "Premium Annual",
-  price = "$50/Year",
-  startDate = "Jun 15, 2023",
-  nextBillingDate = "2025-06-06 11:32 UTC",
-  subscriptionId = "sub_tr1JjEQ9",
-  onChangePlan = () => console.log("Change plan pressed"),
+  status = "",
+  planName = "month",
+  startDate = null,
+  subscriptionId = "",
 }: ManageSubscriptionProps) {
   const scheme = useColorScheme();
   const isDarkMode = scheme === "dark";
+
+  const [cancelLoading, setCancelLoading] = useState(false);
+
+  const price = planName && PackagesPrice[planName];
+
+  const { mutate: cancelSubscription } = useCancelSubscription();
+
+  const handleCancelSubscription = () => {
+    if (!subscriptionId) return;
+    setCancelLoading(true);
+    cancelSubscription(subscriptionId, {
+      onSuccess: (data) => {
+        setCancelLoading(false);
+        Alert.alert(
+          "Success",
+          `Subscription for ${
+            planName === "month" ? "month" : "year"
+          } is now Cancelled!`
+        );
+        console.log("Cancelled successfully:", data);
+      },
+      onError: (err) => {
+        setCancelLoading(false);
+        console.error("Cancellation failed:", err.message);
+      },
+    });
+  };
 
   return (
     <View
@@ -91,7 +121,11 @@ export default function ManageSubscription({
             <Text className="text-foreground/60 text-sm">
               Next Billing Date:
             </Text>
-            <Text className="text-foreground text-sm">{nextBillingDate}</Text>
+            <Text className="text-foreground text-sm">
+              {startDate && planName
+                ? getNextBillingDate(startDate, planName)
+                : "N/A"}
+            </Text>
           </View>
 
           <View className="flex-row justify-between">
@@ -105,9 +139,11 @@ export default function ManageSubscription({
             <Button
               variant="outline"
               className="border border-destructive !h-14"
+              disabled={!!cancelLoading}
+              onPress={handleCancelSubscription}
             >
               <ButtonText className="!text-lg !font-semibold !text-destructive">
-                Cancel
+                {cancelLoading ? <Spinner /> : "Cancel"}
               </ButtonText>
             </Button>
           </View>
@@ -122,9 +158,7 @@ export default function ManageSubscription({
       <View className="mt-auto">
         <Button>
           <ButtonText
-            onPress={() =>
-              router.push("/(protected)/(nested)/payment-methods")
-            }
+            onPress={() => router.push("/(protected)/(nested)/payment-methods")}
           >
             Manage Payment Methods
           </ButtonText>
