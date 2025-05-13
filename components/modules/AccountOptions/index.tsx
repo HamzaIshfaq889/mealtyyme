@@ -4,7 +4,6 @@ import { Platform, Text, View } from "react-native";
 
 import { router } from "expo-router";
 
-import Svg1 from "../../../assets/svgs/account-option.svg";
 import { Button, ButtonText } from "@/components/ui/button";
 import { useDispatch } from "react-redux";
 import { useAuth, useClerk, useSSO, useSignIn } from "@clerk/clerk-expo";
@@ -24,7 +23,7 @@ const AccountsOptions = () => {
   const dispatch = useDispatch();
   const { signIn } = useSignIn();
 
-  const handleSignIn = async () => {
+  const handleGoogleSignIn = async () => {
     if (isSignedIn) {
       Toast.show({
         type: "error",
@@ -109,6 +108,8 @@ const AccountsOptions = () => {
 
       const data = await response.json();
 
+      console.log('data.................',data)
+
       if (response.ok) {
         setAuthToken(data.access);
         dispatch(setCredentials({ ...data, isAuthenticated: true }));
@@ -130,7 +131,6 @@ const AccountsOptions = () => {
 
   return (
     <View className="bg-secondary w-full h-full flex flex-col px-6 pb-8">
-      {/* Top Illustration - uses flex-grow to push content down */}
       <View className="flex-grow flex items-center justify-center">
         <LottieView
           source={require("../../../assets/lottie/loginanimation.json")}
@@ -140,9 +140,7 @@ const AccountsOptions = () => {
         />
       </View>
 
-      {/* Auth Sections at Bottom */}
       <View className="w-full">
-        {/* Email Auth Buttons */}
         <View className="w-full mb-6">
           <Button
             className="mb-3"
@@ -157,14 +155,13 @@ const AccountsOptions = () => {
           </Button>
         </View>
 
-        {/* Social Auth Section */}
         <View className="w-full">
           <Text className="text-center text-primary mb-4">
             or continue with
           </Text>
 
           <Button
-            onPress={() => handleSignIn()}
+            onPress={() => handleGoogleSignIn()}
             action="muted"
             className="flex-row justify-center items-center gap-2 mb-3 bg-red-500"
           >

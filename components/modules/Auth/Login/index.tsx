@@ -103,6 +103,8 @@ const Login = () => {
       const response = (await loginUser(payload)) as LoginResponseTypes;
       const isFirstTimeUser = response?.customer_details?.first_time_user;
 
+      
+
       if (response.access) {
         await saveUserDataInStorage({ ...response, isAuthenticated: true });
       }

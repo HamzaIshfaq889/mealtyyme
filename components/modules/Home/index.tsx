@@ -148,7 +148,7 @@ const HomeUser = () => {
       {/* {showSubscriptionCTA && <SubcriptionCTA />} */}
 
       {/* Show modal for returning users */}
-      {!hasCheckedIn && (
+      {/* {!hasCheckedIn && (
         <ProSubscribeModal
           visible={!hasCheckedIn}
           hideModal={hideModal}
@@ -164,7 +164,7 @@ const HomeUser = () => {
             userPointsData={stats}
           />
         </ProSubscribeModal>
-      )}
+      )} */}
     </View>
   );
 };
