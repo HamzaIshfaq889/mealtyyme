@@ -150,25 +150,23 @@ const EditProfile = () => {
 
     const firstName = formData?.firstName;
     const userImage = uploadedImageData?.file;
+    
 
-    console.log(firstName);
-    console.log(userImage);
+    const data = {
+      firstName,
+    };
 
-    // const data = {
-    //   firstName,
-    // };
-
-    // UpdateUserProfile(
-    //   { customerId, data },
-    //   {
-    //     onSuccess: () => {
-    //       router.push("/(protected)/(nested)/settings");
-    //     },
-    //     onError: (error) => {
-    //       console.error("Error adding recipe:", error);
-    //     },
-    //   }
-    // );
+    UpdateUserProfile(
+      { customerId, data },
+      {
+        onSuccess: () => {
+          router.push("/(protected)/(nested)/settings");
+        },
+        onError: (error) => {
+          console.error("Error adding recipe:", error);
+        },
+      }
+    );
   };
 
   return (

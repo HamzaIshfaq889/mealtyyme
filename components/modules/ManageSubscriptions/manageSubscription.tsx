@@ -3,6 +3,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { useGetCustomer } from "@/redux/queries/recipes/useCustomerQuery";
 import {
   useCancelSubscription,
+  useResumeSubscription,
   useUpgradeSubscription,
 } from "@/redux/queries/recipes/useStripeQuery";
 import { setCredentials } from "@/redux/slices/Auth";
@@ -46,6 +47,7 @@ export default function ManageSubscription({
 
   const [cancelLoading, setCancelLoading] = useState(false);
   const [upgradeLoading, setUpgradeLoading] = useState(false);
+  const [retryLoading, setRetryLoading] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const credentials = useSelector((state: any) => state.auth.loginResponseType);
@@ -54,7 +56,8 @@ export default function ManageSubscription({
 
   const { mutate: cancelSubscription } = useCancelSubscription();
   const { mutate: upgrade } = useUpgradeSubscription();
-  const { data: customerData, isError, error, refetch } = useGetCustomer();
+  const { mutate: resumeSubscription } = useResumeSubscription();
+  const { refetch } = useGetCustomer();
 
   const handlePostSubscriptionUpdate = async (
     updatedMessage: string,
@@ -125,9 +128,25 @@ export default function ManageSubscription({
     });
   };
 
-  const handelRetrySubscription =()=>{
+  const handelRetrySubscription = () => {
+    if (!subscriptionId) return null;
+    setRetryLoading(true);
 
-  }
+    resumeSubscription(subscriptionId, {
+      onSuccess: async () => {
+        setRetryLoading(false);
+
+        await handlePostSubscriptionUpdate("Resumed Successfully!", "Success");
+        setUpgradeLoading(false);
+      },
+      onError: (err) => {
+        setRetryLoading(false);
+
+        setUpgradeLoading(false);
+        console.error("Resume subscription failed:", err.message);
+      },
+    });
+  };
 
   return (
     <>
@@ -241,8 +260,19 @@ export default function ManageSubscription({
 
           <View>
             {status === "canceled" ? (
-              <Button onPress={handelRetrySubscription}>
-                <ButtonText>Resume Subscription</ButtonText>
+              <Button
+                onPress={handelRetrySubscription}
+                disabled={!!retryLoading}
+              >
+                {
+                  <ButtonText>
+                    {retryLoading ? (
+                      <Spinner size={30} />
+                    ) : (
+                      "Resume Subscription"
+                    )}
+                  </ButtonText>
+                }
               </Button>
             ) : (
               <View className="flex flex-row gap-2 w-full">

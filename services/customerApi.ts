@@ -44,20 +44,18 @@ export const getCustomer = async () => {
 
 export const uploadFile = async (file: File) => {
   const formData = new FormData();
-  formData.append("file", file); 
+  formData.append("file", file);
 
   const response = await apiClient.post(
     `${AppConfig.API_URL}attachments/`,
     formData
   );
 
-  console.log("///////////////////////", response);
+  console.log('llllllllllll',response)
 
   if (!response.ok) {
-    throw new Error(
-      response?.originalError?.message || "Failed to upload file"
-    );
+    throw new Error(response.problem || "Failed to upload file");
   }
 
-  return response.data as UploadAvatarResponse; // { id, file, uploaded_by, created_at }
+  return response.data as UploadAvatarResponse;
 };
