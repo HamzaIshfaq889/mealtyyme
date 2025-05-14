@@ -1,23 +1,14 @@
-import { Input, InputField, InputIcon, InputSlot } from "@/components/ui/input";
+import { Input, InputField } from "@/components/ui/input";
 import { Recipe } from "@/lib/types/recipe";
 import { sendChatBotMessage } from "@/services/chatbotApi";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { router } from "expo-router";
-import {
-  ArrowRight,
-  Clock,
-  Flame,
-  MailIcon,
-  MessageCircle,
-  Send,
-  Star,
-} from "lucide-react-native";
+import { ArrowLeft, ArrowRight, Clock, Flame, Star } from "lucide-react-native";
 import React, { useEffect, useState } from "react";
 import {
   SafeAreaView,
   View,
   Text,
-  TextInput,
   FlatList,
   TouchableOpacity,
   KeyboardAvoidingView,
@@ -26,18 +17,19 @@ import {
   Pressable,
   Image,
 } from "react-native";
-import Animated, {
+import {
   Easing,
   withTiming,
   useSharedValue,
-  withRepeat,
-  withDelay,
   useAnimatedStyle,
 } from "react-native-reanimated";
+import CheMateAi from "@/assets/svgs/chef-mate-ai.svg";
+import { Progress, ProgressFilledTrack } from "@/components/ui/progress";
 
 interface ChatMessage {
   _id: number;
   text: string;
+  heading?: string;
   createdAt: Date;
   recipe?: Recipe;
   user: {
@@ -91,7 +83,8 @@ const ChatBot = () => {
   useEffect(() => {
     const defaultMessage: ChatMessage = {
       _id: Date.now(),
-      text: "👋 Well, well, whisk me away and call me a spatula—it’s Nibbles! Your pun-slinging, recipe-wrangling, flavor-blasting kitchen sidekick! 🎉 \nGot a beet-iful craving? Maybe thyme-travel to a cozy dish? Or perhaps lettuce tempt you with something egg-ceptional? Just say the word—I’ll olive to help! 🫒🔥 \nDish it out, and I’ll pan-handle the rest! (No knead to thank me… unless you’re dough inclined.) 😆 \n (Stuck? Type “clear” to zest-art fresh!) 🍋✨",
+      heading: "👋 Welcome to ChefMate!",
+      text: "I'm your AI cooking assistant. I can help you find recipes based on your dietary needs, ingredients you have, or whatever you're craving!",
       createdAt: new Date(),
       user: {
         _id: 2,
@@ -217,109 +210,149 @@ const ChatBot = () => {
   };
 
   const renderMessage = ({ item }: { item: ChatMessage }) => {
-    const isRecipe = item.recipe; // Check if it's a recipe message
+    const isRecipe = item.recipe;
 
     return (
-      <View
-        className={`px-4 py-3 rounded-xl my-1 max-w-[90%]  ${
-          item.user._id === 1
-            ? "bg-secondary self-end"
-            : "bg-background self-start"
-        }`}
-      >
+      <View>
         {item.text === "ChatBot is typing..." ? (
-          <Text className="text-muted text-sm">Nibbles is typing....</Text>
+          <View
+            className={`p-4 rounded-xl mb-4 mx-6 ${
+              item.user._id === 1
+                ? "bg-foreground self-end"
+                : "bg-background self-start"
+            }`}
+          >
+            <Text className="text-muted text-sm">Nibbles is typing....</Text>
+          </View>
         ) : isRecipe ? (
-          <Pressable onPress={() => router.push(`/recipe/${item.recipe?.id}`)}>
-            <View
-              className="flex flex-row justify-between items-center p-2 rounded-2xl  bg-background w-[100%]"
-              style={{
-                shadowColor: "#000",
-                shadowOffset: { width: 0, height: 4 },
-                shadowOpacity: 0.05,
-                shadowRadius: 6,
-                elevation: 3,
-              }}
-            >
-              <View className="flex flex-row gap-4 flex-1">
-                <View className="relative">
-                  <Image
-                    source={{ uri: item.recipe?.image_url }}
-                    className="w-24 h-24 rounded-xl"
-                    resizeMode="cover"
-                  />
-                  {item.recipe?.is_featured && (
-                    <View className="absolute top-1 right-1 bg-yellow-400 p-1 rounded-full">
-                      <Star color="#fff" size={14} />
-                    </View>
-                  )}
-                </View>
+          <Pressable
+            className="mx-6 mb-2 p-4 flex flex-row justify-between items-center rounded-2xl bg-background"
+            // style={{
+            //   shadowColor: "#000",
+            //   shadowOffset: { width: 0, height: 4 },
+            //   shadowOpacity: 0.05,
+            //   shadowRadius: 6,
+            //   elevation: 3,
+            // }}
+            onPress={() => router.push(`/recipe/${item.recipe?.id}`)}
+          >
+            <View className="flex flex-row gap-4 flex-1">
+              <View className="relative">
+                <Image
+                  source={{ uri: item.recipe?.image_url }}
+                  className="w-24 h-24 rounded-xl"
+                  resizeMode="cover"
+                />
+                {item.recipe?.is_featured && (
+                  <View className="absolute top-1 right-1 bg-yellow-400 p-1 rounded-full">
+                    <Star color="#fff" size={14} />
+                  </View>
+                )}
+              </View>
 
-                <View className="flex flex-col justify-between flex-1">
-                  <View>
-                    <Text
-                      className="font-bold text-lg mb-1 text-primary"
-                      numberOfLines={1}
-                    >
-                      {item.recipe?.title}
+              <View className="flex flex-col justify-between flex-1">
+                <View>
+                  <Text
+                    className="font-bold text-lg mb-1 text-primary"
+                    numberOfLines={1}
+                  >
+                    {item.recipe?.title}
+                  </Text>
+
+                  <View className="flex flex-row items-center gap-2">
+                    <Image
+                      source={{ uri: item.recipe?.created_by.image_url }}
+                      className="w-5 h-5 rounded-full"
+                    />
+                    <Text className="text-muted text-sm">
+                      {item.recipe?.created_by.first_name}{" "}
+                      {item.recipe?.created_by.last_name}
                     </Text>
+                  </View>
+                </View>
 
-                    <View className="flex flex-row items-center gap-2 mb-2">
-                      <Image
-                        source={{ uri: item.recipe?.created_by.image_url }}
-                        className="w-5 h-5 rounded-full"
-                      />
-                      <Text className="text-muted text-sm">
-                        {item.recipe?.created_by.first_name}{" "}
-                        {item.recipe?.created_by.last_name}
-                      </Text>
-                    </View>
+                <View className="flex flex-row gap-3">
+                  <View className="flex flex-row items-center gap-1">
+                    <Clock color="#6b7280" size={16} />
+                    <Text className="text-muted text-sm">
+                      {item.recipe?.ready_in_minutes} min
+                    </Text>
                   </View>
 
-                  <View className="flex flex-row gap-3">
-                    <View className="flex flex-row items-center gap-1">
-                      <Clock color="#6b7280" size={16} />
-                      <Text className="text-muted text-sm">
-                        {item.recipe?.ready_in_minutes} min
-                      </Text>
-                    </View>
-
-                    <View className="flex flex-row items-center gap-1">
-                      <Flame color="#6b7280" size={16} />
-                      <Text className="text-muted text-sm">
-                        {Math.ceil(item.recipe?.calories ?? 0)} Kcal
-                      </Text>
-                    </View>
+                  <View className="flex flex-row items-center gap-1">
+                    <Flame color="#6b7280" size={16} />
+                    <Text className="text-muted text-sm">
+                      {Math.ceil(item.recipe?.calories ?? 0)} Kcal
+                    </Text>
                   </View>
                 </View>
               </View>
+            </View>
 
-              <View className="ml-2 p-2 bg-secondary rounded-full">
-                <ArrowRight color="#fff" size={18} />
-              </View>
+            <View className="ml-2 p-2 bg-secondary rounded-full">
+              <ArrowRight color="#fff" size={18} />
             </View>
           </Pressable>
         ) : (
-          <Text className={item.user._id === 1 ? "text-white" : "text-primary"}>
-            {item.text}
-          </Text>
+          <View
+            className={`px-4 py-2.5 mb-4 mx-6 ${
+              item.user._id === 1
+                ? "bg-foreground self-end rounded-tl-2xl rounded-br-2xl rounded-bl-2xl"
+                : "bg-background self-start rounded-tr-2xl rounded-br-2xl rounded-bl-2xl"
+            }`}
+          >
+            {item?.heading ? (
+              <Text className="text-secondary text-lg font-700  leading-6 mb-3">
+                {item.heading}
+              </Text>
+            ) : null}
+            <Text
+              className={`leading-7 ${
+                item.user._id === 1 ? "text-background" : "text-primary"
+              }`}
+            >
+              {item.text}
+            </Text>
+          </View>
         )}
       </View>
     );
   };
 
   return (
-    <SafeAreaView className="flex-1 ">
+    <SafeAreaView className="flex-1 w-full h-full pt-16">
       <KeyboardAvoidingView
         className="flex-1"
         behavior={Platform.OS === "ios" ? "padding" : undefined}
-        // keyboardVerticalOffset={tabBarHeight + 10} // lift content above tab
       >
-        <View className="flex-1">
-          <View className="px-4 pt-16">
-            <Text className="text-2xl font-bold text-center text-primary">
-              Chat with Nibbles
-            </Text>
+        <View className="flex-1 ">
+          <View className="flex-row items-center justify-between mb-5 mx-6">
+            <TouchableOpacity onPress={() => router.push('/(protected)/(tabs)')}>
+              <ArrowLeft
+                width={30}
+                height={30}
+                color={scheme === "dark" ? "#fff" : "#000"}
+              />
+            </TouchableOpacity>
+
+            <View className="flex flex-row gap-3 items-center">
+              <CheMateAi />
+              <Text className="font-bold text-2xl text-secondary">
+                ChefMate
+              </Text>
+            </View>
+
+            <View style={{ width: 30 }} />
+          </View>
+
+          <View className="mx-6 pb-1.5">
+            <View className="bg-[#b5e6f5] rounded-full">
+              <View className="bg-secondary w-[60%] py-1 rounded-full m-0"></View>
+            </View>
+            <View className="flex flex-row justify-between mt-2">
+              <Text className="text-muted text-sm leading-6 font-medium">Free Tokens Left</Text>
+              <Text className="text-muted text-sm leading-6 font-medium">65%</Text>
+            </View>
           </View>
 
           <FlatList
@@ -329,36 +362,27 @@ const ChatBot = () => {
             inverted
             keyboardShouldPersistTaps="handled"
             className="flex-1"
-            contentContainerStyle={{
-              padding: 16,
-              paddingBottom: tabBarHeight + 80,
-            }}
+            scrollEnabled
           />
 
           <View
-            className="flex-row items-center px-3 py-2 "
+            className="flex-row items-center pt-4 pb-4 mx-6"
             style={{ paddingBottom: tabBarHeight + 20 }}
           >
-            <Input className="flex-1 mr-2">
-              <InputSlot className="ml-1">
-                <InputIcon
-                  className="!w-6 !h-6 text-primary"
-                  as={MessageCircle}
-                />
-              </InputSlot>
+            <Input className="flex-1 mr-2 py-1.5">
               <InputField
                 type="text"
-                placeholder="Type a message..."
+                placeholder="Message Chefmate"
                 value={inputText}
                 onChangeText={setInputText}
               />
             </Input>
 
             <TouchableOpacity
-              className="bg-secondary rounded-full p-3 justify-center"
+              className="bg-secondary rounded-full w-14 h-14 flex flex-col justify-center items-center"
               onPress={handleSend}
             >
-              <Send color={"white"} strokeWidth={1} />
+              <ArrowRight color={"#fff"} />
             </TouchableOpacity>
           </View>
         </View>

@@ -25,6 +25,7 @@ import {
   ChefHat,
   Lock,
   Crown,
+  ChevronRight,
 } from "lucide-react-native";
 
 import { useRecipesQuery } from "@/redux/queries/recipes/useRecipeQuery";
@@ -222,7 +223,8 @@ const Search = () => {
               Find Recipies based on what you already have at home
             </Text>
           </View>
-          <Text className="text-secondary text-3xl"> {`>`} </Text>
+          {/* <Text className="text-secondary text-3xl"> {`>`} </Text> */}
+          <ChevronRight color={'#00c3ff'} size={28}/>
         </TouchableOpacity>
 
         {(!!searchValue || isFiltersApplied) && (

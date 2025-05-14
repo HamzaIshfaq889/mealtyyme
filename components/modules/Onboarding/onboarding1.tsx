@@ -27,10 +27,9 @@ const OnBoarding = () => {
         swiperRef.current.scrollBy(1);
       }
     } else {
-      dispatch(setOnboardingComplete(true));
-      await setOnboardingCompleteStorage();
-
-      router.replace("/(auth)/account-options");
+      // dispatch(setOnboardingComplete(true));
+      // await setOnboardingCompleteStorage();
+      router.replace("/(protected)/(tabs)");
     }
   };
 

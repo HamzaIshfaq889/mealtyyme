@@ -72,6 +72,8 @@ const IngredientBasedSearch = () => {
     );
   };
 
+  // console.log("selec", selectedItem);
+
   return (
     <View className="w-full h-full px-6 py-16 flex flex-col relative">
       <View className="flex-row items-center justify-between mb-8">
@@ -86,7 +88,7 @@ const IngredientBasedSearch = () => {
 
       <View>
         <Text className="font-bold text-2xl text-foreground mb-1.5">
-          What’s in your Kitchen?
+          {`What’s in your Kitchen?`}
         </Text>
         <Text className="text-foreground/90 leading-6">
           Enter your ingredients
@@ -124,10 +126,16 @@ const IngredientBasedSearch = () => {
             value: searchText,
           }}
           onSelectItem={(item) => {
+            console.log("hellooooooooooo");
             const matched = fetchedIngredients.find(
               (i) => i.id.toString() === item?.id
             );
-            setSelectedItem(matched ?? null);
+
+            console.log("matched", matched);
+            if (matched) {
+              setSelectedItem(matched);
+              setSearchText(capitalizeWords(matched.name));
+            }
           }}
           loading={isLoading}
           dataSet={fetchedIngredients.map((item) => ({

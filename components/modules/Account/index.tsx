@@ -30,9 +30,9 @@ const Account = () => {
   );
 
   return (
-    <View className="w-full h-full py-16">
-      <View className="flex flex-row justify-between items-center px-3 ">
-        <View style={{ width: 30 }} />
+    <View className="w-full h-full pb-16">
+      <View className="flex flex-row justify-between items-center px-6 pt-16 bg-background pb-4">
+        {/* <View style={{ width: 30 }} /> */}
         <Text className="font-bold text-2xl text-foreground">Account</Text>
         <Pressable
           onPress={() => router.push("/(protected)/(nested)/settings")}
@@ -42,7 +42,7 @@ const Account = () => {
       </View>
 
       <View
-        className="flex flex-row justify-between items-center py-4 mb-5 mt-12 rounded-2xl px-6 "
+        className="flex flex-row justify-between items-center py-4 mb-5 mt-4 rounded-2xl px-6"
         style={{
           boxShadow: "0px 2px 12px 0px rgba(0,0,0,0.1)",
         }}

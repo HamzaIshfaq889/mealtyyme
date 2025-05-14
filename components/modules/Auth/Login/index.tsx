@@ -103,24 +103,21 @@ const Login = () => {
       const response = (await loginUser(payload)) as LoginResponseTypes;
       const isFirstTimeUser = response?.customer_details?.first_time_user;
 
-      
-
       if (response.access) {
         await saveUserDataInStorage({ ...response, isAuthenticated: true });
       }
       setAuthToken(response.access);
       dispatch(setCredentials({ ...response, isAuthenticated: true }));
 
+      if (isFirstTimeUser) {
+        router.replace("/(protected)/(onboarding)/onboarding1");
+      } else {
+        router.replace("/(protected)/(tabs)");
+      }
       Toast.show({
         type: "success",
         text1: "Login Successful!",
       });
-
-      if (isFirstTimeUser) {
-        router.replace("/(protected)/(onboarding)/pick-diet");
-      } else {
-        router.replace("/(protected)/(tabs)");
-      }
     } catch (error: any) {
       const errorMessage =
         error.message || "Something went wrong. Please try again.";

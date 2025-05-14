@@ -77,7 +77,7 @@ const Cart = () => {
               <ArrowLeft size={20} color={isDark ? "#FAF1E5" : "#003D29"} />
             </TouchableOpacity>
           ) : (
-            <ShoppingBagIcon size={20} color={isDark ? "#FAF1E5" : "#003D29"} />
+            <ShoppingBagIcon size={24} color={isDark ? "#FAF1E5" : "#003D29"} />
           )}
           <Text className="font-bold text-2xl text-primary ml-2">
             {orderUrl ? "Back to your Cart" : "Cart"}

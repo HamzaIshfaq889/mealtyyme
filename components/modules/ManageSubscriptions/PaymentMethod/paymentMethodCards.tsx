@@ -49,7 +49,7 @@ const PaymentMethodsCards = () => {
   ];
 
   return (
-    <View className="w-full h-full px-6 pt-16 pb-6">
+    <View className="w-full h-full pt-4 pb-6">
       <View className="space-y-3">
         {paymentMethods.map((method) => (
           <TouchableOpacity

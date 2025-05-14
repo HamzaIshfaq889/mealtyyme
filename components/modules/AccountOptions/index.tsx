@@ -43,8 +43,6 @@ const AccountsOptions = () => {
         await setActive({ session: createdSessionId });
 
         const data = await sendSessionIdToBackend(createdSessionId);
-
-        router.replace("/(protected)/(tabs)");
       } else {
         console.error("❌ setActive failed or undefined");
       }
@@ -73,12 +71,8 @@ const AccountsOptions = () => {
 
       if (createdSessionId && setActive) {
         await setActive({ session: createdSessionId });
-        console.log("🔐 Clerk session activated");
 
         const data = await sendSessionIdToBackend(createdSessionId);
-        console.log("Response from backend:", data);
-
-        router.replace("/(protected)/(tabs)");
       } else {
         console.error("❌ setActive failed or undefined");
       }
@@ -108,13 +102,18 @@ const AccountsOptions = () => {
 
       const data = await response.json();
 
-      console.log('data.................',data)
-
       if (response.ok) {
         setAuthToken(data.access);
         dispatch(setCredentials({ ...data, isAuthenticated: true }));
         if (data.access) {
           await saveUserDataInStorage({ ...data, isAuthenticated: true });
+        }
+
+        const isFirstTimeUser = data?.customer_details?.first_time_user;
+        if (isFirstTimeUser) {
+          router.replace("/(protected)/(onboarding)/onboarding1");
+        } else {
+          router.replace("/(protected)/(tabs)");
         }
 
         Toast.show({

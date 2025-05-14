@@ -1,22 +1,10 @@
 import { useSavedRecipes } from "@/redux/queries/recipes/useSaveRecipesQuery";
 import { setSavedRecipes } from "@/redux/slices/Auth";
 import { saveSavedRecipesInStorage } from "@/utils/storage/authStorage";
-import { router, Tabs } from "expo-router";
+import { Tabs } from "expo-router";
 
-import {
-  House,
-  CalendarDays,
-  ShoppingCart,
-  User,
-  BotMessageSquare,
-} from "lucide-react-native";
-import {
-  useColorScheme,
-  Platform,
-  TouchableOpacity,
-  StyleSheet,
-  View,
-} from "react-native";
+import { House, CalendarDays, ShoppingCart, User } from "lucide-react-native";
+import { useColorScheme, Platform, StyleSheet, View } from "react-native";
 import { useDispatch } from "react-redux";
 
 export default function TabsLayout() {
@@ -101,12 +89,12 @@ export default function TabsLayout() {
         />
       </Tabs>
       <View style={styles.tabBarCutout} />
-      <TouchableOpacity
+      {/* <TouchableOpacity
         style={styles.fab}
         onPress={() => router.replace("/(protected)/(tabs)/chat-bot")}
       >
         <BotMessageSquare color="#fff" size={24} />
-      </TouchableOpacity>
+      </TouchableOpacity> */}
     </>
   );
 }

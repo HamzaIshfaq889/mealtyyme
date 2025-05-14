@@ -98,8 +98,8 @@ const HomeUser = () => {
           </View>
 
           {/* Coins and Search */}
-          <View className="flex-row items-center space-x-2">
-            <View className="flex-row items-center bg-yellow-100 dark:bg-yellow-900/30 px-2 py-1 rounded-full">
+          <View className="flex flex-row items-center space-x-2">
+            {/* <View className="flex-row items-center bg-yellow-100 dark:bg-yellow-900/30 px-2 py-1 rounded-full">
               <LottieView
                 source={require("../../../assets/lottie/coin.json")}
                 autoPlay
@@ -109,13 +109,13 @@ const HomeUser = () => {
               <Text className="ml-1 font-bold text-yellow-600 dark:text-yellow-400 text-sm">
                 {stats?.total_points}
               </Text>
-            </View>
+            </View> */}
 
             <Pressable
               className="p-2 bg-gray-100 dark:bg-gray-800 rounded-full"
               onPress={() => router.push("/(protected)/(nested)/search")}
             >
-              <Search size={18} color={scheme === "dark" ? "#fff" : "#000"} />
+              <Search size={24} color={scheme === "dark" ? "#fff" : "#000"} />
             </Pressable>
           </View>
         </View>

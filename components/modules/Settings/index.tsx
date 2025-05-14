@@ -151,12 +151,13 @@ const Settings = () => {
           onPress={() => router.push("/(protected)/(nested)/contact-support")}
           scheme={scheme}
         />
-        <SettingCard
+        {/* <SettingCard
           icon={<MessageCircle color="#00C3FF" size={30} />}
           text="No wifi"
           onPress={() => router.push("/(protected)/(nested)/no-wifi")}
           scheme={scheme}
-        />
+        /> */}
+
         <SettingCard
           icon={<MessageCircle color="#00C3FF" size={30} />}
           text="Error"
@@ -177,7 +178,6 @@ const Settings = () => {
           scheme={scheme}
         />
 
-        {/* Logout Button */}
         <View className="mt-12 px-2">
           <Button
             action="negative"

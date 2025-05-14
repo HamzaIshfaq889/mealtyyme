@@ -223,7 +223,7 @@ const AllRecipes = ({ queryOptions }: AllRecipesProps) => {
 
   return (
     <View>
-      <View className="pt-20 px-5 pb-4">
+      <View className="pt-16 px-5 pb-4">
         <View className="flex flex-row justify-between items-center mb-6">
           <View className="flex flex-row items-center gap-3">
             <TouchableOpacity onPress={() => router.back()}>
@@ -373,7 +373,6 @@ const AllRecipes = ({ queryOptions }: AllRecipesProps) => {
         handleClearFilters={handleClearFilters}
       />
 
-      {/* Pro Upgrade Modal */}
       {showProModal && (
         <ProSubscribeModal
           visible={showProModal}

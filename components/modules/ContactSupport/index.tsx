@@ -1,6 +1,6 @@
 import { supportOptions } from "@/utils";
 import { router } from "expo-router";
-import { ArrowLeft, ChevronDown, ChevronUp, Scroll } from "lucide-react-native";
+import { ArrowLeft, ChevronDown, ChevronUp } from "lucide-react-native";
 import React, { useState } from "react";
 
 import { Textarea, TextareaInput } from "@/components/ui/textarea";
@@ -25,6 +25,12 @@ import {
 import { Input, InputField } from "@/components/ui/input";
 import { Button, ButtonText } from "@/components/ui/button";
 import { ScrollView } from "react-native-gesture-handler";
+import Toast from "react-native-toast-message";
+
+const isValidEmail = (email: string) => {
+  const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return re.test(email);
+};
 
 const ContactSupport = () => {
   const scheme = useColorScheme();
@@ -33,13 +39,46 @@ const ContactSupport = () => {
   const [selected, setSelected] = useState(supportOptions[0]);
   const [message, setMessage] = useState("");
   const [email, setEmail] = useState("");
+  const [errors, setErrors] = useState<{ email?: string; message?: string }>({});
+
+  const handleSubmit = () => {
+    const newErrors: { email?: string; message?: string } = {};
+
+    if (!email) {
+      newErrors.email = "Email is required.";
+    } else if (!isValidEmail(email)) {
+      newErrors.email = "Please enter a valid email address.";
+    }
+
+    if (!message.trim()) {
+      newErrors.message = "Message cannot be empty.";
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
+    setErrors({});
+
+    // Replace this with your real send logic
+    console.log({ subject: selected, email, message });
+
+    Toast.show({
+      type: "success",
+      text1: "Support Request Sent",
+      text2: "We'll get back to you shortly.",
+    });
+
+    // Reset form
+    setEmail("");
+    setMessage("");
+  };
 
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
-      keyboardVerticalOffset={
-        Platform.OS === "ios" ? 100 : StatusBar.currentHeight || 0
-      }
+      keyboardVerticalOffset={Platform.OS === "ios" ? 100 : StatusBar.currentHeight || 0}
       className="flex-1"
     >
       <ScrollView
@@ -89,26 +128,24 @@ const ContactSupport = () => {
                 )}
               </View>
             )}
-            renderItem={(selectedItem, item, isSelected) => {
-              return (
-                <View
-                  className={`px-4 py-2  ${
-                    isSelected ? "bg-secondary" : "bg-background"
+            renderItem={(selectedItem, item, isSelected) => (
+              <View
+                className={`px-4 py-2 ${
+                  isSelected ? "bg-secondary" : "bg-background"
+                }`}
+              >
+                <Text
+                  className={`text-lg ${
+                    isSelected ? "!text-background" : "text-foreground"
                   }`}
                 >
-                  <Text
-                    className={`text-lg text-foreground ${
-                      isSelected ? "!text-background" : "text-foreground"
-                    }`}
-                  >
-                    {selectedItem}
-                  </Text>
-                </View>
-              );
-            }}
+                  {selectedItem}
+                </Text>
+              </View>
+            )}
             dropdownStyle={{
               borderRadius: 12,
-              backgroundColor: scheme === "dark" ? "#1c1f1f" : "#fff",
+              backgroundColor: isDarkMode ? "#1c1f1f" : "#fff",
               shadowColor: "#000",
               shadowOffset: { width: 0, height: 4 },
               shadowOpacity: 0.1,
@@ -128,21 +165,23 @@ const ContactSupport = () => {
               type="text"
               placeholder="Enter message..."
               value={message}
-              onChangeText={(text) => setMessage(text)}
+              onChangeText={(text) => {
+                setMessage(text);
+                setErrors((prev) => ({
+                  ...prev,
+                  message: text.trim() === "" ? "Message cannot be empty." : undefined,
+                }));
+              }}
               className="placeholder:text-muted !placeholder:text-base !text-base"
             />
           </Textarea>
+          {errors.message && (
+            <Text className="text-red-500 text-sm mt-1">{errors.message}</Text>
+          )}
         </View>
 
-        <View>
-          <FormControl
-            isInvalid={!!email}
-            size="md"
-            isDisabled={false}
-            isReadOnly={false}
-            isRequired={false}
-            className="mb-1"
-          >
+        <View className="mb-4">
+          <FormControl isInvalid={!!errors.email} size="md" className="mb-1">
             <FormControlLabel>
               <FormControlLabelText className="font-bold leading text-foreground mb-3.5">
                 Email Address
@@ -153,17 +192,29 @@ const ContactSupport = () => {
                 type="text"
                 placeholder="Enter Email Address"
                 value={email}
-                onChangeText={(text) => setEmail(text)}
+                onChangeText={(text) => {
+                  setEmail(text);
+                  setErrors((prev) => ({
+                    ...prev,
+                    email: text === ""
+                      ? "Email is required."
+                      : !isValidEmail(text)
+                      ? "Please enter a valid email address."
+                      : undefined,
+                  }));
+                }}
               />
             </Input>
-            <FormControlError>
-              <FormControlErrorText>{email}</FormControlErrorText>
-            </FormControlError>
+            {errors.email && (
+              <FormControlError>
+                <FormControlErrorText>{errors.email}</FormControlErrorText>
+              </FormControlError>
+            )}
           </FormControl>
         </View>
 
-        <View className="mt-auto">
-          <Button>
+        <View className="mt-auto mb-2">
+          <Button onPress={handleSubmit}>
             <ButtonText>Send Message</ButtonText>
           </Button>
         </View>

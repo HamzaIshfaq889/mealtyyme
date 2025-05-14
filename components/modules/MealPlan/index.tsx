@@ -12,7 +12,14 @@ import {
   Platform,
 } from "react-native";
 import Calendar from "./Calander";
-import { ArrowRight, Clock, Flame, Star } from "lucide-react-native";
+import {
+  ArrowRight,
+  Clock,
+  Flame,
+  NotebookPen,
+  ShoppingBagIcon,
+  Star,
+} from "lucide-react-native";
 import { GetMealsByDate } from "@/services/mealscheduleApi";
 import { Meal, MealData, MealType } from "@/lib/types/mealschedule";
 import { RecipeSkeletonItem } from "../Skeletons";
@@ -23,14 +30,14 @@ const MealPlan = () => {
   const [selectedDate, setSelectedDate] = useState(
     moment().format("YYYY-MM-DD")
   );
-  const [meals, setMeals] = useState<MealData | null>(null); 
+  const [meals, setMeals] = useState<MealData | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
   const fetchMeals = async () => {
     setLoading(true);
     setError(null); // Clear previous errors
-    console.log("Fetching meals for date:", selectedDate); 
+    console.log("Fetching meals for date:", selectedDate);
 
     try {
       const data = await GetMealsByDate(selectedDate);
@@ -151,18 +158,22 @@ const MealPlan = () => {
 
   return (
     <>
-      <SafeAreaView
-        style={{ flex: 1 }}
-        className={`${Platform.OS === "android" && "mt-16"}`}
-      >
-        <View className="flex flex-row justify-center px-9 pb-4">
-          <Text
-            className={`block font-bold text-2xl text-foreground ${
-              Platform.OS === "android" && "mb-8"
-            }`}
-          >
-            Meal Planning
-          </Text>
+      <SafeAreaView style={{ flex: 1 }}>
+        <View
+          className={`px-7 pb-4 mb-4 flex-row justify-between items-center bg-background ${
+            Platform.OS === "android" && "pt-16"
+          }`}
+        >
+          <View className="flex flex-row items-center gap-2">
+            <NotebookPen
+              size={24}
+              color={scheme === "dark" ? "#FAF1E5" : "#003D29"}
+            />
+
+            <Text className="font-bold text-2xl text-primary ml-2">
+              Meal Planning
+            </Text>
+          </View>
         </View>
         <View>
           <Calendar onSelectDate={setSelectedDate} selected={selectedDate} />

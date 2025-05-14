@@ -23,6 +23,7 @@ export default function RootLayout() {
         <Stack.Screen name="no-wifi" />
         <Stack.Screen name="404.tsx" />
         <Stack.Screen name="find-recipe" />
+        <Stack.Screen name="rewards.tsx" />
       </Stack>
       <Toast />
     </>

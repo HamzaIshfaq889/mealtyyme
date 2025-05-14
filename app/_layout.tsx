@@ -26,7 +26,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { StripeProvider } from "@stripe/stripe-react-native";
 import { AppConfig } from "@/constants";
 
-import { AutocompleteDropdownContextProvider } from 'react-native-autocomplete-dropdown'
+import { AutocompleteDropdownContextProvider } from "react-native-autocomplete-dropdown";
 
 import { Splash } from "@/components/modules";
 import QueryProvider from "@/providers/QueryProvider";
@@ -38,6 +38,8 @@ import {
   BaseToastProps,
   ErrorToast,
 } from "react-native-toast-message";
+import NetInfo from "@react-native-community/netinfo";
+import { router } from "expo-router";
 
 const toastConfig = {
   success: (props: JSX.IntrinsicAttributes & BaseToastProps) => (
@@ -110,7 +112,7 @@ export default function RootLayout() {
   console.log("checkpost2");
 
   const [isSplashVisible, setIsSplashVisible] = useState(true);
-  const scheme = useColorScheme(); // <- ✅ Get OS theme
+  const scheme = useColorScheme();
 
   const [loaded] = useFonts({
     SpaceMono: require("../assets/fonts/Sofia Pro Regular Az.ttf"),
@@ -131,6 +133,20 @@ export default function RootLayout() {
       return () => clearTimeout(timer);
     }
   }, [isSplashVisible]);
+
+  useEffect(() => {
+    const unsubscribe = NetInfo.addEventListener((state) => {
+      const isOffline = !(state.isConnected && state.isInternetReachable);
+
+      if (isOffline) {
+        router.replace("/(protected)/(nested)/no-wifi");
+      } else {
+        router.push("/(protected)/(tabs)");
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   if (!loaded || isSplashVisible) {
     return <Splash />;

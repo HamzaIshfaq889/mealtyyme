@@ -38,6 +38,7 @@ import { useGetCustomer } from "@/redux/queries/recipes/useCustomerQuery";
 import { setCredentials, setShowSubscribeCTA } from "@/redux/slices/Auth";
 import { checkisProUser } from "@/utils";
 import { saveUserDataInStorage } from "@/utils/storage/authStorage";
+import { router } from "expo-router";
 
 type PlanType = "monthly" | "yearly";
 
@@ -123,6 +124,8 @@ const SubcriptionCTA = ({
 
             refetch()
               .then(({ data: updatedCustomer }) => {
+
+                console.log("updatedCustomer",updatedCustomer);
                 if (updatedCustomer) {
                   const updatedLoginResponse = {
                     ...credentials,
@@ -138,6 +141,8 @@ const SubcriptionCTA = ({
                         error
                       );
                     });
+
+                  router.push("/(protected)/(nested)/settings");
                 }
               })
               .catch((err) => {
