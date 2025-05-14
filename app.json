@@ -2,7 +2,7 @@
   "expo": {
     "name": "Mealtyme",
     "slug": "mealtyme",
-    "version": "2.2.3",
+    "version": "2.2.5",
     "orientation": "portrait",
     "icon": "./assets/images/global-icon.png",
     "scheme": "myapp",

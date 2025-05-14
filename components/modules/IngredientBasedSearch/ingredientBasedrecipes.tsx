@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import { RecipeSkeletonItem } from "../Skeletons";
 import { router } from "expo-router";
-import { ArrowRight, Clock, Flame, Star } from "lucide-react-native";
+import { ArrowLeft, ArrowRight, Clock, Flame, Star } from "lucide-react-native";
 import { useRecipesQuery } from "@/redux/queries/recipes/useRecipeQuery";
 
 type QueryOptions = {
@@ -79,8 +79,15 @@ const IngredientBasedrecipes = ({
   return (
     <View>
       <View className="pt-20 px-5 pb-4">
-        <View className="flex flex-row justify-between items-center mb-6">
-          <Text className="text-foreground text-4xl font-semibold">
+        <View className="flex-row items-center  mb-6">
+          <TouchableOpacity onPress={() => router.back()}>
+            <ArrowLeft
+              width={30}
+              height={30}
+              color={isDarkMode ? "#fff" : "#000"}
+            />
+          </TouchableOpacity>
+          <Text className="text-foreground text-2xl font-semibold ml-2">
             {capitalizeFirstLetter("Recipes")}
           </Text>
         </View>

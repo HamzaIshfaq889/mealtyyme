@@ -14,7 +14,10 @@ import InstacartLogo from "@/assets/svgs/instacart.svg";
 import { Spinner } from "@/components/ui/spinner";
 import { WebView } from "react-native-webview";
 import { useRouter } from "expo-router";
+import { Linking } from "react-native";
 
+import * as WebBrowser from "expo-web-browser";
+import { ToastAndroid } from "react-native"; // For Android Toast
 const Cart = () => {
   const dispatch = useDispatch();
   const scheme = useColorScheme();
@@ -33,6 +36,28 @@ const Cart = () => {
     dispatch(removeIngredient(id));
   };
 
+  // const handleOrder = async () => {
+  //   setLoading(true);
+  //   try {
+  //     const data: any = await sendIngredients(ingredients);
+  //     const url = data.products_link_url;
+
+  //     if (url) {
+  //       setOrderUrl(url);
+  //     } else {
+  //       throw new Error("Unable to retrieve the grocery list URL.");
+  //     }
+  //   } catch (error: any) {
+  //     Toast.show({
+  //       type: "error",
+  //       text1: "Error while ordering ingredients",
+  //     });
+  //     console.error("Error sending ingredients:", error.message);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
   const handleOrder = async () => {
     setLoading(true);
     try {
@@ -40,7 +65,8 @@ const Cart = () => {
       const url = data.products_link_url;
 
       if (url) {
-        setOrderUrl(url);
+        // Open the URL using the Expo WebBrowser API
+        await WebBrowser.openBrowserAsync(url);
       } else {
         throw new Error("Unable to retrieve the grocery list URL.");
       }
@@ -97,7 +123,7 @@ const Cart = () => {
                 isDark ? "!text-[#FAF1E5]" : "!text-[#003D29]"
               }`}
             >
-              {loading ? <Spinner size={20} /> : "Order from Instacart"}
+              {loading ? <Spinner size={20} /> : "Get Recipe Ingredients"}
             </ButtonText>
           </Button>
         )}

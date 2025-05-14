@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import {
   Text,
@@ -25,6 +25,21 @@ const FeaturedRecipes = () => {
     isLoading: loading,
     error,
   } = useFeaturedRecipes();
+
+  const flatListRef = useRef<FlatList<any>>(null);
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      let nextIndex = currentIndex + 1;
+      if (nextIndex >= recipes.length) nextIndex = 0;
+
+      flatListRef.current?.scrollToIndex({ index: nextIndex, animated: true });
+      setCurrentIndex(nextIndex);
+    }, 3000); // Change slide every 3s
+
+    return () => clearInterval(interval);
+  }, [currentIndex, recipes.length]);
 
   if (loading) {
     return (
@@ -66,6 +81,7 @@ const FeaturedRecipes = () => {
         <FlatList
           horizontal
           data={recipes}
+          ref={flatListRef}
           keyExtractor={(item) => item.id.toString()}
           showsHorizontalScrollIndicator={false}
           className="mt-4"
