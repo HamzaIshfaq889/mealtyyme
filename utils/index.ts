@@ -95,6 +95,12 @@ export const checkisProUser = (status: SubscriptionStatus): boolean => {
   return status === "active" || status === "past_due";
 };
 
+export const checkisSubscriptionCanceled = (
+  status: SubscriptionStatus
+): boolean => {
+  return status === "canceled";
+};
+
 export const supportOptions = [
   "Technical Issue",
   "Account Help",

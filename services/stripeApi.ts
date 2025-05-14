@@ -1,6 +1,10 @@
 import { AppConfig } from "@/constants";
 import apiClient from "@/lib/apiClient";
-import { Packages, SubscriptionsResponse } from "@/lib/types/subscription";
+import {
+  Packages,
+  PaymentMethodsResponse,
+  SubscriptionsResponse,
+} from "@/lib/types/subscription";
 import {
   initPaymentSheet,
   presentPaymentSheet,
@@ -178,4 +182,74 @@ export const fetchPreviousSubscriptions = async () => {
   }
 
   return response.data as SubscriptionsResponse;
+};
+
+export const fetchPaymentMethods = async () => {
+  const response = await apiClient.get(`${AppConfig.API_URL}payment-methods/`);
+
+  if (!response.ok) {
+    if (response.status === 401 || response.status === 404) {
+      throw new Error("Error while fetching payment methods.");
+    }
+    throw new Error(
+      response?.originalError?.message || "Failed to fetch payment methods."
+    );
+  }
+
+  return response.data as PaymentMethodsResponse;
+};
+
+export const upgradeSubscription = async () => {
+  const response = await apiClient.post(
+    `${AppConfig.API_URL}upgrade-subscription/`
+  );
+
+  if (!response.ok) {
+    if (response.status === 401 || response.status === 404) {
+      throw new Error("Error while upgrading subscription.");
+    }
+    throw new Error(
+      response?.originalError?.message || "Failed to upgrade subscription."
+    );
+  }
+
+  return response.data;
+};
+
+export const setDefaultPaymentMethod = async (paymentMethodId: string) => {
+  const response = await apiClient.post(
+    `${AppConfig.API_URL}set-default-payment-method/`,
+    { paymentMethodId }
+  );
+
+  if (!response.ok) {
+    if (response.status === 401 || response.status === 404) {
+      throw new Error("Error while setting default payment method.");
+    }
+    throw new Error(
+      response?.originalError?.message ||
+        "Failed to set default payment method."
+    );
+  }
+
+  return response.data;
+};
+
+export const resumeSubscription = async (subscriptionId: string) => {
+  const response = await apiClient.post(
+    `${AppConfig.API_URL}retry-subscription/`,
+    { subscriptionId }
+  );
+
+  if (!response.ok) {
+    if (response.status === 401 || response.status === 404) {
+      throw new Error("Subscription not found or unauthorized.");
+    }
+
+    throw new Error(
+      response?.originalError?.message || "Failed to retry subscription."
+    );
+  }
+
+  return response.data;
 };

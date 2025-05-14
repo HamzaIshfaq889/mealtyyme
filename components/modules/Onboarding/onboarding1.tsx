@@ -29,7 +29,7 @@ const OnBoarding = () => {
     } else {
       // dispatch(setOnboardingComplete(true));
       // await setOnboardingCompleteStorage();
-      router.replace("/(protected)/(tabs)");
+      router.replace("/(protected)/(onboarding)/pick-diet");
     }
   };
 

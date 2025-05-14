@@ -16,7 +16,7 @@ export type Packages = {
 
 export type PreviousSubscription = {
   id: string;
-  status: 'active' | 'canceled' | 'incomplete' | string;
+  status: "active" | "canceled" | "incomplete" | string;
   current_period_start: string | null;
   current_period_end: string;
   next_billing_date: string;
@@ -24,7 +24,7 @@ export type PreviousSubscription = {
   canceled_at: string | null;
   plan: {
     id: string;
-    interval: 'month' | 'year';
+    interval: "month" | "year";
     amount: number;
     currency: string;
     product_id: string;
@@ -42,6 +42,17 @@ export type PreviousSubscription = {
 export type SubscriptionsResponse = {
   subscriptions: PreviousSubscription[];
 };
+
+export type PaymentMethod = {
+  id: string;
+  brand: string;
+  last4: string;
+  expiryMonth: number;
+  expiryYear: number;
+  isDefault: boolean;
+};
+
+export type PaymentMethodsResponse = { paymentMethods: PaymentMethod[] };
 
 export type SubscriptionStatus =
   | "active"

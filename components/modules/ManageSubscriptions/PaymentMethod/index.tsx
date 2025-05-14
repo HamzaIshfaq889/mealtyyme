@@ -1,12 +1,33 @@
 import { router } from "expo-router";
 
 import { ArrowLeft } from "lucide-react-native";
-import { Text, TouchableOpacity, useColorScheme, View } from "react-native";
-import PaymentMethodsCards from "./paymentMethodCards";
+import {
+  ActivityIndicator,
+  Text,
+  TouchableOpacity,
+  useColorScheme,
+  View,
+} from "react-native";
+
+import { usePaymentMethods } from "@/redux/queries/recipes/useStripeQuery";
+
+import PaymentMethodsCard from "./paymentMethodCard";
 
 const PaymentMethods = () => {
   const scheme = useColorScheme();
   const isDarkMode = scheme === "dark";
+
+  const { data, isLoading, isError, error } = usePaymentMethods();
+
+  if (isLoading) {
+    return <ActivityIndicator />;
+  }
+
+  if (isError) {
+    return <Text>Error: {(error as Error).message}</Text>;
+  }
+
+  console.log("paymentMethods", data?.paymentMethods);
 
   return (
     <View
@@ -36,7 +57,11 @@ const PaymentMethods = () => {
         <View style={{ width: 30 }} />
       </View>
 
-      <PaymentMethodsCards />
+      {data?.paymentMethods
+        ?.sort((a, b) => (a.isDefault ? -1 : b.isDefault ? 1 : 0))
+        .map((paymentMethod, index) => (
+          <PaymentMethodsCard paymentMethod={paymentMethod} key={index} />
+        ))}
     </View>
   );
 };

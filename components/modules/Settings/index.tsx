@@ -36,7 +36,7 @@ import { useClerk } from "@clerk/clerk-expo";
 import { clearUserDataFromStorage } from "@/utils/storage/authStorage";
 import { Spinner } from "@/components/ui/spinner";
 import { ScrollView } from "react-native-gesture-handler";
-import { checkisProUser } from "@/utils";
+import { checkisProUser, checkisSubscriptionCanceled } from "@/utils";
 import { useUserGamification } from "@/hooks/useUserGamification";
 
 interface SettingCardProps {
@@ -82,6 +82,8 @@ const Settings = () => {
       state.auth.loginResponseType.customer_details?.subscription?.status
   );
   const isProUser = checkisProUser(status);
+  const isSubscriptionCanceld = checkisSubscriptionCanceled(status);
+
   const { clearCheckInDate } = useUserGamification();
   const handleLogout = () => {
     setLoading(true);
@@ -169,7 +171,7 @@ const Settings = () => {
           icon={<WalletCardsIcon color="#00C3FF" size={30} />}
           text="Manage Subscription"
           onPress={() => {
-            if (isProUser) {
+            if (isProUser || isSubscriptionCanceld) {
               router.push("/(protected)/(nested)/active-subscription");
             } else {
               router.push("/(protected)/(nested)/buy-subscription");

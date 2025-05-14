@@ -30,7 +30,7 @@ import {
 
 import { useRecipesQuery } from "@/redux/queries/recipes/useRecipeQuery";
 
-import { checkisProUser } from "@/utils";
+import { checkisProUser, checkisSubscriptionCanceled } from "@/utils";
 
 import { Input, InputField, InputIcon, InputSlot } from "@/components/ui/input";
 
@@ -95,6 +95,7 @@ const Search = () => {
       state.auth.loginResponseType.customer_details?.subscription?.status
   );
   const isProUser = checkisProUser(status);
+  const isSubscriptionCanceled = checkisSubscriptionCanceled(status);
 
   const handleApplyFilters = useCallback(() => {
     setCategoriesIds(tempCategoriesIds);
@@ -159,7 +160,11 @@ const Search = () => {
   const handleUpgrade = () => {
     hideModal();
     setTimeout(() => {
-      router.push("/(protected)/(nested)/buy-subscription");
+      if (isSubscriptionCanceled) {
+        router.push("/(protected)/(nested)/manage-subscription");
+      } else {
+        router.push("/(protected)/(nested)/buy-subscription");
+      }
     }, 100);
   };
 
@@ -224,7 +229,7 @@ const Search = () => {
             </Text>
           </View>
           {/* <Text className="text-secondary text-3xl"> {`>`} </Text> */}
-          <ChevronRight color={'#00c3ff'} size={28}/>
+          <ChevronRight color={"#00c3ff"} size={28} />
         </TouchableOpacity>
 
         {(!!searchValue || isFiltersApplied) && (

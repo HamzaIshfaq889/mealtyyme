@@ -57,13 +57,38 @@ export default function ActiveSubscription({
         {/* Status and Plan Info */}
         <View className="mb-4">
           <View className="flex-row justify-between items-start">
-            <View className="bg-[#1C3A1F] px-2 py-1 rounded-md mb-2">
+            {/* <View className="bg-[#1C3A1F] px-2 py-1 rounded-md mb-2">
               <Text className="text-[#4ADE80] text-xs font-medium">
                 {status === "active"
                   ? "Active"
                   : status === "inactive"
                   ? "Inactive"
                   : "Expired"}
+              </Text>
+            </View> */}
+            <View
+              className={`px-2 py-1 rounded-md mb-2 ${
+                status === "active"
+                  ? "bg-[#1C3A1F]"
+                  : status === "trialing"
+                  ? "bg-[#333]"
+                  : "bg-[#3A1C1C]"
+              }`}
+            >
+              <Text
+                className={`text-xs font-medium ${
+                  status === "active"
+                    ? "text-[#4ADE80]"
+                    : status === "trialing"
+                    ? "text-[#A3A3A3]"
+                    : "text-[#F87171]"
+                }`}
+              >
+                {status === "active"
+                  ? "Active"
+                  : status === "trialing"
+                  ? "Trialing"
+                  : "Canceled"}
               </Text>
             </View>
           </View>

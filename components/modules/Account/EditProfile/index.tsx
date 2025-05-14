@@ -1,22 +1,13 @@
 import React, { useState } from "react";
-
-import { ArrowLeft, MailIcon, UserRound, UserRoundPen } from "lucide-react-native";
-
-import DateTimPicker from "@react-native-community/datetimepicker";
+import { ArrowLeft, MailIcon, UserRound } from "lucide-react-native";
 import {
-  Pressable,
   ScrollView,
   Text,
   TouchableOpacity,
   useColorScheme,
   View,
 } from "react-native";
-import { Platform } from "react-native";
-
 import { router } from "expo-router";
-
-import Svg1 from "@/assets/svgs/arrow-left.svg";
-
 import {
   FormControl,
   FormControlError,
@@ -27,44 +18,49 @@ import {
 import { Input, InputField, InputIcon, InputSlot } from "@/components/ui/input";
 import { Button, ButtonText } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
-import { Textarea, TextareaInput } from "@/components/ui/textarea";
-import { colorScheme } from "react-native-css-interop";
+import { Alert, Image } from "react-native";
+import * as ImagePicker from "expo-image-picker";
+import { CameraIcon } from "lucide-react-native";
+import { useSelector } from "react-redux";
+import { LoginResponseTypes } from "@/lib/types";
+import {
+  useUpdateCustomer,
+  useUploadProfileImage,
+} from "@/redux/queries/recipes/useCustomerQuery";
+import { UploadAvatarResponse } from "@/lib/types/customer";
 
 const EditProfile = () => {
   const scheme = useColorScheme();
-  const [date, setDate] = useState(new Date());
-  const [showdatePicker, setShowdatePicker] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-
+  const [image, setImage] = useState<string | null>(null);
+  const [imageFile, setImageFile] = useState<File | null>(null);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [uploadedImageData, setUploadedImageData] =
+    useState<null | UploadAvatarResponse>(null);
+
+  const { mutate: uploadImage, isPending: isUploadingImage } =
+    useUploadProfileImage();
+
+  const { mutate: UpdateUserProfile } = useUpdateCustomer();
+  const customerId = useSelector(
+    (state: any) => state.auth.loginResponseType.customer_details?.id
+  );
+
+  const auth: LoginResponseTypes = useSelector(
+    (state: any) => state.auth.loginResponseType
+  );
 
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    dateOfBirth: "",
-    bio: "",
-    instagram: "",
-    tiktok: "",
-    youtube: "",
-    website: "",
+    firstName: auth.first_name,
+    lastName: auth.first_name,
   });
 
-  const validateField = (key: string, value: string) => {
+  const validateField = (key: string, value: string | null) => {
     setFormData((prev) => ({ ...prev, [key]: value }));
 
     let errorMessage = "";
 
-    // Validation rules for each field
     switch (key) {
-      case "email":
-        if (!value) {
-          errorMessage = "Email is required.";
-        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
-          errorMessage = "Please enter a valid email.";
-        }
-        break;
-
       case "firstName":
         if (!value) {
           errorMessage = "First Name is required.";
@@ -81,14 +77,6 @@ const EditProfile = () => {
         }
         break;
 
-      case "dateOfBirth":
-        if (!value) {
-          errorMessage = "Date of Birth required.";
-        } else if (value.length < 3) {
-          errorMessage = "Date of Birth must be of 3 letters.";
-        }
-        break;
-
       default:
         break;
     }
@@ -96,64 +84,99 @@ const EditProfile = () => {
     setErrors((prev) => ({ ...prev, [key]: errorMessage }));
   };
 
-  const toggleDatePicker = () => {
-    setShowdatePicker((prev) => !prev);
-  };
-
-  const onChange = ({ type }: any, date: Date | undefined) => {
-    if (type === "set" && date) {
-      const currentDate = date;
-      setDate(currentDate);
-
-      if (Platform.OS === "android") {
-        toggleDatePicker();
-
-        const dateString = currentDate.toDateString();
-        formData.dateOfBirth = dateString;
-
-        validateField("dateOfBirth", dateString);
-      }
-    } else {
-      toggleDatePicker();
-    }
-  };
-
   const validateAllFields = () => {
-    const fieldsToValidate = {
-      ...formData,
-    };
-
-    Object.entries(fieldsToValidate).forEach(([key, value]) => {
+    Object.entries(formData).forEach(([key, value]) => {
       validateField(key, value);
     });
   };
 
   const isFormValid =
-    formData?.email &&
-    formData?.dateOfBirth &&
-    formData?.firstName &&
-    formData?.lastName &&
-    // formData?.dateOfBirth &&
-    !errors.email &&
-    !errors?.dateOfBirth &&
-    !errors?.firstName &&
-    !errors?.lastName;
+    formData.firstName &&
+    formData.lastName &&
+    !errors.firstName &&
+    !errors.lastName;
+
+  const pickImage = async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== "granted") {
+      Alert.alert(
+        "Permission required",
+        "We need access to your photos to set a profile picture"
+      );
+      return;
+    }
+
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 1,
+    });
+
+    if (!result.canceled && result.assets) {
+      const uri = result.assets[0].uri;
+      setImage(uri);
+
+      const file = await uriToFile(uri);
+      setImageFile(file);
+
+      // Automatically upload file here
+      uploadImage(file, {
+        onSuccess: (data) => {
+          setUploadedImageData(data); // Stores { id, file, uploaded_by, created_at }
+        },
+        onError: (err) => {
+          console.error("Upload failed:", err);
+          Alert.alert("Upload failed", err.message);
+        },
+      });
+    }
+  };
+
+  const uriToFile = async (uri: string) => {
+    const response = await fetch(uri);
+    const blob = await response.blob();
+    return new File([blob], "profile.jpg", { type: blob.type });
+  };
 
   const handleSubmit = () => {
-    validateAllFields();
+    setIsLoading(true);
 
+    validateAllFields();
     if (!isFormValid) {
       console.log("Form not valid");
       return;
     }
 
-    console.log(formData);
+    const firstName = formData?.firstName;
+    const userImage = uploadedImageData?.file;
+
+    console.log(firstName);
+    console.log(userImage);
+
+    // const data = {
+    //   firstName,
+    // };
+
+    // UpdateUserProfile(
+    //   { customerId, data },
+    //   {
+    //     onSuccess: () => {
+    //       router.push("/(protected)/(nested)/settings");
+    //     },
+    //     onError: (error) => {
+    //       console.error("Error adding recipe:", error);
+    //     },
+    //   }
+    // );
   };
 
   return (
     <ScrollView className="min-w-sceen min-h-scr px-6 py-16">
       <View className="flex flex-row justify-between items-center mb-10">
-        <TouchableOpacity onPress={() => router.push("/(protected)/(tabs)/account")}>
+        <TouchableOpacity
+          onPress={() => router.push("/(protected)/(tabs)/account")}
+        >
           <ArrowLeft
             width={30}
             height={30}
@@ -167,7 +190,19 @@ const EditProfile = () => {
       </View>
 
       <View className="flex items-center justify-center mb-10">
-        <View className="bg-gray3 p-16 rounded-full border-2 border-secondary"></View>
+        <TouchableOpacity onPress={pickImage}>
+          <View className="bg-gray3 rounded-full border-2 border-secondary w-32 h-32 relative">
+            {image && (
+              <Image
+                source={{ uri: image }}
+                className="w-full h-full rounded-full"
+              />
+            )}
+            <View className="absolute bottom-0 right-0 bg-secondary rounded-full p-2">
+              <CameraIcon size={20} color="white" />
+            </View>
+          </View>
+        </TouchableOpacity>
       </View>
 
       <View className="w-full flex flex-row gap-6">
@@ -188,7 +223,7 @@ const EditProfile = () => {
             <InputField
               type="text"
               placeholder="First Name"
-              value={formData?.firstName}
+              value={formData.firstName ? formData.firstName : undefined}
               onChangeText={(text) => validateField("firstName", text)}
             />
           </Input>
@@ -213,7 +248,7 @@ const EditProfile = () => {
             <InputField
               type="text"
               placeholder="Last Name"
-              value={formData?.lastName}
+              value={formData.lastName ? formData.lastName : undefined}
               onChangeText={(text) => validateField("lastName", text)}
             />
           </Input>
@@ -229,15 +264,16 @@ const EditProfile = () => {
             Email Address
           </FormControlLabelText>
         </FormControlLabel>
-        <Input className="my-3.5">
+        <Input className="my-3.5" isReadOnly>
           <InputSlot className="ml-1">
             <InputIcon className="!w-6 !h-6 text-primary" as={MailIcon} />
           </InputSlot>
           <InputField
             type="text"
             placeholder="Enter Email Address"
-            value={formData?.email}
+            value={auth?.email ? auth?.email : undefined}
             onChangeText={(text) => validateField("email", text)}
+            className="text-muted"
           />
         </Input>
         <FormControlError>
@@ -245,7 +281,7 @@ const EditProfile = () => {
         </FormControlError>
       </FormControl>
 
-      <FormControl size="md" className="mb-1" isInvalid={!!errors?.dateOfBirth}>
+      {/* <FormControl size="md" className="mb-1" isInvalid={!!errors?.dateOfBirth}>
         <FormControlLabel>
           <FormControlLabelText className="font-bold leading-5">
             Date of Birth
@@ -258,11 +294,10 @@ const EditProfile = () => {
               <InputSlot className="ml-1">
                 <InputIcon className="!w-6 !h-6 text-primary" as={MailIcon} />
               </InputSlot>
-
               <InputField
                 type="text"
                 placeholder="Enter Date of Birth"
-                value={formData?.dateOfBirth}
+                value={formData.dateOfBirth}
                 editable={false}
                 onChangeText={(text) => validateField("dateOfBirth", text)}
               />
@@ -281,109 +316,13 @@ const EditProfile = () => {
         <FormControlError>
           <FormControlErrorText>{errors?.dateOfBirth}</FormControlErrorText>
         </FormControlError>
-      </FormControl>
-
-      <FormControl size="md" className="mb-1">
-        <FormControlLabel>
-          <FormControlLabelText className="font-bold leading-5 items-start">
-            Bio
-          </FormControlLabelText>
-        </FormControlLabel>
-        <Textarea className="flex flex-row items-start gap-1 px-3 py-2 my-3.5">
-          <View className="mt-3">
-            <UserRoundPen color={colorScheme ? "#fff" : "#000"} size={23} />
-          </View>
-          <TextareaInput
-            type="text"
-            placeholder="Recipe Developer"
-            value={formData?.bio}
-            onChangeText={(text) => validateField("bio", text)}
-            className="placeholder:text-muted !placeholder:text-base !text-base"
-          />
-        </Textarea>
-      </FormControl>
-
-      <FormControl size="md" className="mb-1">
-        <FormControlLabel>
-          <FormControlLabelText className="font-bold leading-5">
-            Instagram
-          </FormControlLabelText>
-        </FormControlLabel>
-        <Input className="my-3.5">
-          <InputSlot className="ml-1">
-            <InputIcon className="!w-6 !h-6 text-primary" as={UserRoundPen} />
-          </InputSlot>
-          <InputField
-            type="text"
-            placeholder="Instagram Link"
-            value={formData?.instagram}
-            onChangeText={(text) => validateField("instagram", text)}
-          />
-        </Input>
-      </FormControl>
-
-      <FormControl size="md" className="mb-1">
-        <FormControlLabel>
-          <FormControlLabelText className="font-bold leading-5">
-            Tiktok
-          </FormControlLabelText>
-        </FormControlLabel>
-        <Input className="my-3.5">
-          <InputSlot className="ml-1">
-            <InputIcon className="!w-6 !h-6 text-primary" as={UserRoundPen} />
-          </InputSlot>
-          <InputField
-            type="text"
-            placeholder="Tiktok Profile"
-            value={formData?.tiktok}
-            onChangeText={(text) => validateField("tiktok", text)}
-          />
-        </Input>
-      </FormControl>
-
-      <FormControl size="md" className="mb-1">
-        <FormControlLabel>
-          <FormControlLabelText className="font-bold leading-5">
-            Youtube
-          </FormControlLabelText>
-        </FormControlLabel>
-        <Input className="my-3.5">
-          <InputSlot className="ml-1">
-            <InputIcon className="!w-6 !h-6 text-primary" as={UserRoundPen} />
-          </InputSlot>
-          <InputField
-            type="text"
-            placeholder="Youtube"
-            value={formData?.youtube}
-            onChangeText={(text) => validateField("youtube", text)}
-          />
-        </Input>
-      </FormControl>
-
-      <FormControl size="md" className="mb-1">
-        <FormControlLabel>
-          <FormControlLabelText className="font-bold leading-5">
-            Website
-          </FormControlLabelText>
-        </FormControlLabel>
-        <Input className="my-3.5">
-          <InputSlot className="ml-1">
-            <InputIcon className="!w-6 !h-6 text-primary" as={UserRoundPen} />
-          </InputSlot>
-          <InputField
-            type="text"
-            placeholder="Website"
-            value={formData?.website}
-            onChangeText={(text) => validateField("website", text)}
-          />
-        </Input>
-      </FormControl>
+      </FormControl> */}
 
       <Button
         className="mt-2 mb-36 bg-secondary"
         action="primary"
         onPress={handleSubmit}
-        disabled={isLoading}
+        disabled={!!isLoading}
       >
         {!isLoading ? (
           <ButtonText>Update Profile</ButtonText>

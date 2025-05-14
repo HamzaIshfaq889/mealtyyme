@@ -7,19 +7,9 @@ import { router } from "expo-router";
 import { Button, ButtonText } from "@/components/ui/button";
 
 import { ArrowLeft } from "lucide-react-native";
-import { useUpdateCustomer } from "@/redux/queries/recipes/useCustomerQuery";
-import { useDispatch, useSelector } from "react-redux";
-import { setCredentials } from "@/redux/slices/Auth";
 
 const Allergies = () => {
   const scheme = useColorScheme();
-  const dispatch = useDispatch();
-
-  const customerId = useSelector(
-    (state: any) => state.auth.loginResponseType.customer_details?.id
-  );
-  const { mutate: updateIsFirstTimeUser } = useUpdateCustomer();
-  const credentials = useSelector((state: any) => state.auth.loginResponseType);
 
   const [selectedIndexes, setSelectedIndexes] = useState<number[]>([]);
 
@@ -46,35 +36,6 @@ const Allergies = () => {
   };
 
   const handleNext = async () => {
-    //todo ==> set allergies and  diets here
-
-    updateIsFirstTimeUser(
-      {
-        customerId,
-        data: {
-          first_time_user: false,
-        },
-      },
-      {
-        onSuccess: () => {
-          const updatedCustomerDetails = {
-            ...credentials.customer_details,
-            first_time_user: false,
-          };
-
-          const updatedLoginResponse = {
-            ...credentials,
-            customer_details: updatedCustomerDetails,
-          };
-
-          dispatch(setCredentials(updatedLoginResponse));
-        },
-        onError: (error) => {
-          console.error("Error while updating customer!", error);
-        },
-      }
-    );
-
     router.push("/(protected)/(tabs)");
   };
 

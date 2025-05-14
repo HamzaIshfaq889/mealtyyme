@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import {
   Alert,
   ScrollView,
@@ -34,7 +34,10 @@ import { ProductPrice } from "@/lib/types/subscription";
 import Pro from "@/assets/svgs/pro-svg.svg";
 import { Button, ButtonText } from "@/components/ui/button";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useGetCustomer } from "@/redux/queries/recipes/useCustomerQuery";
+import {
+  useGetCustomer,
+  useUpdateCustomer,
+} from "@/redux/queries/recipes/useCustomerQuery";
 import { setCredentials, setShowSubscribeCTA } from "@/redux/slices/Auth";
 import { checkisProUser } from "@/utils";
 import { saveUserDataInStorage } from "@/utils/storage/authStorage";
@@ -57,19 +60,23 @@ const SubcriptionCTA = ({
   const scheme = useColorScheme();
   const isDarkMode = scheme === "dark";
 
-  const [updatedData, setUpdatedData] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<PlanType>("monthly");
 
   const { data: packagesData, isLoading, isError, error } = useProductPrices();
   const { mutate: subscribeMutation } = useSubscribe();
+  const { mutate: updateIsFirstTimeUser } = useUpdateCustomer();
 
   const customerId = useSelector(
     (state: any) => state.auth.loginResponseType.customer_details?.id
   );
+  const isFirstTimeUser = useSelector(
+    (state: any) =>
+      state.auth.loginResponseType.customer_details?.first_time_user
+  );
   const credentials = useSelector((state: any) => state.auth.loginResponseType);
-  const { refetch } = useGetCustomer(customerId);
+  const { refetch } = useGetCustomer();
 
-  const [selectedPriceId, setSelectedPriceId] = useState<string | null>(null);
+  const [, set] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   const customerEmail = useSelector(
@@ -78,9 +85,7 @@ const SubcriptionCTA = ({
   const token = useSelector(
     (state: any) => state.auth.loginResponseType.access
   );
-  const showSubscribeCTA = useSelector(
-    (state: any) => state.auth.showSubscribeCTA
-  );
+
   const status = useSelector(
     (state: any) =>
       state.auth.loginResponseType.customer_details?.subscription?.status
@@ -88,19 +93,49 @@ const SubcriptionCTA = ({
 
   const handlePlanChange = (plan: PlanType, priceId: string) => {
     setSelectedPlan(plan);
-    setSelectedPriceId(priceId);
+    set(priceId);
   };
 
   const handleCloseBottomSheet = () => {
-    dispatch(setShowSubscribeCTA(false));
     if (setShowSubscribeCTALocal) {
       setShowSubscribeCTALocal(false);
+    }
+
+    if (isFirstTimeUser) {
+      updateIsFirstTimeUser(
+        {
+          customerId,
+          data: {
+            first_time_user: false,
+          },
+        },
+        {
+          onSuccess: () => {
+            const updatedCustomerDetails = {
+              ...credentials.customer_details,
+              first_time_user: false,
+            };
+
+            const updatedLoginResponse = {
+              ...credentials,
+              customer_details: updatedCustomerDetails,
+            };
+
+            dispatch(setCredentials(updatedLoginResponse));
+          },
+          onError: (error: any) => {
+            console.error("Error while updating customer!", error);
+          },
+        }
+      );
     }
     bottomSheetRef.current?.close();
   };
 
   const handleSubscribe = () => {
-    if (!selectedPriceId || !token || !customerEmail || !selectedPlan) return;
+    console.log(token, customerEmail, selectedPlan);
+
+    if (!token || !customerEmail || !selectedPlan) return;
     setLoading(true);
 
     subscribeMutation(
@@ -123,9 +158,9 @@ const SubcriptionCTA = ({
             dispatch(setShowSubscribeCTA(false));
 
             refetch()
-              .then(({ data: updatedCustomer }) => {
+              .then(({ data }) => {
+                const updatedCustomer = data && data?.length ? data[0] : [];
 
-                console.log("updatedCustomer",updatedCustomer);
                 if (updatedCustomer) {
                   const updatedLoginResponse = {
                     ...credentials,
@@ -149,7 +184,7 @@ const SubcriptionCTA = ({
                 console.error("Failed to refetch updated customer:", err);
               });
 
-            saveUserDataInStorage({ ...credentials });
+            // saveUserDataInStorage({ ...credentials });
 
             handleCloseBottomSheet();
           }
@@ -168,42 +203,12 @@ const SubcriptionCTA = ({
     );
   };
 
-  // useEffect(() => {
-  //   const fetchUpdatedCustomer = async () => {
-  //     console.log("In useEffect");
-
-  //     console.log("updatedState", updatedData);
-  //     console.log(customerId);
-  //     if (updatedData && customerId) {
-  //       try {
-  //         const { data: updatedCustomer } = await refetch();
-  //         console.log("up", updatedCustomer);
-  //         if (updatedCustomer) {
-  //           const updatedLoginResponse = {
-  //             ...credentials,
-  //             customer_details: updatedCustomer,
-  //           };
-  //           dispatch(setCredentials(updatedLoginResponse));
-  //         }
-
-  //         console.log("updatedData there");
-  //       } catch (err) {
-  //         console.error("Failed to refetch updated customer:", err);
-  //       } finally {
-  //         setUpdatedData(false);
-  //       }
-  //     }
-  //   };
-
-  //   fetchUpdatedCustomer();
-  // }, [updatedData]);
-
   const pricingOptions = packagesData?.[0]?.prices ?? [];
   const isProUser = checkisProUser(status);
 
   return (
-    (forceShow || showSubscribeCTA) &&
-    !isProUser && (
+    !isProUser &&
+    (isFirstTimeUser || forceShow) && (
       <Portal hostName="root-host">
         <BottomSheet
           ref={bottomSheetRef}

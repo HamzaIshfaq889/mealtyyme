@@ -1,6 +1,11 @@
+import { AppConfig } from "@/constants";
 import apiClient from "@/lib/apiClient";
+import { LoginResponseTypes } from "@/lib/types";
 
-import { PatchCustomerPayload } from "@/lib/types/customer";
+import {
+  PatchCustomerPayload,
+  UploadAvatarResponse,
+} from "@/lib/types/customer";
 
 export const patchCustomer = async ({
   customerId,
@@ -21,8 +26,8 @@ export const patchCustomer = async ({
   return response.data;
 };
 
-export const getCustomer = async (customerId: number) => {
-  const response = await apiClient.get(`customer/${customerId}/`);
+export const getCustomer = async () => {
+  const response = await apiClient.get(`customer/`);
 
   if (!response.ok) {
     if (response.status === 404) {
@@ -34,5 +39,25 @@ export const getCustomer = async (customerId: number) => {
     );
   }
 
-  return response.data;
+  return response.data as LoginResponseTypes["customer_details"][];
+};
+
+export const uploadFile = async (file: File) => {
+  const formData = new FormData();
+  formData.append("file", file); 
+
+  const response = await apiClient.post(
+    `${AppConfig.API_URL}attachments/`,
+    formData
+  );
+
+  console.log("///////////////////////", response);
+
+  if (!response.ok) {
+    throw new Error(
+      response?.originalError?.message || "Failed to upload file"
+    );
+  }
+
+  return response.data as UploadAvatarResponse; // { id, file, uploaded_by, created_at }
 };

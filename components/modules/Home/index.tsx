@@ -57,17 +57,13 @@ const HomeUser = () => {
     modalAnim,
   } = useModal();
 
-  const { hasCheckedIn, stats, error, loading, checkIn } =
-    useUserGamification();
+  const { hasCheckedIn } = useUserGamification();
 
-  // Check if the user is a returning user and display the modal accordingly
   useEffect(() => {
     if (!hasCheckedIn) {
-      showModal(); // Open modal if user has checked in before (i.e., returning user)
+      showModal();
     }
   }, [hasCheckedIn, showModal]);
-
-  console.log("haschecked", hasCheckedIn);
 
   return (
     <View className="flex-1 relative">
@@ -145,7 +141,7 @@ const HomeUser = () => {
         </Pressable>
       )}
 
-      {/* {showSubscriptionCTA && <SubcriptionCTA />} */}
+      {showSubscriptionCTA && <SubcriptionCTA />}
 
       {/* Show modal for returning users */}
       {/* {!hasCheckedIn && (

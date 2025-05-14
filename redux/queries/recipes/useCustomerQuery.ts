@@ -1,4 +1,4 @@
-import { getCustomer, patchCustomer } from "@/services/customerApi";
+import { getCustomer, patchCustomer, uploadFile } from "@/services/customerApi";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
 export const useUpdateCustomer = () => {
@@ -7,10 +7,15 @@ export const useUpdateCustomer = () => {
   });
 };
 
-export const useGetCustomer = (customerId: number) => {
+export const useGetCustomer = () => {
   return useQuery({
-    queryKey: ["customer", customerId],
-    queryFn: () => getCustomer(customerId),
-    enabled: !!customerId,
+    queryKey: ["get_customer"],
+    queryFn: () => getCustomer(),
+  });
+};
+
+export const useUploadProfileImage = () => {
+  return useMutation({
+    mutationFn: uploadFile,
   });
 };

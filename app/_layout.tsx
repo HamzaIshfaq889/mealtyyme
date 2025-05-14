@@ -134,19 +134,19 @@ export default function RootLayout() {
     }
   }, [isSplashVisible]);
 
-  useEffect(() => {
-    const unsubscribe = NetInfo.addEventListener((state) => {
-      const isOffline = !(state.isConnected && state.isInternetReachable);
+  // useEffect(() => {
+  //   const unsubscribe = NetInfo.addEventListener((state) => {
+  //     const isOffline = !(state.isConnected && state.isInternetReachable);
 
-      if (isOffline) {
-        router.replace("/(protected)/(nested)/no-wifi");
-      } else {
-        router.push("/(protected)/(tabs)");
-      }
-    });
+  //     if (isOffline) {
+  //       router.replace("/(protected)/(nested)/no-wifi");
+  //     } else {
+  //       router.push("/(protected)/(tabs)");
+  //     }
+  //   });
 
-    return () => unsubscribe();
-  }, []);
+  //   return () => unsubscribe();
+  // }, []);
 
   if (!loaded || isSplashVisible) {
     return <Splash />;

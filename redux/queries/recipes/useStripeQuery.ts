@@ -2,9 +2,13 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 
 import {
   cancelSubscription,
+  fetchPaymentMethods,
   fetchPreviousSubscriptions,
   getPackagePrices,
+  resumeSubscription,
+  setDefaultPaymentMethod,
   subscribe,
+  upgradeSubscription,
 } from "@/services/stripeApi";
 
 export const useProductPrices = () => {
@@ -40,5 +44,30 @@ export const usePreviousSubscriptions = () => {
   return useQuery({
     queryKey: ["previousSubscriptions"],
     queryFn: fetchPreviousSubscriptions,
+  });
+};
+
+export const usePaymentMethods = () => {
+  return useQuery({
+    queryKey: ["paymentMethods"],
+    queryFn: fetchPaymentMethods,
+  });
+};
+
+export const useUpgradeSubscription = () => {
+  return useMutation({
+    mutationFn: upgradeSubscription,
+  });
+};
+
+export const useSetDefaultPaymentMethod = () => {
+  return useMutation({
+    mutationFn: setDefaultPaymentMethod,
+  });
+};
+
+export const useResumeSubscription = () => {
+  return useMutation({
+    mutationFn: resumeSubscription,
   });
 };

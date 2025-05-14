@@ -12,6 +12,8 @@ import {
   UserPlus,
   Calendar,
 } from "lucide-react-native";
+import { useSelector } from "react-redux";
+import { checkisSubscriptionCanceled } from "@/utils";
 
 type ProFeaturesCardProps = {
   handleNonPro: () => void;
@@ -27,6 +29,12 @@ export default function ProFeaturesCard({
   const opacityAnim = useRef(new Animated.Value(0)).current;
   const featuresAnim = useRef(new Animated.Value(0)).current;
   const buttonAnim = useRef(new Animated.Value(0)).current;
+
+  const status = useSelector(
+    (state: any) =>
+      state.auth.loginResponseType.customer_details?.subscription?.status
+  );
+  const isSubscriptionCanceled = checkisSubscriptionCanceled(status);
 
   useEffect(() => {
     // Card entrance animation
@@ -179,7 +187,7 @@ export default function ProFeaturesCard({
               })}
             >
               <Text className="text-purple-900 font-bold text-center text-lg mr-1">
-                Upgrade Now
+                {isSubscriptionCanceled ? "Resume Now" : "Upgrade Now"}
               </Text>
               <ChevronRight size={20} color="#4c1d95" />
             </TouchableOpacity>

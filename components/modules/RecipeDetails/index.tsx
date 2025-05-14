@@ -225,6 +225,9 @@ const RecipeDetails = ({ recipeId }: { recipeId: string | null }) => {
       });
   };
 
+
+  console.log(recipe?.id);
+
   return (
     <>
       <SafeAreaView style={{ flex: 1 }}>
