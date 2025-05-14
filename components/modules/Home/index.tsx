@@ -124,7 +124,7 @@ const HomeUser = () => {
       <ScrollView
         className="flex-1"
         contentContainerStyle={{
-          paddingTop: Platform.OS === "ios" ? 110 : 110,
+          paddingTop: Platform.OS === "ios" ? 130 : 110,
         }}
         showsVerticalScrollIndicator={false}
       >

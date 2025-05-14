@@ -195,8 +195,15 @@ export const searchRecipes = async ({
   if (searchValue.trim() !== "") {
     params.push(`search=${encodeURIComponent(searchValue.trim())}`);
   }
+  const DEFAULT_PROTEIN_RANGE = [0, 500];
 
-  if (protein && (protein[0] > 0 || protein[1] < 1000)) {
+  // Check if 'protein' is defined, an array, and not the default range
+  if (
+    protein &&
+    Array.isArray(protein) &&
+    (protein[0] !== DEFAULT_PROTEIN_RANGE[0] ||
+      protein[1] !== DEFAULT_PROTEIN_RANGE[1])
+  ) {
     params.push(`min_protein=${protein[0]}`);
     params.push(`max_protein=${protein[1]}`);
   }

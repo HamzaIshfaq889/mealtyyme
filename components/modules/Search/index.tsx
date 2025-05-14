@@ -167,7 +167,7 @@ const Search = () => {
       <View className="w-full h-full">
         <View className="px-6 pt-16 pb-5 relative">
           <TouchableOpacity
-            onPress={() => router.push("/(protected)/(tabs)")}
+            onPress={() => router.back()}
             className="absolute left-6 top-16"
           >
             <ArrowLeft
