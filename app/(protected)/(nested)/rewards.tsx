@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Rewards } from "@/components/modules";
+import { RedeemPoints, Rewards, OtherEarnWays } from "@/components/modules";
 
 const RewardsScreen = () => {
   return <Rewards />;

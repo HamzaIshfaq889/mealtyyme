@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Account, Rewards } from "@/components/modules";
+import { Account } from "@/components/modules";
 
 const AccountScreen = () => {
   return <Account />;

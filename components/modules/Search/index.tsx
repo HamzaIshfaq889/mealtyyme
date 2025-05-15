@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useCallback, useMemo, useEffect } from "react";
+import { useState, useRef, useCallback, useMemo } from "react";
 
 import { router } from "expo-router";
 
@@ -9,21 +9,17 @@ import BottomSheet from "@gorhom/bottom-sheet";
 import { useSelector } from "react-redux";
 
 import {
-  Modal,
   Pressable,
   Text,
   TouchableOpacity,
   useColorScheme,
   View,
-  Animated,
-  Dimensions,
 } from "react-native";
 import {
   SearchIcon,
   SlidersHorizontal,
   ArrowLeft,
   ChefHat,
-  Lock,
   Crown,
   ChevronRight,
 } from "lucide-react-native";
@@ -228,7 +224,6 @@ const Search = () => {
               Find Recipies based on what you already have at home
             </Text>
           </View>
-          {/* <Text className="text-secondary text-3xl"> {`>`} </Text> */}
           <ChevronRight color={"#00c3ff"} size={28} />
         </TouchableOpacity>
 
@@ -242,7 +237,7 @@ const Search = () => {
           />
         )}
 
-        {!searchValue && <RecipesByFilters />}
+        {!searchValue && !isFiltersApplied && <RecipesByFilters />}
 
         <Filters
           bottomSheetRef={bottomSheetRef as any}

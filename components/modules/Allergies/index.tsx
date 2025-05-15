@@ -7,9 +7,15 @@ import { router } from "expo-router";
 import { Button, ButtonText } from "@/components/ui/button";
 
 import { ArrowLeft } from "lucide-react-native";
+import { useUpdateCustomer } from "@/redux/queries/recipes/useCustomerQuery";
+import { useSelector } from "react-redux";
 
 const Allergies = () => {
   const scheme = useColorScheme();
+  const { mutate: updateAllergies } = useUpdateCustomer();
+  const customerId = useSelector(
+    (state: any) => state.auth.loginResponseType.customer_details?.id
+  );
 
   const [selectedIndexes, setSelectedIndexes] = useState<number[]>([]);
 
@@ -37,6 +43,22 @@ const Allergies = () => {
 
   const handleNext = async () => {
     router.push("/(protected)/(tabs)");
+
+    const data = {
+      allergies: selectedIndexes,
+    };
+
+    updateAllergies(
+      { customerId, data },
+      {
+        onSuccess: () => {
+          router.push("/(protected)/(onboarding)/allergies");
+        },
+        onError: (error) => {
+          console.error("Error adding recipe:", error);
+        },
+      }
+    );
   };
 
   return (

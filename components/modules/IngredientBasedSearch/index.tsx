@@ -75,8 +75,7 @@ const IngredientBasedSearch = () => {
   const [shouldOpenDropdown, setShouldOpenDropdown] = useState(true);
 
   return (
-    <View className="w-full h-full px-6 pt-20 pb-6 flex flex-col relative">
-      {/* Header */}
+    <View className="flex flex-col w-full h-full px-6 pt-20 pb-6 relative">
       <Animated.View
         entering={FadeIn.duration(500)}
         className="flex-row items-center mb-6"
@@ -93,7 +92,6 @@ const IngredientBasedSearch = () => {
         </Text>
       </Animated.View>
 
-      {/* Search */}
       <Animated.View
         entering={FadeIn.delay(200).duration(500)}
         className="mb-6"
@@ -220,12 +218,11 @@ const IngredientBasedSearch = () => {
             backgroundColor: "transparent",
           }}
         />
-        <Text className="text-foreground/60 text-xs ml-2 mt-1">
+        <Text className="text-foreground/60 text-sm ml-2 mt-1">
           Search for ingredients to add to your list
         </Text>
       </Animated.View>
 
-      {/* Ingredient List */}
       <View className="flex-1">
         <View className="flex-row items-center justify-between mb-4">
           <Text className="text-foreground font-medium text-lg">
@@ -240,9 +237,11 @@ const IngredientBasedSearch = () => {
         </View>
 
         <ScrollView
-          className="px-1"
+          className="flex-1 px-1"
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ paddingBottom: 20 }}
+          contentContainerStyle={{
+            paddingBottom: 20,
+          }}
         >
           {addedIngredients.length === 0 ? (
             <Animated.View
@@ -261,14 +260,14 @@ const IngredientBasedSearch = () => {
                 layout={Layout.springify()}
                 key={item.id}
                 className={`rounded-2xl mb-4 ${
-                  isDarkMode ? "bg-[#1D232B]" : "bg-foreground/5"
+                  isDarkMode ? "bg-[#1D232B]" : "bg-background"
                 }`}
                 style={{
-                  shadowColor: "#000",
-                  shadowOffset: { width: 0, height: 2 },
-                  shadowOpacity: 0.05,
-                  shadowRadius: 12,
-                  elevation: 3,
+                  // shadowColor: "#000",
+                  // shadowOffset: { width: 0, height: 2 },
+                  // shadowOpacity: 0.05,
+                  // shadowRadius: 12,
+                  // elevation: 3,
                 }}
               >
                 <View className="px-5 py-4">
@@ -298,34 +297,35 @@ const IngredientBasedSearch = () => {
         </ScrollView>
       </View>
 
-      {/* Bottom Button */}
-      <Animated.View entering={FadeIn.delay(500)} className="mt-4 mb-4">
-        <TouchableOpacity
-          onPress={handleFindRecipes}
-          disabled={!addedIngredients.length}
-          className={`rounded-xl ${
-            !addedIngredients.length ? "!bg-muted" : "bg-secondary"
-          } h-14 flex-row items-center justify-center`}
-          style={{
-            shadowColor: "#000",
-            shadowOffset: { width: 0, height: 2 },
-            shadowOpacity: 0.1,
-            shadowRadius: 4,
-            elevation: 4,
-          }}
-        >
-          <Text
-            className={`font-semibold text-lg ${
-              !addedIngredients.length ? "text-foreground/50" : "text-white"
-            }`}
+      <View className="mt-auto mb-4">
+        {/* <Animated.View entering={FadeIn.delay(500)} className="mt-4 mb-4"> */}
+          <TouchableOpacity
+            onPress={handleFindRecipes}
+            disabled={!addedIngredients.length}
+            className={`rounded-xl ${
+              !addedIngredients.length ? "!bg-muted" : "bg-secondary"
+            } h-14 flex-row items-center justify-center`}
+            style={{
+              // shadowColor: "#000",
+              // shadowOffset: { width: 0, height: 2 },
+              // shadowOpacity: 0.1,
+              // shadowRadius: 4,
+              // elevation: 4,
+            }}
           >
-            Find Recipes
-          </Text>
-          {addedIngredients.length > 0 && (
-            <ChevronRight size={20} color="#fff" className="ml-2" />
-          )}
-        </TouchableOpacity>
-      </Animated.View>
+            <Text
+              className={`font-semibold text-lg ${
+                !addedIngredients.length ? "text-foreground/60" : "text-white"
+              }`}
+            >
+              Find Recipes
+            </Text>
+            {addedIngredients.length > 0 && (
+              <ChevronRight size={20} color="#fff" className="ml-2" />
+            )}
+          </TouchableOpacity>
+        {/* </Animated.View> */}
+      </View>
     </View>
   );
 };

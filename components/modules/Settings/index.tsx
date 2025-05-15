@@ -180,6 +180,15 @@ const Settings = () => {
           scheme={scheme}
         />
 
+        <SettingCard
+          icon={<WalletCardsIcon color="#00C3FF" size={30} />}
+          text="Rewards"
+          onPress={() => {
+            router.push('/(protected)/(nested)/rewards')
+          }}
+          scheme={scheme}
+        />
+
         <View className="mt-12 px-2">
           <Button
             action="negative"

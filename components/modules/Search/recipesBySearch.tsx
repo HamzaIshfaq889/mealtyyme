@@ -132,7 +132,6 @@ const RecipesBySearch = ({
   handleLoadMore,
   isFetchingNextPage,
 }: RecipesBySearchProps) => {
-  // Track the previously rendered recipes count for animation
   const prevRecipesCountRef = useRef(0);
   const isNewBatchRef = useRef(false);
 

@@ -24,6 +24,7 @@ export default function RootLayout() {
         <Stack.Screen name="404.tsx" />
         <Stack.Screen name="find-recipe" />
         <Stack.Screen name="rewards.tsx" />
+        <Stack.Screen name="other-earn-ways.tsx" />
       </Stack>
       <Toast />
     </>

@@ -30,6 +30,8 @@ import IngredientBasedSearch from "./IngredientBasedSearch";
 import ContactSupport from "./ContactSupport";
 import IngredientBasedrecipes from "./IngredientBasedSearch/ingredientBasedrecipes";
 import Rewards from "./Rewrads";
+import RedeemPoints from "./Rewrads/RedeemPoints";
+import OtherEarnWays from "./Rewrads/OtherEarnWays";
 
 import { RecipeCard } from "./Common";
 
@@ -67,4 +69,6 @@ export {
   ContactSupport,
   IngredientBasedrecipes,
   Rewards,
+  RedeemPoints,
+  OtherEarnWays,
 };
