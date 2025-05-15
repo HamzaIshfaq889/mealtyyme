@@ -29,7 +29,9 @@
           }
         ],
         "ITSAppUsesNonExemptEncryption": false,
-        "NSCameraUsageDescription": "Stripe might need access camera to scan credit cards and make payments securely."
+        "NSCameraUsageDescription": "Stripe might need access camera to scan credit cards and make payments securely.",
+        "NSUserTrackingUsageDescription": "Allow notifications",
+        "UIBackgroundModes": ["remote-notification"]
       }
     },
     "android": {
