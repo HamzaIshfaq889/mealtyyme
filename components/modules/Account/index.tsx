@@ -123,7 +123,7 @@ const Account = () => {
       </View>
 
       <View
-        className="flex flex-row justify-between items-center py-4 mb-5 mt-12 rounded-2xl px-6"
+        className="flex flex-row justify-between items-center py-4 mb-5 mt-12 rounded-2xl mx-4 px-2"
         style={{
           boxShadow: "0px 2px 12px 0px rgba(0,0,0,0.1)",
         }}
@@ -163,7 +163,7 @@ const Account = () => {
         </TouchableOpacity>
       </View>
 
-      <View className="flex flex-row bg-gray4 p-1 rounded-full mb-4 mx-2 shadow-sm items-center h-16">
+      <View className="flex flex-row bg-gray4 p-1 rounded-full mb-4 mx-6 shadow-sm items-center h-16">
         {/* Cookbooks Tab */}
         <Animated.View style={cookbooksStyle}>
           <Button
