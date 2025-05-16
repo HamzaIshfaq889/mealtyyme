@@ -52,7 +52,7 @@ const Allergies = () => {
       { customerId, data },
       {
         onSuccess: () => {
-          router.push("/(protected)/(onboarding)/allergies");
+          router.push("/(protected)/(tabs)");
         },
         onError: (error) => {
           console.error("Error adding recipe:", error);
