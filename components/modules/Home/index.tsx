@@ -50,6 +50,7 @@ import Animated, {
   useAnimatedScrollHandler,
   runOnJS,
 } from "react-native-reanimated";
+import MealPlanCard from "./mealplancard";
 
 const HomeUser = () => {
   const scheme = useColorScheme();
@@ -255,19 +256,16 @@ const HomeUser = () => {
             scrollY.value = event.contentOffset.y;
 
             // We need to run this on the UI thread for the isScrolledToFeatured state
-            runOnJS(setIsScrolledToFeatured)(event.contentOffset.y > 20);
+            runOnJS(setIsScrolledToFeatured)(event.contentOffset.y > 1);
           },
         })}
         scrollEventThrottle={16} // For smoother tracking
       >
         <FeaturedRecipes />
         <PopularRecipes />
+        <MealPlanCard />
 
-        {showSubscriptionCTA && (
-          <View className="mx-4 my-4">
-            {/* Subscription CTA would go here */}
-          </View>
-        )}
+        {showSubscriptionCTA && <SubcriptionCTA />}
       </Animated.ScrollView>
 
       {/* Floating cooking button with subtle animation */}

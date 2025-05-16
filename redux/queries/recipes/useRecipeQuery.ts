@@ -31,10 +31,10 @@ export const useFeaturedRecipes = () => {
   });
 };
 
-export const usePopularRecipes = (categoryId: string | number | null) => {
+export const usePopularRecipes = () => {
   return useQuery<Recipe[]>({
-    queryKey: ["popularRecipes", categoryId || "all"],
-    queryFn: () => getPopularRecipes(categoryId === "all" ? null : categoryId),
-    staleTime: 1000 * 60 * 5,
+    queryKey: ["featuredRecipes"],
+    queryFn: getPopularRecipes,
+    staleTime: 1000 * 5, // 5 seconds
   });
 };

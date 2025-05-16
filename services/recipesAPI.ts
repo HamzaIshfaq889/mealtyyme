@@ -39,19 +39,9 @@ export const getFeaturedRecipes = async (): Promise<Recipe[]> => {
   return results;
 };
 
-export const getPopularRecipes = async (
-  id: string | number | null
-): Promise<Recipe[]> => {
-  console.log("id", id);
-
-  // Construct the endpoint based on whether id is null or not
-  const endpoint =
-    id !== null
-      ? `/recipes/?dish_types=${id}&pageSize=10`
-      : `/recipes/?pageSize=10`;
-  console.log("endpoin", endpoint);
-  const response = await apiClient.get<RecipeResponse>(endpoint, {});
-
+export const getPopularRecipes = async (): Promise<Recipe[]> => {
+  const response = await apiClient.get<Recipe[]>("/popular-recipes/", {});
+  console.log("runnning 2");
   if (!response.ok) {
     if (response.status === 401 || response.status === 404) {
       throw new Error("Invalid Credentials");
@@ -59,12 +49,11 @@ export const getPopularRecipes = async (
     throw new Error(response?.originalError?.message || "Recipe Error");
   }
 
-  const results = response.data?.results;
+  const results = response.data;
 
   if (!results) {
     throw new Error("No recipe data found.");
   }
-
   return results;
 };
 
