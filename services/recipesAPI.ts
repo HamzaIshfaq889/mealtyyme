@@ -168,11 +168,14 @@ export const searchRecipes = async ({
   page,
   readyInMinutes,
   includeIngredientIDs,
+  allergies,
 }: SearchRecipeQueryOptions & { page: number }): Promise<{
   results: Recipe[];
   total: number;
 }> => {
   const params: string[] = [];
+
+  console.log('allergies',allergies);
 
   if (categoryIds?.length) {
     params.push(...categoryIds.map((id) => `dish_types=${id}`));
@@ -184,6 +187,10 @@ export const searchRecipes = async ({
 
   if (dietIds?.length) {
     params.push(...dietIds.map((id) => `diets=${id}`));
+  }
+
+  if (allergies?.length) {
+    params.push(...allergies.map((id) => `exlude_ingredient_ids=${id}`));
   }
 
   if (includeIngredientIDs?.length) {

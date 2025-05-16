@@ -140,6 +140,5 @@ export type SearchRecipeQueryOptions = {
   calories?: number[];
   readyInMinutes?: number[];
   includeIngredientIDs?: number[];
+  allergies?: number[];
 };
-
-

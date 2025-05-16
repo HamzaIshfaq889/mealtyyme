@@ -158,7 +158,7 @@ const SubscriptionStatusScreen: React.FC = () => {
 
   // Navigate to payment methods screen
   const goToPaymentMethods = () => {
-    router.push("/(protected)/(nested)/paymenet-methods");
+    router.push("/(protected)/(nested)/payment-methods");
   };
 
   const handleCancelSubscription = async (subscriptionId: string) => {

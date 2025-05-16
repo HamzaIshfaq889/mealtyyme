@@ -16,7 +16,6 @@ import {
   Image,
 } from "react-native";
 import { router } from "expo-router";
-import { Ionicons } from "@expo/vector-icons";
 import BottomSheet from "@gorhom/bottom-sheet";
 import { useSelector } from "react-redux";
 

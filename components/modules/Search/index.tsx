@@ -62,6 +62,10 @@ const Search = () => {
   const [calories, setCalories] = useState([0, 2000]);
   const [readyInMinutes, setReadyInMinutes] = useState([0, 300]);
 
+  const allergies = useSelector(
+    (state: any) => state.auth.loginResponseType.customer_details?.allergies
+  );
+
   const {
     data,
     fetchNextPage,
@@ -79,6 +83,7 @@ const Search = () => {
     carbs,
     calories,
     readyInMinutes,
+    allergies,
   });
 
   const flattenedRecipes = useMemo(

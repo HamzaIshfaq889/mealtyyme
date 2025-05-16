@@ -9,12 +9,18 @@ import {
 } from "react-native";
 
 import { useDietsQuery } from "@/redux/queries/recipes/useStaticFilter";
-import { useUpdateCustomer } from "@/redux/queries/recipes/useCustomerQuery";
+import {
+  useGetCustomer,
+  useUpdateCustomer,
+} from "@/redux/queries/recipes/useCustomerQuery";
 
 import { router } from "expo-router";
 
 import { Button, ButtonText } from "@/components/ui/button";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { setCredentials } from "@/redux/slices/Auth";
+import { saveUserDataInStorage } from "@/utils/storage/authStorage";
+import { Spinner } from "@/components/ui/spinner";
 
 const PickDiet = () => {
   const { data: diets = [], isLoading: dietsLoading } = useDietsQuery();
@@ -22,8 +28,13 @@ const PickDiet = () => {
   const customerId = useSelector(
     (state: any) => state.auth.loginResponseType.customer_details?.id
   );
+  const dispatch = useDispatch();
+  const credentials = useSelector((state: any) => state.auth.loginResponseType);
+
+  const { refetch } = useGetCustomer();
 
   const [selectedIndexes, setSelectedIndexes] = useState<number[]>([]);
+  const [loading, setLoading] = useState(false);
   const scheme = useColorScheme();
 
   const handleSelection = (index: number) => {
@@ -35,6 +46,7 @@ const PickDiet = () => {
   };
 
   const handleContinue = () => {
+    setLoading(true);
     const data = {
       diet_preferences: selectedIndexes,
     };
@@ -42,14 +54,44 @@ const PickDiet = () => {
     updateDietPrefrences(
       { customerId, data },
       {
-        onSuccess: () => {
+        onSuccess: async () => {
+          await refecthCustomer();
+          setLoading(false);
+
           router.push("/(protected)/(onboarding)/allergies");
         },
         onError: (error) => {
-          console.error("Error adding recipe:", error);
+          setLoading(false);
+          console.error("Error while setting up diets:", error);
         },
       }
     );
+  };
+
+  const refecthCustomer = async () => {
+    try {
+      const { data } = await refetch();
+
+      const updatedCustomer = data && data?.length ? data[0] : [];
+      console.log("updatedCustomer", updatedCustomer);
+
+      if (updatedCustomer) {
+        const updatedLoginResponse = {
+          ...credentials,
+          customer_details: updatedCustomer,
+        };
+
+        dispatch(setCredentials(updatedLoginResponse));
+
+        try {
+          await saveUserDataInStorage(updatedLoginResponse);
+        } catch (storageError) {
+          console.error("Failed to save user data in storage:", storageError);
+        }
+      }
+    } catch (err) {
+      console.error("Failed to refetch updated customer:", err);
+    }
   };
 
   return (
@@ -88,7 +130,7 @@ const PickDiet = () => {
           })}
         </ScrollView>
         <Button className="mt-2" action="primary" onPress={handleContinue}>
-          <ButtonText>Next</ButtonText>
+          <ButtonText>{loading ? <Spinner /> : "Next"}</ButtonText>
         </Button>
 
         {/* Next Button */}

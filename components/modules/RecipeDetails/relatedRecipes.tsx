@@ -56,10 +56,10 @@ const RelatedRecipes = ({ recipe }: RelatedRecipesProps) => {
   const scheme = useColorScheme();
 
   const [searchValue, setSearchValue] = useState("");
-  const [categoriesIds, setCategoriesIds] = useState<number[]>(
+  const [categoryIds, setCategoryIds] = useState<number[]>(
     dishTypeIds ? dishTypeIds : []
   );
-  const [cusinesIds, setCusinesIds] = useState<number[]>([]);
+  const [cuisineIds, setCuisineIds] = useState<number[]>([]);
   const [dietIds, setDietIds] = useState<number[]>([]);
   const [low, setLow] = useState<number>(0);
   const [high, setHigh] = useState<number>(1000);
@@ -71,14 +71,12 @@ const RelatedRecipes = ({ recipe }: RelatedRecipesProps) => {
     isFetchingNextPage,
     isLoading,
     refetch,
-  } = useRecipesQuery(
+  } = useRecipesQuery({
     searchValue,
-    categoriesIds,
-    cusinesIds,
+    categoryIds,
+    cuisineIds,
     dietIds,
-    low,
-    high
-  );
+  });
 
   const flattenedRecipes = useMemo(
     () => data?.pages.flatMap((page) => page.results) ?? [],
