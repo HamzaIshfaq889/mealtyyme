@@ -111,7 +111,7 @@ const AccountsOptions = () => {
 
         const isFirstTimeUser = data?.customer_details?.first_time_user;
         if (isFirstTimeUser) {
-          router.replace("/(protected)/(onboarding)/onboarding1");
+          router.replace("/(protected)/(tabs)");
         } else {
           router.replace("/(protected)/(tabs)");
         }
