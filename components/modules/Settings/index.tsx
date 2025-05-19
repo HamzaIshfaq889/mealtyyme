@@ -38,6 +38,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { ScrollView } from "react-native-gesture-handler";
 import { checkisProUser, checkisSubscriptionCanceled } from "@/utils";
 import { useUserGamification } from "@/hooks/useUserGamification";
+import { stopCooking } from "@/redux/slices/recipies";
 
 interface SettingCardProps {
   icon: React.ReactNode;
@@ -102,6 +103,7 @@ const Settings = () => {
 
     dispatch(setShowSubscribeCTA(true));
     dispatch(setSavedRecipes(null));
+    dispatch(stopCooking());
     signOut();
     clearUserDataFromStorage();
     setLoading(false);
@@ -184,7 +186,7 @@ const Settings = () => {
           icon={<WalletCardsIcon color="#00C3FF" size={30} />}
           text="Rewards"
           onPress={() => {
-            router.push('/(protected)/(nested)/rewards')
+            router.push("/(protected)/(nested)/rewards");
           }}
           scheme={scheme}
         />

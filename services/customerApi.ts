@@ -46,12 +46,20 @@ export const uploadFile = async (file: File) => {
   const formData = new FormData();
   formData.append("file", file);
 
+  console.log(file)
+
   const response = await apiClient.post(
     `${AppConfig.API_URL}attachments/`,
-    formData
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }
   );
 
-  console.log('llllllllllll',response)
+  console.log(response?.data);
+  console.log(response?.status);
 
   if (!response.ok) {
     throw new Error(response.problem || "Failed to upload file");

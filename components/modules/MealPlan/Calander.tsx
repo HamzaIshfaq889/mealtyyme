@@ -64,7 +64,7 @@ const Calendar = ({ onSelectDate, selected }: any) => {
             date={date}
             onSelectDate={onSelectDate}
             selected={selected}
-            disabled={isBeforeToday}
+            disabled={false}
           />
         );
       })}

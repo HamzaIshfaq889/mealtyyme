@@ -4,7 +4,10 @@ import { Text, TouchableOpacity, View } from "react-native";
 
 import { Star } from "lucide-react-native";
 
-import BottomSheet from "@gorhom/bottom-sheet";
+import BottomSheet, {
+  BottomSheetBackdrop,
+  BottomSheetView,
+} from "@gorhom/bottom-sheet";
 
 import { addReview } from "@/services/recipesAPI";
 import { ReviewButtons } from "@/utils";
@@ -45,50 +48,60 @@ const Review = ({ currentRecipeId, bottomSheetRef }: ReviewProps) => {
   };
 
   return (
-    <View className="flex flex-col w-full h-full py-4 px-6 bg-background">
-      <Text className="font-bold text-2xl leading-8 text-foreground text-center mb-4 mt-8">
-        Rate Recipe
-      </Text>
+    <BottomSheet
+      ref={bottomSheetRef}
+      index={-1}
+      snapPoints={["20%", "50%", "80%"]}
+      backdropComponent={BottomSheetBackdrop}
+      enablePanDownToClose
+    >
+      <BottomSheetView>
+        <View className="flex flex-col w-full h-full py-4 px-6 bg-background">
+          <Text className="font-bold text-2xl leading-8 text-foreground text-center mb-4 mt-8">
+            Rate Recipe
+          </Text>
 
-      <View className="flex flex-row justify-center gap-1.5 mt-5">
-        {[1, 2, 3, 4, 5].map((starIndex) => (
-          <TouchableOpacity
-            key={starIndex}
-            onPress={() => handleStarRating(starIndex)}
-          >
-            {starIndex <= starRating ? (
-              <Star fill={"#e8b015"} stroke={"#e8b015"} />
-            ) : (
-              <Star fill={"transparent"} stroke={"#e8b015"} />
-            )}
-          </TouchableOpacity>
-        ))}
-      </View>
+          <View className="flex flex-row justify-center gap-1.5 mt-5">
+            {[1, 2, 3, 4, 5].map((starIndex) => (
+              <TouchableOpacity
+                key={starIndex}
+                onPress={() => handleStarRating(starIndex)}
+              >
+                {starIndex <= starRating ? (
+                  <Star fill={"#e8b015"} stroke={"#e8b015"} />
+                ) : (
+                  <Star fill={"transparent"} stroke={"#e8b015"} />
+                )}
+              </TouchableOpacity>
+            ))}
+          </View>
 
-      <View className="flex flex-row flex-wrap gap-4 mt-12">
-        {ReviewButtons?.map((btn, index) => {
-          const isSelected = selectedIndex === index;
-          return (
-            <TouchableOpacity
-              key={index}
-              onPress={() => handleSelection(index)}
-            >
-              <View className="mb-2">
-                <Text
-                  className={`font-bold leading-6 py-4 px-6 rounded-2xl ${
-                    isSelected
-                      ? "text-background bg-secondary"
-                      : "text-foreground bg-background border-2 border-primary/65"
-                  }`}
+          <View className="flex flex-row flex-wrap gap-4 mt-12">
+            {ReviewButtons?.map((btn, index) => {
+              const isSelected = selectedIndex === index;
+              return (
+                <TouchableOpacity
+                  key={index}
+                  onPress={() => handleSelection(index)}
                 >
-                  {btn}
-                </Text>
-              </View>
-            </TouchableOpacity>
-          );
-        })}
-      </View>
-    </View>
+                  <View className="mb-2">
+                    <Text
+                      className={`font-bold leading-6 py-4 px-6 rounded-2xl ${
+                        isSelected
+                          ? "text-background bg-secondary"
+                          : "text-foreground bg-background border-2 border-primary/65"
+                      }`}
+                    >
+                      {btn}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+        </View>
+      </BottomSheetView>
+    </BottomSheet>
   );
 };
 

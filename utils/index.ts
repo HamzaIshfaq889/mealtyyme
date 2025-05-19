@@ -26,6 +26,25 @@ export const convertMinutesToTimeLabel = (totalMinutes: number): string => {
   return `${hoursLabel} ${minutesLabel}`.trim();
 };
 
+export function humanizeMinuteSecond(input: string): string {
+  const [minStr, secStr = "0"] = input.split(":");
+  let minutes = parseInt(minStr, 10) || 0;
+  const seconds = parseInt(secStr, 10) || 0;
+  const hours = Math.floor(minutes / 60);
+  minutes = minutes % 60;
+
+  const parts: string[] = [];
+  if (hours) parts.push(`${hours}h`);
+  if (minutes) parts.push(`${minutes}min`);
+  if (!hours && !minutes && seconds) {
+    parts.push(`${seconds}s`);
+  } else if (seconds) {
+    parts.push(`${seconds}s`);
+  }
+
+  return parts.join(" ") || "0s";
+}
+
 export const formatDateToYYYYMMDD = (dateString: string): string => {
   const date = new Date(dateString);
 

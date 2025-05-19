@@ -94,7 +94,7 @@ const HomeUser = () => {
     modalAnim,
   } = useModal();
 
-  const { hasCheckedIn } = useUserGamification();
+  const { hasCheckedIn, stats, checkIn } = useUserGamification();
 
   useEffect(() => {
     if (!hasCheckedIn) {
@@ -149,6 +149,8 @@ const HomeUser = () => {
       ],
     };
   });
+
+  console.log('checkin',hasCheckedIn);
 
   return (
     <View className="flex-1">
@@ -252,10 +254,7 @@ const HomeUser = () => {
         showsVerticalScrollIndicator={false}
         onScroll={useAnimatedScrollHandler({
           onScroll: (event) => {
-            // Update shared value for scroll position
             scrollY.value = event.contentOffset.y;
-
-            // We need to run this on the UI thread for the isScrolledToFeatured state
             runOnJS(setIsScrolledToFeatured)(event.contentOffset.y > 1);
           },
         })}
@@ -279,6 +278,24 @@ const HomeUser = () => {
           </View>
         </Pressable>
       )}
+
+      {/* {!hasCheckedIn && (
+        <ProSubscribeModal
+          visible={!hasCheckedIn}
+          hideModal={hideModal}
+          backdropAnim={backdropAnim}
+          modalAnim={modalAnim}
+        >
+          <DailyCheckInCard
+            handleCheckIn={async () => {
+              await checkIn();
+              hideModal();
+            }}
+            handleSkip={hideModal}
+            userPointsData={stats}
+          />
+        </ProSubscribeModal>
+      )} */}
     </View>
   );
 };

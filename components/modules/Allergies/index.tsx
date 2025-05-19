@@ -65,14 +65,10 @@ const Allergies = () => {
     updateAllergies(
       { customerId, data },
       {
-<<<<<<< HEAD
         onSuccess: async() => {
           await refecthCustomer();
           setLoading(false);
 
-=======
-        onSuccess: () => {
->>>>>>> 329c6f3a792b73392253c26a933fb248ceef6bcf
           router.push("/(protected)/(tabs)");
         },
         onError: (error) => {

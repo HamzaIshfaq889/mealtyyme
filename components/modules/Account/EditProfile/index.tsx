@@ -28,6 +28,9 @@ import {
   useUploadProfileImage,
 } from "@/redux/queries/recipes/useCustomerQuery";
 import { UploadAvatarResponse } from "@/lib/types/customer";
+import axios from "axios";
+
+const formDataImage = global.FormData;
 
 const EditProfile = () => {
   const scheme = useColorScheme();
@@ -40,7 +43,6 @@ const EditProfile = () => {
 
   const { mutate: uploadImage, isPending: isUploadingImage } =
     useUploadProfileImage();
-
   const { mutate: UpdateUserProfile } = useUpdateCustomer();
   const customerId = useSelector(
     (state: any) => state.auth.loginResponseType.customer_details?.id
@@ -107,7 +109,7 @@ const EditProfile = () => {
     }
 
     let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      mediaTypes: ["images"],
       allowsEditing: true,
       aspect: [1, 1],
       quality: 1,
@@ -117,19 +119,50 @@ const EditProfile = () => {
       const uri = result.assets[0].uri;
       setImage(uri);
 
-      const file = await uriToFile(uri);
-      setImageFile(file);
+      // const file = await uriToFile(uri);
+      // setImageFile(file);
+
+      const fD = new formDataImage();
+      //@ts-ignore
+      fD.append("file", {
+        uri: uri,
+        type: "image/*",
+        name: "profile-image",
+      });
+
+      const config = {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ5OTk0MjYxLCJpYXQiOjE3NDc0MDIyNjEsImp0aSI6IjE0NjFmNjk4YTUxNjQwMDhiOWQyM2YxZTI1YmJkN2UxIiwidXNlcl9pZCI6NjcsImVtYWlsIjoic2tAZ21haWwuY29tIiwiZmlyc3RfbmFtZSI6IkJiYiIsInJvbGUiOiJDVVNUT01FUiJ9.LN27bP2eBReQTHdWGesaieYeNieufOm2rZ5pKEv8p-E`,
+        },
+        transformRequest: () => {
+          return fD;
+        },
+      };
+
+      try {
+        const response = await axios.post(
+          "https://backend.mealtyme.co/api/attachments/",
+          fD,
+          config
+        );
+
+        console.log(response.data);
+        alert("success");
+      } catch (error) {
+        console.log(error);
+      }
 
       // Automatically upload file here
-      uploadImage(file, {
-        onSuccess: (data) => {
-          setUploadedImageData(data); // Stores { id, file, uploaded_by, created_at }
-        },
-        onError: (err) => {
-          console.error("Upload failed:", err);
-          Alert.alert("Upload failed", err.message);
-        },
-      });
+      // uploadImage(formData, {
+      //   onSuccess: (data) => {
+      //     setUploadedImageData(data);
+      //   },
+      //   onError: (err) => {
+      //     console.error("Upload failed:", err);
+      //     Alert.alert("Upload failed", err.message);
+      //   },
+      // });
     }
   };
 
@@ -150,7 +183,6 @@ const EditProfile = () => {
 
     const firstName = formData?.firstName;
     const userImage = uploadedImageData?.file;
-    
 
     const data = {
       firstName,

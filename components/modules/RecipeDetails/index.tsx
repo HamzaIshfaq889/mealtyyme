@@ -58,6 +58,10 @@ import {
 import Toast from "react-native-toast-message";
 import { saveSavedRecipesInStorage } from "@/utils/storage/authStorage";
 import { setSavedRecipes, updateSavedRecipes } from "@/redux/slices/Auth";
+import {
+  clearStepTimers,
+  saveCookingRecipe,
+} from "@/utils/storage/cookingStorage";
 
 const RecipeDetails = ({ recipeId }: { recipeId: string | null }) => {
   const bottomSheetMenuRef = useRef<BottomSheet>(null);
@@ -79,6 +83,9 @@ const RecipeDetails = ({ recipeId }: { recipeId: string | null }) => {
   const scheme = useColorScheme();
   const isDarkMode = scheme === "dark";
 
+  const customerId = useSelector(
+    (state: any) => state?.auth?.loginResponseType?.customer_details?.id
+  );
   const [expanded, setExpanded] = useState(false);
   const [serving, setServings] = useState<number>(1);
   const [activeTab, setActiveTab] = useState<"Ingredients" | "Instructions">(
@@ -145,9 +152,15 @@ const RecipeDetails = ({ recipeId }: { recipeId: string | null }) => {
     },
   ];
 
-  const handleStartCooking = () => {
-    if (recipe) dispatch(startCooking(recipe));
-    router.push(`/cooking/${recipe?.id}` as any);
+  const handleStartCooking = async () => {
+    if (recipe) {
+      dispatch(startCooking(recipe));
+      await saveCookingRecipe(customerId, recipe);
+
+      await clearStepTimers(customerId);
+
+      router.push(`/cooking/${recipe?.id}` as any);
+    }
   };
 
   const handleFavourite = (id: number | undefined) => {
@@ -224,7 +237,6 @@ const RecipeDetails = ({ recipeId }: { recipeId: string | null }) => {
         });
       });
   };
-
 
   console.log(recipe?.id);
 

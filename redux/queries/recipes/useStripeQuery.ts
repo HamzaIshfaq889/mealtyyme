@@ -1,10 +1,12 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 
 import {
+  addPaymentMethod,
   cancelSubscription,
   fetchPaymentMethods,
   fetchPreviousSubscriptions,
   getPackagePrices,
+  removePaymentMethod,
   resumeSubscription,
   setDefaultPaymentMethod,
   subscribe,
@@ -31,6 +33,30 @@ export const useSubscribe = () => {
       customerEmail: string;
       isDarkMode: boolean;
     }) => subscribe(token, interval, customerEmail, isDarkMode),
+  });
+};
+
+export const useAddPaymentMethod = () => {
+  return useMutation({
+    mutationFn: ({
+      token,
+      customerEmail,
+      isDarkMode,
+    }: {
+      token: string;
+      customerEmail: string;
+      isDarkMode: boolean;
+    }) => addPaymentMethod(token, customerEmail, isDarkMode),
+  });
+};
+
+export const useRemovePaymentMethod = () => {
+  return useMutation({
+    mutationFn: ({
+      id,
+    }: {
+      id: string;
+    }) => removePaymentMethod(id),
   });
 };
 

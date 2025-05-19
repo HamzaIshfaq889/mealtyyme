@@ -6,13 +6,19 @@ import {
   getPopularRecipes,
   searchRecipes,
 } from "@/services/recipesAPI";
+import { useSelector } from "react-redux";
 
 export const useRecipesQuery = (options: SearchRecipeQueryOptions = {}) => {
+  const allergies = useSelector(
+    (state: any) => state.auth.loginResponseType.customer_details?.allergies
+  );
+
   return useInfiniteQuery({
     queryKey: ["recipes", options],
     queryFn: ({ pageParam = 1 }) =>
       searchRecipes({
         ...options,
+        allergies: allergies,
         page: pageParam,
       }),
     initialPageParam: 1,

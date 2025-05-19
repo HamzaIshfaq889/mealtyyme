@@ -20,13 +20,10 @@ export const AddMealSchedule = async (mealSchedule: AddMealSchedulePayload) => {
 };
 
 export const GetMealsByDate = async (date: string): Promise<MealData> => {
-  console.log("running");
   try {
     const response = await apiClient.get(
       `customer-meal-schedules/meals-by-date/?date=${date}`
     );
-
-    console.log("response", response);
 
     if (!response.ok) {
       if (response.status === 401 || response.status === 404) {

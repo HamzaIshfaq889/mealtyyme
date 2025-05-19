@@ -41,10 +41,16 @@ const Search = () => {
   const scheme = useColorScheme();
   const bottomSheetRef = useRef<BottomSheet>(null);
   const [isFiltersApplied, setIsFiltersApplied] = useState(false);
+  const diet_preferences = useSelector(
+    (state: any) =>
+      state.auth.loginResponseType.customer_details?.diet_preferences
+  );
 
   const [tempCategoriesIds, setTempCategoriesIds] = useState<number[]>([]);
   const [tempCusinesIds, setTempCuisinesIds] = useState<number[]>([]);
-  const [tempDietIds, setTempDietIds] = useState<number[]>([]);
+  const [tempDietIds, setTempDietIds] = useState<number[]>([
+    ...diet_preferences,
+  ]);
   const [tempProtein, setTempProtein] = useState([0, 500]);
   const [tempFat, setTempFat] = useState([0, 100]);
   const [tempCarbs, setTempCarbs] = useState([0, 700]);
@@ -53,7 +59,8 @@ const Search = () => {
 
   const [categoriesIds, setCategoriesIds] = useState<number[]>([]);
   const [cusinesIds, setCuisinesIds] = useState<number[]>([]);
-  const [dietIds, setDietIds] = useState<number[]>([]);
+  // const [dietIds, setDietIds] = useState<number[]>([]);
+  const [dietIds, setDietIds] = useState<number[]>([...diet_preferences]);
   const [inputValue, setInputValue] = useState<string>("");
   const [searchValue, setSearchValue] = useState<string>("");
   const [protien, setProtien] = useState([0, 500]);
@@ -61,10 +68,6 @@ const Search = () => {
   const [carbs, setCarbs] = useState([0, 700]);
   const [calories, setCalories] = useState([0, 2000]);
   const [readyInMinutes, setReadyInMinutes] = useState([0, 300]);
-
-  const allergies = useSelector(
-    (state: any) => state.auth.loginResponseType.customer_details?.allergies
-  );
 
   const {
     data,
@@ -83,7 +86,6 @@ const Search = () => {
     carbs,
     calories,
     readyInMinutes,
-    allergies,
   });
 
   const flattenedRecipes = useMemo(
@@ -120,9 +122,11 @@ const Search = () => {
   }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 
   const handleClearFilters = () => {
+    setDietIds([...diet_preferences]);
+    setTempDietIds([...diet_preferences]);
+
     setCategoriesIds([]);
     setCuisinesIds([]);
-    setDietIds([]);
     setProtien([0, 1000]);
     setCarbs([0, 700]);
     setFat([0, 100]);
@@ -131,7 +135,6 @@ const Search = () => {
 
     setTempCategoriesIds([]);
     setTempCuisinesIds([]);
-    setTempDietIds([]);
     setTempProtein([0, 1000]);
     setTempCarbs([0, 700]);
     setTempFat([0, 100]);
