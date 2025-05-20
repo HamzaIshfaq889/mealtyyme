@@ -36,7 +36,6 @@ import ProSubscribeModal from "@/components/ui/modals/proModal";
 import ProFeaturesCard from "../Search/proFeaturesCard";
 import { useModal } from "@/hooks/useModal";
 import DailyCheckInCard from "@/components/ui/modals/checkin";
-// import { registerForPushNotificationsAsync } from "@/services/notifications/service";
 import { saveNotificationToken } from "@/services/notifications/api";
 import { LoginResponseTypes } from "@/lib/types";
 import { BlurView } from "expo-blur";
@@ -65,21 +64,22 @@ const HomeUser = () => {
   const auth: LoginResponseTypes = useSelector(
     (state: any) => state.auth.loginResponseType
   );
-  // useEffect(() => {
-  //   const initNotifications = async () => {
-  //     try {
-  //       const expoPushToken = await registerForPushNotificationsAsync();
-  //       if (expoPushToken) {
-  //         await saveNotificationToken(expoPushToken);
-  //       }
-  //     } catch (error) {
-  //       console.error("Failed to save notification token:");
-  //     }
-  //   };
-  //   initNotifications();
-  // }, []);
-  const { expoPushToken, notification } = usePushNotifications();
+  const { expoPushToken, notification, logs } = usePushNotifications();
   const data = JSON.stringify(notification, undefined, 2);
+
+  useEffect(() => {
+    const initNotifications = async () => {
+      try {
+        if (expoPushToken) {
+          await saveNotificationToken(expoPushToken.data);
+        }
+      } catch (error) {
+        // Silent fail in production
+      }
+    };
+    initNotifications();
+  }, [expoPushToken]);
+
   const isDark = scheme === "dark";
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -153,7 +153,7 @@ const HomeUser = () => {
     };
   });
 
-  console.log('checkin',hasCheckedIn);
+  console.log("checkin", hasCheckedIn);
 
   return (
     <View className="flex-1">
@@ -266,9 +266,20 @@ const HomeUser = () => {
         <FeaturedRecipes />
         <PopularRecipes />
         <MealPlanCard />
-        <View className="bg-white w-full ">
-          <Text className="text-black">Token: {expoPushToken?.data ?? ""}</Text>
-          <Text className="text-black">Notification: {data}</Text>
+        <View className="bg-white w-full p-4">
+          <Text className="text-black font-bold mb-2">
+            Push Notification Debug Info:
+          </Text>
+          <Text className="text-black mb-2">
+            Token: {expoPushToken?.data ?? "No token"}
+          </Text>
+          <Text className="text-black mb-2">Notification: {data}</Text>
+          <Text className="text-black font-bold mt-4 mb-2">Logs:</Text>
+          {logs?.map((log: any, index: number) => (
+            <Text key={index} className="text-black text-xs mb-1">
+              {new Date(log.timestamp).toLocaleTimeString()}: {log.message}
+            </Text>
+          ))}
         </View>
         {showSubscriptionCTA && <SubcriptionCTA />}
       </Animated.ScrollView>
