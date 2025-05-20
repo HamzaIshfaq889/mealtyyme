@@ -267,7 +267,7 @@ const HomeUser = () => {
         <FeaturedRecipes />
         <PopularRecipes />
         <MealPlanCard />
-        <View className="bg-white">
+        <View className="bg-white w-full ">
           <Text className="text-black">Token: {expoPushToken?.data ?? ""}</Text>
           <Text className="text-black">Notification: {data}</Text>
         </View>
