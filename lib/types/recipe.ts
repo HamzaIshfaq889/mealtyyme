@@ -60,6 +60,12 @@ export type Ingredient = {
     name: string;
     created_at: string;
     created_by: number;
+    category: {
+      id: number;
+      name: string;
+      created_at: string;
+      created_by: number;
+    };
   };
   amount: number;
   unit: string;

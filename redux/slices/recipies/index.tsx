@@ -5,12 +5,14 @@ interface RecipeState {
   currentRecipe: Recipe | null;
   isCooking: boolean;
   cookingRecipe: Recipe | null;
+  isCookingPrivate: boolean;
 }
 
 const initialState: RecipeState = {
   currentRecipe: null,
   isCooking: false,
   cookingRecipe: null,
+  isCookingPrivate: false,
 };
 
 const recipeSlice = createSlice({
@@ -25,14 +27,19 @@ const recipeSlice = createSlice({
       state.currentRecipe = null;
     },
 
-    startCooking: (state, action: PayloadAction<Recipe>) => {
+    startCooking: (
+      state,
+      action: PayloadAction<{ recipe: Recipe; isPrivate?: boolean }>
+    ) => {
       state.isCooking = true;
-      state.cookingRecipe = action.payload;
+      state.cookingRecipe = action.payload.recipe;
+      state.isCookingPrivate = action.payload.isPrivate ?? false;
     },
 
     stopCooking: (state) => {
       state.isCooking = false;
       state.cookingRecipe = null;
+      state.isCookingPrivate = false;
     },
   },
 });

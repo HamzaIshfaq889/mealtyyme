@@ -30,6 +30,7 @@ import {
   clearCookingRecipe,
   clearStepTimers,
   loadStepTimers,
+  saveCookingPrivacy,
   saveStepTimers,
 } from "@/utils/storage/cookingStorage";
 
@@ -47,6 +48,9 @@ const Cooking = () => {
   const currentRecipe: Recipe = useSelector(
     (state: any) => state?.recipe?.cookingRecipe
   );
+  const isPrivateRecipe: boolean = useSelector(
+    (state: any) => state?.recipe?.isCookingPrivate
+  );
   const scheme = useColorScheme();
   const isDarkMode = scheme === "dark";
 
@@ -60,7 +64,7 @@ const Cooking = () => {
   const [timersLoading, setTimersLoading] = useState(true);
 
   const customerId = useSelector(
-    (state: any) => state.auth.loginResponseType.customer_details?.id
+    (state: any) => state?.auth?.loginResponseType?.customer_details?.id
   );
 
   useEffect(() => {
@@ -112,6 +116,7 @@ const Cooking = () => {
 
     dispatch(stopCooking());
     await clearCookingRecipe(customerId);
+    await saveCookingPrivacy(customerId, false);
     await clearStepTimers(customerId);
   };
 
@@ -251,10 +256,12 @@ const Cooking = () => {
         bottomSheetRef={stepsBottomSheetRef as any}
       />
 
-      <Review
-        currentRecipeId={currentRecipe?.id}
-        bottomSheetRef={reviewBottomSheetRef as any}
-      />
+      {!isPrivateRecipe && (
+        <Review
+          currentRecipeId={currentRecipe?.id}
+          bottomSheetRef={reviewBottomSheetRef as any}
+        />
+      )}
     </>
   );
 };

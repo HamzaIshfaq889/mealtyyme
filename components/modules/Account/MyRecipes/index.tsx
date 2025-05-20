@@ -11,25 +11,11 @@ import {
   Dimensions,
 } from "react-native";
 
-import {
-  ArrowRight,
-  BookmarkIcon,
-  ChefHat,
-  Clock,
-  Flame,
-  Import,
-  SquareArrowRight,
-  Star,
-} from "lucide-react-native";
-import {
-  usePrivateRecipes,
-  useSavedRecipes,
-} from "@/redux/queries/recipes/useSaveRecipesQuery";
+import { ArrowRight, Import } from "lucide-react-native";
 import { truncateChars } from "@/utils";
 import { RecipeSkeletonItem } from "@/components/modules/Skeletons";
 import Error from "@/components/modules/Error";
 import { router, useFocusEffect } from "expo-router";
-import { Button, ButtonText } from "@/components/ui/button";
 import { Recipe } from "@/lib/types/recipe";
 import { getPrivateRecipes } from "@/services/privateRecipe";
 import { LinearGradient } from "expo-linear-gradient";
@@ -42,8 +28,7 @@ const MyRecipes = () => {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
-  // Calculate item width based on screen size (2 columns with padding)
-  const ITEM_WIDTH = SCREEN_WIDTH / 2 - 24; // Accounting for padding
+  const ITEM_WIDTH = SCREEN_WIDTH / 2 - 24;
   const ITEM_HEIGHT = 200;
 
   useFocusEffect(
@@ -120,7 +105,15 @@ const MyRecipes = () => {
         }}
         renderItem={({ item }) => (
           <Pressable
-            // onPress={() => router.push(`/recipe/${item.id}`)}
+            onPress={() =>
+              router.push({
+                pathname: "/recipe/[id]",
+                params: {
+                  id: item?.id,
+                  isPrivateRecipe: "true",
+                },
+              })
+            }
             style={{ width: ITEM_WIDTH }}
           >
             <View

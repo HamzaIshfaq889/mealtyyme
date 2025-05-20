@@ -16,8 +16,13 @@ import {
 import { useRouter } from "expo-router";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
-import { getCookingRecipe } from "@/utils/storage/cookingStorage";
+import {
+  getCookingPrivacy,
+  getCookingRecipe,
+} from "@/utils/storage/cookingStorage";
 import { startCooking } from "@/redux/slices/recipies";
+import { loadIngredientCart } from "@/utils/storage/cartStorage";
+import { addIngredients } from "@/redux/slices/cart";
 
 export default function FloatingTabsLayout() {
   const scheme = useColorScheme();
@@ -119,8 +124,14 @@ export default function FloatingTabsLayout() {
   useEffect(() => {
     const checkUserData = async () => {
       const recipe = await getCookingRecipe(customerId);
+      const isPrivate = await getCookingPrivacy(customerId);
+      const cart = await loadIngredientCart(customerId);
+
       if (recipe) {
-        dispatch(startCooking(recipe));
+        dispatch(startCooking({ recipe, isPrivate }));
+      }
+      if (cart.length > 0) {
+        dispatch(addIngredients(cart));
       }
     };
 

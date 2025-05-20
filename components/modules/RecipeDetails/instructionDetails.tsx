@@ -11,7 +11,7 @@ const InstructionDetails = ({ instructions }: InstructionDetailsProps) => {
   const scheme = useColorScheme();
   const isDarkMode = scheme === "dark";
 
-  if (instructions.length === 0) {
+  if (instructions?.length === 0) {
     return (
       <View className="flex items-center justify-center">
         <Text className="text-primary text-xl font-semibold">

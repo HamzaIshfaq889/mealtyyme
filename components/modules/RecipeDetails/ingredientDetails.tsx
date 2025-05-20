@@ -3,11 +3,15 @@ import React from "react";
 import { Pressable, Text, useColorScheme, View } from "react-native";
 
 import { addIngredients } from "@/redux/slices/cart";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import { Ingredient } from "@/lib/types/recipe";
 import { capitalizeFirstLetter, truncateChars } from "@/utils";
 import Toast from "react-native-toast-message";
+import {
+  loadIngredientCart,
+  saveIngredientCart,
+} from "@/utils/storage/cartStorage";
 
 type IngredientDetailsProps = {
   ingredients: Ingredient[];
@@ -23,8 +27,11 @@ const IngredientDetails = ({
   const dispatch = useDispatch();
   const scheme = useColorScheme();
   const isDarkMode = scheme === "dark";
+  const customerId = useSelector(
+    (state: any) => state.auth.loginResponseType.customer_details?.id
+  );
 
-  const handleAddCart = () => {
+  const handleAddCart = async () => {
     const adjustedIngredients = ingredients.map((ing) => {
       const amountPerServing = ing.amount / defaultServings;
       const totalAmount = amountPerServing * serving;
@@ -36,6 +43,30 @@ const IngredientDetails = ({
     });
 
     dispatch(addIngredients(adjustedIngredients));
+
+    // Load existing cart from storage
+    const existingCart = await loadIngredientCart(customerId);
+
+    // Merge new ingredients with existing ones
+    const updatedCart = [...existingCart];
+
+    for (const newItem of adjustedIngredients) {
+      const existing = updatedCart.find(
+        (item) =>
+          item.ingredient.id === newItem.ingredient.id &&
+          item.unit === newItem.unit
+      );
+
+      if (existing) {
+        existing.amount += newItem.amount;
+      } else {
+        updatedCart.push(newItem);
+      }
+    }
+
+    // Save updated cart to AsyncStorage
+    await saveIngredientCart(customerId, updatedCart);
+
     Toast.show({
       type: "success",
       text1: "Items added to the gorcery list successfully!",
@@ -52,7 +83,6 @@ const IngredientDetails = ({
     );
   }
 
-
   return (
     <View>
       <View className="flex flex-row justify-between">
@@ -63,15 +93,17 @@ const IngredientDetails = ({
           <Text className="text-muted">{`${ingredients?.length} Item(s)`}</Text>
         </View>
         <Pressable onPress={handleAddCart}>
-          <Text className="text-secondary pr-5 font-bold">Add to grocery list</Text>
+          <Text className="text-secondary pr-5 font-bold">
+            Add to grocery list
+          </Text>
         </Pressable>
       </View>
 
       <View className="mt-5">
         {ingredients?.map((ing) => {
-          if (ing?.amount == null) return null;
+          // if (ing?.amount == null) return null;
 
-          const amountPerServing = ing.amount / defaultServings;
+          const amountPerServing = ing?.amount / defaultServings;
           const totalAmount = amountPerServing * serving;
 
           return (

@@ -1,18 +1,18 @@
-import { Button, ButtonText } from "@/components/ui/button";
-import { useIngredientsQuery } from "@/redux/queries/recipes/useStaticFilter";
-import { capitalizeWords } from "@/utils";
-import { router } from "expo-router";
+import React, { useState } from "react";
 import {
-  ArrowLeft,
-  ArrowRight,
-  ChevronRight,
-  Clock,
-  Search,
-  ShoppingBag,
-  Star,
-  Trash2,
-  Utensils,
-} from "lucide-react-native";
+  Alert,
+  Image,
+  Text,
+  TouchableOpacity,
+  useColorScheme,
+  View,
+} from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
+
+import { router } from "expo-router";
+import LottieView from "lottie-react-native";
+
+import { ArrowLeft, ChevronRight, Clock, Star } from "lucide-react-native";
 import Animated, {
   FadeIn,
   FadeOut,
@@ -21,26 +21,11 @@ import Animated, {
   Layout,
   Easing,
 } from "react-native-reanimated";
-import React, { useRef, useState, useEffect } from "react";
-import {
-  Alert,
-  Image,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  useColorScheme,
-  View,
-} from "react-native";
-import {
-  AutocompleteDropdown,
-  IAutocompleteDropdownRef,
-} from "react-native-autocomplete-dropdown";
-import { ScrollView } from "react-native-gesture-handler";
-import { Ingredient } from "@/lib/types/recipe";
-import { Input, InputField, InputIcon, InputSlot } from "@/components/ui/input";
-import LottieView from "lottie-react-native";
+
 import { savePrivateRecipe, scrapeRecipe } from "@/services/privateRecipe";
 import { PrivateRecipe } from "@/lib/types/privateRecipe";
+
+import { Input, InputField } from "@/components/ui/input";
 
 const ScrapeRecipe = () => {
   const scheme = useColorScheme();
@@ -111,7 +96,7 @@ const ScrapeRecipe = () => {
       <Animated.View
         entering={FadeIn.duration(fadeDuration).easing(Easing.ease)} // Fade in with specified duration
         exiting={FadeOut.duration(fadeDuration).easing(Easing.ease)} // Fade out with specified duration
-        layout={Layout.springify()} // Smooth layout transition
+        layout={Layout.springify()} 
       >
         <Text style={{ fontSize: 18, color: "#333", marginTop: 10 }}>
           {text}
@@ -119,8 +104,8 @@ const ScrapeRecipe = () => {
       </Animated.View>
     );
   };
-  const fadeDuration = 1000; // Duration for fade-in/fade-out in ms
-  const slideDuration = 1000; // Duration for slide-in/slide-out in ms
+  const fadeDuration = 1000;
+  const slideDuration = 1000;
   return (
     <View className="flex-1 px-6 pt-20 pb-6">
       {/* Header */}

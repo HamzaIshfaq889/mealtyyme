@@ -11,8 +11,10 @@ export const patchCustomer = async ({
   customerId,
   data,
 }: PatchCustomerPayload) => {
+  console.log("Therrrrrrrrrrrrrrrr",customerId, data);
   const response = await apiClient.patch(`customer/${customerId}/`, data);
-
+  
+  console.log('a,aa',response);
   if (!response.ok) {
     if (response.status === 404) {
       throw new Error("Customer not found");
@@ -46,7 +48,7 @@ export const uploadFile = async (file: File) => {
   const formData = new FormData();
   formData.append("file", file);
 
-  console.log(file)
+  console.log(file);
 
   const response = await apiClient.post(
     `${AppConfig.API_URL}attachments/`,

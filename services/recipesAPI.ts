@@ -57,8 +57,19 @@ export const getPopularRecipes = async (): Promise<Recipe[]> => {
   return results;
 };
 
-export const getSingleRecipe = async (id: string | null): Promise<Recipe> => {
-  const response = await apiClient.get<Recipe>(`/recipe-detail/${id}/`, {});
+export const getSingleRecipe = async (
+  id: string | null,
+  isPrivate: boolean = false
+): Promise<Recipe> => {
+  if (!id) {
+    throw new Error("Recipe ID is required");
+  }
+
+  const basePath = isPrivate ? "private-recipe-detail" : "recipe-detail";
+
+  const url = `${basePath}/${id}/`;
+
+  const response = await apiClient.get<Recipe>(url);
 
   if (!response.ok) {
     if (response.status === 401 || response.status === 404) {
@@ -164,7 +175,7 @@ export const searchRecipes = async ({
 }> => {
   const params: string[] = [];
 
-  console.log('allergies',allergies);
+  console.log("allergies", allergies);
 
   if (categoryIds?.length) {
     params.push(...categoryIds.map((id) => `dish_types=${id}`));

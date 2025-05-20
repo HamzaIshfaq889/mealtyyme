@@ -10,7 +10,6 @@ import {
 import { router } from "expo-router";
 
 import {
-  Bell,
   ArrowRight,
   ArrowLeft,
   Info,
@@ -19,14 +18,10 @@ import {
   MessageCircle,
 } from "lucide-react-native";
 
-import { Switch } from "@/components/ui/switch";
-
-import { Image } from "react-native";
 import { Button, ButtonText } from "@/components/ui/button";
 
 import { useDispatch, useSelector } from "react-redux";
 
-import ComingSoonOverlay from "@/components/modules/ComingSoonOverlay";
 import {
   setCredentials,
   setSavedRecipes,
@@ -39,6 +34,7 @@ import { ScrollView } from "react-native-gesture-handler";
 import { checkisProUser, checkisSubscriptionCanceled } from "@/utils";
 import { useUserGamification } from "@/hooks/useUserGamification";
 import { stopCooking } from "@/redux/slices/recipies";
+import { clearCart } from "@/redux/slices/cart";
 
 interface SettingCardProps {
   icon: React.ReactNode;
@@ -104,6 +100,7 @@ const Settings = () => {
     dispatch(setShowSubscribeCTA(true));
     dispatch(setSavedRecipes(null));
     dispatch(stopCooking());
+    dispatch(clearCart());
     signOut();
     clearUserDataFromStorage();
     setLoading(false);

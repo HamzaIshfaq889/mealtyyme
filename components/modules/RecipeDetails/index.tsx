@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 
 import {
   Image,
@@ -60,17 +60,21 @@ import { saveSavedRecipesInStorage } from "@/utils/storage/authStorage";
 import { setSavedRecipes, updateSavedRecipes } from "@/redux/slices/Auth";
 import {
   clearStepTimers,
+  saveCookingPrivacy,
   saveCookingRecipe,
 } from "@/utils/storage/cookingStorage";
 
-const RecipeDetails = ({ recipeId }: { recipeId: string | null }) => {
+type RecipeDetailsProps = {
+  recipeId: string | null;
+  isPrivate: boolean;
+};
+
+const RecipeDetails = ({ recipeId, isPrivate }: RecipeDetailsProps) => {
   const bottomSheetMenuRef = useRef<BottomSheet>(null);
 
   const savedRecipes = useSelector(
     (state: any) => state.auth.savedRecipes || []
   );
-
-  console.log("savedFromRedux", savedRecipes);
 
   const isRecipeSaved = savedRecipes.some(
     (id: number) => id === Number(recipeId)
@@ -97,7 +101,7 @@ const RecipeDetails = ({ recipeId }: { recipeId: string | null }) => {
     isError,
   } = useQuery({
     queryKey: ["recipe", recipeId],
-    queryFn: () => getSingleRecipe(recipeId),
+    queryFn: () => getSingleRecipe(recipeId, isPrivate),
     enabled: !!recipeId,
   });
 
@@ -154,9 +158,9 @@ const RecipeDetails = ({ recipeId }: { recipeId: string | null }) => {
 
   const handleStartCooking = async () => {
     if (recipe) {
-      dispatch(startCooking(recipe));
+      dispatch(startCooking({ recipe, isPrivate }));
       await saveCookingRecipe(customerId, recipe);
-
+      await saveCookingPrivacy(customerId, isPrivate);
       await clearStepTimers(customerId);
 
       router.push(`/cooking/${recipe?.id}` as any);
@@ -289,12 +293,17 @@ const RecipeDetails = ({ recipeId }: { recipeId: string | null }) => {
             </View>
           </View>
           <View className="pt-6 pb-20 rounded-tl-[30px] rounded-tr-[30px] -mt-10 bg-gray-50 dark:bg-black">
-            <Pressable
-              className="flex flex-row justify-end py-1 pr-6"
-              onPress={() => bottomSheetMenuRef.current?.snapToIndex(1)}
-            >
-              <Ellipsis size={30} color={scheme === "dark" ? "#fff" : "#000"} />
-            </Pressable>
+            {!isPrivate && (
+              <Pressable
+                className="flex flex-row justify-end py-1 pr-6"
+                onPress={() => bottomSheetMenuRef.current?.snapToIndex(1)}
+              >
+                <Ellipsis
+                  size={30}
+                  color={scheme === "dark" ? "#fff" : "#000"}
+                />
+              </Pressable>
+            )}
             <View className="px-6 w-full fex flex-row items-center justify-between">
               <Text className="text-primary font-bold text-2xl leading-8 mt-2 max-w-80">
                 {recipe?.title}
@@ -461,15 +470,17 @@ const RecipeDetails = ({ recipeId }: { recipeId: string | null }) => {
               <ButtonText>Start Cooking</ButtonText>
             </Button>
 
-            <View className="mx-6 mb-8">
-              {recipe?.reviews && recipe?.reviews.length > 0 ? (
-                <Review review={recipe.reviews} />
-              ) : (
-                ""
-              )}
-            </View>
+            {!isPrivate && (
+              <View className="mx-6 mb-8">
+                {recipe?.reviews && recipe?.reviews.length > 0 ? (
+                  <Review review={recipe.reviews} />
+                ) : (
+                  ""
+                )}
+              </View>
+            )}
 
-            <View className="w-full h-[2px] bg-accent mb-7"></View>
+            <View className="w-full h-[2px] bg-accent mb-7 mt-6"></View>
 
             <View className="px-7 flex flex-row gap-3.5 mb-10">
               <Image
@@ -487,9 +498,7 @@ const RecipeDetails = ({ recipeId }: { recipeId: string | null }) => {
               </View>
             </View>
 
-            <View>
-              <RelatedRecipes recipe={recipe} />
-            </View>
+            {!isPrivate && <RelatedRecipes recipe={recipe} />}
           </View>
         </ScrollView>
       </SafeAreaView>

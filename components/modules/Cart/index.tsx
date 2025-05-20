@@ -1,62 +1,74 @@
 import React, { useState, useRef } from "react";
-import { View, Text, TouchableOpacity, useColorScheme } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
-import Toast from "react-native-toast-message";
-import { ShoppingBagIcon, Trash2, ArrowLeft } from "lucide-react-native";
 import { useSelector, useDispatch } from "react-redux";
-import { Ingredient } from "@/lib/types/recipe";
+
+import { ScrollView } from "react-native-gesture-handler";
+import { View, Text, TouchableOpacity, useColorScheme } from "react-native";
+import Toast from "react-native-toast-message";
+import {
+  ShoppingBagIcon,
+  Trash2,
+  ArrowLeft,
+  CheckCircle,
+  Circle,
+} from "lucide-react-native";
+
+
+
+import { Ingredient, Recipe } from "@/lib/types/recipe";
 import { sendIngredients } from "@/services/cartApi";
 import { capitalizeWords } from "@/utils";
+
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { removeIngredient } from "@/redux/slices/cart";
 import { Button, ButtonText } from "@/components/ui/button";
 import InstacartLogo from "@/assets/svgs/instacart.svg";
 import { Spinner } from "@/components/ui/spinner";
 import { WebView } from "react-native-webview";
-import { useRouter } from "expo-router";
-import { Linking } from "react-native";
-
 import * as WebBrowser from "expo-web-browser";
-import { ToastAndroid } from "react-native"; // For Android Toast
+import { removeIngredientFromCart } from "@/utils/storage/cartStorage";
+
 const Cart = () => {
   const dispatch = useDispatch();
   const scheme = useColorScheme();
   const isDark = scheme === "dark";
   const tabBarHeight = useBottomTabBarHeight();
-  const router = useRouter();
 
   const [loading, setLoading] = useState(false);
   const [orderUrl, setOrderUrl] = useState<string | null>(null);
   const [canGoBack, setCanGoBack] = useState(false);
+  const [checkedItems, setCheckedItems] = useState<Set<number>>(new Set());
 
-  const ingredients = useSelector((state: any) => state.cart.items);
+  const ingredients: Recipe["ingredients"] = useSelector(
+    (state: any) => state?.cart?.items
+  );
   const webViewRef = useRef<WebView>(null);
 
-  const handleRemove = (id: number) => {
+  const customerId = useSelector(
+    (state: any) => state?.auth?.loginResponseType?.customer_details?.id
+  );
+
+  const handleRemove = async (id: number) => {
     dispatch(removeIngredient(id));
+    await removeIngredientFromCart(customerId, id);
+
+    setCheckedItems((prev) => {
+      const newSet = new Set(prev);
+      newSet.delete(id);
+      return newSet;
+    });
   };
 
-  // const handleOrder = async () => {
-  //   setLoading(true);
-  //   try {
-  //     const data: any = await sendIngredients(ingredients);
-  //     const url = data.products_link_url;
-
-  //     if (url) {
-  //       setOrderUrl(url);
-  //     } else {
-  //       throw new Error("Unable to retrieve the grocery list URL.");
-  //     }
-  //   } catch (error: any) {
-  //     Toast.show({
-  //       type: "error",
-  //       text1: "Error while ordering ingredients",
-  //     });
-  //     console.error("Error sending ingredients:", error.message);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
+  const toggleChecked = (id: number) => {
+    setCheckedItems((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(id)) {
+        newSet.delete(id);
+      } else {
+        newSet.add(id);
+      }
+      return newSet;
+    });
+  };
 
   const handleOrder = async () => {
     setLoading(true);
@@ -65,7 +77,6 @@ const Cart = () => {
       const url = data.products_link_url;
 
       if (url) {
-        // Open the URL using the Expo WebBrowser API
         await WebBrowser.openBrowserAsync(url);
       } else {
         throw new Error("Unable to retrieve the grocery list URL.");
@@ -85,7 +96,7 @@ const Cart = () => {
     if (canGoBack) {
       webViewRef.current?.goBack();
     } else {
-      setOrderUrl(null); // Clear the URL to return to cart view
+      setOrderUrl(null);
     }
   };
 
@@ -147,43 +158,85 @@ const Cart = () => {
           showsVerticalScrollIndicator={false}
         >
           {ingredients?.length > 0 ? (
-            ingredients.map((ing: Ingredient) => (
-              <View
-                key={ing.ingredient.id}
-                className={`rounded-3xl mb-4 bg-background ${
-                  isDark && "bg-[#1D232B]"
-                }`}
-                style={{
-                  boxShadow: !isDark
-                    ? "0px 2px 12px rgba(0,0,0,0.05)"
-                    : undefined,
-                }}
-              >
-                <View className="p-4">
-                  <View className="flex flex-row items-center justify-between">
-                    <View className="bg-secondary rounded-full p-4 px-6 flex items-center justify-center">
-                      <Text className="text-white text-lg font-medium">
-                        {Math.ceil(ing.amount)}
-                      </Text>
-                    </View>
+            (() => {
+              const grouped: { [key: string]: Ingredient[] } = {};
 
-                    <View className="flex flex-col ml-4 flex-1">
-                      <Text className="text-foreground text-xl font-medium">
-                        {capitalizeWords(ing.ingredient.name)}
-                      </Text>
-                      <Text className="text-muted text-sm">{ing.unit}</Text>
-                    </View>
+              ingredients.forEach((ing: Ingredient) => {
+                const category = ing?.ingredient?.category?.name || "Others";
+                if (!grouped[category]) {
+                  grouped[category] = [];
+                }
+                grouped[category].push(ing);
+              });
 
-                    <TouchableOpacity
-                      className="ml-4"
-                      onPress={() => handleRemove(ing.ingredient.id)}
+              return Object.entries(grouped).map(([category, items]) => (
+                <View key={category} className="mb-3">
+                  <Text className="text-2xl font-bold text-primary px-4 mb-2">
+                    {capitalizeWords(category)}
+                  </Text>
+                  {items.map((ing: Ingredient) => (
+                    <View
+                      key={ing?.ingredient?.id}
+                      className={`rounded-3xl mb-4 bg-background ${
+                        isDark && "bg-[#1D232B]"
+                      }`}
+                      style={{
+                        boxShadow: !isDark
+                          ? "0px 2px 12px rgba(0,0,0,0.05)"
+                          : undefined,
+                      }}
                     >
-                      <Trash2 size={20} color="#FF3B30" />
-                    </TouchableOpacity>
-                  </View>
+                      <View className="p-4">
+                        <View className="flex flex-row items-center justify-between">
+                          <TouchableOpacity
+                            onPress={() => toggleChecked(ing?.ingredient?.id)}
+                          >
+                            <View className="flex flex-row items-center ml-4 gap-4">
+                              <View>
+                                {checkedItems.has(ing?.ingredient?.id) ? (
+                                  <CheckCircle
+                                    size={20}
+                                    color="#4CAF50"
+                                    className="mr-2"
+                                  />
+                                ) : (
+                                  <Circle
+                                    size={20}
+                                    color="#B0B0B0"
+                                    className="mr-2"
+                                  />
+                                )}
+                              </View>
+                              <View className="w-[200px]">
+                                <Text
+                                  className={`text-foreground text-xl font-medium ${
+                                    checkedItems.has(ing?.ingredient?.id)
+                                      ? "line-through text-muted"
+                                      : ""
+                                  }`}
+                                >
+                                  {capitalizeWords(ing?.ingredient?.name)}
+                                </Text>
+                                <Text className="text-muted text-sm">
+                                  {ing?.unit}
+                                </Text>
+                              </View>
+                            </View>
+                          </TouchableOpacity>
+
+                          <TouchableOpacity
+                            className="ml-4"
+                            onPress={() => handleRemove(ing?.ingredient?.id)}
+                          >
+                            <Trash2 size={20} color="#FF3B30" />
+                          </TouchableOpacity>
+                        </View>
+                      </View>
+                    </View>
+                  ))}
                 </View>
-              </View>
-            ))
+              ));
+            })()
           ) : (
             <View className="flex-1 justify-center items-center p-7">
               <Text className="text-muted text-sm text-center">
