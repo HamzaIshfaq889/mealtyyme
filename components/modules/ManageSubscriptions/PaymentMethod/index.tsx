@@ -3,21 +3,43 @@ import { router } from "expo-router";
 import { ArrowLeft } from "lucide-react-native";
 import {
   ActivityIndicator,
+  Alert,
   Text,
   TouchableOpacity,
   useColorScheme,
   View,
 } from "react-native";
 
-import { usePaymentMethods } from "@/redux/queries/recipes/useStripeQuery";
+import {
+  useAddPaymentMethod,
+  usePaymentMethods,
+} from "@/redux/queries/recipes/useStripeQuery";
 
 import PaymentMethodsCard from "./paymentMethodCard";
+import { Button, ButtonText } from "@/components/ui/button";
+import { useSelector } from "react-redux";
+import { useState } from "react";
 
 const PaymentMethods = () => {
   const scheme = useColorScheme();
   const isDarkMode = scheme === "dark";
 
-  const { data, isLoading, isError, error } = usePaymentMethods();
+  const [loading, setLoading] = useState(false);
+  const token = useSelector(
+    (state: any) => state.auth.loginResponseType.access
+  );
+  const customerEmail = useSelector(
+    (state: any) => state.auth.loginResponseType.email
+  );
+
+  const {
+    data,
+    isLoading,
+    isError,
+    error,
+    refetch: refetchPaymentMethods,
+  } = usePaymentMethods();
+  const { mutate: addPayment } = useAddPaymentMethod();
 
   if (isLoading) {
     return <ActivityIndicator />;
@@ -27,11 +49,43 @@ const PaymentMethods = () => {
     return <Text>Error: {(error as Error).message}</Text>;
   }
 
-  console.log("paymentMethods", data?.paymentMethods);
+  const handleAddPaymentMethod = () => {
+    if (!token || !customerEmail) return;
+    setLoading(true);
+
+    addPayment(
+      {
+        token,
+        customerEmail,
+        isDarkMode,
+      },
+      {
+        onSuccess: (data) => {
+          if (data) {
+            Alert.alert("Success", "Payment Method added successfully!");
+            refetchPaymentMethods();
+          }
+          setLoading(false);
+        },
+        onError: (error) => {
+          console.log(
+            "Something went wrong while adding payment method.Please try again!",
+            error
+          );
+
+          // Alert.alert(
+          //   "Error while adding payment method.Please try again!",
+          //   error?.message
+          // );
+          setLoading(false);
+        },
+      }
+    );
+  };
 
   return (
     <View
-      className={`flex flex-col w-full h-full px-6 py-16 ${
+      className={`flex flex-col w-full h-full px-6 pt-16 pb-4 ${
         isDarkMode ? "bg-black" : "bg-background"
       }`}
     >
@@ -60,8 +114,20 @@ const PaymentMethods = () => {
       {data?.paymentMethods
         ?.sort((a, b) => (a.isDefault ? -1 : b.isDefault ? 1 : 0))
         .map((paymentMethod, index) => (
-          <PaymentMethodsCard paymentMethod={paymentMethod} key={index} />
+          <PaymentMethodsCard
+            paymentMethod={paymentMethod}
+            key={index}
+            refetch={refetchPaymentMethods}
+          />
         ))}
+
+      <View className="mt-auto">
+        <Button onPress={handleAddPaymentMethod} disabled={!!loading}>
+          <ButtonText>
+            {loading ? "Loading..." : "Add Payment Method"}
+          </ButtonText>
+        </Button>
+      </View>
     </View>
   );
 };

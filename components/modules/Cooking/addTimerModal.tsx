@@ -1,73 +1,41 @@
+// addTimerModal.tsx
 import React, { useState } from "react";
-
-import { useColorScheme } from "react-native";
-import { Text } from "react-native";
-
+import { useColorScheme, Text, View } from "react-native";
 import Dialog from "react-native-dialog";
-
-import { View } from "lucide-react-native";
-
+import ScrollPicker from "react-native-wheel-scrollview-picker";
 import { Button, ButtonText } from "@/components/ui/button";
-import { FormControl } from "@/components/ui/form-control";
-import { Input, InputField } from "@/components/ui/input";
 
-type AddTimeModalProps = {
+type AddTimerModalProps = {
   showTimerModal: boolean;
-  setDuration: (value: number) => void;
-  setShowTimerModal: (value: boolean) => void;
-  setIsPlaying: (value: boolean) => void;
-  setIsTimerComplete: (value: boolean) => void;
+  setShowTimerModal: (v: boolean) => void;
+  // minutes: number, start timestamp: ms
+  setDuration: (min: number, startTime: number) => void;
 };
 
 const AddTimerModal = ({
-  setShowTimerModal,
   showTimerModal,
+  setShowTimerModal,
   setDuration,
-  setIsPlaying,
-  setIsTimerComplete,
-}: AddTimeModalProps) => {
+}: AddTimerModalProps) => {
   const scheme = useColorScheme();
+  const isDarkMode = scheme === "dark";
 
-  const [formData, setFormData] = useState({ time: "" });
-  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  // state for pickers
+  const [selectedHours, setSelectedHours] = useState(0);
+  const [selectedMinutes, setSelectedMinutes] = useState(0);
 
-  const validateField = (key: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [key]: value }));
+  // arrays 0–6 hours, 0–60 minutes
+  const hours = Array.from({ length: 7 }, (_, i) => i);
+  const minutes = Array.from({ length: 61 }, (_, i) => i);
 
-    let errorMessage = "";
-
-    switch (key) {
-      case "time":
-        if (!value) {
-          errorMessage = "Time is required.";
-        }
-        break;
-    }
-
-    setErrors((prev) => ({ ...prev, [key]: errorMessage }));
-  };
-
-  const validateAllFields = () => {
-    const fieldsToValidate = {
-      ...formData,
-    };
-
-    Object.entries(fieldsToValidate).forEach(([key, value]) => {
-      validateField(key, value);
-    });
-  };
-
-  const isFormValid = formData.time && !errors.time;
-  const handleAddClick = () => {
-    validateAllFields();
-    if (!isFormValid) {
+  const handleAdd = () => {
+    const totalMinutes = selectedHours * 60 + selectedMinutes;
+    if (totalMinutes <= 0) {
       return;
     }
-
+    // start immediately
+    setDuration(totalMinutes, Date.now());
     setShowTimerModal(false);
-    setIsPlaying(true);
-    setIsTimerComplete(false);
-    setDuration(Number(formData?.time));
   };
 
   return (
@@ -75,51 +43,70 @@ const AddTimerModal = ({
       <Dialog.Container
         visible={showTimerModal}
         contentStyle={{
-          backgroundColor: scheme === "dark" ? "#000" : "#fff",
-          paddingBottom: 50,
-          paddingTop: 10,
-          borderRadius: 30,
+          backgroundColor: isDarkMode ? "#000" : "#fff",
+          paddingBottom: 10,
+          paddingTop: 2,
+          borderRadius: 20,
         }}
       >
-        <Text className="text-primary text-2xl text-center mb-7">
+        <Text className="text-2xl text-center mb-6 text-primary">
           Add Timer
         </Text>
 
-        <FormControl size="md" className="mb-7">
-          <Input>
-            <InputField
-              type="text"
-              placeholder="Enter Time in Minutes"
-              value={formData?.time}
-              keyboardType="numeric"
-              onChangeText={(text) => validateField("time", text)}
-              className="text-primary text-lg"
-              placeholderTextColor="#999"
+        <View className="flex flex-row justify-between mb-4">
+          {/* Hours Picker */}
+          <View className="w-[47%] h-64 px-4">
+            <ScrollPicker
+              dataSource={hours}
+              selectedIndex={3}
+              renderItem={(data, index) => (
+                <Text
+                  key={index}
+                  className="text-xl text-foreground font-medium mb-2 px-3"
+                >{`${data} hr`}</Text>
+              )}
+              onValueChange={(data, idx) => setSelectedHours(Number(data))}
+              wrapperHeight={180}
+              wrapperBackground={isDarkMode ? "#000" : "#fff"}
+              itemHeight={40}
+              highlightColor={isDarkMode ? "#fff" : "#000"}
+              highlightBorderWidth={2}
             />
-          </Input>
+          </View>
 
-          {errors?.time && (
-            <Text style={{ color: "#EF4444", marginTop: 4 }}>
-              {errors?.time}
-            </Text>
-          )}
-        </FormControl>
+          {/* Minutes Picker */}
+          <View className="w-[47%] h-64 px-4">
+            <ScrollPicker
+              dataSource={minutes}
+              selectedIndex={4}
+              renderItem={(data, index) => (
+                <Text
+                  key={index}
+                  className="text-xl text-foreground font-medium mb-2 px-3"
+                >{`${data} min`}</Text>
+              )}
+              onValueChange={(data, idx) => setSelectedMinutes(Number(data))}
+              wrapperHeight={180}
+              wrapperBackground={isDarkMode ? "#000" : "#fff"}
+              itemHeight={40}
+              highlightColor={isDarkMode ? "#fff" : "#000"}
+              highlightBorderWidth={2}
+            />
+          </View>
+        </View>
 
-        <Button
-          action="secondary"
-          className="w-full py-3"
-          onPress={handleAddClick}
-        >
-          <ButtonText className="text-primary">Add</ButtonText>
-        </Button>
-
-        <Button
-          action="muted"
-          className="!w-full py-3 mt-4"
-          onPress={() => setShowTimerModal(false)}
-        >
-          <ButtonText className="text-foreground">Cancel</ButtonText>
-        </Button>
+        <View className="flex flex-row gap-2">
+          <Button
+            className="w-1/2"
+            action="muted"
+            onPress={() => setShowTimerModal(false)}
+          >
+            <ButtonText>Cancel</ButtonText>
+          </Button>
+          <Button className="w-1/2" action="secondary" onPress={handleAdd}>
+            <ButtonText>Add</ButtonText>
+          </Button>
+        </View>
       </Dialog.Container>
     </View>
   );

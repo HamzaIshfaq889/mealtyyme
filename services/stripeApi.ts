@@ -148,6 +148,71 @@ export const subscribe = async (
   }
 };
 
+export const addPaymentMethod = async (
+  token: string,
+  customerEmail: string,
+  isDarkMode: boolean
+): Promise<any> => {
+  try {
+    // Fetch setup intent from your backend
+    const { setupIntent, ephemeralKey, customer }: any =
+      await fetchPaymentSheetParams();
+
+    // Initialize payment sheet for adding payment method
+    const { error: initError } = await initPaymentSheet({
+      merchantDisplayName: "Mealtyme",
+      customerId: customer,
+      customerEphemeralKeySecret: ephemeralKey,
+      setupIntentClientSecret: setupIntent,
+      defaultBillingDetails: { email: customerEmail },
+      appearance: {
+        colors: {
+          primary: "#3A83F1",
+          background: isDarkMode ? "#121212" : "#FFFFFF",
+          componentBackground: isDarkMode ? "#1E1E1E" : "#F3F8FF",
+          componentBorder: isDarkMode ? "#333333" : "#C1D9FA",
+          componentDivider: isDarkMode ? "#2C2C2E" : "#E3EFFF",
+          primaryText: isDarkMode ? "#FFFFFF" : "#1A1A1A",
+          secondaryText: isDarkMode ? "#CCCCCC" : "#7A7A7A",
+          placeholderText: isDarkMode ? "#888888" : "#AAAAAA",
+        },
+      },
+      paymentMethodOrder: ["card", "apple_pay", "google_pay"],
+    });
+
+    if (initError) {
+      throw new Error(
+        initError.message || "Failed to initialize payment sheet"
+      );
+    }
+
+    // Present the payment sheet
+    const { error: presentError } = await presentPaymentSheet();
+
+    if (presentError) {
+      throw new Error(presentError.message || "Payment method addition failed");
+    }
+
+    // Confirm and attach the payment method to customer
+    const confirmResponse = await apiClient.post(
+      `${AppConfig.API_URL}setup-payment-method/`
+    );
+
+    console.log("set payment response", confirmResponse);
+    if (!confirmResponse.ok) {
+      throw new Error(
+        confirmResponse.originalError?.message ||
+          "Failed to attach payment method"
+      );
+    }
+
+    return confirmResponse;
+  } catch (error: any) {
+    Alert.alert("Error", error.message);
+    throw error;
+  }
+};
+
 export const cancelSubscription = async (subscriptionId: string) => {
   const response = await apiClient.post(
     `${AppConfig.API_URL}cancel-subscription/`,
@@ -233,6 +298,25 @@ export const setDefaultPaymentMethod = async (paymentMethodId: string) => {
   }
 
   return response.data;
+};
+
+export const removePaymentMethod = async (id: string): Promise<any> => {
+  try {
+    const response = await apiClient.delete(
+      `${AppConfig}delete-payment-method/`,
+      { id }
+    );
+
+    if (!response.ok) {
+      throw new Error(
+        response.originalError?.message || "Failed to remove payment method"
+      );
+    }
+
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error.message || "Error removing payment method");
+  }
 };
 
 export const resumeSubscription = async (subscriptionId: string) => {

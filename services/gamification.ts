@@ -1,3 +1,4 @@
+import { AppConfig } from "@/constants";
 import apiClient from "@/lib/apiClient";
 import { UserPointsData } from "@/lib/types/gamification";
 
@@ -14,8 +15,10 @@ export const getGamificationStats = async (): Promise<UserPointsData> => {
 };
 
 export const checkInUser = async (): Promise<void> => {
-  const response = await apiClient.post("gamification/daily-checkin/");
-  console.log("check-in response", response);
+  const response = await apiClient.post(
+    `gamification/daily-checkin/`
+  );
+  console.log("check-in response...............", response);
 
   if (!response.ok) {
     throw new Error(

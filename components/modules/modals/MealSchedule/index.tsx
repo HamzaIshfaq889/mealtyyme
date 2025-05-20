@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-
 import {
   Platform,
   SafeAreaView,
@@ -10,11 +9,8 @@ import {
   StyleSheet,
 } from "react-native";
 import Dialog from "react-native-dialog";
-
 import { Button, ButtonText } from "@/components/ui/button";
-
 import { ChevronDown, ChevronUp, Clock } from "lucide-react-native";
-
 import DateTimePicker from "@react-native-community/datetimepicker";
 import moment from "moment";
 import Toast from "react-native-toast-message";
@@ -23,6 +19,7 @@ import { Recipe } from "@/lib/types/recipe";
 import { useSelector } from "react-redux";
 import { AddMealSchedulePayload, MealType } from "@/lib/types/mealschedule";
 import { AddMealSchedule } from "@/services/mealscheduleApi";
+import { checkisProUser } from "@/utils";
 
 type MealScheduleProps = {
   showMealScheduleModal: boolean;
@@ -45,28 +42,32 @@ const MealSchedule = ({
     (state: any) => state.recipe.currentRecipe
   );
   const [selected, setSelected] = useState<MealType>("BREAKFAST");
-  const [date, setDate] = useState(new Date(1598051730000));
-  const [mode, setMode] = useState("date");
+  
+  const status = useSelector(
+      (state: any) =>
+        state.auth.loginResponseType.customer_details?.subscription?.status
+    );
+    const isProUser = checkisProUser(status);
+
+  // Date configuration
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const maxDate = new Date(today);
+  maxDate.setDate(today.getDate() + (isProUser ? 6 : 3));
+
+  const [date, setDate] = useState(today);
+  const [mode, setMode] = useState<"date" | "time">("date");
   const [show, setShow] = useState(false);
 
-  const onChange = (event: any, selectedDate: any) => {
-    const currentDate = selectedDate;
+  const onChange = (event: any, selectedDate: Date | undefined) => {
+    const currentDate = selectedDate || date;
     setShow(false);
     setDate(currentDate);
-    console.log("date", date);
   };
 
-  const showMode = (currentMode: any) => {
+  const showMode = (currentMode: "date" | "time") => {
     setShow(true);
     setMode(currentMode);
-  };
-
-  const showDatepicker = () => {
-    showMode("date");
-  };
-
-  const showTimepicker = () => {
-    showMode("time");
   };
 
   const handleSave = async () => {
@@ -76,24 +77,24 @@ const MealSchedule = ({
     }
 
     try {
-      const formattedDate = new Date(date).toISOString().split("T")[0];
-      // 👆 Converts to "YYYY-MM-DD" format
-
+      const formattedDate = moment(date).format("YYYY-MM-DD");
       const payload: AddMealSchedulePayload = {
-        recipe: Number(currentRecipe?.id),
+        recipe: Number(currentRecipe.id),
         meal_type: selected,
-        date: formattedDate, // Use formatted date here
+        date: formattedDate,
       };
 
-      const response = await AddMealSchedule(payload);
-      console.log("mealRes", response);
+      await AddMealSchedule(payload);
       Toast.show({
         type: "success",
-        text1: "Meal added succesfully!",
+        text1: "Meal added successfully!",
       });
     } catch (error) {
       console.error("Error adding meal schedule:", error);
-      // Handle error
+      Toast.show({
+        type: "error",
+        text1: "Failed to add meal schedule",
+      });
     }
   };
 
@@ -133,9 +134,7 @@ const MealSchedule = ({
               const matched = mealOptions.find(
                 (item) => item.label === selectedLabel
               );
-              if (matched) {
-                setSelected(matched.value);
-              }
+              if (matched) setSelected(matched.value);
             }}
             renderButton={(selectedItem, isOpened) => (
               <View
@@ -148,14 +147,13 @@ const MealSchedule = ({
                   shadowOpacity: 0.1,
                   shadowRadius: 4,
                   elevation: 3,
-                  borderWidth: 0,
                 }}
               >
                 <Text
                   className="flex-1 text-lg font-medium text-primary"
                   numberOfLines={1}
                 >
-                  {selectedItem || "Select an option"}
+                  {selectedItem || "Select meal type"}
                 </Text>
                 <View className="ml-2">
                   {isOpened ? (
@@ -167,8 +165,8 @@ const MealSchedule = ({
               </View>
             )}
             renderItem={(item, isSelected) => (
-              <View className={`px-6 py-4 bg-background`}>
-                <Text className={`text-base "font-semibold text-primary`}>
+              <View className="px-6 py-4 bg-background">
+                <Text className="text-base font-semibold text-primary">
                   {item}
                 </Text>
               </View>
@@ -183,13 +181,11 @@ const MealSchedule = ({
               shadowRadius: 12,
               elevation: 5,
             }}
-            showsVerticalScrollIndicator={false}
-            statusBarTranslucent={true}
           />
 
           <SafeAreaView>
             <TouchableOpacity
-              onPress={showDatepicker}
+              onPress={() => showMode("date")}
               className="bg-background px-4 border border-border rounded-xl py-5 mb-7"
               style={{
                 borderRadius: Platform.OS === "ios" ? 16 : 12,
@@ -200,44 +196,47 @@ const MealSchedule = ({
                 className="text-foreground"
                 style={{
                   fontSize: Platform.OS === "ios" ? 16 : 15,
+                color: scheme === "dark" ? "#fff" : "#000",
+                textAlign: "center",
+                fontWeight: "500",
                 }}
               >
                 {moment(date).format("MMMM D, YYYY")}
               </Text>
             </TouchableOpacity>
 
-            {show && (
+            {show && Platform.OS !== "ios" && (
               <DateTimePicker
                 testID="dateTimePicker"
                 value={date}
-                mode={mode as any}
+                mode={mode}
                 is24Hour={true}
                 onChange={onChange}
-                display={Platform.OS === "ios" ? "compact" : "default"}
-                minimumDate={new Date()}
-                themeVariant="dark"
+                display="default"
+                minimumDate={today}
+                maximumDate={maxDate}
+                themeVariant={scheme === "dark" ? "dark" : "light"}
               />
             )}
+
             {Platform.OS === "ios" && (
-              <View style={{ width: "100%" }}>
-                <DateTimePicker
-                  testID="dateTimePicker"
-                  value={date}
-                  mode={mode as any}
-                  is24Hour={true}
-                  onChange={onChange}
-                  display={Platform.OS === "ios" ? "inline" : "spinner"}
-                  minimumDate={new Date()} // This disables past dates
-                />
-              </View>
+              <DateTimePicker
+                testID="dateTimePicker"
+                value={date}
+                mode="date"
+                // is24Hour={true}
+                onChange={onChange}
+                display="inline"
+                minimumDate={today}
+                maximumDate={maxDate}
+                themeVariant={scheme === "dark" ? "dark" : "light"}
+              />
             )}
           </SafeAreaView>
 
           <View
             className="flex flex-row gap-2"
-            style={{
-              marginTop: Platform.OS === "ios" ? 10 : 5,
-            }}
+            style={{ marginTop: Platform.OS === "ios" ? 10 : 5 }}
           >
             <Button
               action="muted"
@@ -248,11 +247,7 @@ const MealSchedule = ({
               }}
               onPress={() => setShowMealScheduleModal(false)}
             >
-              <ButtonText
-                style={{
-                  fontSize: Platform.OS === "ios" ? 18 : 16,
-                }}
-              >
+              <ButtonText style={{ fontSize: Platform.OS === "ios" ? 18 : 16 }}>
                 Cancel
               </ButtonText>
             </Button>
@@ -268,11 +263,7 @@ const MealSchedule = ({
                 borderRadius: Platform.OS === "ios" ? 16 : 12,
               }}
             >
-              <ButtonText
-                style={{
-                  fontSize: Platform.OS === "ios" ? 18 : 16,
-                }}
-              >
+              <ButtonText style={{ fontSize: Platform.OS === "ios" ? 18 : 16 }}>
                 Save
               </ButtonText>
             </Button>
@@ -288,10 +279,9 @@ export default MealSchedule;
 const styles = StyleSheet.create({
   pickerContainer: {
     width: "100%",
-    alignSelf: "stretch", // This ensures the container takes full width
+    alignSelf: "stretch",
   },
   picker: {
-    width: "100%", // Works on Android
-    // On iOS, the width is controlled by the display mode
+    width: "100%",
   },
 });

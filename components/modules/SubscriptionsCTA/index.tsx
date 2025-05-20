@@ -148,13 +148,6 @@ const SubcriptionCTA = ({
       {
         onSuccess: (data) => {
           if (data) {
-            Alert.alert(
-              "Success",
-              `Subscription for ${
-                selectedPlan === "monthly" ? "month" : "year"
-              } is now active!`
-            );
-
             dispatch(setShowSubscribeCTA(false));
 
             refetch()
@@ -185,6 +178,13 @@ const SubcriptionCTA = ({
               });
 
             // saveUserDataInStorage({ ...credentials });
+
+            Alert.alert(
+              "Success",
+              `Subscription for ${
+                selectedPlan === "monthly" ? "month" : "year"
+              } is now active!`
+            );
 
             handleCloseBottomSheet();
           }

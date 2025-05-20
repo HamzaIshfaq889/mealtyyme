@@ -14,12 +14,21 @@ import {
   BotMessageSquare,
 } from "lucide-react-native";
 import { useRouter } from "expo-router";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import { getCookingRecipe } from "@/utils/storage/cookingStorage";
+import { startCooking } from "@/redux/slices/recipies";
 
 export default function FloatingTabsLayout() {
   const scheme = useColorScheme();
   const router = useRouter();
-  const segments = useSegments(); // gives you the current path segments
+  const segments = useSegments();
   const isDark = scheme === "dark";
+  const dispatch = useDispatch();
+
+  const customerId = useSelector(
+    (state: any) => state.auth.loginResponseType.customer_details?.id
+  );
 
   const colors = {
     background: isDark ? "#17181A" : "#FFFFFF",
@@ -27,8 +36,6 @@ export default function FloatingTabsLayout() {
     inactive: isDark ? "#6B7280" : "#97A2B0",
   };
 
-  // Determine the current active tab index based on segments
-  // This assumes your tabs routes are: index, meal-plan, chat-bot, cart, account
   const currentRoute = segments[segments.length - 1] || "index";
   const tabIndexMap = {
     index: 0,
@@ -108,6 +115,17 @@ export default function FloatingTabsLayout() {
       </View>
     );
   }
+
+  useEffect(() => {
+    const checkUserData = async () => {
+      const recipe = await getCookingRecipe(customerId);
+      if (recipe) {
+        dispatch(startCooking(recipe));
+      }
+    };
+
+    checkUserData();
+  }, []);
 
   return (
     <>

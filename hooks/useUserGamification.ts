@@ -1,8 +1,10 @@
-import { useState, useEffect, useCallback } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { UserPointsData } from "@/lib/types/gamification";
-import { checkInUser, getGamificationStats } from "@/services/gamification";
+import { useState, useCallback } from "react";
+
 import { useFocusEffect } from "expo-router";
+
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { checkInUser, getGamificationStats } from "@/services/gamification";
+import { UserPointsData } from "@/lib/types/gamification";
 
 export const useUserGamification = () => {
   const [hasCheckedIn, setHasCheckedIn] = useState(false);
@@ -12,8 +14,18 @@ export const useUserGamification = () => {
 
   const today = new Date().toISOString().split("T")[0];
 
+  useFocusEffect(
+    useCallback(() => {
+      checkTodayCheckIn();
+      fetchStats();
+    }, [])
+  );
+
   const checkTodayCheckIn = async () => {
     const storedDate = await AsyncStorage.getItem("lastCheckInDate");
+    console.log("hello", storedDate);
+    console.log("storedDate", today);
+
     if (storedDate === today) {
       setHasCheckedIn(true);
     } else {
@@ -35,26 +47,22 @@ export const useUserGamification = () => {
 
   const checkIn = async () => {
     try {
-      await checkInUser(); // 👈 Call your API here
+      console.log('hhh')
+      await checkInUser();
+      console.log("1");
       await AsyncStorage.setItem("lastCheckInDate", today);
+      console.log("2");
       setHasCheckedIn(true);
-      await fetchStats(); // 👈 Optionally refresh stats
+      await fetchStats();
     } catch (err: any) {
       setError(err.message || "Check-in failed.");
     }
   };
 
-  useFocusEffect(
-    useCallback(() => {
-      checkTodayCheckIn();
-      fetchStats();
-    }, [])
-  );
-
   const clearCheckInDate = async () => {
     try {
       await AsyncStorage.removeItem("lastCheckInDate");
-      setHasCheckedIn(false); // Optionally reset the state
+      setHasCheckedIn(false);
     } catch (err: any) {
       setError(err.message || "Failed to clear check-in date.");
     }
