@@ -1,11 +1,6 @@
 import React, { useState } from "react";
 
-import {
-  Text,
-  TouchableOpacity,
-  useColorScheme,
-  View,
-} from "react-native";
+import { Text, TouchableOpacity, useColorScheme, View } from "react-native";
 
 import { router } from "expo-router";
 
@@ -65,14 +60,10 @@ const Allergies = () => {
     updateAllergies(
       { customerId, data },
       {
-<<<<<<< HEAD
-        onSuccess: async() => {
+        onSuccess: async () => {
           await refecthCustomer();
           setLoading(false);
 
-=======
-        onSuccess: () => {
->>>>>>> 329c6f3a792b73392253c26a933fb248ceef6bcf
           router.push("/(protected)/(tabs)");
         },
         onError: (error) => {
