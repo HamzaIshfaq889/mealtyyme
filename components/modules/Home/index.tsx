@@ -36,7 +36,7 @@ import ProSubscribeModal from "@/components/ui/modals/proModal";
 import ProFeaturesCard from "../Search/proFeaturesCard";
 import { useModal } from "@/hooks/useModal";
 import DailyCheckInCard from "@/components/ui/modals/checkin";
-import { registerForPushNotificationsAsync } from "@/services/notifications/service";
+// import { registerForPushNotificationsAsync } from "@/services/notifications/service";
 import { saveNotificationToken } from "@/services/notifications/api";
 import { LoginResponseTypes } from "@/lib/types";
 import { BlurView } from "expo-blur";
@@ -51,6 +51,7 @@ import Animated, {
   runOnJS,
 } from "react-native-reanimated";
 import MealPlanCard from "./mealplancard";
+import { usePushNotifications } from "@/services/notifications/service";
 
 const HomeUser = () => {
   const scheme = useColorScheme();
@@ -64,19 +65,21 @@ const HomeUser = () => {
   const auth: LoginResponseTypes = useSelector(
     (state: any) => state.auth.loginResponseType
   );
-  useEffect(() => {
-    const initNotifications = async () => {
-      try {
-        const expoPushToken = await registerForPushNotificationsAsync();
-        if (expoPushToken) {
-          await saveNotificationToken(expoPushToken);
-        }
-      } catch (error) {
-        console.error("Failed to save notification token:");
-      }
-    };
-    initNotifications();
-  }, []);
+  // useEffect(() => {
+  //   const initNotifications = async () => {
+  //     try {
+  //       const expoPushToken = await registerForPushNotificationsAsync();
+  //       if (expoPushToken) {
+  //         await saveNotificationToken(expoPushToken);
+  //       }
+  //     } catch (error) {
+  //       console.error("Failed to save notification token:");
+  //     }
+  //   };
+  //   initNotifications();
+  // }, []);
+  const { expoPushToken, notification } = usePushNotifications();
+  const data = JSON.stringify(notification, undefined, 2);
   const isDark = scheme === "dark";
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -264,7 +267,10 @@ const HomeUser = () => {
         <FeaturedRecipes />
         <PopularRecipes />
         <MealPlanCard />
-
+        <View className="bg-white">
+          <Text className="text-black">Token: {expoPushToken?.data ?? ""}</Text>
+          <Text className="text-black">Notification: {data}</Text>
+        </View>
         {showSubscriptionCTA && <SubcriptionCTA />}
       </Animated.ScrollView>
 
