@@ -42,14 +42,10 @@ export const getFeaturedRecipes = async (): Promise<Recipe[]> => {
 export const getPopularRecipes = async (
   id: string | number | null
 ): Promise<Recipe[]> => {
-  console.log("id", id);
-
-  // Construct the endpoint based on whether id is null or not
   const endpoint =
     id !== null
       ? `/recipes/?dish_types=${id}&pageSize=10`
       : `/recipes/?pageSize=10`;
-  console.log("endpoin", endpoint);
   const response = await apiClient.get<RecipeResponse>(endpoint, {});
 
   if (!response.ok) {

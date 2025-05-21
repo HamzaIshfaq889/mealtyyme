@@ -55,6 +55,11 @@ import {
 import { Input, InputField, InputIcon, InputSlot } from "@/components/ui/input";
 
 import Coin from "@/assets/svgs/coin.svg";
+import MainDishes from "./mainDishes";
+import ImportRecipeCard from "./importRecipeCard";
+import Under30Minutes from "./under30Minutes";
+import AskChefMate from "./askChefMate";
+import GlutenFreeDiets from "./glutenFreeDiets";
 
 const formatDate = (d: Date) => d.toISOString().split("T")[0];
 
@@ -154,7 +159,7 @@ const HomeUser = () => {
   }, [isVisible, hideModal]);
 
   return (
-    <View className="flex-1 bg-background pt-12">
+    <View className="flex-1 bg-background pt-12 pb-12">
       <View className="flex flex-row items-center justify-between mx-6 mb-6">
         <Pressable className="flex-row items-center">
           {auth?.image_url ? (
@@ -218,9 +223,37 @@ const HomeUser = () => {
         })}
         scrollEventThrottle={16}
       >
-        <FeaturedRecipes />
-        <PopularRecipes />
-        {/* <MealPlanCard /> */}
+        <View className="mb-8">
+          <FeaturedRecipes />
+        </View>
+
+        <View className="mb-4">
+          <PopularRecipes />
+        </View>
+
+        <View className="mb-6">
+          <MealPlanCard />
+        </View>
+
+        <View className="mb-6">
+          <MainDishes />
+        </View>
+
+        <View className="mb-6">
+          <ImportRecipeCard />
+        </View>
+
+        <View className="mb-6">
+          <Under30Minutes />
+        </View>
+
+        <View className="mb-6">
+          <AskChefMate />
+        </View>
+
+        <View className="mb-6">
+          <GlutenFreeDiets />
+        </View>
 
         {showSubscriptionCTA && <SubcriptionCTA />}
       </Animated.ScrollView>

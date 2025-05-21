@@ -45,8 +45,6 @@ export default function MealPlanCard({}) {
     "NOV",
     "DEC",
   ];
-
-  // Generate dates for the next 3 days and previous 3 days
   const getDates = () => {
     const dates = [];
     for (let i = -3; i <= 3; i++) {
@@ -104,112 +102,90 @@ export default function MealPlanCard({}) {
   });
 
   return (
-    <Animated.View
-      style={[
-        { transform: [{ scale: scaleAnim }], opacity: opacityAnim },
-        shadowStyle,
-      ]}
-      className="rounded-3xl overflow-hidden mx-2"
-    >
+    <Animated.View className="bg-secondary py-6 px-6 rounded-3xl overflow-hidden mx-6">
       <View>
-        <LinearGradient
-          colors={["#00AAFF", "#0077CC", "#66DDFF"]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={{ padding: 24, borderRadius: 16 }}
-        >
-          {/* Centered Date Selector */}
-          <View className="items-center mb-8">
-            {/* Date circles row */}
-            <View className="flex-row justify-center items-center w-full">
-              {dates.map((date, index) => {
-                const isToday = index === 3;
-                const opacity = isToday
-                  ? 1
-                  : Math.max(0.3, 1 - Math.abs(index - 3) * 0.2);
-                const scale = isToday
-                  ? 1
-                  : Math.max(0.7, 1 - Math.abs(index - 3) * 0.1);
+        {/* Centered Date Selector */}
+        <View className="items-center mb-8">
+          {/* Date circles row */}
+          <View className="flex-row justify-center items-center w-full">
+            {dates.map((date, index) => {
+              const isToday = index === 3;
+              const opacity = isToday
+                ? 1
+                : Math.max(0.3, 1 - Math.abs(index - 3) * 0.2);
+              const scale = isToday
+                ? 1
+                : Math.max(0.7, 1 - Math.abs(index - 3) * 0.1);
 
-                return (
-                  <TouchableOpacity
-                    key={index}
-                    className={`items-center mx-1 ${isToday ? "z-10" : ""}`}
-                    activeOpacity={0.8}
+              return (
+                <TouchableOpacity
+                  key={index}
+                  className={`items-center mx-1 ${isToday ? "z-10" : ""}`}
+                  activeOpacity={0.8}
+                >
+                  <Animated.View
+                    style={{
+                      opacity,
+                      transform: [{ scale }],
+                    }}
+                    className={`${
+                      isToday ? "bg-white" : "bg-white/30"
+                    } rounded-full p-3 ${
+                      isToday ? "w-16 h-16" : "w-12 h-12"
+                    } justify-center items-center`}
                   >
-                    <Animated.View
-                      style={{
-                        opacity,
-                        transform: [{ scale }],
-                      }}
+                    <Text
                       className={`${
-                        isToday ? "bg-white" : "bg-white/30"
-                      } rounded-full p-3 ${
-                        isToday ? "w-16 h-16" : "w-12 h-12"
-                      } justify-center items-center`}
+                        isToday ? "text-blue-600 font-bold" : "text-white"
+                      } text-center ${isToday ? "text-lg" : "text-sm"}`}
                     >
-                      <Text
-                        className={`${
-                          isToday ? "text-blue-600 font-bold" : "text-white"
-                        } text-center ${isToday ? "text-lg" : "text-sm"}`}
-                      >
-                        {date.getDate()}
-                      </Text>
-                      <Text
-                        className={`${
-                          isToday ? "text-blue-600 font-bold" : "text-white"
-                        } text-center text-xs`}
-                      >
-                        {dayNames[date.getDay()]}
-                      </Text>
-                    </Animated.View>
-                  </TouchableOpacity>
-                );
-              })}
-            </View>
-
-            {/* Current month and year */}
+                      {date.getDate()}
+                    </Text>
+                    <Text
+                      className={`${
+                        isToday ? "text-blue-600 font-bold" : "text-white"
+                      } text-center text-xs`}
+                    >
+                      {dayNames[date.getDay()]}
+                    </Text>
+                  </Animated.View>
+                </TouchableOpacity>
+              );
+            })}
           </View>
 
-          {/* Description */}
-          <Text className="text-white text-base mb-8 text-center">
-            Plan your meals up to 7 days ahead with ease.
-          </Text>
+          {/* Current month and year */}
+        </View>
 
-          {/* Start Meal Planning Button */}
-          <Animated.View
-            style={{
-              transform: [
-                {
-                  translateY: buttonAnim.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: [20, 0],
-                  }),
-                },
-              ],
-              opacity: buttonAnim,
-            }}
+        {/* Description */}
+        <Text className="text-white text-base mb-8 text-center">
+          Plan your meals up to 7 days ahead with ease.
+        </Text>
+
+        {/* Start Meal Planning Button */}
+        <Animated.View
+          style={{
+            transform: [
+              {
+                translateY: buttonAnim.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [20, 0],
+                }),
+              },
+            ],
+            opacity: buttonAnim,
+          }}
+        >
+          <TouchableOpacity
+            className="bg-white py-4 rounded-3xl active:opacity-90 flex-row justify-center items-center"
+            activeOpacity={0.8}
+            onPress={() => router.replace("/(protected)/(tabs)/meal-plan")}
           >
-            <TouchableOpacity
-              className="bg-white py-4 rounded-xl active:opacity-90 flex-row justify-center items-center"
-              activeOpacity={0.8}
-              onPress={() => router.replace("/(protected)/(tabs)/meal-plan")}
-              style={Platform.select({
-                ios: {
-                  shadowColor: "#000",
-                  shadowOffset: { width: 0, height: 2 },
-                  shadowOpacity: 0.2,
-                  shadowRadius: 3,
-                },
-                android: { elevation: 4 },
-              })}
-            >
-              <Text className="text-blue-600 font-bold text-center text-lg">
-                Start Meal Planning
-              </Text>
-            </TouchableOpacity>
-          </Animated.View>
-        </LinearGradient>
+            <Text className="text-secondary font-bold text-center text-lg">
+              Start Meal Planning
+            </Text>
+          </TouchableOpacity>
+        </Animated.View>
       </View>
     </Animated.View>
   );
