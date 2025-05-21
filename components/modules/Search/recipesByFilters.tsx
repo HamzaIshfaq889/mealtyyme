@@ -38,15 +38,13 @@ const FilterSection = ({
 
   return (
     <>
-      <Text className="text-foreground font-semibold text-xl mb-2">
-        {title}
-      </Text>
+      <Text className="text-primary font-semibold text-xl mb-2">{title}</Text>
       <View className="mb-6">
         <View className="flex-row flex-wrap">
           {visibleItems.map((item, index) => (
             <TouchableOpacity
               key={item.id ?? `${item.name}-${index}`}
-              className="bg-background px-4 py-5 rounded-full mr-1 mb-2"
+              className="bg-foreground px-4 py-5 rounded-full mr-1 mb-2"
               onPress={() =>
                 router.push({
                   pathname:
@@ -55,7 +53,7 @@ const FilterSection = ({
                 })
               }
             >
-              <Text className="text-foreground font-medium">
+              <Text className="text-muted font-medium">
                 {capitalizeFirstLetter(item.name)}
               </Text>
             </TouchableOpacity>
@@ -63,7 +61,7 @@ const FilterSection = ({
         </View>
         {shouldShowMoreButton && (
           <TouchableOpacity
-            className="w-16 flex justify-center items-center rounded-full bg-gray3 px-4 py-2"
+            className="w-16 flex justify-center items-center rounded-full bg-input px-4 py-2"
             onPress={handleShowAll}
           >
             <Text className="text-foreground font-medium pb-2.5">...</Text>

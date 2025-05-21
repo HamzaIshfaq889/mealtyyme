@@ -150,10 +150,10 @@ const HomeUser = () => {
     };
   });
 
-  console.log('checkin',hasCheckedIn);
+  console.log("checkin", hasCheckedIn);
 
   return (
-    <View className="flex-1">
+    <View className="flex-1 bg-background">
       {/* Gradient background for visual interest */}
       <LinearGradient
         colors={isDark ? ["#111115", "#16161a"] : ["#f9f9ff", "#ffffff"]}
@@ -188,7 +188,7 @@ const HomeUser = () => {
               </View>
             )}
             <View className="ml-3">
-              <Text className="text-base font-semibold text-foreground">
+              <Text className="text-base font-semibold text-primary">
                 {name || "Chef"}
               </Text>
             </View>
@@ -233,7 +233,7 @@ const HomeUser = () => {
           <Animated.View style={searchBarAnimatedStyle}>
             <Pressable
               onPress={() => router.push("/(protected)/(nested)/search")}
-              className=" flex-row items-center bg-background dark:bg-background px-6 py-4 rounded-full border border-muted mt-2 mx-3"
+              className=" flex-row items-center bg-foreground  px-6 py-4 rounded-2xl  border-input border mt-2 mx-3"
             >
               <Search size={18} color={isDark ? "#aaa" : "#888"} />
               <Text className="ml-2 text-muted">
@@ -262,7 +262,7 @@ const HomeUser = () => {
       >
         <FeaturedRecipes />
         <PopularRecipes />
-        <MealPlanCard />
+        {/* <MealPlanCard /> */}
 
         {showSubscriptionCTA && <SubcriptionCTA />}
       </Animated.ScrollView>

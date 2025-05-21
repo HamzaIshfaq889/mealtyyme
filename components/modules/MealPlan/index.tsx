@@ -158,41 +158,41 @@ const MealPlan = () => {
 
   return (
     <>
-      <SafeAreaView style={{ flex: 1 }}>
-        <View
-          className={`px-7 pb-4 mb-4 flex-row justify-between items-center bg-background ${
-            Platform.OS === "android" && "pt-16"
-          }`}
-        >
-          <View className="flex flex-row items-center gap-2">
-            <NotebookPen
-              size={24}
-              color={scheme === "dark" ? "#FAF1E5" : "#003D29"}
-            />
+      {/* <SafeAreaView style={{ flex: 1 }}> */}
+      <View
+        className={`px-7 pb-4  flex-row justify-between items-center bg-foreground pt-16 ${
+          Platform.OS === "android" && "pt-16"
+        }`}
+      >
+        <View className="flex flex-row items-center gap-2">
+          <NotebookPen
+            size={24}
+            color={scheme === "dark" ? "#FAF1E5" : "#003D29"}
+          />
 
-            <Text className="font-bold text-2xl text-primary ml-2">
-              Meal Planning
-            </Text>
-          </View>
+          <Text className="font-bold text-2xl text-primary ml-2">
+            Meal Planning
+          </Text>
         </View>
-        <View>
-          <Calendar onSelectDate={setSelectedDate} selected={selectedDate} />
+      </View>
+      <View className="">
+        <Calendar onSelectDate={setSelectedDate} selected={selectedDate} />
+      </View>
+      <ScrollView className="w-full mb-8 bg-background">
+        <View className="mt-8 px-7">
+          <Text className="text-xl leading-6 text-secondary">Breakfast</Text>
+          {renderMeal("BREAKFAST")}
+
+          <Text className="text-xl leading-6 text-secondary">Lunch</Text>
+          {renderMeal("LUNCH")}
+
+          <Text className="text-xl leading-6 text-secondary">Dinner</Text>
+          {renderMeal("DINNER")}
+          <Text className="text-xl leading-6 text-secondary">Snacks</Text>
+          {renderMeal("SNACK")}
         </View>
-        <ScrollView className="w-full mb-8">
-          <View className="mt-8 px-7">
-            <Text className="text-xl leading-6 text-secondary">Breakfast</Text>
-            {renderMeal("BREAKFAST")}
-
-            <Text className="text-xl leading-6 text-secondary">Lunch</Text>
-            {renderMeal("LUNCH")}
-
-            <Text className="text-xl leading-6 text-secondary">Dinner</Text>
-            {renderMeal("DINNER")}
-            <Text className="text-xl leading-6 text-secondary">Snacks</Text>
-            {renderMeal("SNACK")}
-          </View>
-        </ScrollView>
-      </SafeAreaView>
+      </ScrollView>
+      {/* </SafeAreaView> */}
     </>
   );
 };

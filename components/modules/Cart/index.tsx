@@ -12,8 +12,6 @@ import {
   Circle,
 } from "lucide-react-native";
 
-
-
 import { Ingredient, Recipe } from "@/lib/types/recipe";
 import { sendIngredients } from "@/services/cartApi";
 import { capitalizeWords } from "@/utils";
@@ -107,7 +105,7 @@ const Cart = () => {
   return (
     <View className="flex-1">
       {/* Top Heading */}
-      <View className="pt-16 pb-4 px-7 flex-row justify-between items-center bg-background">
+      <View className="pt-16 pb-4 px-7 flex-row justify-between items-center bg-foreground">
         <View className="flex-row items-center">
           {orderUrl ? (
             <TouchableOpacity onPress={handleBackPress} className="mr-4">
@@ -155,6 +153,7 @@ const Cart = () => {
             paddingVertical: 16,
             paddingBottom: 120,
           }}
+          className="bg-background"
           showsVerticalScrollIndicator={false}
         >
           {ingredients?.length > 0 ? (
@@ -177,8 +176,8 @@ const Cart = () => {
                   {items.map((ing: Ingredient) => (
                     <View
                       key={ing?.ingredient?.id}
-                      className={`rounded-3xl mb-4 bg-background ${
-                        isDark && "bg-[#1D232B]"
+                      className={`rounded-3xl mb-4 bg-foreground ${
+                        isDark && "bg-foreground"
                       }`}
                       style={{
                         boxShadow: !isDark
@@ -209,7 +208,7 @@ const Cart = () => {
                               </View>
                               <View className="w-[200px]">
                                 <Text
-                                  className={`text-foreground text-xl font-medium ${
+                                  className={`text-primary text-xl font-medium ${
                                     checkedItems.has(ing?.ingredient?.id)
                                       ? "line-through text-muted"
                                       : ""

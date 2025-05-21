@@ -55,6 +55,7 @@ const Calendar = ({ onSelectDate, selected }: any) => {
       horizontal
       showsHorizontalScrollIndicator={false}
       style={styles.container}
+      className="bg-background "
     >
       {dates.map((date, index) => {
         const isBeforeToday = date.isBefore(moment(), "day");

@@ -6,7 +6,11 @@ import { addIngredients } from "@/redux/slices/cart";
 import { useDispatch, useSelector } from "react-redux";
 
 import { Ingredient } from "@/lib/types/recipe";
-import { capitalizeFirstLetter, truncateChars } from "@/utils";
+import {
+  capitalizeFirstLetter,
+  convertToFraction,
+  truncateChars,
+} from "@/utils";
 import Toast from "react-native-toast-message";
 import {
   loadIngredientCart,
@@ -108,7 +112,7 @@ const IngredientDetails = ({
 
           return (
             <View
-              className="p-6 py-5 flex flex-row justify-between items-center rounded-2xl mb-4 bg-background"
+              className="p-6 py-5 flex flex-row justify-between items-center rounded-2xl mb-4 bg-foreground"
               key={ing?.ingredient?.id}
             >
               <View className="flex flex-row gap-6 items-center">
@@ -120,7 +124,7 @@ const IngredientDetails = ({
                 </Text>
               </View>
               <Text className="font-semibold leading-5 text-base text-primary">
-                {Math.ceil(totalAmount)} {ing?.unit}
+                {convertToFraction(totalAmount)} {ing?.unit}
               </Text>
             </View>
           );

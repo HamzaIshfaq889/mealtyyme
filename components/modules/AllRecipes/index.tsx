@@ -193,13 +193,13 @@ const AllRecipes = ({ queryOptions }: AllRecipesProps) => {
 
   if (isLoading) {
     return (
-      <View className="pt-20 px-6 pb-4 space-y-6">
+      <View className="pt-20 px-6 pb-4 space-y-6 bg-background">
         <View>
-          <View className="flex flex-row items-center gap-3">
+          <View className="flex flex-row items-center gap-3 mb-3">
             <TouchableOpacity onPress={() => router.back()}>
               <ArrowLeft color="#FFF" size={24} />
             </TouchableOpacity>
-            <Text className="text-foreground text-2xl font-semibold">
+            <Text className="text-primary text-2xl font-semibold">
               {capitalizeFirstLetter("Recipes")}
             </Text>
           </View>
@@ -222,14 +222,14 @@ const AllRecipes = ({ queryOptions }: AllRecipesProps) => {
   }
 
   return (
-    <View>
+    <View className="bg-background">
       <View className="pt-16 px-5 pb-4">
         <View className="flex flex-row justify-between items-center mb-6">
           <View className="flex flex-row items-center gap-3">
             <TouchableOpacity onPress={() => router.back()}>
               <ArrowLeft color="#FFF" size={24} />
             </TouchableOpacity>
-            <Text className="text-foreground text-2xl font-semibold">
+            <Text className="text-primary text-2xl font-semibold">
               {capitalizeFirstLetter("Recipes")}
             </Text>
           </View>
@@ -270,7 +270,7 @@ const AllRecipes = ({ queryOptions }: AllRecipesProps) => {
                 onPress={() => router.push(`/recipe/${recipe.id}` as const)}
               >
                 <View
-                  className="flex flex-row justify-between items-center p-4 rounded-2xl mb-5 bg-background"
+                  className="flex flex-row justify-between items-center p-4 rounded-2xl mb-5 bg-foreground"
                   style={{
                     shadowColor: "#000",
                     shadowOffset: { width: 0, height: 4 },

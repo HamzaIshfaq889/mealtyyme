@@ -36,9 +36,9 @@ export default function FloatingTabsLayout() {
   );
 
   const colors = {
-    background: isDark ? "#17181A" : "#FFFFFF",
-    active: "#00C3FF",
-    inactive: isDark ? "#6B7280" : "#97A2B0",
+    background: isDark ? "#2B2B2B" : "#FFFFFF",
+    active: "#EE8427",
+    inactive: isDark ? "#CCCCCC" : "#5C5C5C",
   };
 
   const currentRoute = segments[segments.length - 1] || "index";
@@ -161,18 +161,20 @@ export default function FloatingTabsLayout() {
 const styles = StyleSheet.create({
   floatingTabBar: {
     position: "absolute",
-    bottom: Platform.OS === "ios" ? 30 : 20,
-    left: 20,
-    right: 20,
-    height: 70,
-    borderRadius: 35,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: 90,
+    paddingBottom: 10,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
     flexDirection: "row",
     justifyContent: "space-around",
     alignItems: "center",
     paddingHorizontal: 15,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
+    shadowOffset: { width: 0, height: -4 },
+    shadowOpacity: 0.1,
     shadowRadius: 4.65,
     elevation: 8,
     zIndex: 100,

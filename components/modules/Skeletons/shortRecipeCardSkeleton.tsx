@@ -42,7 +42,7 @@ export const RecipeSkeletonItem = () => {
 
   return (
     <View
-      className="flex flex-row justify-between items-center py-5 px-3 rounded-2xl mb-5 bg-background"
+      className="flex flex-row justify-between items-center py-5 px-3 rounded-2xl mb-5 bg-foreground"
       style={{
         shadowColor: "#000",
         shadowOffset: { width: 0, height: 2 },

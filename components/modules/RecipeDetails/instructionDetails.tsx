@@ -39,15 +39,10 @@ const InstructionDetails = ({ instructions }: InstructionDetailsProps) => {
         {instructions.map((instruction) => {
           return (
             <View
-              className="mb-4 flex flex-row items-start gap-4 p-5 rounded-2xl"
-              style={{
-                boxShadow: isDarkMode
-                  ? "0px 2px 12px 0px rgba(0,0,0,0.3)"
-                  : "0px 2px 12px 0px rgba(0,0,0,0.1)",
-              }}
+              className="mb-4 flex flex-row items-start gap-4 p-5 rounded-2xl bg-foreground"
               key={instruction?.step_number}
             >
-              <View className="bg-accent py-1.5 px-4 rounded-lg">
+              <View className="bg-background py-1.5 px-4 rounded-lg">
                 <Text className="text-secondary font-bold text-2xl">
                   {instruction?.step_number}
                 </Text>

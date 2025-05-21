@@ -111,10 +111,10 @@ const Account = () => {
   });
 
   return (
-    <View className="w-full h-full py-16">
+    <View className="w-full h-full py-16 bg-background">
       <View className="flex flex-row justify-between items-center px-3">
         <View style={{ width: 30 }} />
-        <Text className="font-bold text-2xl text-foreground">Account</Text>
+        <Text className="font-bold text-2xl text-primary">Account</Text>
         <Pressable
           onPress={() => router.push("/(protected)/(nested)/settings")}
         >
@@ -122,12 +122,7 @@ const Account = () => {
         </Pressable>
       </View>
 
-      <View
-        className="flex flex-row justify-between items-center py-4 mb-5 mt-12 rounded-2xl mx-4 px-2"
-        style={{
-          boxShadow: "0px 2px 12px 0px rgba(0,0,0,0.1)",
-        }}
-      >
+      <View className="flex flex-row justify-between items-center py-4 mb-5 mt-12 rounded-3xl mx-4  px-6 bg-foreground">
         <View
           className={`flex flex-row items-center ${
             auth?.avatar_url ? "gap-4" : "gap-4"
@@ -163,24 +158,26 @@ const Account = () => {
         </TouchableOpacity>
       </View>
 
-      <View className="flex flex-row bg-gray4 p-1 rounded-full mb-4 mx-6 shadow-sm items-center h-16">
+      <View className="flex flex-row bg-foreground p-1 rounded-full mb-4 mx-6 shadow-sm items-center h-16">
         {/* Cookbooks Tab */}
         <Animated.View style={cookbooksStyle}>
           <Button
             className={`rounded-full h-full flex-row items-center justify-center ${
-              currentTab === "cookbooks" ? "bg-primary" : "bg-transparent"
+              currentTab === "cookbooks" ? "bg-secondary" : "bg-transparent"
             }`}
             onPress={() => handleTabPress("cookbooks")}
           >
             <BookmarkIcon
               className={`w-4 h-4 ${
-                currentTab === "cookbooks" ? "text-white mr-2" : "text-primary"
+                currentTab === "cookbooks"
+                  ? "!text-white mr-2"
+                  : "!text-primary"
               }`}
-              color={"#00C3FF"}
+              color={"#7CA982"}
             />
             {currentTab === "cookbooks" && (
               <ButtonText
-                className="text-white font-semibold !text-sm"
+                className="!text-white font-semibold !text-sm"
                 size="xl"
               >
                 Cookbooks
@@ -193,7 +190,7 @@ const Account = () => {
         <Animated.View style={savedRecipesStyle}>
           <Button
             className={`rounded-full h-full flex-row items-center justify-center ${
-              currentTab === "savedrecipes" ? "bg-primary" : "bg-transparent"
+              currentTab === "savedrecipes" ? "bg-secondary" : "bg-transparent"
             }`}
             onPress={() => handleTabPress("savedrecipes")}
           >
@@ -203,10 +200,10 @@ const Account = () => {
                   ? "text-white mr-2"
                   : "text-primary"
               }`}
-              color={"#00C3FF"}
+              color={"#7CA982"}
             />
             {currentTab === "savedrecipes" && (
-              <ButtonText className="text-white font-semibold !text-sm">
+              <ButtonText className="!text-white font-semibold !text-sm">
                 Saved
               </ButtonText>
             )}
@@ -217,7 +214,7 @@ const Account = () => {
         <Animated.View style={myRecipesStyle}>
           <Button
             className={`rounded-full h-full flex-row items-center justify-center ${
-              currentTab === "myrecipes" ? "bg-primary" : "bg-transparent"
+              currentTab === "myrecipes" ? "bg-secondary" : "bg-transparent"
             }`}
             onPress={() => handleTabPress("myrecipes")}
           >
@@ -227,11 +224,11 @@ const Account = () => {
                   ? "!text-primary mr-2"
                   : "text-primary"
               }`}
-              color={"#00C3FF"}
+              color={"#7CA982"}
             />
 
             {currentTab === "myrecipes" && (
-              <ButtonText className="text-white font-semibold !text-sm">
+              <ButtonText className="!text-white font-semibold !text-sm">
                 My Recipes
               </ButtonText>
             )}

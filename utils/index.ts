@@ -187,3 +187,46 @@ export const isValidEmail = (email: string) => {
   const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return re.test(email);
 };
+
+export const convertToFraction = (decimal: number): string => {
+  // Handle very small numbers (less than 1)
+  if (decimal < 1 && decimal > 0) {
+    return "1/4";
+  }
+
+  // Get the whole number part
+  const whole = Math.floor(decimal);
+  const fraction = decimal - whole;
+
+  // If there's no fraction, just return the whole number
+  if (fraction === 0) return whole.toString();
+
+  // Define our target fractions and their decimal values
+  const fractions = [
+    { decimal: 0.25, text: "1/4" },
+    { decimal: 0.5, text: "1/2" },
+    { decimal: 0.75, text: "3/4" },
+    { decimal: 0.33, text: "1/3" },
+    { decimal: 0.67, text: "2/3" },
+  ];
+
+  // Find the closest fraction
+  let closestFraction = fractions[0];
+  let smallestDiff = Math.abs(fraction - fractions[0].decimal);
+
+  for (const frac of fractions) {
+    const diff = Math.abs(fraction - frac.decimal);
+    if (diff < smallestDiff) {
+      smallestDiff = diff;
+      closestFraction = frac;
+    }
+  }
+
+  // If the difference is too large, round to the nearest fraction
+  if (smallestDiff > 0.1) {
+    return Math.round(decimal).toString();
+  }
+
+  // Return the formatted result
+  return whole > 0 ? `${whole} ${closestFraction.text}` : closestFraction.text;
+};

@@ -174,8 +174,8 @@ const Search = () => {
 
   return (
     <>
-      <View className="w-full h-full">
-        <View className="px-6 pt-16 pb-5 relative">
+      <View className="w-full h-full bg-background">
+        <View className="px-6 pt-16 pb-5 relative ">
           <TouchableOpacity
             onPress={() => router.back()}
             className="absolute left-6 top-16"
@@ -187,10 +187,10 @@ const Search = () => {
             />
           </TouchableOpacity>
           <View className="flex items-center">
-            <Text className="font-bold text-2xl text-foreground">Search</Text>
+            <Text className="font-bold text-2xl text-primary">Search</Text>
           </View>
-          <View className="flex flex-row items-center justify-between mt-2.5">
-            <Input className="basis-4/5 my-3.5">
+          <View className="flex flex-row items-center justify-between mt-2.5 ">
+            <Input className="basis-4/5 my-3.5 bg-foreground">
               <InputSlot className="ml-1">
                 <InputIcon className="!w-6 !h-6 text-primary" as={SearchIcon} />
               </InputSlot>
@@ -221,18 +221,18 @@ const Search = () => {
         </View>
 
         <TouchableOpacity
-          className="mx-6 p-3 mb-6 flex flex-row items-center justify-between border border-foreground rounded-lg"
+          className="mx-6 p-3 mb-6 flex flex-row items-center justify-between border border-input rounded-lg"
           onPress={() =>
             router.push("/(protected)/(nested)/ingredient-based-search")
           }
         >
           <View className="flex flex-row items-center gap-3">
             <ChefHat color={scheme === "dark" ? "#fff" : "#000"} size={30} />
-            <Text className="font-medium text-base font-sofia text-foreground w-64">
+            <Text className="font-medium text-base font-sofia text-primary w-64">
               Find Recipies based on what you already have at home
             </Text>
           </View>
-          <ChevronRight color={"#00c3ff"} size={28} />
+          <ChevronRight color={"#EE8427"} size={28} />
         </TouchableOpacity>
 
         {(!!searchValue || isFiltersApplied) && (

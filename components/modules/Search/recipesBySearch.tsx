@@ -46,7 +46,7 @@ const AnimatedRecipeItem: React.FC<AnimatedRecipeItemProps> = ({
     >
       <Pressable onPress={() => router.push(`/recipe/${recipe.id}` as const)}>
         <View
-          className="flex flex-row justify-between items-center p-4 rounded-2xl bg-background"
+          className="flex flex-row justify-between items-center p-4 rounded-2xl bg-foreground"
           style={{
             shadowColor: "#000",
             shadowOffset: { width: 0, height: 4 },
@@ -150,7 +150,7 @@ const RecipesBySearch = ({
   return (
     <View className="px-4">
       <View className="flex-row justify-between items-center mb-4">
-        <Text className="text-xl font-bold text-foreground">Recipes</Text>
+        <Text className="text-xl font-bold text-primary">Recipes</Text>
       </View>
       {searchValue && flattenedRecipes.length === 0 && !isLoading ? (
         <View className="flex flex-col justify-center items-center p-4 mt-10">

@@ -101,15 +101,7 @@ const RelatedRecipes = ({ recipe }: RelatedRecipesProps) => {
               className={`${index === 0 ? "ml-7" : "ml-1"} mr-3 py-4`}
               onPress={() => router.push(`/recipe/${item?.id}` as const)}
             >
-              <View
-                className="flex flex-col bg-background rounded-2xl w-64 p-3 !h-[230px]"
-                style={{
-                  boxShadow:
-                    scheme === "dark"
-                      ? "0px 2px 12px 0px rgba(0,0,0,0.4)"
-                      : "0px 2px 12px 0px rgba(0,0,0,0.2)",
-                }}
-              >
+              <View className="flex flex-col bg-foreground rounded-2xl w-64 p-3 !h-[230px]">
                 <View className="relative mb-4">
                   <Image
                     source={{ uri: item.image_url }}
@@ -118,7 +110,7 @@ const RelatedRecipes = ({ recipe }: RelatedRecipesProps) => {
                   />
                 </View>
 
-                <Text className="text-foreground font-bold text-base leading-5 mb-3">
+                <Text className="text-primary font-bold text-base leading-5 mb-3">
                   {truncateChars(item?.title, 35)}
                   {/* {item?.title} */}
                 </Text>

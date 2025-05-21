@@ -135,52 +135,8 @@ const PopularRecipes = () => {
   );
   return (
     <>
-      <View className="mb-6">
-        <View style={{ gap: 8, paddingHorizontal: 8 }}>
-          {rows.map((row, rowIndex) => (
-            <View
-              key={rowIndex}
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                gap: 8,
-              }}
-            >
-              {row.map((item) => {
-                const isSelected = selectedCategoryId === item.id;
-                const IconComponent = item.Icon;
-
-                return (
-                  <TouchableOpacity
-                    key={item.id}
-                    onPress={() => handlePress(item.id)}
-                    className={`flex-1 h-24 items-center justify-center rounded-xl ${
-                      isSelected ? "bg-secondary" : "bg-gray3/60"
-                    }`}
-                  >
-                    <IconComponent
-                      size={20}
-                      color={isSelected ? "white" : "#918e8e"}
-                    />
-                    <Text
-                      className={`text-center text-[11px] mt-1 ${
-                        isSelected
-                          ? "text-background"
-                          : "text-primary font-semibold"
-                      }`}
-                      numberOfLines={2}
-                    >
-                      {item.name}
-                    </Text>
-                  </TouchableOpacity>
-                );
-              })}
-            </View>
-          ))}
-        </View>
-      </View>
       <View className="flex flex-row justify-between">
-        <Text className="text-foreground  text-xl leading-5 mb-1 pl-4">
+        <Text className="text-primary  text-xl leading-5 mb-1 pl-4">
           Popular Recipies
         </Text>
       </View>
@@ -217,7 +173,7 @@ const PopularRecipes = () => {
                 onPress={() => router.push(`/recipe/${item?.id}` as const)}
               >
                 <View
-                  className="flex flex-col bg-background rounded-2xl w-64 p-4 shadow-md"
+                  className="flex flex-col bg-foreground rounded-2xl w-64 p-4 shadow-md"
                   style={{
                     shadowColor: scheme === "dark" ? "#000" : "#999",
                     shadowOffset: { width: 0, height: 4 },
