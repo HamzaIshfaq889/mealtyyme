@@ -149,22 +149,8 @@ const PopularRecipes = () => {
                 } mr-3 p-4 bg-card rounded-2xl !w-[220px]`}
                 onPress={() => router.push(`/recipe/${item?.id}` as const)}
               >
-<<<<<<< HEAD
-                <View
-                  className="flex flex-col bg-card rounded-2xl w-64 p-4 shadow-md"
-                  style={{
-                    shadowColor: scheme === "dark" ? "#000" : "#999",
-                    shadowOffset: { width: 0, height: 4 },
-                    shadowOpacity: 0.15,
-                    shadowRadius: 10,
-                    elevation: 5,
-                  }}
-                >
-                  <View className="relative mb-4 rounded-xl overflow-hidden h-40">
-=======
                 <View className="flex flex-col">
                   <View className="relative mb-4">
->>>>>>> origin/beta
                     <Image
                       source={{ uri: item.image_url }}
                       className="h-40 w-full rounded-2xl bg-gray-300"
