@@ -1,10 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Bell, CircleUserRound, Search } from "lucide-react-native";
+import { Bell, CircleUserRound, Search, SearchIcon } from "lucide-react-native";
 import {
   Text,
   View,
   Pressable,
-  ScrollView,
   useColorScheme,
   Platform,
   Image,
@@ -53,6 +52,14 @@ import {
   getLastCheckInDate,
   setLastCheckInDate,
 } from "@/utils/storage/gamificationStorage";
+import { Input, InputField, InputIcon, InputSlot } from "@/components/ui/input";
+
+import Coin from "@/assets/svgs/coin.svg";
+import MainDishes from "./mainDishes";
+import ImportRecipeCard from "./importRecipeCard";
+import Under30Minutes from "./under30Minutes";
+import AskChefMate from "./askChefMate";
+import GlutenFreeDiets from "./glutenFreeDiets";
 
 const formatDate = (d: Date) => d.toISOString().split("T")[0];
 
@@ -113,7 +120,6 @@ const HomeUser = () => {
         const stored = await getLastCheckInDate(customerId);
         const today = formatDate(new Date());
 
-        console.log("hello_there.................");
         console.log(stored);
         console.log(today);
         if (stored !== today) {
@@ -142,38 +148,6 @@ const HomeUser = () => {
     });
   }, [isScrolledToFeatured]);
 
-  const searchBarAnimatedStyle = useAnimatedStyle(() => {
-    return {
-      opacity: searchBarOpacity.value,
-      transform: [
-        {
-          translateY: interpolate(
-            searchBarOpacity.value,
-            [0, 1],
-            [-10, 0],
-            Extrapolate.CLAMP
-          ),
-        },
-      ],
-    };
-  });
-
-  const searchIconAnimatedStyle = useAnimatedStyle(() => {
-    return {
-      opacity: searchIconOpacity.value,
-      transform: [
-        {
-          scale: interpolate(
-            searchIconOpacity.value,
-            [0, 1],
-            [0.8, 1],
-            Extrapolate.CLAMP
-          ),
-        },
-      ],
-    };
-  });
-
   useEffect(() => {
     if (!isVisible) return;
 
@@ -185,103 +159,60 @@ const HomeUser = () => {
   }, [isVisible, hideModal]);
 
   return (
-    <View className="flex-1 bg-background">
-      {/* Gradient background for visual interest */}
-      <LinearGradient
-        colors={isDark ? ["#111115", "#16161a"] : ["#f9f9ff", "#ffffff"]}
-        className="absolute top-0 left-0 right-0 h-48 z-0"
-      />
-
-      {/* Header with glass effect */}
-      <BlurView
-        intensity={isDark ? 20 : 60}
-        tint={isDark ? "dark" : "light"}
-        className="absolute top-0 left-0 right-0 z-10 pt-12 pb-3"
-        style={{
-          paddingTop: Platform.OS === "ios" ? 50 : 36,
-        }}
-      >
-        {/* User info and greeting */}
-        <View className="flex-row items-center justify-between px-4 mb-3">
-          <Pressable className="flex-row items-center">
-            {auth?.image_url ? (
-              <Image
-                source={{ uri: auth?.image_url }}
-                className="w-10 h-10 rounded-full border-2 border-primary"
-                resizeMode="cover"
+    <View className="flex-1 bg-background pt-12 pb-12">
+      <View className="flex flex-row items-center justify-between mx-6 mb-6">
+        <Pressable className="flex-row items-center">
+          {auth?.image_url ? (
+            <Image
+              source={{ uri: auth?.image_url }}
+              className="w-10 h-10 rounded-full border-2 border-primary"
+              resizeMode="cover"
+            />
+          ) : (
+            <View className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
+              <CircleUserRound
+                size={24}
+                strokeWidth={1.5}
+                color={isDark ? "#fff" : "#000"}
               />
-            ) : (
-              <View className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
-                <CircleUserRound
-                  size={24}
-                  strokeWidth={1.5}
-                  color={isDark ? "#fff" : "#000"}
-                />
-              </View>
-            )}
-            <View className="ml-3">
-              <Text className="text-base font-semibold text-primary">
-                {name || "Chef"}
-              </Text>
             </View>
-          </Pressable>
+          )}
+          <View className="ml-3">
+            <Text className="text-base font-semibold text-primary">
+              {name || "Chef"}
+            </Text>
+          </View>
+        </Pressable>
 
-          {/* Right side actions */}
-          <View className="flex-row items-center space-x-4">
-            {/* Search Icon - Animated */}
-            <Animated.View style={searchIconAnimatedStyle}>
-              <Pressable
-                onPress={() => router.push("/(protected)/(nested)/search")}
-                className="relative h-10 w-10 bg-background/80 dark:bg-muted/20 rounded-full flex items-center justify-center shadow-sm"
-              >
-                <Search size={20} color={isDark ? "#e0e0e0" : "#333"} />
-              </Pressable>
-            </Animated.View>
-
-            {/* Coins with animation */}
-            <Pressable className="bg-amber-100 dark:bg-amber-900/30 px-3 py-1 rounded-full mx-2">
-              <View className="flex-row items-center">
-                <LottieView
-                  source={require("../../../assets/lottie/coin.json")}
-                  autoPlay
-                  loop={true}
-                  style={{ width: 22, height: 22 }}
-                />
-                <Text className="font-bold text-amber-600 dark:text-amber-400 text-sm ml-1">
-                  -
-                </Text>
-              </View>
-            </Pressable>
-
-            {/* Bell Icon in floating pill */}
-            <Pressable className="relative h-10 w-10 bg-background/80 dark:bg-muted/20 rounded-full flex items-center justify-center shadow-sm">
-              <Bell size={20} color={isDark ? "#e0e0e0" : "#333"} />
-            </Pressable>
+        <View className="flex flex-row items-center">
+          <View className="w-12 h-12 bg-card flex justify-center items-center rounded-full mr-6">
+            <Bell size={26} color="#ee8427" />
+          </View>
+          <View className="flex flex-row gap-2.5 justify-center items-center bg-card w-20 h-12 rounded-3xl">
+            <View>
+              <Coin />
+            </View>
+            <Text className="text-foreground">10</Text>
           </View>
         </View>
+      </View>
 
-        {/* Search bar with animated appearance */}
-        {!isScrolledToFeatured && (
-          <Animated.View style={searchBarAnimatedStyle}>
-            <Pressable
-              onPress={() => router.push("/(protected)/(nested)/search")}
-              className=" flex-row items-center bg-foreground  px-6 py-4 rounded-2xl  border-input border mt-2 mx-3"
-            >
-              <Search size={18} color={isDark ? "#aaa" : "#888"} />
-              <Text className="ml-2 text-muted">
-                Search recipes, ingredients...
-              </Text>
-            </Pressable>
-          </Animated.View>
-        )}
-      </BlurView>
+      <Pressable
+        onPress={() => router.push("/(protected)/(nested)/search")}
+        className="mx-6 mb-6"
+      >
+        <Input isReadOnly className="px-4">
+          <InputSlot className="ml-1">
+            <InputIcon className="!w-6 !h-6 " as={SearchIcon} />
+          </InputSlot>
+          <InputField type="text" placeholder="Search recipe" readOnly />
+        </Input>
+      </Pressable>
 
-      {/* Main content */}
       <Animated.ScrollView
-        className="flex-1 mt-2"
+        className="flex-1"
         contentContainerStyle={{
-          paddingTop: Platform.OS === "ios" ? 140 : 120,
-          paddingBottom: 100,
+          paddingBottom: 60,
         }}
         showsVerticalScrollIndicator={false}
         onScroll={useAnimatedScrollHandler({
@@ -290,16 +221,43 @@ const HomeUser = () => {
             runOnJS(setIsScrolledToFeatured)(event.contentOffset.y > 1);
           },
         })}
-        scrollEventThrottle={16} // For smoother tracking
+        scrollEventThrottle={16}
       >
-        <FeaturedRecipes />
-        <PopularRecipes />
-        {/* <MealPlanCard /> */}
+        <View className="mb-8">
+          <FeaturedRecipes />
+        </View>
+
+        <View className="mb-4">
+          <PopularRecipes />
+        </View>
+
+        <View className="mb-6">
+          <MealPlanCard />
+        </View>
+
+        <View className="mb-6">
+          <MainDishes />
+        </View>
+
+        <View className="mb-6">
+          <ImportRecipeCard />
+        </View>
+
+        <View className="mb-6">
+          <Under30Minutes />
+        </View>
+
+        <View className="mb-6">
+          <AskChefMate />
+        </View>
+
+        <View className="mb-6">
+          <GlutenFreeDiets />
+        </View>
 
         {showSubscriptionCTA && <SubcriptionCTA />}
       </Animated.ScrollView>
 
-      {/* Floating cooking button with subtle animation */}
       {isCooking && (
         <Pressable
           className="absolute bottom-5 right-5 z-20 mb-24"
@@ -324,123 +282,3 @@ const HomeUser = () => {
 };
 
 export default HomeUser;
-// {/* <View className="flex-1 relative">
-// <View
-//   className="absolute top-0 left-0 right-0 z-10 bg-background pt-12 pb-4 shadow-md"
-//   style={{
-//     paddingTop: Platform.OS === "ios" ? 50 : 36,
-//   }}
-// >
-//   {/* Main Header Row */}
-//   <View className="flex-row justify-between items-center px-4">
-//     {/* Left: Profile/Avatar */}
-//     <Pressable>
-//       {auth?.image_url ? (
-//         <Image
-//           source={{ uri: auth?.image_url }}
-//           className="w-10 h-10 rounded-full"
-//           resizeMode="cover"
-//         />
-//       ) : (
-//         <CircleUserRound
-//           size={32}
-//           strokeWidth={1}
-//           color={scheme === "dark" ? "#fff" : "#000"}
-//         />
-//       )}
-//     </Pressable>
-
-//     {/* Center: Greeting with Icon */}
-//     <View className="flex-row items-center">
-//       <Ionicons name={getIconName()} size={18} color="#FFB830" />
-//       <Text
-//         className="text-sm ml-2 font-medium text-foreground max-w-[120px]"
-//         numberOfLines={1}
-//         ellipsizeMode="tail"
-//       >
-//         {getGreeting(name)}
-//       </Text>
-//     </View>
-
-//     {/* Right: Action Icons */}
-//     <View className="flex-row items-center space-x-4">
-//       {/* Coins */}
-//       <Pressable>
-//         <View className="flex-row items-center">
-//           <LottieView
-//             source={require("../../../assets/lottie/coin.json")}
-//             autoPlay
-//             loop={true}
-//             style={{ width: 22, height: 22 }}
-//           />
-//           <Text className="font-bold text-yellow-600 dark:text-yellow-400 text-sm">
-//             -
-//           </Text>
-//         </View>
-//       </Pressable>
-
-//       {/* Bell Icon */}
-//       <Pressable>
-//         <View className="relative">
-//           <Bell size={22} color={scheme === "dark" ? "#fff" : "#000"} />
-//           {/* {hasNotifications && (
-//             <View className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full" />
-//           )} */}
-//         </View>
-//       </Pressable>
-
-//       {/* Search Icon */}
-//       <Pressable
-//         onPress={() => router.push("/(protected)/(nested)/search")}
-//       >
-//         <Search size={22} color={scheme === "dark" ? "#fff" : "#000"} />
-//       </Pressable>
-//     </View>
-//   </View>
-// </View>
-
-// <ScrollView
-//   className="flex-1"
-//   contentContainerStyle={{
-//     paddingTop: Platform.OS === "ios" ? 130 : 110,
-//   }}
-//   showsVerticalScrollIndicator={false}
-// >
-//   <View>
-//     <FeaturedRecipes />
-//     <PopularRecipes />
-//   </View>
-// </ScrollView>
-
-// {isCooking && (
-//   <Pressable
-//     className="absolute bottom-5 right-5 z-20 mb-24"
-//     onPress={() => router.push(`/cooking/1` as any)}
-//   >
-//     <View className="bg-secondary p-1 rounded-full shadow-lg">
-//       <Svg1 width={50} height={50} color="#fff" />
-//     </View>
-//   </Pressable>
-// )}
-
-// {showSubscriptionCTA && <SubcriptionCTA />}
-
-// {/* Show modal for returning users */}
-// {/* {!hasCheckedIn && (
-//   <ProSubscribeModal
-//     visible={!hasCheckedIn}
-//     hideModal={hideModal}
-//     backdropAnim={backdropAnim}
-//     modalAnim={modalAnim}
-//   >
-//     <DailyCheckInCard
-//       handleCheckIn={async () => {
-//         await checkIn();
-//         hideModal();
-//       }}
-//       handleSkip={hideModal}
-//       userPointsData={stats}
-//     />
-//   </ProSubscribeModal>
-// )} */}
-// </View> */}

@@ -324,7 +324,7 @@ const Signup = () => {
 
   return (
     <ScrollView>
-      <View className="flex flex-col w-full h-full px-9 pt-16 pb-6">
+      <View className="flex flex-col w-full h-full px-9 pt-16 pb-6 bg-background">
         <View className="flex flex-row justify-between items-center mb-14">
           <TouchableOpacity
             onPress={() => router.push("/(auth)/account-options")}

@@ -44,7 +44,7 @@ const FilterSection = ({
           {visibleItems.map((item, index) => (
             <TouchableOpacity
               key={item.id ?? `${item.name}-${index}`}
-              className="bg-foreground px-4 py-5 rounded-full mr-1 mb-2"
+              className="bg-card px-4 py-5 rounded-full mr-2 mb-2"
               onPress={() =>
                 router.push({
                   pathname:

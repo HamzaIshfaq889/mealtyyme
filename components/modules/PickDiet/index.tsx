@@ -119,7 +119,7 @@ const PickDiet = () => {
                   <Text
                     className={`font-bold leading-6 bg-card p-4 rounded-xl  ${
                       isSelected
-                        ? "!text-background !bg-secondary "
+                        ? "!text-white !bg-secondary "
                         : "text-foreground"
                     }`}
                   >

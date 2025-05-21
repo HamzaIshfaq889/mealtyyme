@@ -133,7 +133,7 @@ const Allergies = () => {
                 className={`inline p-4 rounded-xl font-bold leading-6 bg-card mx-1.5 my-1.5 
                  ${
                    isSelected
-                     ? "!text-background !bg-secondary "
+                     ? "!text-white !bg-secondary "
                      : "text-foreground"
                  }`}
               >

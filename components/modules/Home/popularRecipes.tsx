@@ -1,16 +1,6 @@
-import React, { useCallback, useState } from "react";
+import React, { useEffect, useState } from "react";
 
-import { router, useFocusEffect } from "expo-router";
-
-import {
-  Clock,
-  Dumbbell,
-  Flame,
-  HeartPulse,
-  Leaf,
-  Star,
-  Users,
-} from "lucide-react-native";
+import { router } from "expo-router";
 
 import {
   Text,
@@ -19,124 +9,109 @@ import {
   Image,
   Pressable,
   useColorScheme,
-  TouchableOpacity,
-  Dimensions,
 } from "react-native";
-import {
-  Utensils,
-  Coffee,
-  Cake,
-  Drumstick,
-  Salad,
-  Soup,
-  Sandwich,
-  GlassWater,
-  Apple,
-  Pizza,
-  Candy,
-  IceCream,
-} from "lucide-react-native";
 
-import { capitalizeWords, truncateChars } from "@/utils";
+import { Clock, Flame } from "lucide-react-native";
+import { getCategories, getPopularRecipes } from "@/services/recipesAPI";
+
+import { Categories, Recipe } from "@/lib/types/recipe";
+import {
+  capitalizeWords,
+  convertMinutesToTimeLabel,
+  truncateChars,
+} from "@/utils";
 
 import { Button, ButtonText } from "@/components/ui/button";
-import { FeaturedRecipeSketon } from "@/components/modules/Skeletons";
-import { useCategories } from "@/redux/queries/recipes/useCategoryQuery";
-import { usePopularRecipes } from "@/redux/queries/recipes/useRecipeQuery";
-import { getPopularRecipes } from "@/services/recipesAPI";
-import { Recipe } from "@/lib/types/recipe";
+import { FeaturedRecipeSketon } from "../Skeletons";
 
 const PopularRecipes = () => {
+  const [categories, setCategories] = useState<Categories[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const scheme = useColorScheme();
+  const [recipes, setRecipes] = useState<Recipe[]>([]);
+  const [loadingRecipe, setLoadingRecipe] = useState(true);
+
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | number>(
     "all"
   );
 
-  const iconList = [
-    Utensils,
-    Coffee,
-    Cake,
-    Drumstick,
-    Salad,
-    Soup,
-    Sandwich,
-    GlassWater,
-    Apple,
-    Pizza,
-    Candy,
-    IceCream,
-  ];
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const data = await getCategories();
+        setCategories(data);
+      } catch (err: any) {
+        setError(err.message || "Error fetching categories");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const chunkArray = (arr: any[], size: number) =>
-    Array.from({ length: Math.ceil(arr.length / size) }, (_, i) =>
-      arr.slice(i * size, i * size + size)
-    );
-  const [recipes, setRecipes] = useState<Recipe[]>([]);
-  // const { data: categories = [], isLoading: loadingCategories } =
-  //   useCategories();
-  // const { data: recipes = [], isLoading: loadingRecipes, refetch } = usePopularRecipes();
+    fetchCategories();
+  }, []);
 
-  const [loading, setLoading] = useState<boolean>(false);
+  useEffect(() => {
+    fetchRecipes(null);
+  }, []);
 
-  const screenWidth = Dimensions.get("window").width;
-  const numColumns = 4;
-  const gap = 12; // gap between tiles
-  const horizontalPadding = 14; // container padding left and right
-  // Calculate tile width to fill full width minus gaps and padding
-  const tileWidth =
-    (screenWidth - horizontalPadding * 2 - gap * (numColumns - 1)) / numColumns;
-
-  const categories = [
-    { id: "hot", name: "Hot", Icon: Flame },
-    { id: "our_picks", name: "Our Picks", Icon: Star },
-    { id: "under_30", name: "Under 30 Min", Icon: Clock },
-    { id: "vegan", name: "Vegan", Icon: Leaf },
-    { id: "high_protein", name: "High Protein", Icon: Dumbbell },
-    { id: "low_carb", name: "Low Carb", Icon: HeartPulse },
-    { id: "quick_snacks", name: "Quick Snacks", Icon: Sandwich },
-    { id: "family_meals", name: "Family Meals", Icon: Users },
-  ];
-
-  const rows = [categories.slice(0, 4), categories.slice(4)];
-  useFocusEffect(
-    useCallback(() => {
-      let isActive = true;
-
-      const fetchData = async () => {
-        setLoading(true);
-        try {
-          const data = await getPopularRecipes();
-          console.log("data", data);
-          if (isActive) {
-            setRecipes(data);
-          }
-        } catch (error) {
-          console.error("Failed to fetch recipes:", error);
-        } finally {
-          if (isActive) {
-            setLoading(false);
-          }
-        }
-      };
-
-      fetchData();
-
-      return () => {
-        isActive = false;
-      };
-    }, [])
-  );
   const handlePress = (id: string | number) => {
     setSelectedCategoryId(id);
+
+    const categoryIdToPass = id === "all" || id === "" ? null : id;
+    fetchRecipes(categoryIdToPass);
   };
-  const formattedData = chunkArray(
-    [{ id: "all", name: "All" }, ...categories],
-    2
-  );
+
+  const fetchRecipes = async (categoryIdToPass: string | number | null) => {
+    setLoadingRecipe(true);
+    try {
+      const data = await getPopularRecipes(categoryIdToPass);
+      setRecipes(data);
+    } catch (error) {
+      console.error("Failed to fetch recipes:", error);
+    } finally {
+      setLoadingRecipe(false);
+    }
+  };
+
   return (
     <>
-      <View className="flex flex-row justify-between">
-        <Text className="text-primary  text-xl leading-5 mb-1 pl-4">
+      <View>
+        <View className="mb-5">
+          <Text className="text-foreground font-bold text-xl leading-5 pl-7">
+            Category
+          </Text>
+        </View>
+
+        <FlatList
+          horizontal
+          data={[{ id: "all", name: "All" }, ...categories]}
+          keyExtractor={(item) => item.id.toString()}
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{ gap: 12 }}
+          renderItem={({ item, index }) => (
+            <Button
+              action="secondary"
+              className={`rounded-full px-10 py-2 ${
+                index === 0 ? "ml-7" : ""
+              } ${selectedCategoryId === item.id ? "bg-secondary" : "bg-card"}`}
+              onPress={() => handlePress(item.id)}
+            >
+              <ButtonText
+                className={`text-base leading-6 ${
+                  selectedCategoryId === item.id
+                    ? "text-background"
+                    : "!text-primary font-semibold"
+                }`}
+              >
+                {capitalizeWords(item.name)}
+              </ButtonText>
+            </Button>
+          )}
+        />
+      </View>
+      <View className="flex flex-row justify-between mt-5">
+        <Text className="text-foreground font-bold text-xl leading-5 mb-4 pl-7">
           Popular Recipies
         </Text>
       </View>
@@ -155,7 +130,7 @@ const PopularRecipes = () => {
                   width: 220,
                   height: 220,
                   marginRight: 16,
-                  marginLeft: index === 0 ? 14 : 0,
+                  marginLeft: index === 0 ? 28 : 0,
                   borderRadius: 32,
                 }}
               />
@@ -169,9 +144,12 @@ const PopularRecipes = () => {
             showsHorizontalScrollIndicator={false}
             renderItem={({ item, index }) => (
               <Pressable
-                className={`${index === 0 ? "ml-4" : "ml-1"} mr-3 py-4`}
+                className={`${
+                  index === 0 ? "ml-7 " : "ml-1"
+                } mr-3 p-4 bg-card rounded-2xl !w-[220px]`}
                 onPress={() => router.push(`/recipe/${item?.id}` as const)}
               >
+<<<<<<< HEAD
                 <View
                   className="flex flex-col bg-card rounded-2xl w-64 p-4 shadow-md"
                   style={{
@@ -183,36 +161,32 @@ const PopularRecipes = () => {
                   }}
                 >
                   <View className="relative mb-4 rounded-xl overflow-hidden h-40">
+=======
+                <View className="flex flex-col">
+                  <View className="relative mb-4">
+>>>>>>> origin/beta
                     <Image
                       source={{ uri: item.image_url }}
-                      className="w-full h-full"
+                      className="h-40 w-full rounded-2xl bg-gray-300"
                       resizeMode="cover"
                     />
                   </View>
 
-                  <Text className="text-gray-900 dark:text-gray-100 font-semibold text-lg mb-3 leading-tight">
-                    {truncateChars(item?.title, 20)}
+                  <Text className="text-foreground font-bold text-base leading-5 mb-3">
+                    {truncateChars(item?.title, 35)}
+                    {/* {item?.title} */}
                   </Text>
 
-                  <View className="flex flex-row items-center gap-4 mt-auto">
-                    {/* Set fixed height */}
-                    <View className="flex flex-row items-center gap-1 h-6">
-                      <Flame color="#6B7280" size={20} />
-                      <Text className="text-gray-500 dark:text-gray-400 text-sm font-medium">
-                        {Math.ceil(item.calories)} Kcal
-                      </Text>
+                  <View className="flex flex-row items-center gap-2 mt-auto">
+                    <View className="flex flex-row items-center gap-0.5">
+                      <Flame color="#96a1b0" size={20} />
+                      <Text className="text-muted"> {item.calories} Kcal</Text>
                     </View>
-
-                    {/* Divider with same height */}
-                    <View
-                      className="w-px bg-gray-300 dark:bg-gray-700"
-                      style={{ height: 24 }}
-                    />
-
-                    <View className="flex flex-row items-center gap-1 h-6">
-                      <Clock color="#6B7280" size={18} />
-                      <Text className="text-gray-500 dark:text-gray-400 text-sm font-medium">
-                        {item.ready_in_minutes} min
+                    <View className="bg-muted p-0.5" />
+                    <View className="flex flex-row items-center gap-1">
+                      <Clock color="#96a1b0" size={16} />
+                      <Text className="text-muted text-sm">
+                        {convertMinutesToTimeLabel(item.ready_in_minutes)}
                       </Text>
                     </View>
                   </View>

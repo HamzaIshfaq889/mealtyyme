@@ -74,10 +74,10 @@ const FeaturedRecipes = () => {
 
   return (
     <>
-      {/* <Text className="text-foreground font-bold text-xl leading-5 pl-7">
+      <Text className="text-foreground font-bold text-xl leading-5 pl-7">
         Featured
-      </Text> */}
-      <View className="max-h-max mt-1 mb-8">
+      </Text>
+      <View className="max-h-max mt-1">
         <FlatList
           horizontal
           data={recipes}
@@ -87,7 +87,7 @@ const FeaturedRecipes = () => {
           className="mt-4"
           renderItem={({ item, index }) => (
             <Pressable
-              className={`mr-4 ${index === 0 ? "ml-4" : ""}`}
+              className={`mr-4 ${index === 0 ? "ml-7" : ""}`}
               onPress={() => router.push(`/recipe/${item.id}` as const)}
             >
               <View className="rounded-2xl w-[260px] h-[200px] overflow-hidden relative">
