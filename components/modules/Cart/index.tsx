@@ -14,7 +14,7 @@ import {
 
 import { Ingredient, Recipe } from "@/lib/types/recipe";
 import { sendIngredients } from "@/services/cartApi";
-import { capitalizeWords } from "@/utils";
+import { capitalizeWords, convertToFraction } from "@/utils";
 
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { removeIngredient } from "@/redux/slices/cart";
@@ -105,17 +105,16 @@ const Cart = () => {
   return (
     <View className="flex-1">
       {/* Top Heading */}
-      <View className="pt-16 pb-4 px-7 flex-row justify-between items-center bg-foreground">
+      <View className="pt-16 pb-4 px-7 flex-row justify-between items-center bg-background">
         <View className="flex-row items-center">
           {orderUrl ? (
             <TouchableOpacity onPress={handleBackPress} className="mr-4">
               <ArrowLeft size={20} color={isDark ? "#FAF1E5" : "#003D29"} />
             </TouchableOpacity>
-          ) : (
-            <ShoppingBagIcon size={24} color={isDark ? "#FAF1E5" : "#003D29"} />
-          )}
-          <Text className="font-bold text-2xl text-primary ml-2">
-            {orderUrl ? "Back to your Cart" : "Cart"}
+          ) : // <ShoppingBagIcon size={24} color={isDark ? "#FAF1E5" : "#003D29"} />
+          null}
+          <Text className="font-bold text-2xl text-primary mr-4">
+            {orderUrl ? "Back to your Cart" : "Grocery"}
           </Text>
         </View>
 
@@ -170,13 +169,13 @@ const Cart = () => {
 
               return Object.entries(grouped).map(([category, items]) => (
                 <View key={category} className="mb-3">
-                  <Text className="text-2xl font-bold text-primary px-4 mb-2">
+                  <Text className="text-2xl font-bold text-secondary px-4 mb-2">
                     {capitalizeWords(category)}
                   </Text>
                   {items.map((ing: Ingredient) => (
                     <View
                       key={ing?.ingredient?.id}
-                      className={`rounded-3xl mb-4 bg-foreground ${
+                      className={`rounded-3xl mb-4 bg-card mx-4 ${
                         isDark && "bg-foreground"
                       }`}
                       style={{
@@ -195,7 +194,7 @@ const Cart = () => {
                                 {checkedItems.has(ing?.ingredient?.id) ? (
                                   <CheckCircle
                                     size={20}
-                                    color="#4CAF50"
+                                    color="#EE8427"
                                     className="mr-2"
                                   />
                                 ) : (
@@ -210,14 +209,15 @@ const Cart = () => {
                                 <Text
                                   className={`text-primary text-xl font-medium ${
                                     checkedItems.has(ing?.ingredient?.id)
-                                      ? "line-through text-muted"
+                                      ? "line-through text-muted/60"
                                       : ""
                                   }`}
                                 >
                                   {capitalizeWords(ing?.ingredient?.name)}
                                 </Text>
                                 <Text className="text-muted text-sm">
-                                  {ing?.unit}
+                                  {convertToFraction(ing?.amount)}
+                                  {` ${ing?.unit}`}
                                 </Text>
                               </View>
                             </View>

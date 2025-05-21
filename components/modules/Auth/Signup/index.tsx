@@ -26,9 +26,23 @@ import Svg1 from "@/assets/svgs/arrow-left.svg";
 import Toast from "react-native-toast-message";
 import { ScrollView } from "react-native-gesture-handler";
 import { formatDateToYYYYMMDD } from "@/utils";
+import { useAuth, useSSO } from "@clerk/clerk-expo";
+import { setCredentials, setIsSigningIn } from "@/redux/slices/Auth";
+import { setAuthToken } from "@/lib/apiClient";
+import { saveUserDataInStorage } from "@/utils/storage/authStorage";
+import { AppConfig } from "@/constants";
+import { useDispatch } from "react-redux";
+
+import GoogleLogo from "@/assets/svgs/google-logo.svg";
+import FacebookLogo from "@/assets/svgs/facebook-logo.svg";
+import AppleLogo from "@/assets/svgs/apple-logo.svg";
 
 const Signup = () => {
   const scheme = useColorScheme();
+  const dispatch = useDispatch();
+
+  const { startSSOFlow } = useSSO();
+  const { isSignedIn } = useAuth();
 
   const [showPassword, setShowPassword] = useState(false);
   const [date, setDate] = useState(new Date());
@@ -176,7 +190,7 @@ const Signup = () => {
       last_name: formData?.lastName,
     };
 
-    console.log(payload)
+    console.log(payload);
 
     try {
       await signupUser(payload);
@@ -201,9 +215,116 @@ const Signup = () => {
     }
   };
 
+  //third party signup logic
+
+  const handleGoogleSignIn = async () => {
+    if (isSignedIn) {
+      Toast.show({
+        type: "error",
+        text1: "You are already Signed in",
+      });
+      return;
+    }
+
+    dispatch(setIsSigningIn(true));
+
+    try {
+      const { createdSessionId, setActive } = await startSSOFlow({
+        strategy: "oauth_google",
+      });
+
+      if (createdSessionId && setActive) {
+        await setActive({ session: createdSessionId });
+
+        const data = await sendSessionIdToBackend(createdSessionId);
+      } else {
+        console.error("❌ setActive failed or undefined");
+      }
+    } catch (error) {
+      console.error("SSO error:", error);
+    } finally {
+      dispatch(setIsSigningIn(false));
+    }
+  };
+
+  const handleSignApple = async () => {
+    if (isSignedIn) {
+      Toast.show({
+        type: "error",
+        text1: "You are already Signed in",
+      });
+      return;
+    }
+
+    dispatch(setIsSigningIn(true));
+
+    try {
+      const { createdSessionId, setActive } = await startSSOFlow({
+        strategy: "oauth_apple",
+      });
+
+      if (createdSessionId && setActive) {
+        await setActive({ session: createdSessionId });
+
+        const data = await sendSessionIdToBackend(createdSessionId);
+      } else {
+        console.error("❌ setActive failed or undefined");
+      }
+    } catch (error) {
+      console.error("SSO error:", error);
+    } finally {
+      dispatch(setIsSigningIn(false));
+    }
+  };
+
+  const sendSessionIdToBackend = async (sessionId: string) => {
+    try {
+      if (!sessionId) {
+        console.error("No session ID received from Clerk");
+        return;
+      }
+
+      const response = await fetch(`${AppConfig.API_URL}auth/clerk/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          token: sessionId,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setAuthToken(data.access);
+        dispatch(setCredentials({ ...data, isAuthenticated: true }));
+        if (data.access) {
+          await saveUserDataInStorage({ ...data, isAuthenticated: true });
+        }
+
+        const isFirstTimeUser = data?.customer_details?.first_time_user;
+        if (isFirstTimeUser) {
+          router.replace("/(protected)/(tabs)");
+        } else {
+          router.replace("/(protected)/(tabs)");
+        }
+
+        Toast.show({
+          type: "success",
+          text1: "Login Successful!",
+        });
+      } else {
+        console.error("❌ Backend error:", data);
+      }
+    } catch (err) {
+      console.error("Error sending session ID to backend:", err);
+    }
+  };
+
   return (
     <ScrollView>
-      <View className="flex flex-col w-full h-full px-9 py-16">
+      <View className="flex flex-col w-full h-full px-9 pt-16 pb-6">
         <View className="flex flex-row justify-between items-center mb-14">
           <TouchableOpacity
             onPress={() => router.push("/(auth)/account-options")}
@@ -214,7 +335,7 @@ const Signup = () => {
               color={scheme === "dark" ? "#fff" : "#000"}
             />
           </TouchableOpacity>
-          <Text className="block font-bold text-2xl text-primary">
+          <Text className="block font-bold text-2xl text-foreground">
             Create Account
           </Text>
           <Text></Text>
@@ -232,7 +353,7 @@ const Signup = () => {
             </FormControlLabel>
             <Input className="my-3.5 flex flex-row items-center">
               <InputSlot className="ml-1">
-                <InputIcon className="!w-6 !h-6 text-primary" as={UserRound} />
+                <InputIcon className="!w-6 !h-6 " as={UserRound} />
               </InputSlot>
               <InputField
                 type="text"
@@ -258,10 +379,7 @@ const Signup = () => {
               </FormControlLabel>
               <Input className="my-3.5 flex flex-row items-center">
                 <InputSlot className="ml-1">
-                  <InputIcon
-                    className="!w-6 !h-6 text-primary"
-                    as={UserRound}
-                  />
+                  <InputIcon className="!w-6 !h-6" as={UserRound} />
                 </InputSlot>
                 <InputField
                   type="text"
@@ -286,10 +404,7 @@ const Signup = () => {
               </FormControlLabel>
               <Input className="my-3.5 flex flex-row items-center">
                 <InputSlot className="ml-1">
-                  <InputIcon
-                    className="!w-6 !h-6 text-primary"
-                    as={UserRound}
-                  />
+                  <InputIcon className="!w-6 !h-6" as={UserRound} />
                 </InputSlot>
                 <InputField
                   type="text"
@@ -312,7 +427,7 @@ const Signup = () => {
             </FormControlLabel>
             <Input className="my-3.5 flex flex-row items-center">
               <InputSlot className="ml-1">
-                <InputIcon className="!w-6 !h-6 text-primary" as={MailIcon} />
+                <InputIcon className="!w-6 !h-6" as={MailIcon} />
               </InputSlot>
               <InputField
                 type="text"
@@ -342,10 +457,7 @@ const Signup = () => {
               <Pressable onPress={toggleDatePicker}>
                 <Input className="my-3.5 flex flex-row items-center">
                   <InputSlot className="ml-1">
-                    <InputIcon
-                      className="!w-6 !h-6 text-primary"
-                      as={MailIcon}
-                    />
+                    <InputIcon className="!w-6 !h-6" as={MailIcon} />
                   </InputSlot>
 
                   <InputField
@@ -399,7 +511,7 @@ const Signup = () => {
             </FormControlLabel>
             <Input className="my-3.5 flex flex-row items-center">
               <InputSlot className="ml-1">
-                <InputIcon className="!w-6 !h-6 text-primary" as={LockIcon} />
+                <InputIcon className="!w-6 !h-6" as={LockIcon} />
               </InputSlot>
               <InputField
                 type={showPassword ? "text" : "password"}
@@ -420,8 +532,8 @@ const Signup = () => {
           </FormControl>
 
           <Button
-            className="mt-2"
-            action="primary"
+            className="mt-2 h-16"
+            action="secondary"
             onPress={handleSubmit}
             disabled={isLoading}
           >
@@ -433,11 +545,11 @@ const Signup = () => {
               </ButtonText>
             )}
           </Button>
-          <View className="flex flex-col mt-10">
-            <Text className="text-center text-sm leading-6 text-primary/75">
+          <View className="flex flex-col mt-10 mb-12">
+            <Text className="text-center text-sm leading-6 text-foreground/75">
               By continuing, you agree to the
             </Text>
-            <Text className="text-center">
+            <Text className="text-center text-foreground">
               <Text className="text-foreground font-extrabold">
                 Terms of Services
               </Text>
@@ -446,6 +558,30 @@ const Signup = () => {
                 Privacy Policy
               </Text>
             </Text>
+          </View>
+          <View>
+            <Text className="mb-4 font-semibold text-foreground text-lg text-center">
+              Or continue with
+            </Text>
+            <View className="flex flex-row justify-center items-center gap-4">
+              <TouchableOpacity
+                className="bg-destructive w-14 h-14 justify-center items-center rounded-xl"
+                onPress={handleGoogleSignIn}
+              >
+                <GoogleLogo width={30} height={120} />
+              </TouchableOpacity>
+              {/* <TouchableOpacity className="bg-[#1E76D6] w-14 h-14 justify-center items-center rounded-xl">
+            <FacebookLogo width={30} height={120} />
+          </TouchableOpacity> */}
+              {Platform.OS === "ios" && (
+                <TouchableOpacity
+                  className="bg-black w-14 h-14 justify-center items-center rounded-xl"
+                  onPress={handleSignApple}
+                >
+                  <AppleLogo width={30} height={120} />
+                </TouchableOpacity>
+              )}
+            </View>
           </View>
         </View>
       </View>

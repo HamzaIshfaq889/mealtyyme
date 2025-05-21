@@ -28,7 +28,6 @@ const Cookbooks = ({ activeTab }: { activeTab: string }) => {
   useFocusEffect(
     useCallback(() => {
       refetch();
-      console.log("refetching on focus");
     }, [])
   );
 

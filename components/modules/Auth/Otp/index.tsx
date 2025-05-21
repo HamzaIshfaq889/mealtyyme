@@ -1,12 +1,14 @@
-import React, { useState } from "react";
-
-import { Text, useColorScheme } from "react-native";
-import { TouchableOpacity, View } from "react-native";
-import { router } from "expo-router";
-import { useLocalSearchParams } from "expo-router";
-
-import { ArrowLeft, RectangleEllipsis } from "lucide-react-native";
-
+import React, { useState, useRef } from "react";
+import {
+  Text,
+  useColorScheme,
+  View,
+  TouchableOpacity,
+  TextInput,
+  StyleSheet,
+} from "react-native";
+import { router, useLocalSearchParams } from "expo-router";
+import { ArrowLeft } from "lucide-react-native";
 import { useDispatch } from "react-redux";
 import { setResetToken } from "@/redux/slices/Auth";
 
@@ -17,15 +19,68 @@ import {
   FormControlLabel,
   FormControlLabelText,
 } from "@/components/ui/form-control";
-import { Input, InputField, InputIcon, InputSlot } from "@/components/ui/input";
-
-import { verifyOtp } from "@/services/authApi";
-
-import Svg1 from "@/assets/svgs/arrow-left.svg";
 import { Button, ButtonText } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 
 import Toast from "react-native-toast-message";
+import { verifyOtp } from "@/services/authApi";
+
+// OTP Input Component
+const OtpInput = ({
+  value,
+  onChange,
+}: {
+  value: string;
+  onChange: (val: string) => void;
+}) => {
+  const scheme = useColorScheme();
+  const inputRefs = useRef<TextInput[]>([]);
+  const length = 6;
+
+  const handleChange = (text: string, index: number) => {
+    const digitsOnly = text.replace(/[^0-9]/g, "").slice(0, 1);
+    const otpChars = value.split("");
+    otpChars[index] = digitsOnly;
+    const updatedOtp = otpChars.join("");
+    onChange(updatedOtp);
+
+    if (digitsOnly && index < length - 1) {
+      inputRefs.current[index + 1]?.focus();
+    }
+  };
+
+  const handleKeyPress = (e: any, index: number) => {
+    if (e.nativeEvent.key === "Backspace" && !value[index] && index > 0) {
+      inputRefs.current[index - 1]?.focus();
+    }
+  };
+
+  return (
+    <View style={styles.otpContainer}>
+      {[...Array(length)].map((_, index) => (
+        <TextInput
+          key={index}
+          ref={(ref) => {
+            if (ref) inputRefs.current[index] = ref;
+          }}
+          value={value[index] || ""}
+          onChangeText={(text) => handleChange(text, index)}
+          onKeyPress={(e) => handleKeyPress(e, index)}
+          keyboardType="numeric"
+          maxLength={1}
+          style={[
+            styles.otpInput,
+            {
+              color: scheme === "dark" ? "#fff" : "#000",
+              borderColor: scheme === "dark" ? "#444" : "#ccc",
+              backgroundColor: scheme === "dark" ? "#1c1c1e" : "#f2f2f2",
+            },
+          ]}
+        />
+      ))}
+    </View>
+  );
+};
 
 const Otp = () => {
   const scheme = useColorScheme();
@@ -36,33 +91,16 @@ const Otp = () => {
 
   const { email } = useLocalSearchParams<{ email: string }>();
 
-  const validateAllFields = () => {
-    const fieldsToValidate = {
-      ...formData,
-    };
-
-    Object.entries(fieldsToValidate).forEach(([key, value]) => {
-      validateField(key, value);
-    });
-  };
-
   const validateField = (key: string, value: string) => {
     setFormData((prev) => ({ ...prev, [key]: value }));
-
     let errorMessage = "";
 
-    // Validation rules for each field
-    switch (key) {
-      case "otp":
-        if (!value) {
-          errorMessage = "Otp is required.";
-        } else if (value.length !== 6) {
-          errorMessage = "Please enter 6 digit otp.";
-        }
-        break;
-
-      default:
-        break;
+    if (key === "otp") {
+      if (!value) {
+        errorMessage = "Otp is required.";
+      } else if (value.length !== 6) {
+        errorMessage = "Please enter 6 digit otp.";
+      }
     }
 
     setErrors((prev) => ({ ...prev, [key]: errorMessage }));
@@ -70,12 +108,15 @@ const Otp = () => {
 
   const isFormValid = !errors?.otp && formData?.otp;
 
+  const validateAllFields = () => {
+    validateField("otp", formData.otp);
+  };
+
   const handleSubmit = async () => {
     setLoading(true);
-
     validateAllFields();
+
     if (!isFormValid) {
-      console.log("not valid");
       setLoading(false);
       return;
     }
@@ -85,18 +126,15 @@ const Otp = () => {
       otp: Number(formData?.otp),
     };
 
-    console.log("payload", payload);
-
     try {
       const response = await verifyOtp(payload);
-      const reset_token = response.reset_token;
-
-      dispatch(setResetToken(reset_token));
+      dispatch(setResetToken(response.reset_token));
 
       Toast.show({
         type: "success",
         text1: "Please reset your password",
       });
+
       router.push(`/(auth)/reset-password?email=${email}`);
     } catch (error: any) {
       const errorMessage =
@@ -106,15 +144,13 @@ const Otp = () => {
         type: "error",
         text1: errorMessage,
       });
-
-      console.log("Otp Error:", errorMessage);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <View className="w-full h-full px-9 py-16 flex-col relative">
+    <View className="w-full h-full px-9 pt-16 pb-6 flex flex-col relative">
       {/* Header row */}
       <View className="flex-row items-center justify-between mb-8">
         <TouchableOpacity
@@ -131,36 +167,28 @@ const Otp = () => {
           <Text className="font-bold text-2xl text-primary">OTP</Text>
         </View>
 
-        {/* Invisible View to balance layout */}
         <View style={{ width: 30 }} />
       </View>
-      <View>
-        <FormControl isInvalid={!!errors.otp} size="md" className="mb-1">
-          <FormControlLabel>
-            <FormControlLabelText className="font-bold leading-5">
-              Otp
-            </FormControlLabelText>
-          </FormControlLabel>
-          <Input className="my-3.5">
-            <InputSlot className="ml-1">
-              <InputIcon
-                className="!w-6 !h-6 text-primary"
-                as={RectangleEllipsis}
-              />
-            </InputSlot>
-            <InputField
-              type="text"
-              placeholder="Enter Otp"
-              value={formData?.otp}
-              onChangeText={(text) => validateField("otp", text)}
-            />
-          </Input>
-          <FormControlError>
-            <FormControlErrorText>{errors?.otp}</FormControlErrorText>
-          </FormControlError>
-        </FormControl>
-      </View>
-      <Button className="mt-2" action="primary" onPress={handleSubmit}>
+
+      <FormControl isInvalid={!!errors.otp} size="md" className="mb-1">
+        <FormControlLabel>
+          <FormControlLabelText className="text-primary/70 text-lg font-medium leading-6 mb-2">
+            Enter the 6-digit code sent to your email{" "}
+            <Text className="text-secondary">{email}</Text>
+          </FormControlLabelText>
+        </FormControlLabel>
+
+        <OtpInput
+          value={formData.otp}
+          onChange={(val) => validateField("otp", val)}
+        />
+
+        <FormControlError>
+          <FormControlErrorText>{errors?.otp}</FormControlErrorText>
+        </FormControlError>
+      </FormControl>
+
+      <Button className="h-16 mt-auto" action="secondary" onPress={handleSubmit}>
         {!loading ? (
           <ButtonText>Confirm</ButtonText>
         ) : (
@@ -172,5 +200,21 @@ const Otp = () => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  otpContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginVertical: 14,
+  },
+  otpInput: {
+    width: 48,
+    height: 56,
+    borderRadius: 10,
+    borderWidth: 1,
+    textAlign: "center",
+    fontSize: 20,
+  },
+});
 
 export default Otp;

@@ -32,7 +32,7 @@ export default function FloatingTabsLayout() {
   const dispatch = useDispatch();
 
   const customerId = useSelector(
-    (state: any) => state.auth.loginResponseType.customer_details?.id
+    (state: any) => state?.auth?.loginResponseType?.customer_details?.id
   );
 
   const colors = {

@@ -1,27 +1,10 @@
-import React, { useEffect } from "react";
-import { View, Text } from "react-native";
+import React from "react";
 
-import { UserPointsData } from "@/lib/types/gamification";
+import { View, Text } from "react-native";
 
 import CoinCheckin from "@/assets/svgs/coin-checkin.svg";
 
-type DailyCheckInCardProps = {
-  handleCheckIn: () => void;
-  handleSkip: () => void;
-  userPointsData: UserPointsData | null;
-};
-
-export default function DailyCheckInCard({
-  handleCheckIn,
-  handleSkip,
-}: DailyCheckInCardProps) {
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      handleCheckIn();
-    }, 3000);
-
-    return () => clearTimeout(timer); 
-  }, []);
+export default function DailyCheckInCard() {
   return (
     <View className="bg-background rounded-3xl">
       <View className="items-center mb-8">

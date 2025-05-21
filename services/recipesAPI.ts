@@ -41,7 +41,6 @@ export const getFeaturedRecipes = async (): Promise<Recipe[]> => {
 
 export const getPopularRecipes = async (): Promise<Recipe[]> => {
   const response = await apiClient.get<Recipe[]>("/popular-recipes/", {});
-  console.log("runnning 2");
   if (!response.ok) {
     if (response.status === 401 || response.status === 404) {
       throw new Error("Invalid Credentials");

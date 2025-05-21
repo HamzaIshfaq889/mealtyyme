@@ -1,11 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import {
-  Bell,
-  CircleUserRound,
-  Coins,
-  Lock,
-  Search,
-} from "lucide-react-native";
+import { Bell, CircleUserRound, Search } from "lucide-react-native";
 import {
   Text,
   View,
@@ -51,6 +45,16 @@ import Animated, {
   runOnJS,
 } from "react-native-reanimated";
 import MealPlanCard from "./mealplancard";
+import {
+  useCheckInUser,
+  useGamificationStats,
+} from "@/redux/queries/recipes/useGamification";
+import {
+  getLastCheckInDate,
+  setLastCheckInDate,
+} from "@/utils/storage/gamificationStorage";
+
+const formatDate = (d: Date) => d.toISOString().split("T")[0];
 
 const HomeUser = () => {
   const scheme = useColorScheme();
@@ -64,6 +68,18 @@ const HomeUser = () => {
   const auth: LoginResponseTypes = useSelector(
     (state: any) => state.auth.loginResponseType
   );
+  const customerId = useSelector(
+    (state: any) => state?.auth?.loginResponseType
+  );
+
+  const [checking, setChecking] = useState(false);
+
+  const { data: stats, isLoading: statsLoading } = useGamificationStats();
+  const checkInMutation = useCheckInUser();
+
+  const { isVisible, showModal, hideModal, backdropAnim, modalAnim } =
+    useModal();
+
   useEffect(() => {
     const initNotifications = async () => {
       try {
@@ -77,6 +93,7 @@ const HomeUser = () => {
     };
     initNotifications();
   }, []);
+
   const isDark = scheme === "dark";
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -86,28 +103,36 @@ const HomeUser = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  const {
-    isVisible: checkInModal,
-    showModal,
-    hideModal,
-    backdropAnim,
-    modalAnim,
-  } = useModal();
-
-  const { hasCheckedIn, stats, checkIn } = useUserGamification();
-
   useEffect(() => {
-    if (!hasCheckedIn) {
-      showModal();
-    }
-  }, [hasCheckedIn, showModal]);
+    console.log(statsLoading, checking, customerId);
+    if (statsLoading || checking || !customerId) return;
 
-  // Reanimated shared values for animations
+    (async () => {
+      setChecking(true);
+      try {
+        const stored = await getLastCheckInDate(customerId);
+        const today = formatDate(new Date());
+
+        console.log("hello_there.................");
+        console.log(stored);
+        console.log(today);
+        if (stored !== today) {
+          await checkInMutation.mutateAsync();
+          await setLastCheckInDate(customerId, today);
+          showModal();
+        }
+      } catch (e) {
+        console.error("Daily check‑in failed:", e);
+      } finally {
+        setChecking(false);
+      }
+    })();
+  }, [statsLoading, customerId]);
+
   const scrollY = useSharedValue(0);
   const searchBarOpacity = useSharedValue(1);
   const searchIconOpacity = useSharedValue(0);
 
-  // Update animations when scroll state changes
   useEffect(() => {
     searchBarOpacity.value = withTiming(isScrolledToFeatured ? 0 : 1, {
       duration: 300,
@@ -117,7 +142,6 @@ const HomeUser = () => {
     });
   }, [isScrolledToFeatured]);
 
-  // Animated styles
   const searchBarAnimatedStyle = useAnimatedStyle(() => {
     return {
       opacity: searchBarOpacity.value,
@@ -150,7 +174,15 @@ const HomeUser = () => {
     };
   });
 
-  console.log("checkin", hasCheckedIn);
+  useEffect(() => {
+    if (!isVisible) return;
+
+    const timer = setTimeout(() => {
+      hideModal();
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, [isVisible, hideModal]);
 
   return (
     <View className="flex-1 bg-background">
@@ -279,23 +311,14 @@ const HomeUser = () => {
         </Pressable>
       )}
 
-      {/* {!hasCheckedIn && (
-        <ProSubscribeModal
-          visible={!hasCheckedIn}
-          hideModal={hideModal}
-          backdropAnim={backdropAnim}
-          modalAnim={modalAnim}
-        >
-          <DailyCheckInCard
-            handleCheckIn={async () => {
-              await checkIn();
-              hideModal();
-            }}
-            handleSkip={hideModal}
-            userPointsData={stats}
-          />
-        </ProSubscribeModal>
-      )} */}
+      <ProSubscribeModal
+        visible={isVisible}
+        hideModal={hideModal}
+        backdropAnim={backdropAnim}
+        modalAnim={modalAnim}
+      >
+        <DailyCheckInCard />
+      </ProSubscribeModal>
     </View>
   );
 };

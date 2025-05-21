@@ -32,6 +32,7 @@ import IngredientBasedrecipes from "./IngredientBasedSearch/ingredientBasedrecip
 import Rewards from "./Rewrads";
 import RedeemPoints from "./Rewrads/RedeemPoints";
 import OtherEarnWays from "./Rewrads/OtherEarnWays";
+import Notifications from "./notifications";
 
 import { RecipeCard } from "./Common";
 
@@ -71,4 +72,5 @@ export {
   Rewards,
   RedeemPoints,
   OtherEarnWays,
+  Notifications,
 };

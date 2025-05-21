@@ -46,8 +46,6 @@ const ResetPassword = () => {
 
     let errorMessage = "";
 
-    console.log(formData?.password);
-
     // Validation rules for each field
     switch (key) {
       case "password":
@@ -128,7 +126,7 @@ const ResetPassword = () => {
   };
 
   return (
-    <View className="flex flex-col w-full h-full px-9 py-16">
+    <View className="flex flex-col w-full h-full px-9 pt-16 pb-6">
       <View className="flex flex-row justify-between items-center mb-14">
         <Text></Text>
         <Text className="block font-bold text-2xl">Reset Password</Text>
@@ -151,7 +149,7 @@ const ResetPassword = () => {
           </FormControlLabel>
           <Input className="my-3.5">
             <InputSlot className="ml-1">
-              <InputIcon className="!w-6 !h-6 text-primary" as={LockIcon} />
+              <InputIcon className="!w-6 !h-6" as={LockIcon} />
             </InputSlot>
             <InputField
               type={showPassword ? "text" : "password"}
@@ -163,7 +161,10 @@ const ResetPassword = () => {
               className="mr-1"
               onPress={() => setShowPassword(!showPassword)}
             >
-              <InputIcon as={showPassword ? EyeIcon : EyeOffIcon} />
+              <InputIcon
+                as={showPassword ? EyeIcon : EyeOffIcon}
+                color="#EE8427"
+              />
             </InputSlot>
           </Input>
           <FormControlError>
@@ -185,7 +186,7 @@ const ResetPassword = () => {
           </FormControlLabel>
           <Input className="my-3.5">
             <InputSlot className="ml-1">
-              <InputIcon className="!w-6 !h-6 text-primary" as={LockIcon} />
+              <InputIcon className="!w-6 !h-6" as={LockIcon} />
             </InputSlot>
             <InputField
               type={showConfirmPassword ? "text" : "password"}
@@ -197,7 +198,10 @@ const ResetPassword = () => {
               className="mr-1"
               onPress={() => setShowConfirmPassword(!showConfirmPassword)}
             >
-              <InputIcon as={showConfirmPassword ? EyeIcon : EyeOffIcon} />
+              <InputIcon
+                as={showConfirmPassword ? EyeIcon : EyeOffIcon}
+                color="#EE8427"
+              />
             </InputSlot>
           </Input>
           <FormControlError>
@@ -207,7 +211,11 @@ const ResetPassword = () => {
           </FormControlError>
         </FormControl>
       </View>
-      <Button className="mt-2" action="primary" onPress={handleSubmit}>
+      <Button
+        className="mt-auto h-16"
+        action="secondary"
+        onPress={handleSubmit}
+      >
         {!isLoading ? (
           <ButtonText>Reset</ButtonText>
         ) : (

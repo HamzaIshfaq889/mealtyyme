@@ -3,12 +3,13 @@
 @tailwind utilities;
 
 @layer base {
+ 
   :root {
-    --background: 24 85%, 98%;
-    --foreground: 0 0% 100%;
-    --primary: 200 67% 12%;
-    --secondary: 28 85% 54%;
-    --destructive: 5 84% 64%;
+    --background: 24 85%, 98%;      /* light pinksih */
+    --foreground: 214°, 18%, 16%;   /* dark black color on pinksih color */
+    --primary: 200 67% 12%;         /* Second version of black color on pinksih color */
+    --secondary: 28 85% 54%;        /* App color */
+    --destructive: 5 84% 64%;       /* red color  */
     --muted: 0 0% 36%;
     --accent: 0 0% 36%;
     --gray3: 214 22% 83%;
@@ -24,7 +25,7 @@
 
   .dark {
     --background: 0, 0%, 11%;
-    --foreground: 0 0% 17%;
+    --foreground: 0 0% 100%;
     --primary: 0 0% 95%;
     --secondary: 28 85% 54%;
     --destructive: 5 84% 60%;
@@ -34,7 +35,7 @@
     --gray4: 214 32% 25%;
     --popover: 218 67% 12%;
     --popover-foreground: 0 0% 100%;
-    --card: 218 67% 12%;
+    --card: 0, 0%, 17%;
     --card-foreground: 0 0% 100%;
     --border: 214 32% 8%;
     --ring: 220 13% 60%;

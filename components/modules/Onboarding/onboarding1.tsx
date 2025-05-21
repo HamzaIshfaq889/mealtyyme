@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 
 import { router } from "expo-router";
 
-import { View } from "react-native";
+import { Text, View } from "react-native";
 import Swiper from "react-native-swiper";
 
 import { Button, ButtonText } from "@/components/ui/button";
@@ -33,14 +33,30 @@ const OnBoarding = () => {
     }
   };
 
+  const slideContent = [
+    {
+      title: "Discover 1000+ delicious recipes",
+      description:
+        "Unlock access to a huge collection of recipes—over 100,000 and counting!.",
+    },
+    {
+      title: "Order groceries straight to your door",
+      description: "Skip the store—your groceries come to you!",
+    },
+    {
+      title: "Save time. Eat better. Enjoy life.",
+      description: "Seamlessly organize meals to enjoy more time with family!",
+    },
+  ];
+
   return (
-    <View className="flex flex-col">
-      <View className="flex w-full h-[90%]">
+    <View className="flex bg-background flex-col">
+      <View className="flex w-full h-[70%]">
         <Swiper
           ref={swiperRef}
           showsPagination={true}
           paginationStyle={{
-            bottom: 230,
+            bottom: 10,
           }}
           dotStyle={{
             width: 8,
@@ -64,7 +80,13 @@ const OnBoarding = () => {
           <Slide3 />
         </Swiper>
       </View>
-      <View className="px-10 mt-auto">
+      <View className="px-4 h-[30%]">
+        <Text className="text-center text-primary font-bold text-3xl mb-3 leading-9 font-sofia">
+          {slideContent[currentSlide].title}
+        </Text>
+        <Text className="text-center text-xl leading-8 text-muted mb-10">
+          {slideContent[currentSlide].description}
+        </Text>
         <Button onPress={handleNext}>
           <ButtonText>{currentSlide === 2 ? "Get Started" : "Next"}</ButtonText>
         </Button>

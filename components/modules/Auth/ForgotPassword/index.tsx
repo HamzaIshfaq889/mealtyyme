@@ -16,7 +16,6 @@ import { Button, ButtonText } from "@/components/ui/button";
 
 import { forgotPassword } from "@/services/authApi";
 
-import Svg1 from "@/assets/svgs/arrow-left.svg";
 import { router } from "expo-router";
 import { Spinner } from "@/components/ui/spinner";
 
@@ -100,9 +99,9 @@ const ForgotPassword = () => {
   };
 
   return (
-    <View className="w-full h-full px-9 py-16 flex-col relative">
+    <View className="w-full h-full px-9 pt-16 pb-6 flex-col relative bg-background">
       {/* Header row */}
-      <View className="flex-row items-center justify-between mb-8">
+      <View className="flex-row items-center justify-between mb-6">
         <TouchableOpacity onPress={() => router.push("/(auth)/login")}>
           <ArrowLeft
             width={30}
@@ -121,7 +120,7 @@ const ForgotPassword = () => {
         <View style={{ width: 30 }} />
       </View>
       <View>
-        <Text className="text-primary/70 leading-6 mb-6">
+        <Text className="text-primary/70 text-lg font-medium leading-6 mb-6">
           Enter your email and we will send you a link to reset your password.
         </Text>
         <FormControl isInvalid={!!errors.email} size="md" className="mb-1">
@@ -132,7 +131,7 @@ const ForgotPassword = () => {
           </FormControlLabel>
           <Input className="my-3.5">
             <InputSlot className="ml-1">
-              <InputIcon className="!w-6 !h-6 text-primary" as={MailIcon} />
+              <InputIcon className="!w-6 !h-6" as={MailIcon} />
             </InputSlot>
             <InputField
               type="text"
@@ -146,7 +145,11 @@ const ForgotPassword = () => {
           </FormControlError>
         </FormControl>
       </View>
-      <Button action="primary" className="mt-auto" onPress={handleSubmit}>
+      <Button
+        action="secondary"
+        className="mt-auto h-16"
+        onPress={handleSubmit}
+      >
         {!isLoading ? (
           <ButtonText>Send email</ButtonText>
         ) : (

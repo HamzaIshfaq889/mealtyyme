@@ -7,8 +7,6 @@ export const AddMealSchedule = async (mealSchedule: AddMealSchedulePayload) => {
     mealSchedule
   );
 
-  console.log(response);
-
   if (!response.ok) {
     if (response.status === 401 || response.status === 404) {
       throw new Error(

@@ -147,7 +147,6 @@ const EditProfile = () => {
           config
         );
 
-        console.log(response.data);
         alert("success");
       } catch (error) {
         console.log(error);

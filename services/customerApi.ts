@@ -11,10 +11,8 @@ export const patchCustomer = async ({
   customerId,
   data,
 }: PatchCustomerPayload) => {
-  console.log("Therrrrrrrrrrrrrrrr",customerId, data);
   const response = await apiClient.patch(`customer/${customerId}/`, data);
-  
-  console.log('a,aa',response);
+
   if (!response.ok) {
     if (response.status === 404) {
       throw new Error("Customer not found");
@@ -59,9 +57,6 @@ export const uploadFile = async (file: File) => {
       },
     }
   );
-
-  console.log(response?.data);
-  console.log(response?.status);
 
   if (!response.ok) {
     throw new Error(response.problem || "Failed to upload file");

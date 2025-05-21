@@ -109,8 +109,6 @@ const tokenCache = {
 };
 
 export default function RootLayout() {
-  console.log("checkpost2");
-
   const [isSplashVisible, setIsSplashVisible] = useState(true);
   const scheme = useColorScheme();
 

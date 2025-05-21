@@ -1,11 +1,6 @@
 import React, { useState } from "react";
 
-import {
-  Text,
-  TouchableOpacity,
-  useColorScheme,
-  View,
-} from "react-native";
+import { Text, TouchableOpacity, useColorScheme, View } from "react-native";
 
 import { router } from "expo-router";
 
@@ -65,7 +60,7 @@ const Allergies = () => {
     updateAllergies(
       { customerId, data },
       {
-        onSuccess: async() => {
+        onSuccess: async () => {
           await refecthCustomer();
           setLoading(false);
 
@@ -106,7 +101,7 @@ const Allergies = () => {
   };
 
   return (
-    <View className="w-full h-full px-9 py-16 flex-col relative">
+    <View className="w-full h-full px-9 py-16 flex-col relative bg-background">
       <View className="flex-row items-center justify-between mb-8">
         <TouchableOpacity
           onPress={() => router.push("/(protected)/(onboarding)/pick-diet")}
@@ -135,12 +130,12 @@ const Allergies = () => {
               onPress={() => handleSelection(allergy?.id)}
             >
               <Text
-                className={`border-2 inline border-border p-4 rounded-xl font-bold leading-6 mx-1.5 my-1.5 
-                ${
-                  isSelected
-                    ? "text-background bg-secondary"
-                    : "text-foreground bg-background"
-                }`}
+                className={`inline p-4 rounded-xl font-bold leading-6 bg-card mx-1.5 my-1.5 
+                 ${
+                   isSelected
+                     ? "!text-background !bg-secondary "
+                     : "text-foreground"
+                 }`}
               >
                 {allergy.title}
               </Text>

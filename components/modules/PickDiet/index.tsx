@@ -36,6 +36,7 @@ const PickDiet = () => {
   const [selectedIndexes, setSelectedIndexes] = useState<number[]>([]);
   const [loading, setLoading] = useState(false);
   const scheme = useColorScheme();
+  const isDarkMode = scheme === "dark";
 
   const handleSelection = (index: number) => {
     if (selectedIndexes.includes(index)) {
@@ -96,7 +97,7 @@ const PickDiet = () => {
 
   return (
     <>
-      <View className="w-full h-full px-9 py-16 flex-col relative">
+      <View className="w-full h-full px-9 py-16 flex-col relative bg-background">
         <View className="flex-row items-center justify-between mb-8">
           <View className="flex-1 items-center">
             <Text className="font-bold text-2xl text-primary">
@@ -116,10 +117,10 @@ const PickDiet = () => {
               >
                 <View className="mb-4">
                   <Text
-                    className={`border-2 font-bold leading-6 border-border p-4 rounded-xl bg-background ${
+                    className={`font-bold leading-6 bg-card p-4 rounded-xl  ${
                       isSelected
-                        ? "text-background bg-secondary"
-                        : "text-foreground bg-background"
+                        ? "!text-background !bg-secondary "
+                        : "text-foreground"
                     }`}
                   >
                     {diet.name}

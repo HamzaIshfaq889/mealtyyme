@@ -26,9 +26,7 @@ export const loginUser = async (payload: LoginPayload) => {
 
 export const signupUser = async (payload: SignupPayload) => {
   const response = await apiClient.post("auth/signup/", payload);
-  
-  console.log(payload)
-  // console.log(response);
+
   if (!response.ok) {
     throw new Error(response?.originalError?.message || "Signup failed");
   }

@@ -16,6 +16,7 @@ import {
   FileTerminal,
   WalletCardsIcon,
   MessageCircle,
+  Bell,
 } from "lucide-react-native";
 
 import { Button, ButtonText } from "@/components/ui/button";
@@ -184,6 +185,15 @@ const Settings = () => {
           text="Rewards"
           onPress={() => {
             router.push("/(protected)/(nested)/rewards");
+          }}
+          scheme={scheme}
+        />
+
+        <SettingCard
+          icon={<Bell color="#00C3FF" size={30} />}
+          text="Notification"
+          onPress={() => {
+            router.push("/(protected)/(nested)/notifications");
           }}
           scheme={scheme}
         />
