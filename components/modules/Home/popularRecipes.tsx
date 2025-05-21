@@ -1,16 +1,4 @@
-import React, { useCallback, useState } from "react";
-
-import { router, useFocusEffect } from "expo-router";
-
-import {
-  Clock,
-  Dumbbell,
-  Flame,
-  HeartPulse,
-  Leaf,
-  Star,
-  Users,
-} from "lucide-react-native";
+import React, { useEffect, useState } from "react";
 
 import {
   Text,
@@ -19,208 +7,165 @@ import {
   Image,
   Pressable,
   useColorScheme,
-  TouchableOpacity,
-  Dimensions,
 } from "react-native";
-import {
-  Utensils,
-  Coffee,
-  Cake,
-  Drumstick,
-  Salad,
-  Soup,
-  Sandwich,
-  GlassWater,
-  Apple,
-  Pizza,
-  Candy,
-  IceCream,
-} from "lucide-react-native";
 
-import { capitalizeWords, truncateChars } from "@/utils";
-
+import { router } from "expo-router";
+import { Clock, Flame, Heart } from "lucide-react-native";
 import { Button, ButtonText } from "@/components/ui/button";
-import { FeaturedRecipeSketon } from "@/components/modules/Skeletons";
-import { useCategories } from "@/redux/queries/recipes/useCategoryQuery";
-import { usePopularRecipes } from "@/redux/queries/recipes/useRecipeQuery";
-import { getPopularRecipes } from "@/services/recipesAPI";
-import { Recipe } from "@/lib/types/recipe";
+import { getCategories, getPopularRecipes } from "@/services/recipesAPI";
+import { Categories, Recipe } from "@/lib/types/recipe";
+import { capitalizeWords } from "@/utils";
 
 const PopularRecipes = () => {
+  const [categories, setCategories] = useState<Categories[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const scheme = useColorScheme();
+  const [recipes, setRecipes] = useState<Recipe[]>([]);
+  const [loadingRecipe, setLoadingRecipe] = useState(true);
+
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | number>(
     "all"
   );
 
-  const iconList = [
-    Utensils,
-    Coffee,
-    Cake,
-    Drumstick,
-    Salad,
-    Soup,
-    Sandwich,
-    GlassWater,
-    Apple,
-    Pizza,
-    Candy,
-    IceCream,
-  ];
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const data = await getCategories();
+        setCategories(data);
+      } catch (err: any) {
+        setError(err.message || "Error fetching categories");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const chunkArray = (arr: any[], size: number) =>
-    Array.from({ length: Math.ceil(arr.length / size) }, (_, i) =>
-      arr.slice(i * size, i * size + size)
-    );
-  const [recipes, setRecipes] = useState<Recipe[]>([]);
-  // const { data: categories = [], isLoading: loadingCategories } =
-  //   useCategories();
-  // const { data: recipes = [], isLoading: loadingRecipes, refetch } = usePopularRecipes();
+    fetchCategories();
+  }, []);
 
-  const [loading, setLoading] = useState<boolean>(false);
+  useEffect(() => {
+    fetchRecipes(null);
+  }, []);
 
-  const screenWidth = Dimensions.get("window").width;
-  const numColumns = 4;
-  const gap = 12; // gap between tiles
-  const horizontalPadding = 14; // container padding left and right
-  // Calculate tile width to fill full width minus gaps and padding
-  const tileWidth =
-    (screenWidth - horizontalPadding * 2 - gap * (numColumns - 1)) / numColumns;
-
-  const categories = [
-    { id: "hot", name: "Hot", Icon: Flame },
-    { id: "our_picks", name: "Our Picks", Icon: Star },
-    { id: "under_30", name: "Under 30 Min", Icon: Clock },
-    { id: "vegan", name: "Vegan", Icon: Leaf },
-    { id: "high_protein", name: "High Protein", Icon: Dumbbell },
-    { id: "low_carb", name: "Low Carb", Icon: HeartPulse },
-    { id: "quick_snacks", name: "Quick Snacks", Icon: Sandwich },
-    { id: "family_meals", name: "Family Meals", Icon: Users },
-  ];
-
-  const rows = [categories.slice(0, 4), categories.slice(4)];
-  useFocusEffect(
-    useCallback(() => {
-      let isActive = true;
-
-      const fetchData = async () => {
-        setLoading(true);
-        try {
-          const data = await getPopularRecipes();
-          console.log("data", data);
-          if (isActive) {
-            setRecipes(data);
-          }
-        } catch (error) {
-          console.error("Failed to fetch recipes:", error);
-        } finally {
-          if (isActive) {
-            setLoading(false);
-          }
-        }
-      };
-
-      fetchData();
-
-      return () => {
-        isActive = false;
-      };
-    }, [])
-  );
   const handlePress = (id: string | number) => {
     setSelectedCategoryId(id);
+
+    // Pass null if 'all' is selected, or if the id is an empty string, otherwise pass the selected id
+    const categoryIdToPass = id === "all" || id === "" ? null : id;
+
+    // Call fetchRecipes when category ID changes
+    fetchRecipes(categoryIdToPass);
   };
-  const formattedData = chunkArray(
-    [{ id: "all", name: "All" }, ...categories],
-    2
-  );
+
+  const fetchRecipes = async (categoryIdToPass: string | number | null) => {
+    setLoadingRecipe(true); // Ensure loading starts before fetching
+    try {
+      const data = await getPopularRecipes(categoryIdToPass);
+      setRecipes(data);
+    } catch (error) {
+      console.error("Failed to fetch recipes:", error);
+    } finally {
+      setLoadingRecipe(false); // Stop loading when done
+    }
+  };
+
   return (
     <>
+      <View className="mb-6">
+        <View className="flex-row justify-between items-center mb-4">
+          <Text className="text-lg font-bold text-primary">Category</Text>
+        </View>
+
+        <FlatList
+          horizontal
+          data={[{ id: "all", name: "All" }, ...categories]}
+          keyExtractor={(item) => item.id.toString()}
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{ gap: 12 }}
+          renderItem={({ item }) => (
+            <Button
+              action="secondary"
+              className={`rounded-full px-10 py-2 ${
+                selectedCategoryId === item.id ? "bg-secondary" : "bg-accent"
+              }`}
+              onPress={() => handlePress(item.id)}
+            >
+              <ButtonText
+                className={`text-base leading-6 ${
+                  selectedCategoryId === item.id
+                    ? "text-background"
+                    : "!text-primary font-semibold"
+                }`}
+              >
+                {capitalizeWords(item.name)}
+              </ButtonText>
+            </Button>
+          )}
+        />
+      </View>
       <View className="flex flex-row justify-between">
-        <Text className="text-foreground font-bold text-xl leading-5 pl-7">
-          Popular recipes
+        <Text className="text-foreground font-bold text-xl leading-5 mb-1">
+          Popular Recipies
         </Text>
+        <Pressable>
+          <Text className="text-secondary pr-5 font-bold">See All</Text>
+        </Pressable>
       </View>
 
       <View>
-        {loading ? (
-          <FlatList
-            horizontal
-            data={Array.from({ length: 3 })}
-            keyExtractor={(_, index) => index.toString()}
-            showsHorizontalScrollIndicator={false}
-            className="mt-4"
-            renderItem={({ index }) => (
-              <FeaturedRecipeSketon
+        <FlatList
+          data={recipes}
+          horizontal
+          keyExtractor={(item) => item.id.toString()}
+          showsHorizontalScrollIndicator={false}
+          renderItem={({ item }) => (
+            <Pressable
+              className="ml-2 mr-5 py-4"
+              onPress={() => router.push(`/recipe/${1}` as const)}
+            >
+              <View
+                className="flex flex-col bg-background rounded-2xl w-64 p-3 !h-64"
                 style={{
-                  width: 220,
-                  height: 220,
-                  marginRight: 16,
-                  marginLeft: index === 0 ? 14 : 0,
-                  borderRadius: 32,
+                  boxShadow:
+                    scheme === "dark"
+                      ? "0px 2px 12px 0px rgba(0,0,0,0.4)"
+                      : "0px 2px 12px 0px rgba(0,0,0,0.2)",
                 }}
-              />
-            )}
-          />
-        ) : (
-          <FlatList
-            data={recipes}
-            horizontal
-            keyExtractor={(item) => item.id.toString()}
-            showsHorizontalScrollIndicator={false}
-            renderItem={({ item, index }) => (
-              <Pressable
-                className={`${index === 0 ? "ml-4" : "ml-1"} mr-3 py-4`}
-                onPress={() => router.push(`/recipe/${item?.id}` as const)}
               >
-                <View
-                  className="flex flex-col bg-foreground rounded-2xl w-64 p-4 shadow-md"
-                  style={{
-                    shadowColor: scheme === "dark" ? "#000" : "#999",
-                    shadowOffset: { width: 0, height: 4 },
-                    shadowOpacity: 0.15,
-                    shadowRadius: 10,
-                    elevation: 5,
-                  }}
-                >
-                  <View className="relative mb-4 rounded-xl overflow-hidden h-40">
-                    <Image
-                      source={{ uri: item.image_url }}
-                      className="w-full h-full"
-                      resizeMode="cover"
+                <View className="relative mb-4">
+                  <Image
+                    source={{ uri: item.image_url }}
+                    className="h-36 w-full rounded-xl bg-gray-300"
+                    resizeMode="cover"
+                  />
+                  <View className="absolute top-2 right-2 bg-background rounded-md p-1.5">
+                    <Heart
+                      color={scheme === "dark" ? "#fff" : "#000"}
+                      size={16}
                     />
-                  </View>
-
-                  <Text className="text-gray-900 dark:text-gray-100 font-semibold text-lg mb-3 leading-tight">
-                    {truncateChars(item?.title, 20)}
-                  </Text>
-
-                  <View className="flex flex-row items-center gap-4 mt-auto">
-                    {/* Set fixed height */}
-                    <View className="flex flex-row items-center gap-1 h-6">
-                      <Flame color="#6B7280" size={20} />
-                      <Text className="text-gray-500 dark:text-gray-400 text-sm font-medium">
-                        {Math.ceil(item.calories)} Kcal
-                      </Text>
-                    </View>
-
-                    {/* Divider with same height */}
-                    <View
-                      className="w-px bg-gray-300 dark:bg-gray-700"
-                      style={{ height: 24 }}
-                    />
-
-                    <View className="flex flex-row items-center gap-1 h-6">
-                      <Clock color="#6B7280" size={18} />
-                      <Text className="text-gray-500 dark:text-gray-400 text-sm font-medium">
-                        {item.ready_in_minutes} min
-                      </Text>
-                    </View>
                   </View>
                 </View>
-              </Pressable>
-            )}
-          />
-        )}
+                <Text className="text-foreground font-bold text-base leading-5 mb-3">
+                  {item.title}
+                </Text>
+
+                <View className="flex flex-row items-center gap-2 mt-auto">
+                  <View className="flex flex-row items-center gap-0.5">
+                    <Flame color="#96a1b0" size={20} />
+                    <Text className="text-muted">120 Kcal</Text>
+                  </View>
+                  <View className="bg-muted p-0.5"></View>
+                  <View className="flex flex-row items-center gap-1">
+                    <Clock color="#96a1b0" size={16} />
+                    <Text className="text-muted text-sm">
+                      {item.ready_in_minutes}
+                    </Text>
+                  </View>
+                </View>
+              </View>
+            </Pressable>
+          )}
+        />
       </View>
     </>
   );
