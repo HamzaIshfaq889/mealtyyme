@@ -1,9 +1,9 @@
 import React from "react";
 
-import { Search, PickDiet } from "@/components/modules";
+import { Search } from "@/components/modules";
 
 const SearchScreen = () => {
-  return <PickDiet />;
+  return <Search />;
 };
 
 export default SearchScreen;

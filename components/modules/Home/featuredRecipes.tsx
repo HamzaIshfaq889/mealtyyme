@@ -74,9 +74,9 @@ const FeaturedRecipes = () => {
 
   return (
     <>
-      {/* <Text className="text-foreground font-bold text-xl leading-5 pl-7">
+      <Text className="text-foreground font-bold text-xl leading-5 pl-7">
         Featured
-      </Text> */}
+      </Text>
       <View className="max-h-max mt-1 mb-8">
         <FlatList
           horizontal

@@ -136,8 +136,8 @@ const PopularRecipes = () => {
   return (
     <>
       <View className="flex flex-row justify-between">
-        <Text className="text-primary  text-xl leading-5 mb-1 pl-4">
-          Popular Recipies
+        <Text className="text-foreground font-bold text-xl leading-5 pl-7">
+          Popular recipes
         </Text>
       </View>
 
