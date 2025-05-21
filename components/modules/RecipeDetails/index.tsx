@@ -349,7 +349,7 @@ const RecipeDetails = ({ recipeId, isPrivate }: RecipeDetailsProps) => {
                     key={item.id}
                     className="basis-1/2 flex flex-row items-center gap-3 py-2"
                   >
-                    <View className="bg-foreground p-2 rounded-md">
+                    <View className="bg-card p-2 rounded-md">
                       <item.icon color="#EE8427" />
                     </View>
                     <Text className="font-semibold text-lg leading-5 text-primary">
@@ -368,7 +368,7 @@ const RecipeDetails = ({ recipeId, isPrivate }: RecipeDetailsProps) => {
                   key={item.id}
                   className="basis-1/2 flex flex-row items-center gap-3 py-2"
                 >
-                  <View className="bg-foreground p-2 rounded-md">
+                  <View className="bg-card p-2 rounded-md">
                     <item.icon color="#EE8427" />
                   </View>
                   <Text className="font-semibold text-lg leading-5 text-primary">
@@ -413,11 +413,11 @@ const RecipeDetails = ({ recipeId, isPrivate }: RecipeDetailsProps) => {
             </View>
           </View>
 
-          <View className="flex flex-row bg-foreground p-1 rounded-full mb-5 mx-6 shadow-sm">
+          <View className="flex flex-row bg-card p-1 rounded-full mb-5 mx-6 shadow-sm">
             {/* Ingredients Tab */}
             <Button
               className={`flex-1 rounded-full transition-all duration-300 ${
-                activeTab === "Ingredients" ? "bg-secondary" : "bg-foreground"
+                activeTab === "Ingredients" ? "bg-secondary" : "bg-card"
               }`}
               onPress={() => setActiveTab("Ingredients")}
             >

@@ -194,7 +194,7 @@ const Cooking = () => {
           )}
         </ScrollView>
 
-        <View className="mt-auto">
+        <View className="mt-auto pb-6">
           <Text className="font-bold text-secondary text-lg mb-2">
             Step {currentStep} of {currentRecipe?.instructions?.length}
           </Text>
@@ -208,7 +208,7 @@ const Cooking = () => {
             <View className="flex flex-row gap-2">
               <Button
                 action="muted"
-                className="basis-1/2 h-16"
+                className="basis-1/2 h-16 bg-accent"
                 onPress={handleBackStep}
                 disabled={currentStep === 1}
               >
@@ -219,7 +219,7 @@ const Cooking = () => {
                 className="basis-1/2 h-16"
                 onPress={handleNextStep}
               >
-                <ButtonText>Next Step</ButtonText>
+                <ButtonText className="!text-white">Next Step</ButtonText>
               </Button>
             </View>
           ) : (
@@ -228,7 +228,7 @@ const Cooking = () => {
               className="w-full h-16"
               onPress={handleStopCooking}
             >
-              <ButtonText>Complete Cooking</ButtonText>
+              <ButtonText className="!text-white">Complete Cooking</ButtonText>
             </Button>
           )}
         </View>

@@ -7,7 +7,16 @@ import Toast from "react-native-toast-message";
 export default function RootLayout() {
   return (
     <>
-      <Stack screenOptions={{ headerShown: false }}>
+      <Stack
+        screenOptions={{
+          headerShown: false,
+          animation: "slide_from_right",
+          animationDuration: 200,
+          gestureEnabled: true,
+          gestureDirection: "horizontal",
+          presentation: "card",
+        }}
+      >
         <Stack.Screen name="recipe" />
         <Stack.Screen name="cooking" />
         <Stack.Screen name="search" />

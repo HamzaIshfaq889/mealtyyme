@@ -56,6 +56,16 @@ const MealPlan = () => {
     fetchMeals();
   }, [selectedDate]);
 
+  const allMealsEmpty = () => {
+    if (!meals) return true;
+    return (
+      (!meals.BREAKFAST || meals.BREAKFAST.length === 0) &&
+      (!meals.LUNCH || meals.LUNCH.length === 0) &&
+      (!meals.DINNER || meals.DINNER.length === 0) &&
+      (!meals.SNACK || meals.SNACK.length === 0)
+    );
+  };
+
   const renderMeal = (mealType: MealType) => {
     if (loading) {
       return (
@@ -85,7 +95,7 @@ const MealPlan = () => {
           onPress={() => router.push(`/recipe/${recipe.id}` as const)} // Ensure actual routing logic
         >
           <View
-            className="flex flex-row justify-between items-center p-4 rounded-2xl mb-5 bg-background mt-3"
+            className="flex flex-row justify-between items-center p-4 rounded-2xl mb-5 bg-card mt-3"
             style={{
               shadowColor: "#000",
               shadowOffset: { width: 0, height: 4 },
@@ -159,39 +169,61 @@ const MealPlan = () => {
   return (
     <>
       {/* <SafeAreaView style={{ flex: 1 }}> */}
-      <View
-        className={`px-7 pb-4  flex-row justify-between items-center bg-foreground pt-16 ${
-          Platform.OS === "android" && "pt-16"
-        }`}
-      >
-        <View className="flex flex-row items-center gap-2">
-          <NotebookPen
-            size={24}
-            color={scheme === "dark" ? "#FAF1E5" : "#003D29"}
-          />
+      <View className="flex-1 bg-background">
+        <View
+          className={`px-7 pb-4  flex-row justify-between items-center  pt-16 ${
+            Platform.OS === "android" && "pt-16"
+          }`}
+        >
+          <View className="flex flex-row items-center gap-2 ">
+            <NotebookPen
+              size={24}
+              color={scheme === "dark" ? "#FAF1E5" : "#003D29"}
+            />
 
-          <Text className="font-bold text-2xl text-primary ml-2">
-            Meal Planning
+            <View>
+              <Text className="font-bold text-2xl text-primary ml-2">
+                Meal Planning
+              </Text>
+            </View>
+          </View>
+        </View>
+        <View className="pt-6">
+          <Calendar onSelectDate={setSelectedDate} selected={selectedDate} />
+          <Text className="text-muted text-sm px-7">
+            {moment(selectedDate).format("MMMM D, YYYY")}
           </Text>
         </View>
-      </View>
-      <View className="">
-        <Calendar onSelectDate={setSelectedDate} selected={selectedDate} />
-      </View>
-      <ScrollView className="w-full mb-8 bg-background">
-        <View className="mt-8 px-7">
-          <Text className="text-xl leading-6 text-secondary">Breakfast</Text>
-          {renderMeal("BREAKFAST")}
+        <ScrollView className="w-full mb-8 bg-background ">
+          <View className="mt-8 px-7">
+            {allMealsEmpty() ? (
+              <View className="flex-1 justify-center items-center p-7">
+                <Text className="text-gray-500 text-base text-center">
+                  Your plan looks empty for{" "}
+                  {moment(selectedDate).format("MMMM D, YYYY")}. Head to any
+                  recipe to add to your meal planning
+                </Text>
+              </View>
+            ) : (
+              <>
+                <Text className="text-xl leading-6 text-secondary">
+                  Breakfast
+                </Text>
+                {renderMeal("BREAKFAST")}
 
-          <Text className="text-xl leading-6 text-secondary">Lunch</Text>
-          {renderMeal("LUNCH")}
+                <Text className="text-xl leading-6 text-secondary">Lunch</Text>
+                {renderMeal("LUNCH")}
 
-          <Text className="text-xl leading-6 text-secondary">Dinner</Text>
-          {renderMeal("DINNER")}
-          <Text className="text-xl leading-6 text-secondary">Snacks</Text>
-          {renderMeal("SNACK")}
-        </View>
-      </ScrollView>
+                <Text className="text-xl leading-6 text-secondary">Dinner</Text>
+                {renderMeal("DINNER")}
+
+                <Text className="text-xl leading-6 text-secondary">Snacks</Text>
+                {renderMeal("SNACK")}
+              </>
+            )}
+          </View>
+        </ScrollView>
+      </View>
       {/* </SafeAreaView> */}
     </>
   );

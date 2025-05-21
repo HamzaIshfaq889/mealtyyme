@@ -1,6 +1,6 @@
 import { AppConfig } from "@/constants";
 import apiClient from "@/lib/apiClient";
-import { LoginResponseTypes } from "@/lib/types";
+import { LoginResponseTypes, PatchUserPayload } from "@/lib/types";
 
 import {
   PatchCustomerPayload,
@@ -63,4 +63,22 @@ export const uploadFile = async (file: File) => {
   }
 
   return response.data as UploadAvatarResponse;
+};
+
+export const patchUser = async ({ user_id, data }: PatchUserPayload) => {
+  const response = await apiClient.patch(`users/${user_id}/`, data);
+
+  if (!response.ok) {
+    if (response.status === 404) {
+      throw new Error("Customer not found");
+    }
+
+    throw new Error(
+      response?.originalError?.message || "Customer update failed"
+    );
+  }
+
+  console.log(response.data);
+
+  return response.data;
 };

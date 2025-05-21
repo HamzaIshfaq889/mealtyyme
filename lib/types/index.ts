@@ -52,6 +52,7 @@ export type LoginResponseTypes = {
   isAuthenticated: boolean;
   image_url?: string | null;
   avatar_url?: string;
+  user_id?: number | null;
   customer_details: {
     user: number | null;
     diet_preferences: number[] | [];
@@ -63,6 +64,11 @@ export type LoginResponseTypes = {
     saved_recipes: number[] | [];
     id: number | null;
   } | null;
+};
+
+export type PatchUserPayload = {
+  user_id: number | null;
+  data: Partial<SignupPayload>;
 };
 
 export interface Subscription {

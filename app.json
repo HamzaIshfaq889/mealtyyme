@@ -2,7 +2,7 @@
   "expo": {
     "name": "Mealtyme",
     "slug": "mealtyme",
-    "version": "0.0.19",
+    "version": "0.0.20",
     "orientation": "portrait",
     "icon": "./assets/images/global-icon.png",
     "scheme": "myapp",
@@ -32,6 +32,7 @@
         "ITSAppUsesNonExemptEncryption": false,
         "NSCameraUsageDescription": "Stripe might need access camera to scan credit cards and make payments securely.",
         "NSUserTrackingUsageDescription": "Allow notifications",
+        "NSPhotoLibraryUsageDescription": "We need access to your photos to allow you to upload profile pictures and share images in the app.",
         "UIBackgroundModes": ["remote-notification"]
       }
     },

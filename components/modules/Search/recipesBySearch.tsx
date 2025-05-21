@@ -46,7 +46,7 @@ const AnimatedRecipeItem: React.FC<AnimatedRecipeItemProps> = ({
     >
       <Pressable onPress={() => router.push(`/recipe/${recipe.id}` as const)}>
         <View
-          className="flex flex-row justify-between items-center p-4 rounded-2xl bg-foreground"
+          className="flex flex-row justify-between items-center p-4 rounded-2xl bg-card"
           style={{
             shadowColor: "#000",
             shadowOffset: { width: 0, height: 4 },

@@ -75,7 +75,7 @@ const IngredientBasedSearch = () => {
   const [shouldOpenDropdown, setShouldOpenDropdown] = useState(true);
 
   return (
-    <View className="flex flex-col w-full h-full px-6 pt-20 pb-6 relative">
+    <View className="flex flex-col w-full h-full px-6 pt-20 pb-6 relative bg-background">
       <Animated.View
         entering={FadeIn.duration(500)}
         className="flex-row items-center mb-6"
@@ -260,15 +260,17 @@ const IngredientBasedSearch = () => {
                 layout={Layout.springify()}
                 key={item.id}
                 className={`rounded-2xl mb-4 ${
-                  isDarkMode ? "bg-[#1D232B]" : "bg-background"
+                  isDarkMode ? "bg-card" : "bg-card"
                 }`}
-                style={{
-                  // shadowColor: "#000",
-                  // shadowOffset: { width: 0, height: 2 },
-                  // shadowOpacity: 0.05,
-                  // shadowRadius: 12,
-                  // elevation: 3,
-                }}
+                style={
+                  {
+                    // shadowColor: "#000",
+                    // shadowOffset: { width: 0, height: 2 },
+                    // shadowOpacity: 0.05,
+                    // shadowRadius: 12,
+                    // elevation: 3,
+                  }
+                }
               >
                 <View className="px-5 py-4">
                   <View className="flex flex-row justify-between items-center">
@@ -299,31 +301,33 @@ const IngredientBasedSearch = () => {
 
       <View className="mt-auto mb-4">
         {/* <Animated.View entering={FadeIn.delay(500)} className="mt-4 mb-4"> */}
-          <TouchableOpacity
-            onPress={handleFindRecipes}
-            disabled={!addedIngredients.length}
-            className={`rounded-xl ${
-              !addedIngredients.length ? "!bg-muted" : "bg-secondary"
-            } h-14 flex-row items-center justify-center`}
-            style={{
+        <TouchableOpacity
+          onPress={handleFindRecipes}
+          disabled={!addedIngredients.length}
+          className={`rounded-xl ${
+            !addedIngredients.length ? "!bg-muted" : "bg-secondary"
+          } h-14 flex-row items-center justify-center`}
+          style={
+            {
               // shadowColor: "#000",
               // shadowOffset: { width: 0, height: 2 },
               // shadowOpacity: 0.1,
               // shadowRadius: 4,
               // elevation: 4,
-            }}
+            }
+          }
+        >
+          <Text
+            className={`font-semibold text-lg ${
+              !addedIngredients.length ? "text-foreground/60" : "text-white"
+            }`}
           >
-            <Text
-              className={`font-semibold text-lg ${
-                !addedIngredients.length ? "text-foreground/60" : "text-white"
-              }`}
-            >
-              Find Recipes
-            </Text>
-            {addedIngredients.length > 0 && (
-              <ChevronRight size={20} color="#fff" className="ml-2" />
-            )}
-          </TouchableOpacity>
+            Find Recipes
+          </Text>
+          {addedIngredients.length > 0 && (
+            <ChevronRight size={20} color="#fff" className="ml-2" />
+          )}
+        </TouchableOpacity>
         {/* </Animated.View> */}
       </View>
     </View>

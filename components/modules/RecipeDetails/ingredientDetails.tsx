@@ -112,7 +112,7 @@ const IngredientDetails = ({
 
           return (
             <View
-              className="p-6 py-5 flex flex-row justify-between items-center rounded-2xl mb-4 bg-foreground"
+              className="p-6 py-5 flex flex-row justify-between items-center rounded-2xl mb-4 bg-card"
               key={ing?.ingredient?.id}
             >
               <View className="flex flex-row gap-6 items-center">

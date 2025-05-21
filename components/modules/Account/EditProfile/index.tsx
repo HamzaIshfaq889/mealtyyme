@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   useColorScheme,
   View,
+  Platform,
 } from "react-native";
 import { router } from "expo-router";
 import {
@@ -21,7 +22,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { Alert, Image } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { CameraIcon } from "lucide-react-native";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { LoginResponseTypes } from "@/lib/types";
 import {
   useUpdateCustomer,
@@ -29,6 +30,8 @@ import {
 } from "@/redux/queries/recipes/useCustomerQuery";
 import { UploadAvatarResponse } from "@/lib/types/customer";
 import axios from "axios";
+import { patchUser } from "@/services/customerApi";
+import { setCredentials } from "@/redux/slices/Auth";
 
 const formDataImage = global.FormData;
 
@@ -45,7 +48,7 @@ const EditProfile = () => {
     useUploadProfileImage();
   const { mutate: UpdateUserProfile } = useUpdateCustomer();
   const customerId = useSelector(
-    (state: any) => state.auth.loginResponseType.customer_details?.id
+    (state: any) => state.auth.loginResponseType.customer_details?.user
   );
 
   const auth: LoginResponseTypes = useSelector(
@@ -56,6 +59,8 @@ const EditProfile = () => {
     firstName: auth.first_name,
     lastName: auth.first_name,
   });
+
+  const dispatch = useDispatch();
 
   const validateField = (key: string, value: string | null) => {
     setFormData((prev) => ({ ...prev, [key]: value }));
@@ -99,69 +104,69 @@ const EditProfile = () => {
     !errors.lastName;
 
   const pickImage = async () => {
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (status !== "granted") {
-      Alert.alert(
-        "Permission required",
-        "We need access to your photos to set a profile picture"
-      );
-      return;
-    }
-
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ["images"],
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 1,
-    });
-
-    if (!result.canceled && result.assets) {
-      const uri = result.assets[0].uri;
-      setImage(uri);
-
-      // const file = await uriToFile(uri);
-      // setImageFile(file);
-
-      const fD = new formDataImage();
-      //@ts-ignore
-      fD.append("file", {
-        uri: uri,
-        type: "image/*",
-        name: "profile-image",
-      });
-
-      const config = {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ5OTk0MjYxLCJpYXQiOjE3NDc0MDIyNjEsImp0aSI6IjE0NjFmNjk4YTUxNjQwMDhiOWQyM2YxZTI1YmJkN2UxIiwidXNlcl9pZCI6NjcsImVtYWlsIjoic2tAZ21haWwuY29tIiwiZmlyc3RfbmFtZSI6IkJiYiIsInJvbGUiOiJDVVNUT01FUiJ9.LN27bP2eBReQTHdWGesaieYeNieufOm2rZ5pKEv8p-E`,
-        },
-        transformRequest: () => {
-          return fD;
-        },
-      };
-
-      try {
-        const response = await axios.post(
-          "https://backend.mealtyme.co/api/attachments/",
-          fD,
-          config
+    try {
+      const { status } =
+        await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status !== "granted") {
+        Alert.alert(
+          "Permission required",
+          "We need access to your photos to set a profile picture"
         );
-
-        alert("success");
-      } catch (error) {
-        console.log(error);
+        return;
       }
 
-      // Automatically upload file here
-      // uploadImage(formData, {
-      //   onSuccess: (data) => {
-      //     setUploadedImageData(data);
-      //   },
-      //   onError: (err) => {
-      //     console.error("Upload failed:", err);
-      //     Alert.alert("Upload failed", err.message);
-      //   },
-      // });
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 0.8,
+      });
+
+      if (!result.canceled && result.assets && result.assets[0]) {
+        const uri = result.assets[0].uri;
+        setImage(uri);
+
+        // Create form data
+        const formData = new FormData();
+
+        // Get the file extension from the URI
+        const uriParts = uri.split(".");
+        const fileType = uriParts[uriParts.length - 1];
+
+        // Create the file object
+        const file = {
+          uri: Platform.OS === "ios" ? uri.replace("file://", "") : uri,
+          type: `image/${fileType}`,
+          name: `profile-image.${fileType}`,
+        };
+
+        formData.append("file", file as any);
+
+        const config = {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${auth?.access}`,
+          },
+        };
+
+        try {
+          const response = await axios.post(
+            "https://backend.mealtyme.co/api/attachments/",
+            formData,
+            config
+          );
+
+          if (response.data) {
+            setUploadedImageData(response.data);
+          }
+        } catch (error) {
+          console.error("Upload error:", error);
+          Alert.alert("Error", "Failed to upload image. Please try again.");
+        }
+      }
+    } catch (error) {
+      console.error("Image picker error:", error);
+      Alert.alert("Error", "Failed to pick image. Please try again.");
     }
   };
 
@@ -184,24 +189,36 @@ const EditProfile = () => {
     const userImage = uploadedImageData?.file;
 
     const data = {
-      firstName,
+      first_name: firstName || "",
+      last_name: formData?.lastName || "",
+      image_url: userImage,
     };
 
-    UpdateUserProfile(
-      { customerId, data },
-      {
-        onSuccess: () => {
-          router.push("/(protected)/(nested)/settings");
-        },
-        onError: (error) => {
-          console.error("Error adding recipe:", error);
-        },
-      }
-    );
+    patchUser({ user_id: customerId, data })
+      .then((response: any) => {
+        // Update Redux store with only the changed fields
+        dispatch(
+          setCredentials({
+            ...auth, // Keep existing auth state
+            first_name: response.first_name,
+            image_url: response.image_url,
+            email: response.email,
+            role: response.role,
+            customer_details: auth.customer_details, // Keep existing customer details
+          })
+        );
+        router.push("/(protected)/(tabs)/account");
+      })
+      .catch((error: Error) => {
+        console.error("Error updating profile:", error);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   };
 
   return (
-    <ScrollView className="min-w-sceen min-h-scr px-6 py-16">
+    <ScrollView className="min-w-sceen bg-background px-6 py-16">
       <View className="flex flex-row justify-between items-center mb-10">
         <TouchableOpacity
           onPress={() => router.push("/(protected)/(tabs)/account")}
@@ -221,9 +238,9 @@ const EditProfile = () => {
       <View className="flex items-center justify-center mb-10">
         <TouchableOpacity onPress={pickImage}>
           <View className="bg-gray3 rounded-full border-2 border-secondary w-32 h-32 relative">
-            {image && (
+            {(image || auth?.image_url) && (
               <Image
-                source={{ uri: image }}
+                source={{ uri: (image || auth?.image_url) as string }}
                 className="w-full h-full rounded-full"
               />
             )}
@@ -310,43 +327,6 @@ const EditProfile = () => {
         </FormControlError>
       </FormControl>
 
-      {/* <FormControl size="md" className="mb-1" isInvalid={!!errors?.dateOfBirth}>
-        <FormControlLabel>
-          <FormControlLabelText className="font-bold leading-5">
-            Date of Birth
-          </FormControlLabelText>
-        </FormControlLabel>
-
-        {!showdatePicker && (
-          <Pressable onPress={toggleDatePicker}>
-            <Input className="my-3.5">
-              <InputSlot className="ml-1">
-                <InputIcon className="!w-6 !h-6 text-primary" as={MailIcon} />
-              </InputSlot>
-              <InputField
-                type="text"
-                placeholder="Enter Date of Birth"
-                value={formData.dateOfBirth}
-                editable={false}
-                onChangeText={(text) => validateField("dateOfBirth", text)}
-              />
-            </Input>
-          </Pressable>
-        )}
-
-        {showdatePicker && (
-          <DateTimPicker
-            mode="date"
-            display="spinner"
-            value={date}
-            onChange={onChange}
-          />
-        )}
-        <FormControlError>
-          <FormControlErrorText>{errors?.dateOfBirth}</FormControlErrorText>
-        </FormControlError>
-      </FormControl> */}
-
       <Button
         className="mt-2 mb-36 bg-secondary"
         action="primary"
@@ -354,7 +334,7 @@ const EditProfile = () => {
         disabled={!!isLoading}
       >
         {!isLoading ? (
-          <ButtonText>Update Profile</ButtonText>
+          <ButtonText className="!text-white">Update Profile</ButtonText>
         ) : (
           <ButtonText>
             <Spinner />

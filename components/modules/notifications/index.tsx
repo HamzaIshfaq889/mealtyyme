@@ -3,6 +3,7 @@ import { Text, View, Button, Platform } from "react-native";
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
 import Constants from "expo-constants";
+import { saveNotificationToken } from "../../../services/notifications/api";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -84,6 +85,15 @@ async function registerForPushNotificationsAsync() {
   }
 }
 
+async function saveTokenToBackend(token: string) {
+  try {
+    await saveNotificationToken(token);
+    console.log("Token saved to backend successfully");
+  } catch (error) {
+    console.error("Error saving token to backend:", error);
+  }
+}
+
 export default function NotificationsPage() {
   const [expoPushToken, setExpoPushToken] = useState("");
   const [notification, setNotification] = useState<
@@ -92,7 +102,12 @@ export default function NotificationsPage() {
 
   useEffect(() => {
     registerForPushNotificationsAsync()
-      .then((token) => setExpoPushToken(token ?? ""))
+      .then((token) => {
+        if (token) {
+          setExpoPushToken(token);
+          saveTokenToBackend(token);
+        }
+      })
       .catch((error: any) => setExpoPushToken(`${error}`));
 
     const notificationListener = Notifications.addNotificationReceivedListener(

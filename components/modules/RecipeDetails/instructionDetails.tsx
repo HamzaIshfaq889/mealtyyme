@@ -39,7 +39,7 @@ const InstructionDetails = ({ instructions }: InstructionDetailsProps) => {
         {instructions.map((instruction) => {
           return (
             <View
-              className="mb-4 flex flex-row items-start gap-4 p-5 rounded-2xl bg-foreground"
+              className="mb-4 flex flex-row items-start gap-4 p-5 rounded-2xl bg-card"
               key={instruction?.step_number}
             >
               <View className="bg-background py-1.5 px-4 rounded-lg">

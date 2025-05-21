@@ -1,9 +1,9 @@
 import React from "react";
 
-import { Account,PickDiet } from "@/components/modules";
+import { Account, PickDiet } from "@/components/modules";
 
 const AccountScreen = () => {
-  return <PickDiet />;
+  return <Account />;
 };
 
 export default AccountScreen;

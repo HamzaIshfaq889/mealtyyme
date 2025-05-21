@@ -113,7 +113,7 @@ export default function ProFeaturesCard({
     >
       <View>
         <LinearGradient
-          colors={["#00AAFF", "#0077CC", "#66DDFF"]}
+          colors={["#D35400", "#E67E22", "#F5B041"]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={{ padding: 24, borderRadius: 16 }} // p-6 = 24, rounded-2xl ≈ 16

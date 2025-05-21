@@ -111,7 +111,7 @@ const Step = ({ step, timer, onToggle, onComplete, onAdd }: StepProps) => {
         <View className="mb-6 mx-auto">
           <Button action="secondary" className="h-16 w-48" onPress={onAdd}>
             <Plus color="#fff" />
-            <ButtonText>Add Timer</ButtonText>
+            <ButtonText className="!text-white">Add Timer</ButtonText>
           </Button>
         </View>
       )}

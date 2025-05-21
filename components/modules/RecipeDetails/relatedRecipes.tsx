@@ -101,7 +101,7 @@ const RelatedRecipes = ({ recipe }: RelatedRecipesProps) => {
               className={`${index === 0 ? "ml-7" : "ml-1"} mr-3 py-4`}
               onPress={() => router.push(`/recipe/${item?.id}` as const)}
             >
-              <View className="flex flex-col bg-foreground rounded-2xl w-64 p-3 !h-[230px]">
+              <View className="flex flex-col bg-card rounded-2xl w-64 p-3 !h-[230px]">
                 <View className="relative mb-4">
                   <Image
                     source={{ uri: item.image_url }}

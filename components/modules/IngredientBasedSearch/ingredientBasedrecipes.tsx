@@ -78,7 +78,7 @@ const IngredientBasedrecipes = ({
 
   return (
     <View>
-      <View className="pt-20 px-5 pb-4">
+      <View className="pt-20 px-5 pb-4 bg-background">
         <View className="flex-row items-center  mb-6">
           <TouchableOpacity onPress={() => router.back()}>
             <ArrowLeft
@@ -113,7 +113,7 @@ const IngredientBasedrecipes = ({
                 onPress={() => router.push(`/recipe/${recipe.id}` as const)}
               >
                 <View
-                  className="flex flex-row justify-between items-center p-4 rounded-2xl mb-5 bg-background"
+                  className="flex flex-row justify-between items-center p-4 rounded-2xl mb-5 bg-card"
                   style={{
                     shadowColor: "#000",
                     shadowOffset: { width: 0, height: 4 },

@@ -68,9 +68,9 @@ const Review = ({ currentRecipeId, bottomSheetRef }: ReviewProps) => {
                 onPress={() => handleStarRating(starIndex)}
               >
                 {starIndex <= starRating ? (
-                  <Star fill={"#e8b015"} stroke={"#e8b015"} />
+                  <Star fill={"#e8b015"} stroke={"#e8b015"} size={30} />
                 ) : (
-                  <Star fill={"transparent"} stroke={"#e8b015"} />
+                  <Star fill={"transparent"} stroke={"#e8b015"} size={30} />
                 )}
               </TouchableOpacity>
             ))}
@@ -86,10 +86,10 @@ const Review = ({ currentRecipeId, bottomSheetRef }: ReviewProps) => {
                 >
                   <View className="mb-2">
                     <Text
-                      className={`font-bold leading-6 py-4 px-6 rounded-2xl ${
+                      className={`font-bold leading-6 py-4 px-6 rounded-2xl bg-card  ${
                         isSelected
-                          ? "text-background bg-secondary"
-                          : "text-foreground bg-background border-2 border-primary/65"
+                          ? "text-white bg-secondary"
+                          : "text-foreground bg-background border border-accent"
                       }`}
                     >
                       {btn}

@@ -66,7 +66,7 @@ const Savedrecipes = () => {
             onPress={() => router.push(`/recipe/${recipe.id}` as const)}
           >
             <View
-              className="flex flex-row justify-between items-center p-4 rounded-2xl mb-5 bg-foreground"
+              className="flex flex-row justify-between items-center p-4 rounded-2xl mb-5 bg-card"
               style={{
                 shadowColor: "#000",
                 shadowOffset: { width: 0, height: 4 },

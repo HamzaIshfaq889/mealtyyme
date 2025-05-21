@@ -122,7 +122,7 @@ const Account = () => {
         </Pressable>
       </View>
 
-      <View className="flex flex-row justify-between items-center py-4 mb-5 mt-12 rounded-3xl mx-4  px-6 bg-foreground">
+      <View className="flex flex-row justify-between items-center py-4 mb-5 mt-12 rounded-3xl mx-4  px-6 bg-card">
         <View
           className={`flex flex-row items-center ${
             auth?.avatar_url ? "gap-4" : "gap-4"
@@ -158,7 +158,7 @@ const Account = () => {
         </TouchableOpacity>
       </View>
 
-      <View className="flex flex-row bg-foreground p-1 rounded-full mb-4 mx-6 shadow-sm items-center h-16">
+      <View className="flex flex-row bg-card p-1 rounded-full mb-4 mx-6 shadow-sm items-center h-16">
         {/* Cookbooks Tab */}
         <Animated.View style={cookbooksStyle}>
           <Button

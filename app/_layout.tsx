@@ -176,7 +176,17 @@ export default function RootLayout() {
                       className={scheme === "dark" ? "dark flex-1" : "flex-1"}
                     >
                       <PortalProvider rootHostName="root-host">
-                        <Stack screenOptions={{ headerShown: false }}>
+                        <Stack
+                          screenOptions={{
+                            headerShown: false,
+                            animation: "slide_from_right",
+                            animationDuration: 200,
+                            animationTypeForReplace: "push",
+                            gestureEnabled: true,
+                            gestureDirection: "horizontal",
+                            presentation: "card",
+                          }}
+                        >
                           <Stack.Screen
                             name="(protected)"
                             options={{

@@ -3,13 +3,12 @@
 @tailwind utilities;
 
 @layer base {
- 
   :root {
-    --background: 24 85%, 98%;      /* light pinksih */
-    --foreground: 214°, 18%, 16%;   /* dark black color on pinksih color */
-    --primary: 200 67% 12%;         /* Second version of black color on pinksih color */
-    --secondary: 28 85% 54%;        /* App color */
-    --destructive: 5 84% 64%;       /* red color  */
+    --background: 24 85%, 98%; /* light pinksih */
+    --foreground: 214°, 18%, 16%; /* dark black color on pinksih color */
+    --primary: 200 67% 12%; /* Second version of black color on pinksih color */
+    --secondary: 28 85% 54%; /* App color */
+    --destructive: 5 84% 64%; /* red color  */
     --muted: 0 0% 36%;
     --accent: 0 0% 36%;
     --gray3: 214 22% 83%;
