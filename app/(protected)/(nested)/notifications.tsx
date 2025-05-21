@@ -1,9 +1,8 @@
+import NotificationsPage from "@/components/modules/notifications";
 import React from "react";
 
-import { Notifications } from "@/components/modules";
-
 const NotificationsScreen = () => {
-  return <Notifications />;
+  return <NotificationsPage />;
 };
 
 export default NotificationsScreen;
