@@ -80,19 +80,19 @@ const HomeUser = () => {
   const { isVisible, showModal, hideModal, backdropAnim, modalAnim } =
     useModal();
 
-  useEffect(() => {
-    const initNotifications = async () => {
-      try {
-        const expoPushToken = await registerForPushNotificationsAsync();
-        if (expoPushToken) {
-          await saveNotificationToken(expoPushToken);
-        }
-      } catch (error) {
-        console.error("Failed to save notification token:");
-      }
-    };
-    initNotifications();
-  }, []);
+  // useEffect(() => {
+  //   const initNotifications = async () => {
+  //     try {
+  //       const expoPushToken = await registerForPushNotificationsAsync();
+  //       if (expoPushToken) {
+  //         await saveNotificationToken(expoPushToken);
+  //       }
+  //     } catch (error) {
+  //       console.error("Failed to save notification token:");
+  //     }
+  //   };
+  //   initNotifications();
+  // }, []);
 
   const isDark = scheme === "dark";
   useEffect(() => {

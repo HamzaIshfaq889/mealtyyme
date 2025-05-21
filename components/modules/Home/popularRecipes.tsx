@@ -173,7 +173,7 @@ const PopularRecipes = () => {
                 onPress={() => router.push(`/recipe/${item?.id}` as const)}
               >
                 <View
-                  className="flex flex-col bg-foreground rounded-2xl w-64 p-4 shadow-md"
+                  className="flex flex-col bg-card rounded-2xl w-64 p-4 shadow-md"
                   style={{
                     shadowColor: scheme === "dark" ? "#000" : "#999",
                     shadowOffset: { width: 0, height: 4 },
