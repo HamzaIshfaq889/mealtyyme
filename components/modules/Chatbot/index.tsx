@@ -25,6 +25,7 @@ import {
 } from "react-native-reanimated";
 import CheMateAi from "@/assets/svgs/chef-mate-ai.svg";
 import { Progress, ProgressFilledTrack } from "@/components/ui/progress";
+import HorizontalRecipeCard from "../RecipeCards/horizontalRecipeCard";
 
 interface ChatMessage {
   _id: number;
@@ -225,80 +226,17 @@ const ChatBot = () => {
             <Text className="text-muted text-sm">Nibbles is typing....</Text>
           </View>
         ) : isRecipe ? (
-          <Pressable
-            className="mx-6 mb-2 p-4 flex flex-row justify-between items-center rounded-2xl bg-background"
-            // style={{
-            //   shadowColor: "#000",
-            //   shadowOffset: { width: 0, height: 4 },
-            //   shadowOpacity: 0.05,
-            //   shadowRadius: 6,
-            //   elevation: 3,
-            // }}
-            onPress={() => router.push(`/recipe/${item.recipe?.id}`)}
-          >
-            <View className="flex flex-row gap-4 flex-1">
-              <View className="relative">
-                <Image
-                  source={{ uri: item.recipe?.image_url }}
-                  className="w-24 h-24 rounded-xl"
-                  resizeMode="cover"
-                />
-                {item.recipe?.is_featured && (
-                  <View className="absolute top-1 right-1 bg-yellow-400 p-1 rounded-full">
-                    <Star color="#fff" size={14} />
-                  </View>
-                )}
-              </View>
-
-              <View className="flex flex-col justify-between flex-1">
-                <View>
-                  <Text
-                    className="font-bold text-lg mb-1 text-primary"
-                    numberOfLines={1}
-                  >
-                    {item.recipe?.title}
-                  </Text>
-
-                  <View className="flex flex-row items-center gap-2">
-                    <Image
-                      source={{ uri: item.recipe?.created_by.image_url }}
-                      className="w-5 h-5 rounded-full"
-                    />
-                    <Text className="text-muted text-sm">
-                      {item.recipe?.created_by.first_name}{" "}
-                      {item.recipe?.created_by.last_name}
-                    </Text>
-                  </View>
-                </View>
-
-                <View className="flex flex-row gap-3">
-                  <View className="flex flex-row items-center gap-1">
-                    <Clock color="#6b7280" size={16} />
-                    <Text className="text-muted text-sm">
-                      {item.recipe?.ready_in_minutes} min
-                    </Text>
-                  </View>
-
-                  <View className="flex flex-row items-center gap-1">
-                    <Flame color="#6b7280" size={16} />
-                    <Text className="text-muted text-sm">
-                      {Math.ceil(item.recipe?.calories ?? 0)} Kcal
-                    </Text>
-                  </View>
-                </View>
-              </View>
+          item?.recipe ? (
+            <View className="mx-6">
+              <HorizontalRecipeCard recipe={item.recipe} />
             </View>
-
-            <View className="ml-2 p-2 bg-secondary rounded-full">
-              <ArrowRight color="#fff" size={18} />
-            </View>
-          </Pressable>
+          ) : null
         ) : (
           <View
             className={`px-4 py-2.5 mb-4 mx-6 ${
               item.user._id === 1
-                ? "bg-foreground self-end rounded-tl-2xl rounded-br-2xl rounded-bl-2xl"
-                : "bg-background self-start rounded-tr-2xl rounded-br-2xl rounded-bl-2xl"
+                ? "bg-secondary self-end rounded-tl-2xl rounded-br-2xl rounded-bl-2xl"
+                : "bg-card self-start rounded-tr-2xl rounded-br-2xl rounded-bl-2xl"
             }`}
           >
             {item?.heading ? (
@@ -308,7 +246,7 @@ const ChatBot = () => {
             ) : null}
             <Text
               className={`leading-7 ${
-                item.user._id === 1 ? "text-background" : "text-primary"
+                item.user._id === 1 ? "text-white" : "!text-foreground"
               }`}
             >
               {item.text}
@@ -320,14 +258,16 @@ const ChatBot = () => {
   };
 
   return (
-    <SafeAreaView className="flex-1 w-full h-full pt-16 pb-20">
+    <SafeAreaView className="flex-1 w-full h-full pt-16 pb-4">
       <KeyboardAvoidingView
         className="flex-1"
         behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
         <View className="flex-1 ">
           <View className="flex-row items-center justify-between mb-5 mx-6">
-            <TouchableOpacity onPress={() => router.push('/(protected)/(tabs)')}>
+            <TouchableOpacity
+              onPress={() => router.push("/(protected)/(tabs)")}
+            >
               <ArrowLeft
                 width={30}
                 height={30}
@@ -346,12 +286,16 @@ const ChatBot = () => {
           </View>
 
           <View className="mx-6 pb-1.5">
-            <View className="bg-[#b5e6f5] rounded-full">
+            <View className="bg-[#fae1cb] rounded-full">
               <View className="bg-secondary w-[60%] py-1 rounded-full m-0"></View>
             </View>
             <View className="flex flex-row justify-between mt-2">
-              <Text className="text-secondary text-sm leading-6 font-medium">Free Tokens Left</Text>
-              <Text className="text-secondary text-sm leading-6 font-medium">65%</Text>
+              <Text className="text-secondary text-sm leading-6 font-medium">
+                Free Tokens Left
+              </Text>
+              <Text className="text-secondary text-sm leading-6 font-medium">
+                65%
+              </Text>
             </View>
           </View>
 

@@ -1,11 +1,5 @@
 import { Tabs, useSegments } from "expo-router";
-import {
-  useColorScheme,
-  Platform,
-  StyleSheet,
-  View,
-  TouchableOpacity,
-} from "react-native";
+import { useColorScheme, StyleSheet, TouchableOpacity } from "react-native";
 import {
   House,
   CalendarDays,
@@ -28,8 +22,11 @@ import Animated, {
   useSharedValue,
 } from "react-native-reanimated";
 import React from "react";
+import { useSavedRecipes } from "@/redux/queries/recipes/useSaveRecipesQuery";
+import { saveSavedRecipesInStorage } from "@/utils/storage/authStorage";
+import { setSavedRecipes } from "@/redux/slices/Auth";
+import ChatBotSvg from "@/assets/svgs/ai-chatbot.svg";
 
-// Create a context to share the tab bar animation value
 export const TabBarContext = React.createContext<{
   tabBarTranslateY: Animated.SharedValue<number>;
 }>({
@@ -116,11 +113,13 @@ export default function FloatingTabsLayout() {
           style={styles.tabItem}
           onPress={() => router.push("/chat-bot")}
         >
-          <BotMessageSquare
+          {/* <BotMessageSquare
             color={activeIndex === 2 ? colors.active : colors.inactive}
             size={24}
             strokeWidth={1.5}
-          />
+          /> */}
+
+          <ChatBotSvg width={40} height={40} />
         </TouchableOpacity>
 
         {/* Cart tab */}
@@ -141,7 +140,7 @@ export default function FloatingTabsLayout() {
           onPress={() => router.push("/account")}
         >
           <User
-            color={activeIndex === 4 ? colors.active : colors.inactive}
+            color={activeIndex === 4 ? "#EE8427" : colors.inactive}
             size={24}
             strokeWidth={1.5}
           />
@@ -162,6 +161,18 @@ export default function FloatingTabsLayout() {
       if (cart.length > 0) {
         dispatch(addIngredients(cart));
       }
+
+      try {
+        const { data: savedRecipes } = await useSavedRecipes().refetch();
+        const savedRecipeIds = savedRecipes?.map((recipe) => recipe?.id);
+        if (savedRecipeIds && savedRecipeIds.length > 0) {
+          await saveSavedRecipesInStorage(savedRecipeIds);
+          dispatch(setSavedRecipes(savedRecipeIds));
+          console.log("Saved Recipes retrieved and stored successfully");
+        }
+      } catch (error) {
+        console.error("Error saving recipes to storage:", error);
+      }
     };
 
     checkUserData();
@@ -172,7 +183,7 @@ export default function FloatingTabsLayout() {
       <Tabs
         screenOptions={{
           headerShown: false,
-          tabBarStyle: { display: "none" }, // hide default tab bar
+          tabBarStyle: { display: "none" },
         }}
       >
         <Tabs.Screen name="index" />

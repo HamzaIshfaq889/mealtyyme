@@ -11,6 +11,7 @@ import BottomSheet, {
 
 import { addReview } from "@/services/recipesAPI";
 import { ReviewButtons } from "@/utils";
+import Toast from "react-native-toast-message";
 
 type ReviewProps = {
   currentRecipeId: number;
@@ -34,6 +35,16 @@ const Review = ({ currentRecipeId, bottomSheetRef }: ReviewProps) => {
   const handleRate = async (index: number | null) => {
     try {
       const reviewText = index !== null ? ReviewButtons[index] : undefined;
+
+      if (!reviewText || !starRating) {
+        Toast.show({
+          type: "error",
+          text1: "Please select text and rating to add review!",
+        });
+        return;
+      }
+
+      console.log("aaaa", reviewText, currentRecipeId, starRating);
 
       await addReview({
         recipeId: currentRecipeId,

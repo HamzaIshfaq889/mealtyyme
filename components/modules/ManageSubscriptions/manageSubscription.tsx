@@ -340,7 +340,7 @@ export default function ManageSubscription({
         </View>
         <View className="flex flex-row justify-center items-center gap-2">
           <Button
-            action="muted"
+            action="card"
             className="basis-1/2 h-16"
             onPress={() => setShowDeleteModal(false)}
           >

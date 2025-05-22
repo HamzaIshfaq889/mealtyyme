@@ -54,9 +54,9 @@ const DeleteCookbook = ({
       <Dialog.Container
         visible={showDeleteModal}
         contentStyle={{
-          backgroundColor: scheme === "dark" ? "#131414" : "#fff",
+          backgroundColor: scheme === "dark" ? "#1a1a1a" : "#fdf8f4",
           paddingVertical: 50,
-          marginLeft: 30,
+          marginLeft: 20,
           marginRight: 20,
           borderRadius: 30,
         }}
@@ -74,9 +74,9 @@ const DeleteCookbook = ({
             Are you sure to delete this collection
           </Text>
         </View>
-        <View className="flex flex-row gap-2">
+        <View className="flex flex-row justify-center items-center gap-2">
           <Button
-            action="muted"
+            action="card"
             className="basis-1/2 h-16"
             onPress={() => setShowDeleteModal(false)}
           >

@@ -50,6 +50,8 @@ const buttonStyle = tva({
         "bg-destructive border-error-300 data-[hover=true]:bg-error-600 data-[hover=true]:border-error-400 data-[active=true]:bg-error-700 data-[active=true]:border-error-500 data-[focus-visible=true]:web:ring-indicator-info rounded-2xl",
       default:
         "bg-transparent data-[hover=true]:bg-background-50 data-[active=true]:bg-transparent",
+
+      card: "bg-card rounded-2xl",
     },
     variant: {
       link: "px-0",
@@ -130,6 +132,8 @@ const buttonTextStyle = tva({
         "!text-primary !text-lg data-[hover=true]:text-success-600 data-[active=true]:text-success-700",
       negative:
         "!text-background data-[hover=true]:text-error-600 data-[active=true]:text-error-700 !font-bold !leading-5 !text-lg",
+
+      card: "!text-foreground data-[hover=true]:text-error-600 data-[active=true]:text-error-700 !font-bold !leading-5 !text-lg",
     },
     variant: {
       link: "data-[hover=true]:underline data-[active=true]:underline",

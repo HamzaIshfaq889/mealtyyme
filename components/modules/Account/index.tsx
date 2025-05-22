@@ -112,7 +112,7 @@ const Account = () => {
 
   return (
     <View className="w-full h-full py-16 bg-background">
-      <View className="flex flex-row justify-between items-center px-3">
+      <View className="flex flex-row justify-between items-center px-6">
         <View style={{ width: 30 }} />
         <Text className="font-bold text-2xl text-primary">Account</Text>
         <Pressable
@@ -150,7 +150,7 @@ const Account = () => {
         </View>
       </View>
 
-      <View className="flex flex-row bg-card p-1 rounded-full mb-4 mx-6 shadow-sm items-center h-16">
+      <View className="flex flex-row bg-card px-2  py-1 rounded-full mb-4 mx-4 shadow-sm items-center h-16">
         {/* Cookbooks Tab */}
         <Animated.View style={cookbooksStyle}>
           <Button
@@ -160,12 +160,8 @@ const Account = () => {
             onPress={() => handleTabPress("cookbooks")}
           >
             <BookmarkIcon
-              className={`w-4 h-4 ${
-                currentTab === "cookbooks"
-                  ? "!text-white mr-2"
-                  : "!text-primary"
-              }`}
-              color={"#7CA982"}
+              className={`w-4 h-4 ${currentTab === "cookbooks" && " mr-2"}`}
+              color={currentTab === "cookbooks" ? "#fff" : "#7CA982"}
             />
             {currentTab === "cookbooks" && (
               <ButtonText
@@ -187,12 +183,8 @@ const Account = () => {
             onPress={() => handleTabPress("savedrecipes")}
           >
             <HeartIcon
-              className={`w-4 h-4 ${
-                currentTab === "savedrecipes"
-                  ? "text-white mr-2"
-                  : "text-primary"
-              }`}
-              color={"#7CA982"}
+              className={`w-4 h-4 ${currentTab === "savedrecipes" && "mr-2"}`}
+              color={currentTab === "savedrecipes" ? "#fff" : "#7CA982"}
             />
             {currentTab === "savedrecipes" && (
               <ButtonText className="!text-white font-semibold !text-sm">
@@ -211,12 +203,8 @@ const Account = () => {
             onPress={() => handleTabPress("myrecipes")}
           >
             <UtensilsIcon
-              className={`w-4 h-4 ${
-                currentTab === "myrecipes"
-                  ? "!text-primary mr-2"
-                  : "text-primary"
-              }`}
-              color={"#7CA982"}
+              className={`w-4 h-4 ${currentTab === "myrecipes" && "mr-2"}`}
+              color={currentTab === "myrecipes" ? "#fff" : "#7CA982"}
             />
 
             {currentTab === "myrecipes" && (

@@ -205,7 +205,10 @@ const MealSchedule = ({
               }}
             >
               <View className="flex flex-row gap-4">
-                <CalendarRange color={scheme === "dark" ? "#fff" : "#000"} size={20}/>
+                <CalendarRange
+                  color={scheme === "dark" ? "#fff" : "#000"}
+                  size={20}
+                />
                 <Text
                   className="text-foreground"
                   style={{
@@ -254,6 +257,7 @@ const MealSchedule = ({
             style={{ marginTop: Platform.OS === "ios" ? 10 : 5 }}
           >
             <Button
+              action="card"
               className="basis-1/2 h-16"
               style={{
                 height: Platform.OS === "ios" ? 60 : 55,

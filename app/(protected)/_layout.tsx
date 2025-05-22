@@ -7,7 +7,6 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setCredentials } from "@/redux/slices/Auth";
 import { setAuthToken } from "@/lib/apiClient";
-import { useAuth, useClerk } from "@clerk/clerk-expo";
 
 export default function ProtectedLayout() {
   const dispatch = useDispatch();

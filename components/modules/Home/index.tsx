@@ -310,8 +310,6 @@ const HomeUser = () => {
         const stored = await getLastCheckInDate(customerId);
         const today = formatDate(new Date());
 
-        console.log(stored);
-        console.log(today);
         if (stored !== today) {
           await checkInMutation.mutateAsync();
           await setLastCheckInDate(customerId, today);
@@ -354,7 +352,7 @@ const HomeUser = () => {
         className="absolute top-0 left-0 right-0 z-10 pt-12 pb-3 bg-background"
       >
         {/* User info and greeting */}
-        <View className="flex-row items-center justify-between px-4 mb-3">
+        <View className="flex-row items-center justify-between px-4 mb-3 mt-3">
           <Pressable className="flex-row items-center">
             {auth?.image_url ? (
               <Image
@@ -417,12 +415,14 @@ const HomeUser = () => {
           <Animated.View style={searchBarAnimatedStyle}>
             <Pressable
               onPress={() => router.push("/(protected)/(nested)/search")}
-              className=" flex-row items-center bg-muted/20 px-6 py-4 rounded-2xl h-16 border border-muted/40 border-thin mt-2 mx-3"
+              className="mx-6 mt-5"
             >
-              <Search size={18} color={isDark ? "#aaa" : "#888"} />
-              <Text className="ml-2 text-muted">
-                Search recipes, ingredients...
-              </Text>
+              <Input isReadOnly>
+                <InputSlot className="ml-1">
+                  <InputIcon className="!w-6 !h-6" as={Search} />
+                </InputSlot>
+                <InputField type="text" placeholder="Search Recipes" readOnly />
+              </Input>
             </Pressable>
           </Animated.View>
         )}
@@ -486,7 +486,7 @@ const HomeUser = () => {
           className="absolute bottom-5 right-5 z-20 mb-24"
           onPress={() => router.push(`/cooking/1`)}
         >
-          <View className="bg-primary rounded-full p-3 shadow-lg shadow-primary/20">
+          <View className={`${scheme === "dark" ? "bg-primary" : "bg-card"} rounded-full p-3 shadow-lg shadow-primary/20`}>
             <Svg1 width={40} height={40} color="#fff" />
           </View>
         </Pressable>

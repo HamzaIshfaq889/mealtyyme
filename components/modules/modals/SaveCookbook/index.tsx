@@ -11,9 +11,9 @@ import {
   FormControlLabel,
   FormControlLabelText,
 } from "@/components/ui/form-control";
-import { Input, InputField } from "@/components/ui/input";
+import { Input, InputField, InputIcon, InputSlot } from "@/components/ui/input";
 
-import { Bookmark, ChevronDown } from "lucide-react-native";
+import { Bookmark, ChevronDown, ChevronUp, Plus } from "lucide-react-native";
 import SelectDropdown from "react-native-select-dropdown";
 import {
   useAddRecipeToCookbook,
@@ -128,7 +128,7 @@ const SaveCookbook = ({
       <Dialog.Container
         visible={showSaveCookbookModal}
         contentStyle={{
-          backgroundColor: scheme === "dark" ? "#131414" : "#fff",
+          backgroundColor: scheme === "dark" ? "#1a1a1a" : "#fdf8f4",
           paddingVertical: 50,
           borderRadius: 30,
         }}
@@ -150,6 +150,9 @@ const SaveCookbook = ({
                 Platform.OS === "ios" && "mx-4"
               }`}
             >
+              <InputSlot className="ml-1">
+                <InputIcon className="!w-6 !h-6" as={Plus} />
+              </InputSlot>
               <InputField
                 type="text"
                 placeholder="Add new collection"
@@ -172,14 +175,16 @@ const SaveCookbook = ({
               setSelected(selectedItem);
             }}
             renderButton={(selectedItem, isOpened) => (
-              <View className="flex-row items-center gap-4 px-6 py-4 bg-background rounded-full mb-8">
-                <Text className="flex-1 text-lg leading-6 font-semibold text-primary">
+              <View
+                className={`flex-row items-center gap-4 px-6 py-5 !rounded-2xl mb-8 bg-card`}
+              >
+                <Text className="flex-1 text-base leading-6 font-semibold text-primary">
                   {selectedItem || "Select"}
                 </Text>
                 {isOpened ? (
-                  <ChevronDown color="#fff" size={22} />
+                  <ChevronUp color="#ee8427" size={24} />
                 ) : (
-                  <ChevronDown color="#fff" size={22} />
+                  <ChevronDown color="#ee8427" size={24} />
                 )}
               </View>
             )}
@@ -215,23 +220,29 @@ const SaveCookbook = ({
 
         {!showExistingCollections ? (
           <Pressable onPress={() => setShowExistingCOllections(true)}>
-            <Text className="text-primary text-lg font-medium tracking-wider text-center mb-8">
-              Add From Existing
-            </Text>
+            <View className="bg-card rounded-xl mb-7">
+              <Text className="text-base text-foreground font-semibold text-center tracking-wider p-4">
+                Choose Collection
+              </Text>
+            </View>
           </Pressable>
         ) : (
           <Pressable onPress={() => setShowExistingCOllections(false)}>
-            <Text className="text-primary text-lg font-medium tracking-wider text-center mb-8">
-              Add new collection
-            </Text>
+            <View className="bg-card rounded-xl mb-7">
+              <Text className="text-base text-foreground font-semibold text-center tracking-wider p-4">
+                Add new Collection
+              </Text>
+            </View>
           </Pressable>
         )}
         <View
-          className={`flex flex-row gap-2 ${Platform.OS === "ios" && "mx-4"}`}
+          className={`flex flex-row justify-center items-center gap-2 ${
+            Platform.OS === "ios" && "mx-4"
+          }`}
         >
           <Button
-            action="muted"
-            className="basis-1/2 h-16"
+            action="card"
+            className={`basis-1/2 h-16`}
             onPress={() => setShowSaveCookbookModal(false)}
           >
             <ButtonText>Cancel</ButtonText>
