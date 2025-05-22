@@ -89,15 +89,7 @@ const PaymentMethodsCard = ({
 
   return (
     <>
-      <TouchableOpacity
-        key={1}
-        className={`p-4 rounded-xl mb-3 ${
-          isDarkMode ? "bg-gray4/50" : "bg-background"
-        }`}
-        style={{
-          boxShadow: isDarkMode ? "" : "0px 2px 12px 0px rgba(0,0,0,0.1)",
-        }}
-      >
+      <TouchableOpacity key={1} className={`p-4 rounded-xl mb-3 bg-card`}>
         <View className="flex flex-row items-start justify-between">
           <View className="flex-row items-center gap-3">
             <Master />
@@ -147,7 +139,7 @@ const PaymentMethodsCard = ({
       <Dialog.Container
         visible={showDeleteModal}
         contentStyle={{
-          backgroundColor: scheme === "dark" ? "#131414" : "#fff",
+          backgroundColor: scheme === "dark" ? "#1a1a1a" : "#fdf8f4",
           paddingVertical: 50,
           marginLeft: 30,
           marginRight: 20,
@@ -167,7 +159,7 @@ const PaymentMethodsCard = ({
             Are you sure to remove this payment method?
           </Text>
         </View>
-        <View className="flex flex-row gap-2">
+        <View className="flex flex-row justify-center items-center gap-2">
           <Button
             action="muted"
             className="basis-1/2 h-16"
@@ -181,7 +173,7 @@ const PaymentMethodsCard = ({
             disabled={!!removeLoading}
             className="basis-1/2 h-16"
           >
-            <ButtonText>
+            <ButtonText className="!text-white">
               {removeLoading ? <Spinner size={30} /> : "Remove"}
             </ButtonText>
           </Button>

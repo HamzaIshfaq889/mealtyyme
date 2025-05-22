@@ -16,7 +16,7 @@ const RewardCard = ({
   borderColor,
 }: RewardCardProps) => {
   return (
-    <View className="rounded-3xl overflow-hidden shadow-sm border-0 bg-background">
+    <View className="rounded-3xl overflow-hidden shadow-sm border-0">
       <View className={`${bgColor} p-4 pb-5`}>
         <Text
           className="text-white text-base font-medium mb-2.5"
@@ -33,7 +33,7 @@ const RewardCard = ({
         </View>
       </View>
 
-      <View className="bg-background p-4 items-center">
+      <View className="bg-card p-4 items-center">
         <Text className={`${textColor} font-medium text-lg mb-3`}>
           {points} Points
         </Text>

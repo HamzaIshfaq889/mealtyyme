@@ -148,14 +148,6 @@ const Account = () => {
             </Text>
           </View>
         </View>
-
-        <TouchableOpacity
-          onPress={() => router.push("/(protected)/(nested)/edit-profile")}
-        >
-          <View className="flex flex-row gap-0.5 mr-2">
-            <UserPen color={scheme === "dark" ? "#fff" : "#000"} size={30} />
-          </View>
-        </TouchableOpacity>
       </View>
 
       <View className="flex flex-row bg-card p-1 rounded-full mb-4 mx-6 shadow-sm items-center h-16">

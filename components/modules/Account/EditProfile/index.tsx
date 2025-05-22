@@ -170,12 +170,6 @@ const EditProfile = () => {
     }
   };
 
-  const uriToFile = async (uri: string) => {
-    const response = await fetch(uri);
-    const blob = await response.blob();
-    return new File([blob], "profile.jpg", { type: blob.type });
-  };
-
   const handleSubmit = () => {
     setIsLoading(true);
 
@@ -187,6 +181,8 @@ const EditProfile = () => {
 
     const firstName = formData?.firstName;
     const userImage = uploadedImageData?.file;
+
+    console.log(userImage);
 
     const data = {
       first_name: firstName || "",
@@ -218,7 +214,7 @@ const EditProfile = () => {
   };
 
   return (
-    <ScrollView className="min-w-sceen bg-background px-6 py-16">
+    <View className="bg-background px-6 pt-16 pb-6 w-full h-full">
       <View className="flex flex-row justify-between items-center mb-10">
         <TouchableOpacity
           onPress={() => router.push("/(protected)/(tabs)/account")}
@@ -327,21 +323,23 @@ const EditProfile = () => {
         </FormControlError>
       </FormControl>
 
-      <Button
-        className="mt-2 mb-36 bg-secondary"
-        action="primary"
-        onPress={handleSubmit}
-        disabled={!!isLoading}
-      >
-        {!isLoading ? (
-          <ButtonText className="!text-white">Update Profile</ButtonText>
-        ) : (
-          <ButtonText>
-            <Spinner />
-          </ButtonText>
-        )}
-      </Button>
-    </ScrollView>
+      <View className="mt-auto">
+        <Button
+          className="bg-secondary"
+          action="primary"
+          onPress={handleSubmit}
+          disabled={!!isLoading}
+        >
+          {!isLoading ? (
+            <ButtonText className="!text-white">Update Profile</ButtonText>
+          ) : (
+            <ButtonText>
+              <Spinner />
+            </ButtonText>
+          )}
+        </Button>
+      </View>
+    </View>
   );
 };
 

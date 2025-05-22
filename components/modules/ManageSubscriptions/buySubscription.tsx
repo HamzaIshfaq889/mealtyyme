@@ -9,8 +9,7 @@ import {
   View,
 } from "react-native";
 
-import NoSubscriptionSVG from "@/assets/svgs/np-subscription.svg";
-import NoSubscriptionSVGLight from "@/assets/svgs/no-subscription-light.svg";
+import BuySubscription from "@/assets/svgs/buy-subscription.svg";
 
 import { Button, ButtonText } from "@/components/ui/button";
 import SubcriptionCTA from "../SubscriptionsCTA";
@@ -26,7 +25,7 @@ const BuySubscriptions = () => {
 
   return (
     <View
-      className={`flex flex-col w-full h-full px-9 py-16 ${
+      className={`flex flex-col w-full h-full px-9 pt-16 pb-2 ${
         isDarkMode ? "bg-black" : "bg-background"
       }`}
     >
@@ -49,15 +48,19 @@ const BuySubscriptions = () => {
       </View>
 
       <View className="pt-[25%]">
-        {isDarkMode ? <NoSubscriptionSVG /> : <NoSubscriptionSVGLight />}
+        <BuySubscription />
       </View>
 
       <View className="mt-auto mb-6">
         <Text className="font-bold text-3xl leading-10 text-foreground text-center mb-4">
           You don't have an active subscription
         </Text>
-        <Button onPress={handleBuySubscription}>
-          <ButtonText>Buy Subscription</ButtonText>
+        <Button
+          action="secondary"
+          className="h-16"
+          onPress={handleBuySubscription}
+        >
+          <ButtonText className="!text-white">Buy Subscription</ButtonText>
         </Button>
       </View>
 

@@ -45,7 +45,7 @@ const rewardsData = [
 const RedeemPoints = () => {
   const scheme = useColorScheme();
   return (
-    <ScrollView className="w-full h-full py-16 flex-col relative">
+    <ScrollView className="w-full h-full py-16 flex-col relative bg-background">
       <View className="flex-row items-center justify-between mb-8 mx-6">
         <TouchableOpacity
           onPress={() => router.push("/(protected)/(nested)/settings")}

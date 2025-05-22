@@ -320,7 +320,7 @@ const ChatBot = () => {
   };
 
   return (
-    <SafeAreaView className="flex-1 w-full h-full pt-16">
+    <SafeAreaView className="flex-1 w-full h-full pt-16 pb-20">
       <KeyboardAvoidingView
         className="flex-1"
         behavior={Platform.OS === "ios" ? "padding" : undefined}
@@ -350,8 +350,8 @@ const ChatBot = () => {
               <View className="bg-secondary w-[60%] py-1 rounded-full m-0"></View>
             </View>
             <View className="flex flex-row justify-between mt-2">
-              <Text className="text-muted text-sm leading-6 font-medium">Free Tokens Left</Text>
-              <Text className="text-muted text-sm leading-6 font-medium">65%</Text>
+              <Text className="text-secondary text-sm leading-6 font-medium">Free Tokens Left</Text>
+              <Text className="text-secondary text-sm leading-6 font-medium">65%</Text>
             </View>
           </View>
 

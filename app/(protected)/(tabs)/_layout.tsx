@@ -90,7 +90,7 @@ export default function FloatingTabsLayout() {
         {/* Home tab */}
         <TouchableOpacity
           style={styles.tabItem}
-          onPress={() => router.replace("/")}
+          onPress={() => router.push("/")}
         >
           <House
             color={activeIndex === 0 ? colors.active : colors.inactive}
@@ -102,7 +102,7 @@ export default function FloatingTabsLayout() {
         {/* Meal Plan tab */}
         <TouchableOpacity
           style={styles.tabItem}
-          onPress={() => router.replace("/meal-plan")}
+          onPress={() => router.push("/meal-plan")}
         >
           <CalendarDays
             color={activeIndex === 1 ? colors.active : colors.inactive}
@@ -114,7 +114,7 @@ export default function FloatingTabsLayout() {
         {/* Center FAB */}
         <TouchableOpacity
           style={styles.tabItem}
-          onPress={() => router.replace("/chat-bot")}
+          onPress={() => router.push("/chat-bot")}
         >
           <BotMessageSquare
             color={activeIndex === 2 ? colors.active : colors.inactive}
@@ -126,7 +126,7 @@ export default function FloatingTabsLayout() {
         {/* Cart tab */}
         <TouchableOpacity
           style={styles.tabItem}
-          onPress={() => router.replace("/cart")}
+          onPress={() => router.push("/cart")}
         >
           <ShoppingCart
             color={activeIndex === 3 ? colors.active : colors.inactive}
@@ -138,7 +138,7 @@ export default function FloatingTabsLayout() {
         {/* Account tab */}
         <TouchableOpacity
           style={styles.tabItem}
-          onPress={() => router.replace("/account")}
+          onPress={() => router.push("/account")}
         >
           <User
             color={activeIndex === 4 ? colors.active : colors.inactive}

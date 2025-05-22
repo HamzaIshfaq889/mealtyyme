@@ -85,9 +85,7 @@ const PaymentMethods = () => {
 
   return (
     <View
-      className={`flex flex-col w-full h-full px-6 pt-16 pb-4 ${
-        isDarkMode ? "bg-black" : "bg-background"
-      }`}
+      className={`flex flex-col w-full h-full px-6 pt-16 pb-4 bg-background`}
     >
       <View className="flex-row items-center justify-between mb-8">
         <TouchableOpacity
@@ -122,8 +120,13 @@ const PaymentMethods = () => {
         ))}
 
       <View className="mt-auto">
-        <Button onPress={handleAddPaymentMethod} disabled={!!loading}>
-          <ButtonText>
+        <Button
+          action="secondary"
+          onPress={handleAddPaymentMethod}
+          disabled={!!loading}
+          className="h-16"
+        >
+          <ButtonText className="!text-white">
             {loading ? "Loading..." : "Add Payment Method"}
           </ButtonText>
         </Button>

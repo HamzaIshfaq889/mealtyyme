@@ -1,8 +1,26 @@
+import { getUserDataFromStorage } from "@/utils/storage/authStorage";
+import { useAuth, useClerk } from "@clerk/clerk-expo";
 import { Stack } from "expo-router";
+import { useEffect } from "react";
 import "react-native-reanimated";
 import Toast from "react-native-toast-message";
 
 export default function AuthLayout() {
+  const { isSignedIn } = useAuth();
+  const { signOut } = useClerk();
+  useEffect(() => {
+    const checkUserData = async () => {
+      const user = await getUserDataFromStorage();
+
+      if (isSignedIn && (!user || !user.access)) {
+        console.log("no data but session thereee");
+        await signOut();
+      }
+    };
+
+    checkUserData();
+  }, []);
+
   return (
     <>
       <Stack screenOptions={{ headerShown: false }}>

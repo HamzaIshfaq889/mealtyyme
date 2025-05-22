@@ -4,8 +4,7 @@ import { FeaturedRecipeSketon } from "../Skeletons";
 import { convertMinutesToTimeLabel, truncateChars } from "@/utils";
 import { Clock, Flame } from "lucide-react-native";
 import { router } from "expo-router";
-import { useColorScheme } from "react-native";
-import { getPopularRecipes } from "@/services/recipesAPI";
+import { getMainDishes } from "@/services/recipesAPI";
 import { Recipe } from "@/lib/types/recipe";
 
 const MainDishes = () => {
@@ -15,7 +14,7 @@ const MainDishes = () => {
   const fetchRecipes = async () => {
     setLoading(true);
     try {
-      const data = await getPopularRecipes(4);
+      const data = await getMainDishes(4);
       setRecipes(data);
     } catch (error) {
       console.error("Failed to fetch recipes:", error);

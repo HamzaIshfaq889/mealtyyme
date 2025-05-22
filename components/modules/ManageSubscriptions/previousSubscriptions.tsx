@@ -1,5 +1,9 @@
 import { PreviousSubscription } from "@/lib/types/subscription";
-import { capitalizeFirstLetter, formatDate, formatUnixTimestamp, formatUtcDateString } from "@/utils";
+import {
+  capitalizeFirstLetter,
+  formatUnixTimestamp,
+  formatUtcDateString,
+} from "@/utils";
 import { router } from "expo-router";
 import { ArrowLeft } from "lucide-react-native";
 import React from "react";
@@ -22,11 +26,7 @@ const PreviousSubscriptions = ({
   const isDarkMode = theme === "dark";
 
   return (
-    <View
-      className={`flex flex-col w-full h-full px-6 py-16 ${
-        isDarkMode ? "bg-black" : "bg-background"
-      }`}
-    >
+    <View className={`flex flex-col w-full h-full px-6 py-16 bg-background`}>
       <View className="flex-row items-center justify-between mb-8">
         <TouchableOpacity
           onPress={() =>
@@ -54,12 +54,7 @@ const PreviousSubscriptions = ({
           return (
             <View
               key={subscription.id}
-              className={`${
-                isDarkMode ? "bg-gray4/50" : "bg-background"
-              } rounded-3xl p-4 w-full max-w-sm mb-8`}
-              style={{
-                boxShadow: isDarkMode ? "" : "0px 2px 12px 0px rgba(0,0,0,0.1)",
-              }}
+              className={`bg-card rounded-3xl p-4 w-full max-w-sm mb-8`}
             >
               {/* Status and Plan Info */}
               <View className="mb-4">
@@ -93,7 +88,8 @@ const PreviousSubscriptions = ({
 
                 <View className="flex-row justify-between items-center">
                   <Text className="text-foreground text-lg font-semibold">
-                    {capitalizeFirstLetter(subscription?.plan?.interval) || "N/A"}
+                    {capitalizeFirstLetter(subscription?.plan?.interval) ||
+                      "N/A"}
                   </Text>
                   <Text className="text-foreground text-lg">
                     {`$${subscription?.plan?.amount / 100}/${

@@ -10,7 +10,13 @@ import {
 } from "react-native";
 import Dialog from "react-native-dialog";
 import { Button, ButtonText } from "@/components/ui/button";
-import { ChevronDown, ChevronUp, Clock } from "lucide-react-native";
+import {
+  CalendarRange,
+  ChevronDown,
+  ChevronUp,
+  Clock,
+  Clock1,
+} from "lucide-react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import moment from "moment";
 import Toast from "react-native-toast-message";
@@ -42,12 +48,12 @@ const MealSchedule = ({
     (state: any) => state.recipe.currentRecipe
   );
   const [selected, setSelected] = useState<MealType>("BREAKFAST");
-  
+
   const status = useSelector(
-      (state: any) =>
-        state.auth.loginResponseType.customer_details?.subscription?.status
-    );
-    const isProUser = checkisProUser(status);
+    (state: any) =>
+      state.auth.loginResponseType.customer_details?.subscription?.status
+  );
+  const isProUser = checkisProUser(status);
 
   // Date configuration
   const today = new Date();
@@ -103,7 +109,7 @@ const MealSchedule = ({
       <Dialog.Container
         visible={showMealScheduleModal}
         contentStyle={{
-          backgroundColor: scheme === "dark" ? "#171615" : "#fff",
+          backgroundColor: scheme === "dark" ? "#1a1a1a" : "#fdf8f4",
           paddingVertical: Platform.OS === "ios" ? 40 : 30,
           borderRadius: Platform.OS === "ios" ? 30 : 20,
           width: Platform.OS === "ios" ? "90%" : "85%",
@@ -138,7 +144,7 @@ const MealSchedule = ({
             }}
             renderButton={(selectedItem, isOpened) => (
               <View
-                className="flex-row items-center justify-between px-6 py-4 bg-background rounded-2xl"
+                className="flex-row items-center justify-between px-3 py-4 bg-background rounded-2xl"
                 style={{
                   paddingVertical: 16,
                   marginBottom: 16,
@@ -149,6 +155,12 @@ const MealSchedule = ({
                   elevation: 3,
                 }}
               >
+                <View className="mr-3">
+                  <Clock1
+                    color={scheme === "dark" ? "#fff" : "#000"}
+                    size={20}
+                  />
+                </View>
                 <Text
                   className="flex-1 text-lg font-medium text-primary"
                   numberOfLines={1}
@@ -157,9 +169,9 @@ const MealSchedule = ({
                 </Text>
                 <View className="ml-2">
                   {isOpened ? (
-                    <ChevronUp color="#fff" size={24} />
+                    <ChevronUp color="#ee8427" size={24} />
                   ) : (
-                    <ChevronDown color="#fff" size={24} />
+                    <ChevronDown color="#ee8427" size={24} />
                   )}
                 </View>
               </View>
@@ -192,17 +204,20 @@ const MealSchedule = ({
                 paddingVertical: Platform.OS === "ios" ? 20 : 16,
               }}
             >
-              <Text
-                className="text-foreground"
-                style={{
-                  fontSize: Platform.OS === "ios" ? 16 : 15,
-                color: scheme === "dark" ? "#fff" : "#000",
-                textAlign: "center",
-                fontWeight: "500",
-                }}
-              >
-                {moment(date).format("MMMM D, YYYY")}
-              </Text>
+              <View className="flex flex-row gap-4">
+                <CalendarRange color={scheme === "dark" ? "#fff" : "#000"} size={20}/>
+                <Text
+                  className="text-foreground"
+                  style={{
+                    fontSize: Platform.OS === "ios" ? 16 : 15,
+                    color: scheme === "dark" ? "#fff" : "#000",
+                    textAlign: "center",
+                    fontWeight: "500",
+                  }}
+                >
+                  {moment(date).format("MMMM D, YYYY")}
+                </Text>
+              </View>
             </TouchableOpacity>
 
             {show && Platform.OS !== "ios" && (
@@ -239,7 +254,6 @@ const MealSchedule = ({
             style={{ marginTop: Platform.OS === "ios" ? 10 : 5 }}
           >
             <Button
-              action="muted"
               className="basis-1/2 h-16"
               style={{
                 height: Platform.OS === "ios" ? 60 : 55,
