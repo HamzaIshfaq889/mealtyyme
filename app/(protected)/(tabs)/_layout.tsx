@@ -23,6 +23,18 @@ import {
 import { startCooking } from "@/redux/slices/recipies";
 import { loadIngredientCart } from "@/utils/storage/cartStorage";
 import { addIngredients } from "@/redux/slices/cart";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+} from "react-native-reanimated";
+import React from "react";
+
+// Create a context to share the tab bar animation value
+export const TabBarContext = React.createContext<{
+  tabBarTranslateY: Animated.SharedValue<number>;
+}>({
+  tabBarTranslateY: { value: 0 } as any,
+});
 
 export default function FloatingTabsLayout() {
   const scheme = useColorScheme();
@@ -30,6 +42,7 @@ export default function FloatingTabsLayout() {
   const segments = useSegments();
   const isDark = scheme === "dark";
   const dispatch = useDispatch();
+  const tabBarTranslateY = useSharedValue(0);
 
   const customerId = useSelector(
     (state: any) => state?.auth?.loginResponseType?.customer_details?.id
@@ -54,9 +67,25 @@ export default function FloatingTabsLayout() {
 
   // Custom floating tab bar without navigation prop, uses router instead
   function FloatingTabBar() {
+    const { tabBarTranslateY } = React.useContext(TabBarContext);
+
+    const tabBarAnimatedStyle = useAnimatedStyle(() => {
+      return {
+        transform: [
+          {
+            translateY: tabBarTranslateY.value,
+          },
+        ],
+      };
+    });
+
     return (
-      <View
-        style={[styles.floatingTabBar, { backgroundColor: colors.background }]}
+      <Animated.View
+        style={[
+          styles.floatingTabBar,
+          { backgroundColor: colors.background },
+          tabBarAnimatedStyle,
+        ]}
       >
         {/* Home tab */}
         <TouchableOpacity
@@ -117,7 +146,7 @@ export default function FloatingTabsLayout() {
             strokeWidth={1.5}
           />
         </TouchableOpacity>
-      </View>
+      </Animated.View>
     );
   }
 
@@ -139,7 +168,7 @@ export default function FloatingTabsLayout() {
   }, []);
 
   return (
-    <>
+    <TabBarContext.Provider value={{ tabBarTranslateY }}>
       <Tabs
         screenOptions={{
           headerShown: false,
@@ -154,7 +183,7 @@ export default function FloatingTabsLayout() {
       </Tabs>
 
       <FloatingTabBar />
-    </>
+    </TabBarContext.Provider>
   );
 }
 

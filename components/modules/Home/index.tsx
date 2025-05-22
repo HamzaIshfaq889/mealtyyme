@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import { Bell, CircleUserRound, Search, SearchIcon } from "lucide-react-native";
 import {
   Text,
@@ -57,6 +57,7 @@ import { saveNotificationToken } from "../../../services/notifications/api";
 import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 import LottieView from "lottie-react-native";
+import { TabBarContext } from "@/app/(protected)/(tabs)/_layout";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -146,6 +147,8 @@ const HomeUser = () => {
   );
 
   const [checking, setChecking] = useState(false);
+  const scrollTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [isScrolling, setIsScrolling] = useState(false);
 
   const { data: stats, isLoading: statsLoading } = useGamificationStats();
   const checkInMutation = useCheckInUser();
@@ -157,6 +160,109 @@ const HomeUser = () => {
   const [notification, setNotification] = useState<
     Notifications.Notification | undefined
   >(undefined);
+
+  // Reanimated shared values for animations
+  const scrollY = useSharedValue(0);
+  const searchBarOpacity = useSharedValue(1);
+  const searchIconOpacity = useSharedValue(0);
+  const headerTranslateY = useSharedValue(0);
+  const { tabBarTranslateY } = React.useContext(TabBarContext);
+
+  // Animated styles
+  const searchBarAnimatedStyle = useAnimatedStyle(() => {
+    return {
+      opacity: searchBarOpacity.value,
+      transform: [
+        {
+          translateY: interpolate(
+            searchBarOpacity.value,
+            [0, 1],
+            [-10, 0],
+            Extrapolate.CLAMP
+          ),
+        },
+      ],
+    };
+  });
+
+  const searchIconAnimatedStyle = useAnimatedStyle(() => {
+    return {
+      opacity: searchIconOpacity.value,
+      transform: [
+        {
+          scale: interpolate(
+            searchIconOpacity.value,
+            [0, 1],
+            [0.8, 1],
+            Extrapolate.CLAMP
+          ),
+        },
+      ],
+    };
+  });
+
+  const headerAnimatedStyle = useAnimatedStyle(() => {
+    return {
+      transform: [
+        {
+          translateY: headerTranslateY.value,
+        },
+      ],
+      opacity: interpolate(
+        headerTranslateY.value,
+        [-100, 0],
+        [0, 1],
+        Extrapolate.CLAMP
+      ),
+    };
+  });
+
+  // Update animations when scroll state changes
+  useEffect(() => {
+    searchBarOpacity.value = withTiming(isScrolledToFeatured ? 0 : 1, {
+      duration: 300,
+    });
+    searchIconOpacity.value = withTiming(isScrolledToFeatured ? 1 : 0, {
+      duration: 300,
+    });
+  }, [isScrolledToFeatured]);
+
+  const handleScroll = useCallback(
+    (event: any) => {
+      const offsetY = event.contentOffset.y;
+      scrollY.value = offsetY;
+      setIsScrolledToFeatured(offsetY > 1);
+
+      if (offsetY > 0) {
+        headerTranslateY.value = withTiming(-100, { duration: 300 });
+        if (tabBarTranslateY?.value !== undefined) {
+          tabBarTranslateY.value = withTiming(100, { duration: 300 });
+        }
+      } else {
+        headerTranslateY.value = withTiming(0, { duration: 300 });
+        if (tabBarTranslateY?.value !== undefined) {
+          tabBarTranslateY.value = withTiming(0, { duration: 300 });
+        }
+      }
+    },
+    [tabBarTranslateY]
+  );
+
+  const handleScrollEnd = useCallback(() => {
+    headerTranslateY.value = withTiming(0, { duration: 300 });
+    if (tabBarTranslateY?.value !== undefined) {
+      tabBarTranslateY.value = withTiming(0, { duration: 300 });
+    }
+  }, [tabBarTranslateY]);
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     registerForPushNotificationsAsync()
@@ -219,54 +325,6 @@ const HomeUser = () => {
     })();
   }, [statsLoading, customerId]);
 
-  // Reanimated shared values for animations
-  const scrollY = useSharedValue(0);
-  const searchBarOpacity = useSharedValue(1);
-  const searchIconOpacity = useSharedValue(0);
-
-  // Update animations when scroll state changes
-  useEffect(() => {
-    searchBarOpacity.value = withTiming(isScrolledToFeatured ? 0 : 1, {
-      duration: 300,
-    });
-    searchIconOpacity.value = withTiming(isScrolledToFeatured ? 1 : 0, {
-      duration: 300,
-    });
-  }, [isScrolledToFeatured]);
-
-  // Animated styles
-  const searchBarAnimatedStyle = useAnimatedStyle(() => {
-    return {
-      opacity: searchBarOpacity.value,
-      transform: [
-        {
-          translateY: interpolate(
-            searchBarOpacity.value,
-            [0, 1],
-            [-10, 0],
-            Extrapolate.CLAMP
-          ),
-        },
-      ],
-    };
-  });
-
-  const searchIconAnimatedStyle = useAnimatedStyle(() => {
-    return {
-      opacity: searchIconOpacity.value,
-      transform: [
-        {
-          scale: interpolate(
-            searchIconOpacity.value,
-            [0, 1],
-            [0.8, 1],
-            Extrapolate.CLAMP
-          ),
-        },
-      ],
-    };
-  });
-
   useEffect(() => {
     if (!isVisible) return;
 
@@ -286,11 +344,14 @@ const HomeUser = () => {
       />
 
       {/* Header with glass effect */}
-      <View
-        className="absolute top-0 left-0 right-0 z-10 pt-12 pb-3 bg-card"
-        style={{
-          paddingTop: Platform.OS === "ios" ? 50 : 36,
-        }}
+      <Animated.View
+        style={[
+          headerAnimatedStyle,
+          {
+            paddingTop: Platform.OS === "ios" ? 50 : 36,
+          },
+        ]}
+        className="absolute top-0 left-0 right-0 z-10 pt-12 pb-3 bg-background"
       >
         {/* User info and greeting */}
         <View className="flex-row items-center justify-between px-4 mb-3">
@@ -365,10 +426,10 @@ const HomeUser = () => {
             </Pressable>
           </Animated.View>
         )}
-      </View>
+      </Animated.View>
 
       <Animated.ScrollView
-        className="flex-1 "
+        className="flex-1"
         contentContainerStyle={{
           paddingBottom: 80,
           paddingTop: 190,
@@ -376,11 +437,12 @@ const HomeUser = () => {
         showsVerticalScrollIndicator={false}
         onScroll={useAnimatedScrollHandler({
           onScroll: (event) => {
-            scrollY.value = event.contentOffset.y;
-            runOnJS(setIsScrolledToFeatured)(event.contentOffset.y > 1);
+            runOnJS(handleScroll)(event);
           },
         })}
         scrollEventThrottle={16}
+        onScrollEndDrag={handleScrollEnd}
+        onMomentumScrollEnd={handleScrollEnd}
       >
         <Animated.View layout={Layout.springify()}>
           <View className="mb-8">
