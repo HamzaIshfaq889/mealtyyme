@@ -7,6 +7,7 @@ import {
   useColorScheme,
   Platform,
   Image,
+  NativeModules,
 } from "react-native";
 import { router } from "expo-router";
 import BottomSheet from "@gorhom/bottom-sheet";
@@ -31,6 +32,7 @@ import Animated, {
   useAnimatedScrollHandler,
   runOnJS,
   Layout,
+  cancelAnimation,
 } from "react-native-reanimated";
 import MealPlanCard from "./mealplancard";
 import {
@@ -130,8 +132,36 @@ async function saveTokenToBackend(token: string) {
 
 const formatDate = (d: Date) => d.toISOString().split("T")[0];
 
+// Add memory monitoring function
+const logMemoryUsage = () => {
+  if (__DEV__) {
+    try {
+      if (Platform.OS === "android") {
+        const { getMemoryInfo } = NativeModules;
+        if (getMemoryInfo) {
+          getMemoryInfo().then((info: any) => {
+            console.log("Android Memory Usage:", {
+              totalMemory: `${Math.round(info.totalMemory / 1024 / 1024)}MB`,
+              usedMemory: `${Math.round(info.usedMemory / 1024 / 1024)}MB`,
+              freeMemory: `${Math.round(info.freeMemory / 1024 / 1024)}MB`,
+            });
+          });
+        } else {
+          console.log("Memory monitoring not available on this device");
+        }
+      } else if (Platform.OS === "ios") {
+        console.log("Memory monitoring not available on iOS");
+      }
+    } catch (error) {
+      console.log("Memory monitoring error:", error);
+    }
+  }
+};
+
 const HomeUser = () => {
   const scheme = useColorScheme();
+  const isDark = scheme === "dark";
+  const lottieRef = useRef<LottieView>(null);
   const [isScrolledToFeatured, setIsScrolledToFeatured] = useState(false);
   const subscriptionBottomSheetRef = useRef<BottomSheet>(null);
   const isCooking = useSelector((state: any) => state.recipe.isCooking);
@@ -147,8 +177,7 @@ const HomeUser = () => {
   );
 
   const [checking, setChecking] = useState(false);
-  const scrollTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const [isScrolling, setIsScrolling] = useState(false);
+  const scrollTimeoutRef = useRef<number | null>(null);
 
   const { data: stats, isLoading: statsLoading } = useGamificationStats();
   const checkInMutation = useCheckInUser();
@@ -225,79 +254,152 @@ const HomeUser = () => {
     searchIconOpacity.value = withTiming(isScrolledToFeatured ? 1 : 0, {
       duration: 300,
     });
+
+    return () => {
+      // Cancel animations when effect cleanup
+      cancelAnimation(searchBarOpacity);
+      cancelAnimation(searchIconOpacity);
+    };
   }, [isScrolledToFeatured]);
 
+  // Add memory monitoring
+  useEffect(() => {
+    if (__DEV__) {
+      // Log initial memory usage
+      logMemoryUsage();
+
+      // Set up interval to log memory usage
+      const memoryInterval = setInterval(() => {
+        logMemoryUsage();
+      }, 5000); // Log every 5 seconds
+
+      return () => {
+        clearInterval(memoryInterval);
+      };
+    }
+  }, []);
+
+  // Add memory check to scroll handler
   const handleScroll = useCallback(
     (event: any) => {
-      const offsetY = event.contentOffset.y;
-      scrollY.value = offsetY;
-      setIsScrolledToFeatured(offsetY > 1);
+      try {
+        const offsetY = event.contentOffset.y;
+        scrollY.value = offsetY;
+        setIsScrolledToFeatured(offsetY > 1);
 
-      if (offsetY > 0) {
-        headerTranslateY.value = withTiming(-100, { duration: 300 });
-        if (tabBarTranslateY?.value !== undefined) {
-          tabBarTranslateY.value = withTiming(100, { duration: 300 });
+        // Clear any existing animation frame
+        if (scrollTimeoutRef.current) {
+          cancelAnimationFrame(scrollTimeoutRef.current);
         }
-      } else {
-        headerTranslateY.value = withTiming(0, { duration: 300 });
-        if (tabBarTranslateY?.value !== undefined) {
-          tabBarTranslateY.value = withTiming(0, { duration: 300 });
+
+        // Use requestAnimationFrame instead of setTimeout for better performance
+        scrollTimeoutRef.current = requestAnimationFrame(() => {
+          if (offsetY > 0) {
+            headerTranslateY.value = withTiming(-100, { duration: 200 });
+            if (tabBarTranslateY?.value !== undefined) {
+              tabBarTranslateY.value = withTiming(100, { duration: 200 });
+            }
+          } else {
+            headerTranslateY.value = withTiming(0, { duration: 200 });
+            if (tabBarTranslateY?.value !== undefined) {
+              tabBarTranslateY.value = withTiming(0, { duration: 200 });
+            }
+          }
+        });
+
+        // Log memory usage during scroll (throttled)
+        if (__DEV__ && offsetY % 100 === 0) {
+          // Log every 100 pixels of scroll
+          logMemoryUsage();
         }
+      } catch (error) {
+        console.error("Scroll handling error:", error);
       }
     },
     [tabBarTranslateY]
   );
 
   const handleScrollEnd = useCallback(() => {
-    headerTranslateY.value = withTiming(0, { duration: 300 });
-    if (tabBarTranslateY?.value !== undefined) {
-      tabBarTranslateY.value = withTiming(0, { duration: 300 });
+    try {
+      // Always show header and tab bar when scrolling stops
+      headerTranslateY.value = withTiming(0, { duration: 200 });
+      if (tabBarTranslateY?.value !== undefined) {
+        tabBarTranslateY.value = withTiming(0, { duration: 200 });
+      }
+    } catch (error) {
+      console.error("Scroll end handling error:", error);
     }
   }, [tabBarTranslateY]);
 
-  // Cleanup timeout on unmount
+  // Cleanup all listeners and animations on unmount
   useEffect(() => {
-    return () => {
-      if (scrollTimeoutRef.current) {
-        clearTimeout(scrollTimeoutRef.current);
-      }
-    };
-  }, []);
+    let notificationListener: Notifications.Subscription;
+    let responseListener: Notifications.Subscription;
+    let subscriptionTimer: ReturnType<typeof setTimeout>;
 
-  useEffect(() => {
-    registerForPushNotificationsAsync()
-      .then((token) => {
+    const setupNotifications = async () => {
+      try {
+        const token = await registerForPushNotificationsAsync();
         if (token) {
           setExpoPushToken(token);
-          saveTokenToBackend(token);
+          await saveTokenToBackend(token);
         }
-      })
-      .catch((error: any) => setExpoPushToken(`${error}`));
-
-    const notificationListener = Notifications.addNotificationReceivedListener(
-      (notification) => {
-        setNotification(notification);
+      } catch (error: any) {
+        setExpoPushToken(`${error}`);
       }
-    );
 
-    const responseListener =
-      Notifications.addNotificationResponseReceivedListener((response) => {
-        console.log(response);
-      });
+      notificationListener = Notifications.addNotificationReceivedListener(
+        (notification) => {
+          setNotification(notification);
+        }
+      );
 
-    return () => {
-      notificationListener.remove();
-      responseListener.remove();
+      responseListener = Notifications.addNotificationResponseReceivedListener(
+        (response) => {
+          console.log(response);
+        }
+      );
     };
-  }, []);
 
-  const isDark = scheme === "dark";
-  useEffect(() => {
-    const timer = setTimeout(() => {
+    setupNotifications();
+
+    subscriptionTimer = setTimeout(() => {
       setShowSubscriptionCTA(true);
     }, 3000);
 
-    return () => clearTimeout(timer);
+    return () => {
+      // Cleanup notification listeners
+      if (notificationListener) notificationListener.remove();
+      if (responseListener) responseListener.remove();
+      if (subscriptionTimer) clearTimeout(subscriptionTimer);
+      if (scrollTimeoutRef.current) {
+        cancelAnimationFrame(scrollTimeoutRef.current);
+      }
+
+      // Reset all animation values
+      scrollY.value = 0;
+      headerTranslateY.value = 0;
+      searchBarOpacity.value = 1;
+      searchIconOpacity.value = 0;
+      if (tabBarTranslateY?.value !== undefined) {
+        tabBarTranslateY.value = 0;
+      }
+
+      // Cancel any ongoing animations
+      cancelAnimation(scrollY);
+      cancelAnimation(headerTranslateY);
+      cancelAnimation(searchBarOpacity);
+      cancelAnimation(searchIconOpacity);
+    };
+  }, []);
+
+  // Cleanup scroll handler
+  useEffect(() => {
+    return () => {
+      if (scrollTimeoutRef.current) {
+        cancelAnimationFrame(scrollTimeoutRef.current);
+      }
+    };
   }, []);
 
   useEffect(() => {
@@ -332,6 +434,41 @@ const HomeUser = () => {
 
     return () => clearTimeout(timer);
   }, [isVisible, hideModal]);
+
+  // Cleanup Lottie animation
+  useEffect(() => {
+    return () => {
+      if (lottieRef.current) {
+        lottieRef.current.reset();
+      }
+    };
+  }, []);
+
+  const [isLottiePlaying, setIsLottiePlaying] = useState(false);
+
+  const handleLottieAnimationFinish = useCallback(() => {
+    setIsLottiePlaying(false);
+  }, []);
+
+  // Start Lottie animation when component mounts
+  useEffect(() => {
+    if (lottieRef.current && !isLottiePlaying) {
+      lottieRef.current.play();
+    }
+  }, [isLottiePlaying]);
+
+  // Add memory check to component mount/unmount
+  useEffect(() => {
+    if (__DEV__) {
+      console.log("Component mounted - checking memory");
+      logMemoryUsage();
+
+      return () => {
+        console.log("Component unmounting - checking memory");
+        logMemoryUsage();
+      };
+    }
+  }, []);
 
   return (
     <View className="flex-1 bg-background">
@@ -389,13 +526,22 @@ const HomeUser = () => {
             </Animated.View>
 
             {/* Coins with animation */}
-            <Pressable className="bg-amber-100 dark:bg-amber-900/30 px-3 py-1 rounded-full mx-2">
+            <Pressable
+              className="bg-amber-100 dark:bg-amber-900/30 px-3 py-1 rounded-full mx-2"
+              onPress={() => {
+                if (lottieRef.current && !isLottiePlaying) {
+                  lottieRef.current.play();
+                }
+              }}
+            >
               <View className="flex-row items-center">
                 <LottieView
+                  ref={lottieRef}
                   source={require("../../../assets/lottie/coin.json")}
-                  autoPlay
-                  loop={true}
+                  autoPlay={false}
+                  loop={false}
                   style={{ width: 22, height: 22 }}
+                  onAnimationFinish={handleLottieAnimationFinish}
                 />
                 <Text className="font-bold text-amber-600 dark:text-amber-400 text-sm ml-1">
                   {stats?.total_points}
@@ -437,12 +583,16 @@ const HomeUser = () => {
         showsVerticalScrollIndicator={false}
         onScroll={useAnimatedScrollHandler({
           onScroll: (event) => {
+            "worklet";
             runOnJS(handleScroll)(event);
           },
         })}
         scrollEventThrottle={16}
         onScrollEndDrag={handleScrollEnd}
         onMomentumScrollEnd={handleScrollEnd}
+        bounces={true}
+        overScrollMode="always"
+        removeClippedSubviews={true}
       >
         <Animated.View layout={Layout.springify()}>
           <View className="mb-8">
@@ -486,7 +636,11 @@ const HomeUser = () => {
           className="absolute bottom-5 right-5 z-20 mb-24"
           onPress={() => router.push(`/cooking/1`)}
         >
-          <View className={`${scheme === "dark" ? "bg-primary" : "bg-card"} rounded-full p-3 shadow-lg shadow-primary/20`}>
+          <View
+            className={`${
+              scheme === "dark" ? "bg-primary" : "bg-card"
+            } rounded-full p-3 shadow-lg shadow-primary/20`}
+          >
             <Svg1 width={40} height={40} color="#fff" />
           </View>
         </Pressable>

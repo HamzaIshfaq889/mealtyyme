@@ -26,18 +26,28 @@ const PopularRecipes: React.FC = () => {
   } = usePopularRecipes();
 
   useEffect(() => {
+    let isMounted = true;
     const fetchCategories = async () => {
       setCategoriesLoading(true);
       try {
         const data = await getCategories();
-        setCategories(data);
+        if (isMounted) {
+          setCategories(data);
+        }
       } catch (err: any) {
-        setCategoriesError(err.message ?? "Error fetching categories");
+        if (isMounted) {
+          setCategoriesError(err.message ?? "Error fetching categories");
+        }
       } finally {
-        setCategoriesLoading(false);
+        if (isMounted) {
+          setCategoriesLoading(false);
+        }
       }
     };
     fetchCategories();
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const handleCategoryPress = (id: string | number, name: string) => {

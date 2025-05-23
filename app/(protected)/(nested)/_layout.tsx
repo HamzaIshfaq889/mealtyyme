@@ -10,11 +10,9 @@ export default function RootLayout() {
       <Stack
         screenOptions={{
           headerShown: false,
-          animation: "slide_from_right",
-          animationDuration: 200,
-          gestureEnabled: true,
-          gestureDirection: "horizontal",
-          presentation: "card",
+          animation: "none",
+          animationDuration: 0,
+          gestureEnabled: false,
         }}
       >
         <Stack.Screen name="recipe" />

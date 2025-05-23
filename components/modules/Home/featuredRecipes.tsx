@@ -30,6 +30,8 @@ const FeaturedRecipes = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
+    if (recipes.length === 0) return; // Don't set up interval if no recipes
+
     const interval = setInterval(() => {
       let nextIndex = currentIndex + 1;
       if (nextIndex >= recipes.length) nextIndex = 0;

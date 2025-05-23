@@ -150,20 +150,26 @@ export default function FloatingTabsLayout() {
   }
 
   useEffect(() => {
+    let isMounted = true;
+
     const checkUserData = async () => {
-      const recipe = await getCookingRecipe(customerId);
-      const isPrivate = await getCookingPrivacy(customerId);
-      const cart = await loadIngredientCart(customerId);
-
-      if (recipe) {
-        dispatch(startCooking({ recipe, isPrivate }));
-      }
-      if (cart.length > 0) {
-        dispatch(addIngredients(cart));
-      }
-
       try {
+        const recipe = await getCookingRecipe(customerId);
+        const isPrivate = await getCookingPrivacy(customerId);
+        const cart = await loadIngredientCart(customerId);
+
+        if (!isMounted) return;
+
+        if (recipe) {
+          dispatch(startCooking({ recipe, isPrivate }));
+        }
+        if (cart.length > 0) {
+          dispatch(addIngredients(cart));
+        }
+
         const { data: savedRecipes } = await useSavedRecipes().refetch();
+        if (!isMounted) return;
+
         const savedRecipeIds = savedRecipes?.map((recipe) => recipe?.id);
         if (savedRecipeIds && savedRecipeIds.length > 0) {
           await saveSavedRecipesInStorage(savedRecipeIds);
@@ -171,12 +177,17 @@ export default function FloatingTabsLayout() {
           console.log("Saved Recipes retrieved and stored successfully");
         }
       } catch (error) {
+        if (!isMounted) return;
         console.error("Error saving recipes to storage:", error);
       }
     };
 
     checkUserData();
-  }, []);
+
+    return () => {
+      isMounted = false;
+    };
+  }, [customerId, dispatch]);
 
   return (
     <TabBarContext.Provider value={{ tabBarTranslateY }}>

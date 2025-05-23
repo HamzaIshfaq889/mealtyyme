@@ -179,12 +179,9 @@ export default function RootLayout() {
                         <Stack
                           screenOptions={{
                             headerShown: false,
-                            animation: "slide_from_right",
-                            animationDuration: 200,
-                            animationTypeForReplace: "push",
-                            gestureEnabled: true,
-                            gestureDirection: "horizontal",
-                            presentation: "card",
+                            animation: "none",
+                            animationDuration: 0,
+                            gestureEnabled: false,
                           }}
                         >
                           <Stack.Screen
@@ -192,13 +189,15 @@ export default function RootLayout() {
                             options={{
                               headerShown: false,
                               animation: "none",
+                              animationDuration: 0,
                             }}
                           />
                           <Stack.Screen
                             name="(auth)"
                             options={{
-                              animation: "none",
                               headerShown: false,
+                              animation: "none",
+                              animationDuration: 0,
                             }}
                           />
                         </Stack>
