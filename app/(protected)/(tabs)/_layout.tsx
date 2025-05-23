@@ -1,61 +1,37 @@
-import { useSavedRecipes } from "@/redux/queries/recipes/useSaveRecipesQuery";
-import { setSavedRecipes } from "@/redux/slices/Auth";
-import { saveSavedRecipesInStorage } from "@/utils/storage/authStorage";
-import { router, Tabs } from "expo-router";
+// app/(tabs)/_layout.tsx
+import React, { createContext } from "react";
+import { Tabs } from "expo-router";
+import { BottomTabBar } from "@react-navigation/bottom-tabs";
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+} from "react-native-reanimated";
+import { StyleSheet } from "react-native";
+import { CalendarDays, House, ShoppingCart, User } from "lucide-react-native";
 
-import {
-  House,
-  CalendarDays,
-  ShoppingCart,
-  User,
-  BotMessageSquare,
-} from "lucide-react-native";
-import {
-  useColorScheme,
-  Platform,
-  TouchableOpacity,
-  StyleSheet,
-  View,
-} from "react-native";
-import { useDispatch } from "react-redux";
+export const TabBarContext = createContext(null);
 
 export default function TabsLayout() {
-  const scheme = useColorScheme();
-  const dispatch = useDispatch();
+  const tabBarTranslation = useSharedValue(0);
 
-  const { data: savedRecipes } = useSavedRecipes();
-  const savedRecipeIds = savedRecipes?.map((recipe) => recipe.id);
-  if (savedRecipeIds && savedRecipeIds?.length > 0) {
-    saveSavedRecipesInStorage([...savedRecipeIds])
-      .then(() => {
-        console.log("Saved Recipes retrieved successfully");
-      })
-      .catch((error) => {
-        console.error("Error saving recipe to storage:", error);
-      });
-    dispatch(setSavedRecipes(savedRecipeIds));
-  }
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ translateY: tabBarTranslation.value }],
+  }));
 
   return (
-    <>
+    //@ts-ignore
+    <TabBarContext.Provider value={tabBarTranslation}>
       <Tabs
         screenOptions={{
           headerShown: false,
           tabBarActiveTintColor: "#00C3FF",
-          tabBarInactiveTintColor: scheme === "dark" ? "#6B7280" : "#97A2B0",
-          tabBarStyle: {
-            borderTopWidth: 0,
-            elevation: 0,
-            shadowOpacity: 0,
-            backgroundColor: scheme === "dark" ? "#17181A" : "#FFFFFF",
-            position: "absolute",
-            bottom: 0,
-            height: Platform.OS === "android" ? 100 : 75,
-            paddingBottom: 10,
-            paddingTop: Platform.OS === "android" ? 10 : 5,
-            zIndex: 1,
-          },
+          tabBarInactiveTintColor: "#97A2B0",
         }}
+        tabBar={(props) => (
+          <Animated.View style={[styles.tabBarContainer, animatedStyle]}>
+            <BottomTabBar {...props} />
+          </Animated.View>
+        )}
       >
         <Tabs.Screen
           name="index"
@@ -75,12 +51,7 @@ export default function TabsLayout() {
             ),
           }}
         />
-        <Tabs.Screen
-          name="chat-bot"
-          options={{
-            tabBarButton: () => null, 
-          }}
-        />
+        <Tabs.Screen name="chat-bot" />
         <Tabs.Screen
           name="cart"
           options={{
@@ -100,37 +71,17 @@ export default function TabsLayout() {
           }}
         />
       </Tabs>
-      <View style={styles.tabBarCutout} />
-      {/* Floating Button for Chat Bot */}
-      <TouchableOpacity
-        style={styles.fab}
-        onPress={() => router.replace("/(protected)/(tabs)/chat-bot")}
-      >
-        <BotMessageSquare color="#fff" size={24} />
-      </TouchableOpacity>
-    </>
+    </TabBarContext.Provider>
   );
 }
 
 const styles = StyleSheet.create({
-  fab: {
+  tabBarContainer: {
     position: "absolute",
-    bottom: Platform.OS === "android" ? 30 : 48,
-    alignSelf: "center",
-    backgroundColor: "#00C3FF",
-    padding: 16,
-    borderRadius: 40,
-    elevation: 5,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: "#fff",
     zIndex: 100,
-  },
-  tabBarCutout: {
-    position: "absolute",
-    bottom: Platform.OS === "android" ? 50 : 60,
-    alignSelf: "center",
-    width: 80,
-    height: 80,
-    backgroundColor: "transparent", // match tab bar background
-    borderRadius: 40,
-    zIndex: 99,
   },
 });

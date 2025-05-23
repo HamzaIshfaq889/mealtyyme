@@ -514,8 +514,6 @@ const HomeUser = () => {
     }
   }, []);
 
-  console.log('okkkkkkkkkkkkkkkkkkkkkkkk')
-
   return (
     <View className="flex-1 bg-background">
       {/* Gradient background for visual interest */}
