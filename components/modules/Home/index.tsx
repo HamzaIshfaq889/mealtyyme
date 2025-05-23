@@ -158,22 +158,51 @@ const logMemoryUsage = () => {
   }
 };
 
+// Add type for Redux state
+interface RootState {
+  recipe: {
+    isCooking: boolean;
+  };
+  auth: {
+    loginResponseType: {
+      first_name: string;
+      image_url?: string;
+      id: string;
+    };
+  };
+}
+
 const HomeUser = () => {
+  console.log("[HomeUser] Component rendering");
+
   const scheme = useColorScheme();
   const isDark = scheme === "dark";
   const lottieRef = useRef<LottieView>(null);
   const [isScrolledToFeatured, setIsScrolledToFeatured] = useState(false);
   const subscriptionBottomSheetRef = useRef<BottomSheet>(null);
-  const isCooking = useSelector((state: any) => state.recipe.isCooking);
-  const name = useSelector(
-    (state: any) => state.auth.loginResponseType.first_name
+
+  // Optimize Redux selectors to only get what's needed
+  const isCooking = useSelector((state: RootState) => state.recipe.isCooking);
+  const {
+    first_name: name,
+    image_url,
+    id: customerId,
+  } = useSelector(
+    (state: RootState) => state.auth.loginResponseType,
+    // Add shallow equality check to prevent unnecessary re-renders
+    (prev, next) => {
+      console.log("[HomeUser] Redux selector comparison:", { prev, next });
+      return (
+        prev.first_name === next.first_name &&
+        prev.image_url === next.image_url &&
+        prev.id === next.id
+      );
+    }
   );
+
   const [showSubscriptionCTA, setShowSubscriptionCTA] = useState(false);
   const auth: LoginResponseTypes = useSelector(
     (state: any) => state.auth.loginResponseType
-  );
-  const customerId = useSelector(
-    (state: any) => state?.auth?.loginResponseType
   );
 
   const [checking, setChecking] = useState(false);
@@ -263,37 +292,40 @@ const HomeUser = () => {
   }, [isScrolledToFeatured]);
 
   // Add memory monitoring
-  useEffect(() => {
-    if (__DEV__) {
-      // Log initial memory usage
-      logMemoryUsage();
+  // useEffect(() => {
+  //   if (__DEV__) {
+  //     // Log initial memory usage
+  //     logMemoryUsage();
 
-      // Set up interval to log memory usage
-      const memoryInterval = setInterval(() => {
-        logMemoryUsage();
-      }, 5000); // Log every 5 seconds
+  //     // Set up interval to log memory usage
+  //     const memoryInterval = setInterval(() => {
+  //       logMemoryUsage();
+  //     }, 5000); // Log every 5 seconds
 
-      return () => {
-        clearInterval(memoryInterval);
-      };
-    }
-  }, []);
+  //     return () => {
+  //       clearInterval(memoryInterval);
+  //     };
+  //   }
+  // }, []);
 
   // Add memory check to scroll handler
   const handleScroll = useCallback(
     (event: any) => {
       try {
         const offsetY = event.contentOffset.y;
+        console.log("[HomeUser] Scroll position:", offsetY);
         scrollY.value = offsetY;
         setIsScrolledToFeatured(offsetY > 1);
 
         // Clear any existing animation frame
         if (scrollTimeoutRef.current) {
+          console.log("[HomeUser] Clearing existing animation frame");
           cancelAnimationFrame(scrollTimeoutRef.current);
         }
 
         // Use requestAnimationFrame instead of setTimeout for better performance
         scrollTimeoutRef.current = requestAnimationFrame(() => {
+          console.log("[HomeUser] Processing scroll animation frame");
           if (offsetY > 0) {
             headerTranslateY.value = withTiming(-100, { duration: 200 });
             if (tabBarTranslateY?.value !== undefined) {
@@ -309,11 +341,11 @@ const HomeUser = () => {
 
         // Log memory usage during scroll (throttled)
         if (__DEV__ && offsetY % 100 === 0) {
-          // Log every 100 pixels of scroll
+          console.log("[HomeUser] Scroll memory check at offset:", offsetY);
           logMemoryUsage();
         }
       } catch (error) {
-        console.error("Scroll handling error:", error);
+        console.error("[HomeUser] Scroll handling error:", error);
       }
     },
     [tabBarTranslateY]
@@ -333,30 +365,35 @@ const HomeUser = () => {
 
   // Cleanup all listeners and animations on unmount
   useEffect(() => {
+    console.log("[HomeUser] Setting up notifications and subscriptions");
     let notificationListener: Notifications.Subscription;
     let responseListener: Notifications.Subscription;
     let subscriptionTimer: ReturnType<typeof setTimeout>;
 
     const setupNotifications = async () => {
       try {
+        console.log("[HomeUser] Registering for push notifications");
         const token = await registerForPushNotificationsAsync();
         if (token) {
+          console.log("[HomeUser] Push notification token received");
           setExpoPushToken(token);
           await saveTokenToBackend(token);
         }
       } catch (error: any) {
+        console.error("[HomeUser] Push notification setup error:", error);
         setExpoPushToken(`${error}`);
       }
 
       notificationListener = Notifications.addNotificationReceivedListener(
         (notification) => {
+          console.log("[HomeUser] Notification received:", notification);
           setNotification(notification);
         }
       );
 
       responseListener = Notifications.addNotificationResponseReceivedListener(
         (response) => {
-          console.log(response);
+          console.log("[HomeUser] Notification response received:", response);
         }
       );
     };
@@ -364,15 +401,18 @@ const HomeUser = () => {
     setupNotifications();
 
     subscriptionTimer = setTimeout(() => {
+      console.log("[HomeUser] Showing subscription CTA");
       setShowSubscriptionCTA(true);
     }, 3000);
 
     return () => {
+      console.log("[HomeUser] Cleaning up notifications and subscriptions");
       // Cleanup notification listeners
       if (notificationListener) notificationListener.remove();
       if (responseListener) responseListener.remove();
       if (subscriptionTimer) clearTimeout(subscriptionTimer);
       if (scrollTimeoutRef.current) {
+        console.log("[HomeUser] Cleaning up scroll animation frame");
         cancelAnimationFrame(scrollTimeoutRef.current);
       }
 
@@ -403,7 +443,11 @@ const HomeUser = () => {
   }, []);
 
   useEffect(() => {
-    console.log(statsLoading, checking, customerId);
+    console.log("[HomeUser] Checking daily check-in status:", {
+      statsLoading,
+      checking,
+      customerId,
+    });
     if (statsLoading || checking || !customerId) return;
 
     (async () => {
@@ -411,14 +455,16 @@ const HomeUser = () => {
       try {
         const stored = await getLastCheckInDate(customerId);
         const today = formatDate(new Date());
+        console.log("[HomeUser] Daily check-in dates:", { stored, today });
 
         if (stored !== today) {
+          console.log("[HomeUser] Performing daily check-in");
           await checkInMutation.mutateAsync();
           await setLastCheckInDate(customerId, today);
           showModal();
         }
       } catch (e) {
-        console.error("Daily check‑in failed:", e);
+        console.error("[HomeUser] Daily check‑in failed:", e);
       } finally {
         setChecking(false);
       }
@@ -460,11 +506,11 @@ const HomeUser = () => {
   // Add memory check to component mount/unmount
   useEffect(() => {
     if (__DEV__) {
-      console.log("Component mounted - checking memory");
+      console.log("[HomeUser] Component mounted - checking memory");
       logMemoryUsage();
 
       return () => {
-        console.log("Component unmounting - checking memory");
+        console.log("[HomeUser] Component unmounting - checking memory");
         logMemoryUsage();
       };
     }
@@ -491,9 +537,9 @@ const HomeUser = () => {
         {/* User info and greeting */}
         <View className="flex-row items-center justify-between px-4 mb-3 mt-3">
           <Pressable className="flex-row items-center">
-            {auth?.image_url ? (
+            {image_url ? (
               <Image
-                source={{ uri: auth?.image_url }}
+                source={{ uri: image_url }}
                 className="w-10 h-10 rounded-full border-2 border-primary"
                 resizeMode="cover"
               />
