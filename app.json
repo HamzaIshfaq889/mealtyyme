@@ -39,6 +39,7 @@
     "android": {
       "package": "com.mealtyme.app",
       "versionCode": 15,
+      "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/android-icon.png",
         "backgroundColor": "#ffffff"
