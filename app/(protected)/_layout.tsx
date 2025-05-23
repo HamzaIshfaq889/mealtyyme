@@ -17,20 +17,26 @@ export default function ProtectedLayout() {
   const isSigningIn = useSelector((state: any) => state.auth.isSigningIn);
 
   useEffect(() => {
+    let isMounted = true;
+
     const checkUserData = async () => {
       const user = await getUserDataFromStorage();
 
-      if (user && user.access) {
-        dispatch(setCredentials({ ...user, isAuthenticated: true }));
-
-        setAuthToken(user.access);
-        setIsAuthenticated(true);
+      if (isMounted) {
+        if (user && user.access) {
+          dispatch(setCredentials({ ...user, isAuthenticated: true }));
+          setAuthToken(user.access);
+          setIsAuthenticated(true);
+        }
+        setIsLoading(false);
       }
-
-      setIsLoading(false);
     };
 
     checkUserData();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   if (isLoading || isSigningIn) {

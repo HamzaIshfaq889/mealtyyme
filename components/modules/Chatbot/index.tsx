@@ -3,7 +3,7 @@ import { Recipe } from "@/lib/types/recipe";
 import { sendChatBotMessage } from "@/services/chatbotApi";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { router } from "expo-router";
-import { ArrowLeft, ArrowRight, Clock, Flame, Star } from "lucide-react-native";
+import { ArrowLeft, ArrowRight } from "lucide-react-native";
 import React, { useEffect, useState } from "react";
 import {
   SafeAreaView,
@@ -14,8 +14,6 @@ import {
   KeyboardAvoidingView,
   Platform,
   useColorScheme,
-  Pressable,
-  Image,
 } from "react-native";
 import {
   Easing,
@@ -24,7 +22,6 @@ import {
   useAnimatedStyle,
 } from "react-native-reanimated";
 import CheMateAi from "@/assets/svgs/chef-mate-ai.svg";
-import { Progress, ProgressFilledTrack } from "@/components/ui/progress";
 import HorizontalRecipeCard from "../RecipeCards/horizontalRecipeCard";
 
 interface ChatMessage {
@@ -258,12 +255,12 @@ const ChatBot = () => {
   };
 
   return (
-    <SafeAreaView className="flex-1 w-full h-full pt-16 pb-4">
+    <SafeAreaView className="flex-1 w-full h-full pt-16">
       <KeyboardAvoidingView
         className="flex-1"
         behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
-        <View className="flex-1 ">
+        <View className="flex-1">
           <View className="flex-row items-center justify-between mb-5 mx-6">
             <TouchableOpacity
               onPress={() => router.push("/(protected)/(tabs)")}
