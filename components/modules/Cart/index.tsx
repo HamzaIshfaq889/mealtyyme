@@ -1,15 +1,16 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
 import { ScrollView } from "react-native-gesture-handler";
 import { View, Text, TouchableOpacity, useColorScheme } from "react-native";
 import Toast from "react-native-toast-message";
 import {
-  ShoppingBagIcon,
   Trash2,
   ArrowLeft,
   CheckCircle,
   Circle,
+  Menu,
+  EllipsisVertical,
 } from "lucide-react-native";
 
 import { Ingredient, Recipe } from "@/lib/types/recipe";
@@ -23,7 +24,14 @@ import InstacartLogo from "@/assets/svgs/instacart.svg";
 import { Spinner } from "@/components/ui/spinner";
 import { WebView } from "react-native-webview";
 import * as WebBrowser from "expo-web-browser";
-import { removeIngredientFromCart } from "@/utils/storage/cartStorage";
+import {
+  loadCheckedIngredients,
+  removeCheckedIngredient,
+  removeIngredientFromCart,
+  saveCheckedIngredient,
+} from "@/utils/storage/cartStorage";
+import CheckedItems from "./checkedItems";
+import BottomSheet from "@gorhom/bottom-sheet";
 
 const Cart = () => {
   const dispatch = useDispatch();
@@ -31,10 +39,13 @@ const Cart = () => {
   const isDark = scheme === "dark";
   const tabBarHeight = useBottomTabBarHeight();
 
+  const bottomSheetRef = useRef<BottomSheet>(null);
+
   const [loading, setLoading] = useState(false);
   const [orderUrl, setOrderUrl] = useState<string | null>(null);
   const [canGoBack, setCanGoBack] = useState(false);
   const [checkedItems, setCheckedItems] = useState<Set<number>>(new Set());
+  const [refreshCheckedItems, setRefreshCheckedItems] = useState(0);
 
   const ingredients: Recipe["ingredients"] = useSelector(
     (state: any) => state?.cart?.items
@@ -45,27 +56,26 @@ const Cart = () => {
     (state: any) => state?.auth?.loginResponseType?.customer_details?.id
   );
 
-  const handleRemove = async (id: number) => {
-    dispatch(removeIngredient(id));
-    await removeIngredientFromCart(customerId, id);
+  const toggleChecked = async (ingredientId: number) => {
+    const isAlreadyChecked = checkedItems.has(ingredientId);
 
-    setCheckedItems((prev) => {
-      const newSet = new Set(prev);
-      newSet.delete(id);
-      return newSet;
-    });
-  };
+    if (isAlreadyChecked) {
+      await removeCheckedIngredient(customerId, ingredientId);
+      setCheckedItems(new Set());
+    } else {
+      const selected = ingredients.find(
+        (ing) => ing.ingredient.id === ingredientId
+      );
+      if (!selected) return;
 
-  const toggleChecked = (id: number) => {
-    setCheckedItems((prev) => {
-      const newSet = new Set(prev);
-      if (newSet.has(id)) {
-        newSet.delete(id);
-      } else {
-        newSet.add(id);
-      }
-      return newSet;
-    });
+      setCheckedItems(new Set([ingredientId]));
+
+      await saveCheckedIngredient(customerId, selected);
+      dispatch(removeIngredient(ingredientId));
+      await removeIngredientFromCart(customerId, ingredientId);
+    }
+
+    setRefreshCheckedItems((prev) => prev + 1);
   };
 
   const handleOrder = async () => {
@@ -102,10 +112,23 @@ const Cart = () => {
     setCanGoBack(navState.canGoBack);
   };
 
+  useEffect(() => {
+    const loadChecked = async () => {
+      if (!customerId) return;
+
+      const saved = await loadCheckedIngredients(customerId);
+      if (saved) {
+        console.log("saved", saved);
+      }
+    };
+
+    loadChecked();
+  }, [customerId]);
+
   return (
-    <View className="flex-1">
+    <View className="flex-1 bg-background">
       {/* Top Heading */}
-      <View className="pt-16 pb-4 px-7 flex-row justify-between items-center bg-background">
+      <View className="pt-16 pb-4 px-7 flex-row justify-between items-center ">
         <View className="flex-row items-center">
           {orderUrl ? (
             <TouchableOpacity onPress={handleBackPress} className="mr-4">
@@ -135,6 +158,16 @@ const Cart = () => {
             </ButtonText>
           </Button>
         )}
+      </View>
+
+      <View className="flex justify-end items-end bg-background px-10 mt-4">
+        <TouchableOpacity
+          onPress={() => bottomSheetRef.current?.snapToIndex(1)}
+        >
+          <Text className="text-lg font-semibold text-secondary underline">
+            Checked Items
+          </Text>
+        </TouchableOpacity>
       </View>
 
       {orderUrl ? (
@@ -175,14 +208,7 @@ const Cart = () => {
                   {items.map((ing: Ingredient) => (
                     <View
                       key={ing?.ingredient?.id}
-                      className={`rounded-3xl mb-4 bg-card mx-4 ${
-                        isDark && "bg-foreground"
-                      }`}
-                      style={{
-                        boxShadow: !isDark
-                          ? "0px 2px 12px rgba(0,0,0,0.05)"
-                          : undefined,
-                      }}
+                      className={`rounded-3xl mb-4 mx-4 bg-card`}
                     >
                       <View className="p-4">
                         <View className="flex flex-row items-center justify-between">
@@ -222,13 +248,6 @@ const Cart = () => {
                               </View>
                             </View>
                           </TouchableOpacity>
-
-                          <TouchableOpacity
-                            className="ml-4"
-                            onPress={() => handleRemove(ing?.ingredient?.id)}
-                          >
-                            <Trash2 size={20} color="#FF3B30" />
-                          </TouchableOpacity>
                         </View>
                       </View>
                     </View>
@@ -246,6 +265,12 @@ const Cart = () => {
           )}
         </ScrollView>
       )}
+
+      <CheckedItems
+        bottomSheetRef={bottomSheetRef}
+        refreshTrigger={refreshCheckedItems}
+        setRefreshTrigger={setRefreshCheckedItems}
+      />
     </View>
   );
 };
