@@ -39,7 +39,9 @@ const ContactSupport = () => {
   const [selected, setSelected] = useState(supportOptions[0]);
   const [message, setMessage] = useState("");
   const [email, setEmail] = useState("");
-  const [errors, setErrors] = useState<{ email?: string; message?: string }>({});
+  const [errors, setErrors] = useState<{ email?: string; message?: string }>(
+    {}
+  );
 
   const handleSubmit = () => {
     const newErrors: { email?: string; message?: string } = {};
@@ -78,13 +80,15 @@ const ContactSupport = () => {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
-      keyboardVerticalOffset={Platform.OS === "ios" ? 100 : StatusBar.currentHeight || 0}
-      className="flex-1"
+      keyboardVerticalOffset={
+        Platform.OS === "ios" ? 100 : StatusBar.currentHeight || 0
+      }
+      className="flex-1 bg-background"
     >
       <ScrollView
         contentContainerStyle={{ flexGrow: 1 }}
         keyboardShouldPersistTaps="handled"
-        className="w-full h-full px-6 py-16 flex-col relative"
+        className="w-full h-full px-6 pt-16 pb-4 flex-col relative"
       >
         <View className="flex-row items-center justify-between mb-10">
           <TouchableOpacity
@@ -117,14 +121,16 @@ const ContactSupport = () => {
               setSelected(selectedItem);
             }}
             renderButton={(selectedItem, isOpened) => (
-              <View className="flex-row items-center gap-4 px-6 py-4 !rounded-2xl mb-8 border-2 border-foreground">
+              <View
+                className={`flex-row items-center gap-4 px-6 py-5 !rounded-2xl mb-8 bg-card `}
+              >
                 <Text className="flex-1 text-base leading-6 font-semibold text-primary">
                   {selectedItem || "Select"}
                 </Text>
                 {isOpened ? (
-                  <ChevronUp color="#00D4FF" size={24} />
+                  <ChevronUp color="#ee8427" size={24} />
                 ) : (
-                  <ChevronDown color="#00D4FF" size={24} />
+                  <ChevronDown color="#ee8427" size={24} />
                 )}
               </View>
             )}
@@ -146,11 +152,6 @@ const ContactSupport = () => {
             dropdownStyle={{
               borderRadius: 12,
               backgroundColor: isDarkMode ? "#1c1f1f" : "#fff",
-              shadowColor: "#000",
-              shadowOffset: { width: 0, height: 4 },
-              shadowOpacity: 0.1,
-              shadowRadius: 12,
-              elevation: 5,
             }}
             showsVerticalScrollIndicator={false}
           />
@@ -160,7 +161,9 @@ const ContactSupport = () => {
           <Text className="text-foreground font-bold leading-5 text-xl mb-5">
             Message
           </Text>
-          <Textarea className="flex flex-row items-start gap-1 px-3 py-2  border border-foreground">
+          <Textarea
+            className={`flex flex-row items-start gap-1 px-3 py-2 bg-card`}
+          >
             <TextareaInput
               type="text"
               placeholder="Enter message..."
@@ -169,7 +172,8 @@ const ContactSupport = () => {
                 setMessage(text);
                 setErrors((prev) => ({
                   ...prev,
-                  message: text.trim() === "" ? "Message cannot be empty." : undefined,
+                  message:
+                    text.trim() === "" ? "Message cannot be empty." : undefined,
                 }));
               }}
               className="placeholder:text-muted !placeholder:text-base !text-base"
@@ -187,7 +191,7 @@ const ContactSupport = () => {
                 Email Address
               </FormControlLabelText>
             </FormControlLabel>
-            <Input className="border-2 border-foreground">
+            <Input>
               <InputField
                 type="text"
                 placeholder="Enter Email Address"
@@ -196,11 +200,12 @@ const ContactSupport = () => {
                   setEmail(text);
                   setErrors((prev) => ({
                     ...prev,
-                    email: text === ""
-                      ? "Email is required."
-                      : !isValidEmail(text)
-                      ? "Please enter a valid email address."
-                      : undefined,
+                    email:
+                      text === ""
+                        ? "Email is required."
+                        : !isValidEmail(text)
+                        ? "Please enter a valid email address."
+                        : undefined,
                   }));
                 }}
               />
@@ -214,7 +219,7 @@ const ContactSupport = () => {
         </View>
 
         <View className="mt-auto mb-2">
-          <Button onPress={handleSubmit}>
+          <Button onPress={handleSubmit} action="secondary">
             <ButtonText>Send Message</ButtonText>
           </Button>
         </View>

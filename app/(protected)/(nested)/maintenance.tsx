@@ -1,20 +1,24 @@
 import { Button, ButtonText } from "@/components/ui/button";
 import React from "react";
-import { View, Text } from "react-native";
+import { View, Text, useColorScheme } from "react-native";
 
-import NoWifiSvg from "@/assets/svgs/no-wifi.svg";
+import MaintainanceLight from "@/assets/svgs/maintenance-light.svg";
+import MaintainanceDark from "@/assets/svgs/maintenance-dark.svg";
 
-export default function NoWifiScreen() {
+export default function MaintenanceScreen() {
+  const scheme = useColorScheme();
+  const isDarkMode = scheme === "dark";
+
   return (
-    <View className="flex-1">
+    <View className="flex-1 bg-background">
       <View className="flex-1 items-center justify-center px-6">
-        <NoWifiSvg />
+        {isDarkMode ? <MaintainanceLight /> : <MaintainanceDark />}
 
         <Text className="text-foreground text-2xl font-bold mb-2 mt-8 text-center">
-          No Wi-Fi? No worries
+          Maintenance Mode
         </Text>
         <Text className="text-muted text-base text-center">
-          Your saved recipes are ready.
+          Our server is currently under maintenance
         </Text>
       </View>
 

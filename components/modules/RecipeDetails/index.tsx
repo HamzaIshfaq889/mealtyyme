@@ -8,7 +8,6 @@ import {
   useWindowDimensions,
   View,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { ScrollView } from "react-native";
 
 import RenderHtml from "react-native-render-html";
@@ -32,13 +31,10 @@ import {
   X,
   Ellipsis,
   Heart,
+  Nut,
 } from "lucide-react-native";
 
-import {
-  convertMinutesToTimeLabel,
-  getCleanDescription,
-  convertToFraction,
-} from "@/utils";
+import { convertMinutesToTimeLabel, getCleanDescription } from "@/utils";
 
 import { Button, ButtonText } from "@/components/ui/button";
 
@@ -142,7 +138,7 @@ const RecipeDetails = ({ recipeId, isPrivate }: RecipeDetailsProps) => {
     },
     {
       id: 2,
-      icon: Protien,
+      icon: Nut,
       amount: recipe?.nutrition?.protein,
       text: `g protien`,
     },
@@ -213,12 +209,7 @@ const RecipeDetails = ({ recipeId, isPrivate }: RecipeDetailsProps) => {
   const storeinStorage = async (id: number) => {
     if (!savedRecipes.includes(id)) {
       saveSavedRecipesInStorage([...savedRecipes, id])
-        .then(() => {
-          // Toast.show({
-          //   type: "success",
-          //   text1: "Recipe saved successfully!",
-          // });
-        })
+        .then(() => {})
         .catch((error) => {
           console.error("Error saving recipe to storage:", error);
           Toast.show({
@@ -231,12 +222,7 @@ const RecipeDetails = ({ recipeId, isPrivate }: RecipeDetailsProps) => {
 
   const removeFromStorage = async (updatedRecipes: number[]) => {
     saveSavedRecipesInStorage([...updatedRecipes])
-      .then(() => {
-        // Toast.show({
-        //   type: "success",
-        //   text1: "Recipe removed from saved list!!",
-        // });
-      })
+      .then(() => {})
       .catch((error) => {
         console.error("Error saving recipe to storage:", error);
         Toast.show({
@@ -245,8 +231,6 @@ const RecipeDetails = ({ recipeId, isPrivate }: RecipeDetailsProps) => {
         });
       });
   };
-
-  console.log(recipe?.id);
 
   return (
     <>
@@ -343,13 +327,12 @@ const RecipeDetails = ({ recipeId, isPrivate }: RecipeDetailsProps) => {
           <View className="px-6 flex flex-row flex-wrap mt-3 mb-3">
             {gradientsInfo?.map((item) => {
               if (item.amount == null || recipe?.servings == null) {
-                // If amount or servings are missing
                 return (
                   <View
                     key={item.id}
                     className="basis-1/2 flex flex-row items-center gap-3 py-2"
                   >
-                    <View className="bg-card p-2 rounded-md">
+                    <View className="bg-white p-2 rounded-md">
                       <item.icon color="#EE8427" />
                     </View>
                     <Text className="font-semibold text-lg leading-5 text-primary">
@@ -368,8 +351,8 @@ const RecipeDetails = ({ recipeId, isPrivate }: RecipeDetailsProps) => {
                   key={item.id}
                   className="basis-1/2 flex flex-row items-center gap-3 py-2"
                 >
-                  <View className="bg-card p-2 rounded-md">
-                    <item.icon color="#EE8427" />
+                  <View className="bg-white p-2 rounded-md">
+                    <item.icon color="#7ca982" />
                   </View>
                   <Text className="font-semibold text-lg leading-5 text-primary">
                     {Math.ceil(totalAmount)} {item.text}
@@ -379,18 +362,13 @@ const RecipeDetails = ({ recipeId, isPrivate }: RecipeDetailsProps) => {
             })}
           </View>
 
-          <View
-            className="px-6 p-4 flex flex-row items-center justify-between rounded-2xl mb-5"
-            style={{
-              boxShadow: "0px 2px 16px 0px #0633361A",
-            }}
-          >
+          <View className="mx-6 px-3 py-4 flex flex-row items-center justify-between rounded-2xl mb-5 bg-card">
             <Text className="font-bold text-xl text-primary">
               Number of Servings
             </Text>
             <View className="flex flex-row gap-3 items-center">
               <Pressable
-                className="border border-accent py-1 px-3 rounded-lg"
+                className="border border-secondary py-1 px-3 rounded-lg"
                 onPress={() => {
                   if (serving > 1) {
                     setServings(serving - 1);
@@ -399,7 +377,7 @@ const RecipeDetails = ({ recipeId, isPrivate }: RecipeDetailsProps) => {
                   }
                 }}
               >
-                <Text className="text-primary">-</Text>
+                <Text className="text-secondary">-</Text>
               </Pressable>
               <Text className="font-bold text-lg leading-8 text-primary">
                 {serving}
@@ -413,7 +391,7 @@ const RecipeDetails = ({ recipeId, isPrivate }: RecipeDetailsProps) => {
             </View>
           </View>
 
-          <View className="flex flex-row bg-card p-1 rounded-full mb-5 mx-6 shadow-sm">
+          <View className="flex flex-row bg-card p-1 rounded-full mb-5 mx-6">
             {/* Ingredients Tab */}
             <Button
               className={`flex-1 rounded-full transition-all duration-300 ${
@@ -479,7 +457,7 @@ const RecipeDetails = ({ recipeId, isPrivate }: RecipeDetailsProps) => {
             </View>
           )}
 
-          <View className="w-full h-[2px] bg-accent mb-7 mt-6"></View>
+          <View className={`h-[1.5px] mb-7 mt-6 mx-6 bg-secondary`}></View>
 
           <View className="px-7 flex flex-row gap-3.5 mb-10">
             <Image

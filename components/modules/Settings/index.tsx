@@ -10,13 +10,16 @@ import {
 import { router } from "expo-router";
 
 import {
-  ArrowRight,
   ArrowLeft,
   Info,
   FileTerminal,
-  WalletCardsIcon,
   MessageCircle,
   Bell,
+  ChevronRight,
+  Gift,
+  Cog,
+  UserRound,
+  UserPen,
 } from "lucide-react-native";
 
 import { Button, ButtonText } from "@/components/ui/button";
@@ -40,6 +43,7 @@ import { clearCart } from "@/redux/slices/cart";
 interface SettingCardProps {
   icon: React.ReactNode;
   text: string;
+  desc: string;
   onPress: () => void;
   scheme: string | null | undefined;
 }
@@ -48,25 +52,20 @@ const SettingCard: React.FC<SettingCardProps> = ({
   icon,
   text,
   onPress,
-  scheme,
+  desc,
 }) => (
   <Pressable
-    className="flex flex-row justify-between items-center py-5 px-5 rounded-2xl bg-background mt-4"
-    style={{
-      boxShadow:
-        scheme === "dark"
-          ? "0px 2px 12px rgba(0,0,0,0.2)"
-          : "0px 2px 12px rgba(0,0,0,0.1)",
-    }}
+    className="flex flex-row justify-between items-center py-5 px-5 rounded-2xl bg-card mb-4"
     onPress={onPress}
   >
-    <View className="flex flex-row items-center gap-4">
+    <View className="flex flex-row items-center gap-7">
       {icon}
-      <Text className="text-base font-medium text-primary">{text}</Text>
+      <View>
+        <Text className="text-lg font-medium text-primary">{text}</Text>
+        <Text className="text-sm font-medium text-muted">{desc}</Text>
+      </View>
     </View>
-    <View className="bg-secondary p-2 rounded-md">
-      <ArrowRight size={18} color="#fff" />
-    </View>
+    <ChevronRight size={32} color="#ee8427" />
   </Pressable>
 );
 
@@ -110,7 +109,7 @@ const Settings = () => {
 
   const scheme = useColorScheme();
   return (
-    <View className="flex-1 px-6 pt-16 pb-8">
+    <View className="flex-1 px-6 pt-16 pb-8 bg-background">
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         {/* Header */}
         <View className="relative flex items-center justify-center mb-12">
@@ -127,48 +126,52 @@ const Settings = () => {
           <Text className="font-bold text-2xl text-foreground">Settings</Text>
         </View>
 
-        {/* Section Title */}
-        <Text className="text-lg font-semibold text-foreground mb-4">
-          Legal
-        </Text>
-
         {/* Cards */}
         <SettingCard
-          icon={<Info color="#00C3FF" size={30} />}
+          icon={
+            <UserPen color={scheme === "dark" ? "#fff" : "#000"} size={30} />
+          }
+          text="Edit profile"
+          desc="Edit your information"
+          onPress={() => router.push("/(protected)/(nested)/edit-profile")}
+          scheme={scheme}
+        />
+        <SettingCard
+          icon={<Info color={scheme === "dark" ? "#fff" : "#000"} size={30} />}
           text="Privacy Policy"
+          desc="Check our policy"
           onPress={() => router.push("/(protected)/(nested)/privacy-policy")}
           scheme={scheme}
         />
 
         <SettingCard
-          icon={<FileTerminal color="#00C3FF" size={30} />}
+          icon={
+            <FileTerminal
+              color={scheme === "dark" ? "#fff" : "#000"}
+              size={30}
+            />
+          }
           text="Terms and Conditions"
           onPress={() => router.push("/(protected)/(nested)/terms-conditions")}
+          desc="Check our terms"
           scheme={scheme}
         />
 
         <SettingCard
-          icon={<MessageCircle color="#00C3FF" size={30} />}
+          icon={
+            <MessageCircle
+              color={scheme === "dark" ? "#fff" : "#000"}
+              size={30}
+            />
+          }
           text="Contact Support"
+          desc="24/7"
           onPress={() => router.push("/(protected)/(nested)/contact-support")}
           scheme={scheme}
         />
-        {/* <SettingCard
-          icon={<MessageCircle color="#00C3FF" size={30} />}
-          text="No wifi"
-          onPress={() => router.push("/(protected)/(nested)/no-wifi")}
-          scheme={scheme}
-        /> */}
 
         <SettingCard
-          icon={<MessageCircle color="#00C3FF" size={30} />}
-          text="Error"
-          onPress={() => router.push("/(protected)/(nested)/404")}
-          scheme={scheme}
-        />
-
-        <SettingCard
-          icon={<WalletCardsIcon color="#00C3FF" size={30} />}
+          icon={<Cog color={scheme === "dark" ? "#fff" : "#000"} size={30} />}
           text="Manage Subscription"
           onPress={() => {
             if (isProUser || isSubscriptionCanceld) {
@@ -177,32 +180,35 @@ const Settings = () => {
               router.push("/(protected)/(nested)/buy-subscription");
             }
           }}
+          desc="View your subsciption details"
           scheme={scheme}
         />
 
         <SettingCard
-          icon={<WalletCardsIcon color="#00C3FF" size={30} />}
-          text="Rewards"
+          icon={<Gift color={scheme === "dark" ? "#fff" : "#000"} size={30} />}
+          text="Rewards Overview"
           onPress={() => {
             router.push("/(protected)/(nested)/rewards");
           }}
+          desc="View your points and benefits"
           scheme={scheme}
         />
 
         <SettingCard
-          icon={<Bell color="#00C3FF" size={30} />}
+          icon={<Bell color={scheme === "dark" ? "#fff" : "#000"} size={30} />}
           text="Notification"
           onPress={() => {
             router.push("/(protected)/(nested)/notifications");
           }}
+          desc="Turn on or off Notifications"
           scheme={scheme}
         />
 
-        <View className="mt-12 px-2">
+        <View className="mt-4 px-2 mb-6">
           <Button
-            action="negative"
+            action="secondary"
             onPress={handleLogout}
-            className=" transition-all duration-150"
+            className=" transition-all duration-150 h-16"
           >
             <ButtonText className="text-primary font-semibold ">
               {!loading ? "Logout" : <Spinner />}

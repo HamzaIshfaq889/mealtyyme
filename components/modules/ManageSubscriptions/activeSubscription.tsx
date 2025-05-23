@@ -26,7 +26,7 @@ export default function ActiveSubscription({
   console.log(typeof startDate);
 
   return (
-    <View className="flex flex-col w-full h-full px-6 py-16">
+    <View className="flex flex-col w-full h-full bg-background px-6 py-16">
       <View className="flex-row items-center justify-between mb-8">
         <TouchableOpacity
           onPress={() => router.push("/(protected)/(nested)/settings")}
@@ -46,14 +46,7 @@ export default function ActiveSubscription({
 
         <View style={{ width: 30 }} />
       </View>
-      <View
-        className={`${
-          isDarkMode ? "bg-gray4/50" : "bg-background"
-        } rounded-3xl p-4 w-full mb-8`}
-        style={{
-          boxShadow: isDarkMode ? "" : "0px 2px 12px 0px rgba(0,0,0,0.1)",
-        }}
-      >
+      <View className={`bg-card rounded-3xl p-4 w-full mb-8`}>
         {/* Status and Plan Info */}
         <View className="mb-4">
           <View className="flex-row justify-between items-start">
@@ -69,10 +62,10 @@ export default function ActiveSubscription({
             <View
               className={`px-2 py-1 rounded-md mb-2 ${
                 status === "active"
-                  ? "bg-[#1C3A1F]"
+                  ? "bg-[#d4fce7]"
                   : status === "trialing"
                   ? "bg-[#333]"
-                  : "bg-[#3A1C1C]"
+                  : "bg-[#6e2a2a]"
               }`}
             >
               <Text
@@ -129,24 +122,20 @@ export default function ActiveSubscription({
         </View>
 
         <Button
-          className="w-full !h-14"
+          className="w-full h-16"
+          action="secondary"
           onPress={() =>
             router.push("/(protected)/(nested)/manage-subscription")
           }
         >
-          <ButtonText className="!text-lg !font-semibold">
+          <ButtonText className="!text-lg !text-white !font-semibold">
             Manage Subscription
           </ButtonText>
         </Button>
       </View>
 
       <View
-        className={`${
-          isDarkMode ? "bg-gray4/50" : "bg-background"
-        } flex flex-row justify-between items-center rounded-xl px-4 py-5 w-full`}
-        style={{
-          boxShadow: isDarkMode ? "" : "0px 2px 12px 0px rgba(0,0,0,0.1)",
-        }}
+        className={`bg-card flex flex-row justify-between items-center rounded-xl px-4 py-5 w-full`}
       >
         <Text className="text-foreground font-bold leading-5 text-lg">
           Previous Subscriptions

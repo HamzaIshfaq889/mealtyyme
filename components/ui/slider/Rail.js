@@ -14,6 +14,6 @@ const styles = StyleSheet.create({
         flex: 1,
         height: 8,
         borderRadius: 4,
-        backgroundColor: '#E6EBF2',
+        backgroundColor: '#fae1cb',
     },
 });

@@ -39,7 +39,7 @@ export const getFeaturedRecipes = async (): Promise<Recipe[]> => {
   return results;
 };
 
-export const getPopularRecipes = async (
+export const getMainDishes = async (
   id: string | number | null
 ): Promise<Recipe[]> => {
   const endpoint =
@@ -316,4 +316,18 @@ export const searchIngredients = async ({
     },
   });
   return response.data as SearchIngredient;
+};
+
+export const getPopularRecipes = async (): Promise<Recipe[]> => {
+  const response = await apiClient.get<Recipe[]>("popular-recipes/");
+
+  if (!response.ok) {
+    if (response.status === 401 || response.status === 404) {
+      throw new Error("Invalid credentials or Recipes not found");
+    }
+    throw new Error(
+      response?.originalError?.message || "Failed to fetch Recipes"
+    );
+  }
+  return response?.data || [];
 };

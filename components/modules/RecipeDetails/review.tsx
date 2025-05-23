@@ -56,13 +56,8 @@ const Review = ({ review }: ReviewProps) => {
 
   return (
     <ScrollView
-      className="pt-6 px-6 h-80 mt-8 rounded-3xl bg-accent"
+      className="pt-6 px-6 h-80 mt-8 rounded-3xl bg-card"
       showsVerticalScrollIndicator={false}
-      style={{
-        boxShadow: isDarkTheme
-          ? "0px 2px 12px 0px rgba(0,0,0,0.4)"
-          : "0px 2px 12px 0px rgba(0,0,0,0.1)",
-      }}
     >
       <Text className="text-primary font-bold text-2xl leading-14 mb-4">
         Reviews
@@ -111,7 +106,7 @@ const Review = ({ review }: ReviewProps) => {
                     size={18}
                   />
                 ))}
-                <Text className="ml-1 text-sm font-medium text-accent">
+                <Text className="ml-1 text-sm font-medium text-foreground">
                   {rev.rating.toFixed(1)}
                 </Text>
               </View>

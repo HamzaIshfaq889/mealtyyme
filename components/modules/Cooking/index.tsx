@@ -207,8 +207,8 @@ const Cooking = () => {
           {!isAllStepsComplete ? (
             <View className="flex flex-row gap-2">
               <Button
-                action="muted"
-                className="basis-1/2 h-16 bg-accent"
+                action="card"
+                className="basis-1/2 h-16"
                 onPress={handleBackStep}
                 disabled={currentStep === 1}
               >

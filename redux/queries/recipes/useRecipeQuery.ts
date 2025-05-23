@@ -37,10 +37,10 @@ export const useFeaturedRecipes = () => {
   });
 };
 
-// export const usePopularRecipes = () => {
-//   return useQuery<Recipe[]>({
-//     queryKey: ["featuredRecipes"],
-//     queryFn: getPopularRecipes,
-//     staleTime: 1000 * 5, // 5 seconds
-//   });
-// };
+export const usePopularRecipes = () => {
+  return useQuery<Recipe[]>({
+    queryKey: ["popularRecipes"],
+    queryFn: getPopularRecipes,
+    staleTime: 1000 * 5,
+  });
+};

@@ -6,6 +6,7 @@ import {
   useColorScheme,
   View,
   ScrollView,
+  TouchableOpacity,
 } from "react-native";
 
 import BottomSheet, {
@@ -184,13 +185,13 @@ const Filters = ({
         enablePanDownToClose={true}
         enableContentPanningGesture={false}
         enableHandlePanningGesture={true}
-        handleStyle={{
-          backgroundColor: isDarkMode ? "#1f242a" : "#fff",
-          borderWidth: 0,
-        }}
-        handleIndicatorStyle={{
-          backgroundColor: isDarkMode ? "#888" : "#ccc",
-        }}
+        // handleStyle={{
+        //   backgroundColor: isDarkMode ? "#1f242a" : "#fff",
+        //   borderWidth: 0,
+        // }}
+        // handleIndicatorStyle={{
+        //   backgroundColor: isDarkMode ? "#888" : "#ccc",
+        // }}
         onChange={(index) => {
           if (index === 0) {
             bottomSheetRef.current?.close();
@@ -199,7 +200,7 @@ const Filters = ({
       >
         <SafeAreaView style={{ flex: 1 }} className="bg-background">
           <ScrollView
-            className="flex flex-col w-full h-full"
+            className="flex flex-col w-full h-full pt-4"
             showsHorizontalScrollIndicator={false}
           >
             <Text className="font-bold text-2xl leading-8 text-foreground text-center mb-3 mt-2.5">
@@ -208,31 +209,32 @@ const Filters = ({
             <Text className="text-xl font-bold text-foreground px-6 mb-2.5">
               Category
             </Text>
-
             <View className="mb-4">
               <BottomSheetFlatList
                 data={categories}
                 keyExtractor={(item) => item.id.toString()}
-                horizontal
                 contentContainerStyle={{
                   gap: 12,
-                  paddingLeft: 24,
-                  flexGrow: 1,
+                  paddingHorizontal: 24,
+                  paddingVertical: 16,
+                  display: "flex",
+                  flexDirection: "row",
+                  flexWrap: "wrap",
                 }}
-                showsHorizontalScrollIndicator={false}
+                showsVerticalScrollIndicator={false}
                 renderItem={({ item }) => {
                   const isSelected = categoriesIds.includes(item.id);
                   return (
                     <Button
                       action="secondary"
                       onPress={() => toggleCategory(item.id)}
-                      className={`rounded-full px-10 !h-11 ${
-                        isSelected ? "bg-secondary" : "bg-gray4"
+                      className={`w-full rounded-full px-2.5 !h-12 justify-start ${
+                        isSelected ? "bg-secondary" : "bg-card"
                       }`}
                     >
                       <ButtonText
-                        className={`!text-lg leading-6 ${
-                          isSelected ? "!text-white" : "!text-primary"
+                        className={`!text-base leading-6 ${
+                          isSelected ? "!text-white" : "!text-foreground"
                         } !font-medium`}
                       >
                         {capitalizeWords(item.name)}
@@ -251,8 +253,14 @@ const Filters = ({
               <BottomSheetFlatList
                 data={cuisines}
                 keyExtractor={(item) => item.id.toString()}
-                horizontal
-                contentContainerStyle={{ gap: 12, paddingLeft: 24 }}
+                contentContainerStyle={{
+                  gap: 12,
+                  paddingHorizontal: 24,
+                  paddingVertical: 16,
+                  display: "flex",
+                  flexDirection: "row",
+                  flexWrap: "wrap",
+                }}
                 showsHorizontalScrollIndicator={false}
                 renderItem={({ item }) => {
                   const isSelected = cusinesIds.includes(item.id);
@@ -260,13 +268,13 @@ const Filters = ({
                     <Button
                       action="secondary"
                       onPress={() => toggleCuisines(item.id)}
-                      className={`rounded-full px-10 !h-11 ${
-                        isSelected ? "bg-secondary" : "bg-gray4"
+                      className={`rounded-full px-2.5 !h-11 ${
+                        isSelected ? "bg-secondary" : "bg-card"
                       }`}
                     >
                       <ButtonText
-                        className={`!text-lg leading-6 ${
-                          isSelected ? "!text-white" : "!text-primary"
+                        className={`!text-base leading-6 ${
+                          isSelected ? "!text-white" : "!text-foreground"
                         } !font-medium`}
                       >
                         {capitalizeWords(item.name)}
@@ -285,8 +293,14 @@ const Filters = ({
               <BottomSheetFlatList
                 data={diets}
                 keyExtractor={(item) => item.id.toString()}
-                horizontal
-                contentContainerStyle={{ gap: 12, paddingLeft: 24 }}
+                contentContainerStyle={{
+                  gap: 12,
+                  paddingHorizontal: 24,
+                  paddingVertical: 16,
+                  display: "flex",
+                  flexDirection: "row",
+                  flexWrap: "wrap",
+                }}
                 showsHorizontalScrollIndicator={false}
                 renderItem={({ item }) => {
                   const isSelected = dietIds.includes(item.id);
@@ -294,13 +308,13 @@ const Filters = ({
                     <Button
                       action="secondary"
                       onPress={() => toggleDiets(item.id)}
-                      className={`rounded-full px-10 !h-11 ${
-                        isSelected ? "bg-secondary" : "bg-gray4"
+                      className={`rounded-full px-2.5 !h-11 ${
+                        isSelected ? "bg-secondary" : "bg-card"
                       }`}
                     >
                       <ButtonText
-                        className={`!text-lg leading-6 ${
-                          isSelected ? "!text-white" : "!text-primary"
+                        className={`!text-base leading-6 ${
+                          isSelected ? "!text-white" : "!text-foreground"
                         } !font-medium`}
                       >
                         {capitalizeWords(item.name)}
@@ -437,14 +451,7 @@ const Filters = ({
               )}
             </View>
 
-            <View className="px-6 flex flex-row w-full space-x-4 gap-2 pb-10">
-              <View className="flex-shrink">
-                <Button onPress={handleClearFilters} className="w-full">
-                  <ButtonText className="text-foreground">
-                    Clear Filters
-                  </ButtonText>
-                </Button>
-              </View>
+            <View className="mx-6">
               <View className="flex-shrink">
                 <Button
                   action="secondary"
@@ -454,6 +461,13 @@ const Filters = ({
                   <ButtonText className="!text-white">Apply Filters</ButtonText>
                 </Button>
               </View>
+            </View>
+            <View className="mx-6 text-center mt-8 mb-16">
+              <TouchableOpacity onPress={handleClearFilters}>
+                <Text className="font-semibold text-xl text-center text-secondary">
+                  Clear Filters
+                </Text>
+              </TouchableOpacity>
             </View>
           </ScrollView>
         </SafeAreaView>

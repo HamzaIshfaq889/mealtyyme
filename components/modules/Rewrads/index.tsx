@@ -73,12 +73,7 @@ const Rewards = () => {
         </View>
       </View>
 
-      <View
-        className="p-6 rounded-2xl bg-background mx-6"
-        style={{
-          boxShadow: "0px 2px 12px 0px rgba(0,0,0,0.1)",
-        }}
-      >
+      <View className="p-6 rounded-2xl bg-card mx-6">
         <Text className="font-bold text-xl leading-5 text-foreground mb-1.5">
           Daily check-in Progress
         </Text>
@@ -90,13 +85,10 @@ const Rewards = () => {
             return (
               <View
                 key={index}
-                className="w-16 flex flex-col justify-center items-center py-4 rounded-lg"
-                style={{
-                  boxShadow: "0px 2px 12px 0px rgba(0,0,0,0.07)",
-                }}
+                className="w-16 flex flex-col justify-center items-center py-4 rounded-lg bg-white"
               >
                 <Coin />
-                <Text className="text-foreground text-sm leading-6 mt-1.5">
+                <Text className="text-black text-sm leading-6 mt-1.5">
                   Today
                 </Text>
               </View>
@@ -105,17 +97,12 @@ const Rewards = () => {
         </View>
 
         <Button action="secondary" className="mt-6">
-          <ButtonText>Check-in Now</ButtonText>
+          <ButtonText className="!text-white">Check-in Now</ButtonText>
         </Button>
       </View>
 
-      <View
-        className="p-6 rounded-2xl bg-background mt-6 mb-8 mx-6"
-        style={{
-          boxShadow: "0px 2px 12px 0px rgba(0,0,0,0.1)",
-        }}
-      >
-        <Text className="font-bold text-2xl leading-5 text-foreground mb-2">
+      <View className="p-6 rounded-2xl bg-card mt-6 mb-8 mx-6">
+        <Text className="font-bold text-2xl leading-7 text-foreground mb-2">
           Win Big Every Month
         </Text>
         <Text className="text-muted leading-6 text-sm mb-5">
@@ -132,6 +119,12 @@ const Rewards = () => {
           grows, expect even bigger rewards: thousands in cash, luxury gifts,
           vacations & more! Enter for just 500 points!
         </Text>
+
+        <Button action="secondary" className="mt-6">
+          <ButtonText className="!text-white">
+            Insufficient points to Participate
+          </ButtonText>
+        </Button>
       </View>
 
       <View className="flex flex-row justify-between items-center mb-6 mx-6">
@@ -149,7 +142,7 @@ const Rewards = () => {
         {[1, 2, 3, 4].map((_, index) => {
           return (
             <View
-              className="w-[47.5%] bg-background rounded-3xl px-4 py-5 shadow-md"
+              className="w-[47.5%] bg-card rounded-3xl px-4 py-5 "
               key={index}
             >
               <View className="bg-secondary/20 self-start rounded-full px-3 py-1 mb-3">
@@ -194,7 +187,7 @@ const Rewards = () => {
           showsHorizontalScrollIndicator={false}
           renderItem={({ item, index }) => (
             <View
-              className={`overflow-hidden rounded-3xl shadow-sm border-0  ${
+              className={`overflow-hidden rounded-3xl  border-0  ${
                 index === 0 ? "ml-4" : "ml-1"
               } mr-3 py-4}`}
               key={item?.id}
@@ -212,7 +205,7 @@ const Rewards = () => {
                   </View>
                 </View>
 
-                <View className="bg-background p-5">
+                <View className="bg-card p-5">
                   {/* <Text className="text-foreground/80 text-lg font-semibold mb-2">
                   {item?.title}
                 </Text> */}

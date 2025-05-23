@@ -1,127 +1,117 @@
 import React, { useEffect, useState } from "react";
-
 import { router } from "expo-router";
-
-import {
-  Text,
-  View,
-  FlatList,
-  Image,
-  Pressable,
-  useColorScheme,
-} from "react-native";
-
+import { Text, View, FlatList, Image, Pressable } from "react-native";
 import { Clock, Flame } from "lucide-react-native";
-import { getCategories, getPopularRecipes } from "@/services/recipesAPI";
-
-import { Categories, Recipe } from "@/lib/types/recipe";
+import { getCategories } from "@/services/recipesAPI";
+import { Categories } from "@/lib/types/recipe";
 import {
   capitalizeWords,
   convertMinutesToTimeLabel,
   truncateChars,
 } from "@/utils";
-
 import { Button, ButtonText } from "@/components/ui/button";
 import { FeaturedRecipeSketon } from "../Skeletons";
+import { usePopularRecipes } from "@/redux/queries/recipes/useRecipeQuery";
 
-const PopularRecipes = () => {
+const PopularRecipes: React.FC = () => {
   const [categories, setCategories] = useState<Categories[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const scheme = useColorScheme();
-  const [recipes, setRecipes] = useState<Recipe[]>([]);
-  const [loadingRecipe, setLoadingRecipe] = useState(true);
+  const [categoriesLoading, setCategoriesLoading] = useState(true);
+  const [categoriesError, setCategoriesError] = useState<string | null>(null);
 
-  const [selectedCategoryId, setSelectedCategoryId] = useState<string | number>(
-    "all"
-  );
+  const {
+    data: recipes = [],
+    isLoading: recipesLoading,
+    isError: recipesError,
+    error: recipesFetchError,
+  } = usePopularRecipes();
 
   useEffect(() => {
     const fetchCategories = async () => {
+      setCategoriesLoading(true);
       try {
         const data = await getCategories();
         setCategories(data);
       } catch (err: any) {
-        setError(err.message || "Error fetching categories");
+        setCategoriesError(err.message ?? "Error fetching categories");
       } finally {
-        setLoading(false);
+        setCategoriesLoading(false);
       }
     };
-
     fetchCategories();
   }, []);
 
-  useEffect(() => {
-    fetchRecipes(null);
-  }, []);
-
-  const handlePress = (id: string | number) => {
-    setSelectedCategoryId(id);
-
-    const categoryIdToPass = id === "all" || id === "" ? null : id;
-    fetchRecipes(categoryIdToPass);
-  };
-
-  const fetchRecipes = async (categoryIdToPass: string | number | null) => {
-    setLoadingRecipe(true);
-    try {
-      const data = await getPopularRecipes(categoryIdToPass);
-      setRecipes(data);
-    } catch (error) {
-      console.error("Failed to fetch recipes:", error);
-    } finally {
-      setLoadingRecipe(false);
-    }
+  const handleCategoryPress = (id: string | number, name: string) => {
+    router.push({
+      pathname: `/(protected)/(nested)/all-recipes/${id}` as any,
+      params: { name: name.toLowerCase() },
+    });
   };
 
   return (
     <>
+      {/* Categories Section (unchanged) */}
       <View>
         <View className="mb-5">
           <Text className="text-foreground font-bold text-xl leading-5 pl-7">
-            Category
+            Categories
           </Text>
         </View>
-
-        <FlatList
-          horizontal
-          data={[{ id: "all", name: "All" }, ...categories]}
-          keyExtractor={(item) => item.id.toString()}
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{ gap: 12 }}
-          renderItem={({ item, index }) => (
-            <Button
-              action="secondary"
-              className={`rounded-full px-10 py-2 ${
-                index === 0 ? "ml-7" : ""
-              } ${selectedCategoryId === item.id ? "bg-secondary" : "bg-card"}`}
-              onPress={() => handlePress(item.id)}
-            >
-              <ButtonText
-                className={`text-base leading-6 ${
-                  selectedCategoryId === item.id
-                    ? "text-background"
-                    : "!text-primary font-semibold"
+        {categoriesLoading ? (
+          <FlatList
+            horizontal
+            data={Array.from({ length: 4 })}
+            keyExtractor={(_, idx) => idx.toString()}
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{ gap: 12 }}
+            renderItem={({ index }) => (
+              <FeaturedRecipeSketon
+                style={{
+                  width: 100,
+                  height: 40,
+                  marginLeft: index === 0 ? 28 : 0,
+                  borderRadius: 20,
+                }}
+              />
+            )}
+          />
+        ) : categoriesError ? (
+          <Text className="text-red-500 pl-7">{categoriesError}</Text>
+        ) : (
+          <FlatList
+            horizontal
+            data={[{ id: "all", name: "All" }, ...categories]}
+            keyExtractor={(item) => item.id.toString()}
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{ gap: 12 }}
+            renderItem={({ item, index }) => (
+              <Button
+                action="secondary"
+                className={`rounded-full px-10 py-2 ${
+                  index === 0 ? "ml-7" : ""
                 }`}
+                onPress={() => handleCategoryPress(item?.id, item?.name)}
               >
-                {capitalizeWords(item.name)}
-              </ButtonText>
-            </Button>
-          )}
-        />
+                <ButtonText className="text-base leading-6 !text-white font-semibold">
+                  {capitalizeWords(item?.name)}
+                </ButtonText>
+              </Button>
+            )}
+          />
+        )}
       </View>
+
+      {/* Popular Recipes Section */}
       <View className="flex flex-row justify-between mt-5">
         <Text className="text-foreground font-bold text-xl leading-5 mb-4 pl-7">
-          Popular Recipies
+          Popular Recipes
         </Text>
       </View>
-
       <View>
-        {loading ? (
+        {recipesLoading ? (
           <FlatList
             horizontal
             data={Array.from({ length: 3 })}
-            keyExtractor={(_, index) => index.toString()}
+            keyExtractor={(_, idx) => idx.toString()}
             showsHorizontalScrollIndicator={false}
             className="mt-4"
             renderItem={({ index }) => (
@@ -136,43 +126,44 @@ const PopularRecipes = () => {
               />
             )}
           />
+        ) : recipesError ? (
+          <Text className="text-red-500 pl-7">
+            {(recipesFetchError as Error)?.message || "Failed to load recipes."}
+          </Text>
         ) : (
           <FlatList
-            data={recipes}
             horizontal
-            keyExtractor={(item) => item.id.toString()}
+            data={recipes}
+            keyExtractor={(item) => item?.id?.toString()}
             showsHorizontalScrollIndicator={false}
             renderItem={({ item, index }) => (
               <Pressable
                 className={`${
-                  index === 0 ? "ml-7 " : "ml-1"
-                } mr-3 p-4 bg-card rounded-2xl !w-[220px]`}
+                  index === 0 ? "ml-7" : "ml-1"
+                } mr-3 p-4 bg-card rounded-2xl w-[220px]`}
                 onPress={() => router.push(`/recipe/${item?.id}` as const)}
               >
                 <View className="flex flex-col">
                   <View className="relative mb-4">
                     <Image
-                      source={{ uri: item.image_url }}
+                      source={{ uri: item?.image_url }}
                       className="h-40 w-full rounded-2xl bg-gray-300"
                       resizeMode="cover"
                     />
                   </View>
-
                   <Text className="text-foreground font-bold text-base leading-5 mb-3">
                     {truncateChars(item?.title, 35)}
-                    {/* {item?.title} */}
                   </Text>
-
                   <View className="flex flex-row items-center gap-2 mt-auto">
                     <View className="flex flex-row items-center gap-0.5">
                       <Flame color="#96a1b0" size={20} />
-                      <Text className="text-muted"> {item.calories} Kcal</Text>
+                      <Text className="text-muted">{item?.calories} Kcal</Text>
                     </View>
                     <View className="bg-muted p-0.5" />
                     <View className="flex flex-row items-center gap-1">
                       <Clock color="#96a1b0" size={16} />
                       <Text className="text-muted text-sm">
-                        {convertMinutesToTimeLabel(item.ready_in_minutes)}
+                        {convertMinutesToTimeLabel(item?.ready_in_minutes)}
                       </Text>
                     </View>
                   </View>

@@ -249,7 +249,7 @@ const Login = () => {
 
         const isFirstTimeUser = data?.customer_details?.first_time_user;
         if (isFirstTimeUser) {
-          router.replace("/(protected)/(tabs)");
+          router.replace("/(protected)/(onboarding)/onboarding1");
         } else {
           router.replace("/(protected)/(tabs)");
         }

@@ -5,7 +5,7 @@ import { Subscription } from "@/lib/types";
 
 const ActiveSubscriptionScreen = () => {
   const currentSubscription: Subscription = useSelector(
-    (state: any) => state.auth.loginResponseType.customer_details.subscription
+    (state: any) => state?.auth?.loginResponseType?.customer_details?.subscription
   );
 
   return (

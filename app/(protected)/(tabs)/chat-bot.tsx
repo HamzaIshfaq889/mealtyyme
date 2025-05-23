@@ -4,7 +4,7 @@ import ChatBot from "@/components/modules/Chatbot";
 import ComingSoonOverlay from "@/components/modules/ComingSoonOverlay";
 
 const ChatBotScreen = () => {
-  return <ComingSoonOverlay />;
+  return <ChatBot />;
 };
 
 export default ChatBotScreen;

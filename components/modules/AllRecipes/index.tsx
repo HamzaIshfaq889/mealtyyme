@@ -34,6 +34,7 @@ import { useRecipesQuery } from "@/redux/queries/recipes/useRecipeQuery";
 import { useModal } from "@/hooks/useModal";
 import ProSubscribeModal from "@/components/ui/modals/proModal";
 import ProFeaturesCard from "../Search/proFeaturesCard";
+import HorizontalRecipeCard from "../RecipeCards/horizontalRecipeCard";
 
 type QueryOptions = {
   dietIds?: number[];
@@ -227,7 +228,7 @@ const AllRecipes = ({ queryOptions }: AllRecipesProps) => {
         <View className="flex flex-row justify-between items-center mb-6">
           <View className="flex flex-row items-center gap-3">
             <TouchableOpacity onPress={() => router.back()}>
-              <ArrowLeft color="#FFF" size={24} />
+              <ArrowLeft color={isDarkMode ? "#fff" : "#000"} size={24} />
             </TouchableOpacity>
             <Text className="text-primary text-2xl font-semibold">
               {capitalizeFirstLetter("Recipes")}
@@ -266,77 +267,7 @@ const AllRecipes = ({ queryOptions }: AllRecipesProps) => {
             onEndReachedThreshold={0.4}
             showsVerticalScrollIndicator={false}
             renderItem={({ item: recipe }) => (
-              <TouchableOpacity
-                onPress={() => router.push(`/recipe/${recipe.id}` as const)}
-              >
-                <View
-                  className="flex flex-row justify-between items-center p-4 rounded-2xl mb-5 bg-foreground"
-                  style={{
-                    shadowColor: "#000",
-                    shadowOffset: { width: 0, height: 4 },
-                    shadowOpacity: 0.05,
-                    shadowRadius: 6,
-                    elevation: 3,
-                  }}
-                >
-                  <View className="flex flex-row gap-4 flex-1">
-                    <View className="relative">
-                      <Image
-                        source={{ uri: recipe?.image_url }}
-                        className="w-24 h-24 rounded-xl"
-                        resizeMode="cover"
-                      />
-                      {recipe?.is_featured && (
-                        <View className="absolute top-1 right-1 bg-yellow-400 p-1 rounded-full">
-                          <Star color="#fff" size={14} />
-                        </View>
-                      )}
-                    </View>
-
-                    <View className="flex flex-col justify-between flex-1">
-                      <View>
-                        <Text
-                          className="font-bold text-lg mb-1 text-primary"
-                          numberOfLines={1}
-                        >
-                          {recipe?.title}
-                        </Text>
-
-                        <View className="flex flex-row items-center gap-2 mb-2">
-                          <Image
-                            source={{ uri: recipe?.created_by.image_url }}
-                            className="w-5 h-5 rounded-full"
-                          />
-                          <Text className="text-muted text-sm">
-                            {recipe?.created_by.first_name}{" "}
-                            {recipe?.created_by.last_name}
-                          </Text>
-                        </View>
-                      </View>
-
-                      <View className="flex flex-row gap-3">
-                        <View className="flex flex-row items-center gap-1">
-                          <Clock color="#6b7280" size={16} />
-                          <Text className="text-muted text-sm">
-                            {recipe?.ready_in_minutes} min
-                          </Text>
-                        </View>
-
-                        <View className="flex flex-row items-center gap-1">
-                          <Flame color="#6b7280" size={16} />
-                          <Text className="text-muted text-sm">
-                            {Math.ceil(recipe?.calories)} Kcal
-                          </Text>
-                        </View>
-                      </View>
-                    </View>
-                  </View>
-
-                  <View className="ml-2 p-2 bg-secondary rounded-full">
-                    <ArrowRight color="#fff" size={18} />
-                  </View>
-                </View>
-              </TouchableOpacity>
+              <HorizontalRecipeCard recipe={recipe} />
             )}
             ListFooterComponent={
               isFetchingNextPage ? (

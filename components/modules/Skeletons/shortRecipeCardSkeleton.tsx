@@ -41,16 +41,7 @@ export const RecipeSkeletonItem = () => {
   ];
 
   return (
-    <View
-      className="flex flex-row justify-between items-center py-5 px-3 rounded-2xl mb-5 bg-card"
-      style={{
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 4,
-        elevation: 2,
-      }}
-    >
+    <View className="flex flex-row justify-between items-center py-5 px-3 rounded-2xl mb-5 bg-card">
       <View className="flex flex-row gap-4">
         {/* Image placeholder */}
         <View

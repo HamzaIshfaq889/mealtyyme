@@ -12,7 +12,7 @@ export default memo(RailSelected);
 const styles = StyleSheet.create({
   root: {
     height: 8,
-    backgroundColor: '#030319',
+    backgroundColor: '#ee8427',
     borderRadius: 4,
   },
 });

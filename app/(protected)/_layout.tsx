@@ -7,12 +7,9 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setCredentials } from "@/redux/slices/Auth";
 import { setAuthToken } from "@/lib/apiClient";
-import { useAuth, useClerk } from "@clerk/clerk-expo";
 
 export default function ProtectedLayout() {
   const dispatch = useDispatch();
-  const { isSignedIn } = useAuth();
-  const { signOut } = useClerk();
 
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -22,10 +19,6 @@ export default function ProtectedLayout() {
   useEffect(() => {
     const checkUserData = async () => {
       const user = await getUserDataFromStorage();
-
-      if (isSignedIn && (!user || !user.access)) {
-        await signOut();
-      }
 
       if (user && user.access) {
         dispatch(setCredentials({ ...user, isAuthenticated: true }));

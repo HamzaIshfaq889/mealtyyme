@@ -78,7 +78,7 @@ const IngredientBasedSearch = () => {
     <View className="flex flex-col w-full h-full px-6 pt-20 pb-6 relative bg-background">
       <Animated.View
         entering={FadeIn.duration(500)}
-        className="flex-row items-center mb-6"
+        className="flex-row items-center mb-8"
       >
         <TouchableOpacity onPress={() => router.back()}>
           <ArrowLeft
@@ -87,7 +87,7 @@ const IngredientBasedSearch = () => {
             color={isDarkMode ? "#fff" : "#000"}
           />
         </TouchableOpacity>
-        <Text className="text-foreground text-2xl font-semibold ml-2">
+        <Text className="text-foreground text-2xl font-semibold ml-4">
           What's in your kitchen?
         </Text>
       </Animated.View>
@@ -96,6 +96,9 @@ const IngredientBasedSearch = () => {
         entering={FadeIn.delay(200).duration(500)}
         className="mb-6"
       >
+        <Text className="text-foreground/70 font-semibold text-lg mb-2.5">
+          Enter your ingredients
+        </Text>
         <AutocompleteDropdown
           clearOnFocus={false}
           closeOnBlur={false}
@@ -109,17 +112,12 @@ const IngredientBasedSearch = () => {
             borderRadius: 16,
             overflow: "hidden",
             marginBottom: 8,
-            shadowColor: isDarkMode ? "#fff" : "#000",
-            shadowOffset: { width: 0, height: 2 },
-            shadowOpacity: 0.1,
-            shadowRadius: 4,
-            elevation: 3,
           }}
           inputContainerStyle={{
-            borderRadius: 16,
-            borderWidth: 2,
-            borderColor: isDarkMode ? "#fff" : "#000",
-            backgroundColor: isDarkMode ? "#000" : "#fff",
+            borderRadius: 20,
+            borderWidth: 1,
+            borderColor: isDarkMode ? "#494949" : "#e3e3e3",
+            backgroundColor: isDarkMode ? "#2b2b2b" : "#fff",
             paddingHorizontal: 12,
           }}
           textInputProps={{
@@ -300,35 +298,24 @@ const IngredientBasedSearch = () => {
       </View>
 
       <View className="mt-auto mb-4">
-        {/* <Animated.View entering={FadeIn.delay(500)} className="mt-4 mb-4"> */}
         <TouchableOpacity
           onPress={handleFindRecipes}
           disabled={!addedIngredients.length}
-          className={`rounded-xl ${
+          className={`rounded-xl h-16 ${
             !addedIngredients.length ? "!bg-muted" : "bg-secondary"
           } h-14 flex-row items-center justify-center`}
-          style={
-            {
-              // shadowColor: "#000",
-              // shadowOffset: { width: 0, height: 2 },
-              // shadowOpacity: 0.1,
-              // shadowRadius: 4,
-              // elevation: 4,
-            }
-          }
         >
           <Text
             className={`font-semibold text-lg ${
               !addedIngredients.length ? "text-foreground/60" : "text-white"
             }`}
           >
-            Find Recipes
+            Find Me a Recipes
           </Text>
-          {addedIngredients.length > 0 && (
-            <ChevronRight size={20} color="#fff" className="ml-2" />
-          )}
+          {/* {addedIngredients.length > 0 && (
+            <ChevronRight size={24} color="#fff" className="ml-2" />
+          )} */}
         </TouchableOpacity>
-        {/* </Animated.View> */}
       </View>
     </View>
   );

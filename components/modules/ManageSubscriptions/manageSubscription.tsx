@@ -151,10 +151,7 @@ export default function ManageSubscription({
   return (
     <>
       <View
-        className={`flex flex-col w-full h-full px-6 pt-16 pb-6`}
-        style={{
-          boxShadow: isDarkMode ? "" : "0px 2px 12px 0px rgba(0,0,0,0.1)",
-        }}
+        className={`flex flex-col w-full h-full bg-background px-6 pt-16 pb-6`}
       >
         <View className="flex-row items-center justify-between mb-8">
           <TouchableOpacity
@@ -178,11 +175,7 @@ export default function ManageSubscription({
           <View style={{ width: 30 }} />
         </View>
 
-        <View
-          className={`p-4 rounded-2xl ${
-            isDarkMode ? "bg-gray4/50" : "bg-background"
-          }`}
-        >
+        <View className={`p-4 rounded-2xl bg-card`}>
           <View className="mb-4">
             <View className="flex-row justify-between items-start">
               {/* <View className="bg-[#1C3A1F] px-2 py-1 rounded-md mb-2">
@@ -263,6 +256,8 @@ export default function ManageSubscription({
               <Button
                 onPress={handelRetrySubscription}
                 disabled={!!retryLoading}
+                action="secondary"
+                className="h-16"
               >
                 {
                   <ButtonText>
@@ -281,7 +276,7 @@ export default function ManageSubscription({
                 >
                   <Button
                     variant="outline"
-                    className="border border-destructive !h-14"
+                    className="border border-destructive h-16"
                     onPress={() => setShowDeleteModal(true)}
                   >
                     <ButtonText className="!text-lg !font-semibold !text-destructive">
@@ -291,11 +286,12 @@ export default function ManageSubscription({
                 </View>
                 {planName === "month" && (
                   <Button
-                    className="w-1/2 !h-14"
+                    className="w-1/2 h-16"
                     onPress={handleUpgrade}
                     disabled={!!upgradeLoading}
+                    action="secondary"
                   >
-                    <ButtonText className="!text-lg !font-semibold">
+                    <ButtonText className="!text-lg !font-semibold !text-white">
                       {upgradeLoading ? <Spinner size={30} /> : "Upgrade"}
                     </ButtonText>
                   </Button>
@@ -306,8 +302,9 @@ export default function ManageSubscription({
         </View>
 
         <View className="mt-auto">
-          <Button>
+          <Button action="secondary" className="h-16">
             <ButtonText
+              className="!text-white"
               onPress={() =>
                 router.push("/(protected)/(nested)/payment-methods")
               }
@@ -321,7 +318,7 @@ export default function ManageSubscription({
       <Dialog.Container
         visible={showDeleteModal}
         contentStyle={{
-          backgroundColor: scheme === "dark" ? "#131414" : "#fff",
+          backgroundColor: scheme === "dark" ? "#1a1a1a" : "#fdf8f4",
           paddingVertical: 50,
           marginLeft: 30,
           marginRight: 20,
@@ -341,21 +338,21 @@ export default function ManageSubscription({
             Are you sure to cancel your subscription?
           </Text>
         </View>
-        <View className="flex flex-row gap-2">
+        <View className="flex flex-row justify-center items-center gap-2">
           <Button
-            action="muted"
+            action="card"
             className="basis-1/2 h-16"
             onPress={() => setShowDeleteModal(false)}
           >
             <ButtonText>Back</ButtonText>
           </Button>
           <Button
-            action="negative"
+            action="secondary"
             onPress={handleCancelSubscription}
             disabled={!!cancelLoading}
             className="basis-1/2 h-16"
           >
-            <ButtonText>
+            <ButtonText className="!text-white">
               {cancelLoading ? <Spinner size={30} /> : "Cancel"}
             </ButtonText>
           </Button>
