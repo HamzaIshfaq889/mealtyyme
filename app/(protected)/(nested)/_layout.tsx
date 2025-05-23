@@ -36,6 +36,7 @@ export default function RootLayout() {
         <Stack.Screen name="other-earn-ways.tsx" />
         <Stack.Screen name="notifications.tsx" />
         <Stack.Screen name="maintenance.tsx" />
+        <Stack.Screen name="cookbookRecipes.tsx" />
       </Stack>
       <Toast />
     </>

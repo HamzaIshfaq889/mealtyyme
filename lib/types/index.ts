@@ -93,7 +93,7 @@ export type cookbooks = {
   customer_email: string;
   recipes: [];
   created_at: string;
-  recipe_thumbnails: [];
+  recipe_thumbnails: string[];
 };
 
 export type AddRecipePayload = {
@@ -117,7 +117,7 @@ export type CreateCookBookResponse = {
   customer_email: string;
   recipes: [];
   created_at: "2025-04-28T10:11:58.301261Z";
-  recipe_thumbnails: [];
+  recipe_thumbnails: string[];
 };
 
 export type UpdateCookbookPayload = {

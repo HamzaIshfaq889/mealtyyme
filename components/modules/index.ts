@@ -33,6 +33,7 @@ import Rewards from "./Rewrads";
 import RedeemPoints from "./Rewrads/RedeemPoints";
 import OtherEarnWays from "./Rewrads/OtherEarnWays";
 import Notifications from "./notifications";
+import CookbookRecipes from "./Account/Cookbooks/cookbookRecipes";
 
 import { RecipeCard } from "./Common";
 
@@ -73,4 +74,5 @@ export {
   RedeemPoints,
   OtherEarnWays,
   Notifications,
+  CookbookRecipes,
 };

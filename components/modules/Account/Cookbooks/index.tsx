@@ -11,6 +11,7 @@ import { ScrollView } from "react-native-gesture-handler";
 import RecipesFlatList from "./recipesFlatList";
 import Error from "../../Error";
 import { useFocusEffect } from "expo-router";
+import RecipeCollectionCard from "./recipeCollectionCard";
 
 const Cookbooks = ({ activeTab }: { activeTab: string }) => {
   const {
@@ -51,6 +52,32 @@ const Cookbooks = ({ activeTab }: { activeTab: string }) => {
     setCookBookId(cookbookId);
   };
 
+  const collections = [
+    {
+      id: 1,
+      title: "Vegan Delights",
+      recipeCount: 11,
+      imageUrl:
+        "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-FRX7kSms2kwnT6KKFALtWLpyeYP4JW.png",
+    },
+    {
+      id: 2,
+      title: "My Delights",
+      recipeCount: 12,
+      imageUrl:
+        "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-FRX7kSms2kwnT6KKFALtWLpyeYP4JW.png",
+    },
+    {
+      id: 2,
+      title: "My Delights",
+      recipeCount: 12,
+      imageUrl:
+        "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-FRX7kSms2kwnT6KKFALtWLpyeYP4JW.png",
+    },
+  ];
+
+  console.log(cookBooks);
+
   return (
     <View className="mt-3">
       {cookBooks?.length === 0 ? (
@@ -60,44 +87,23 @@ const Cookbooks = ({ activeTab }: { activeTab: string }) => {
           </Text>
         </View>
       ) : (
-        cookBooks?.map((cookbook) => {
-          return (
-            <ScrollView key={cookbook.id} className="mb-6">
-              <View className="flex-row items-center mb-2">
-                <Text className="text-xl font-bold text-primary px-6">
-                  {cookbook.name}
-                </Text>
-
-                <View className="flex flex-row gap-5">
-                  <FilePenLine
-                    color={scheme === "dark" ? "#fff" : "#0a2533"}
-                    size={23}
-                    onPress={() => handleEditCookbook(cookbook.id)}
-                  />
-                  <Trash
-                    color="#ff0000"
-                    size={23}
-                    onPress={() => handleDeleteCookbook(cookbook.id)}
-                  />
-                </View>
-              </View>
-
-              {cookbook?.recipes.length > 0 ? (
-                <RecipesFlatList
-                  recipeIds={cookbook?.recipes}
-                  cookbookId={cookbook?.id}
-                  refetch={refetch}
+        <ScrollView className="mb-6">
+          <View className="flex flex-row flex-wrap justify-between mx-6">
+            {cookBooks?.length &&
+              cookBooks.map((cookbook) => (
+                <RecipeCollectionCard
+                  key={cookbook?.id}
+                  id={cookbook?.id}
+                  title={cookbook?.name}
+                  recipeCount={cookbook?.recipes?.length || 0}
+                  imageUrl={cookbook?.recipe_thumbnails?.[0]}
+                  onEdit={() => handleEditCookbook(cookbook?.id)}
+                  onDelete={() => handleDeleteCookbook(cookbook?.id)}
+                  recipes={cookbook?.recipes || []}
                 />
-              ) : (
-                <View className="flex-1 justify-center items-center p-7">
-                  <Text className="text-gray-500 text-sm">
-                    No recipes available.
-                  </Text>
-                </View>
-              )}
-            </ScrollView>
-          );
-        })
+              ))}
+          </View>
+        </ScrollView>
       )}
 
       {/* Modals */}
