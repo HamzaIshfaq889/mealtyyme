@@ -129,13 +129,16 @@ const HomeUser = () => {
 
   // Optimize Redux selectors to only get what's needed
   const isCooking = useSelector((state: RootState) => state.recipe.isCooking);
-  const { id: customerId } = useSelector(
-    (state: RootState) => state.auth.loginResponseType,
-    // Add shallow equality check to prevent unnecessary re-renders
-    (prev, next) => {
-      return prev?.id === next?.id;
-    }
+  const customerId = useSelector(
+    (state: any) => state.auth.loginResponseType.customer_details?.id
   );
+
+  console.log(customerId);
+
+  const [expoPushToken, setExpoPushToken] = useState("");
+  const [notification, setNotification] = useState<
+    Notifications.Notification | undefined
+  >(undefined);
 
   const [showSubscriptionCTA, setShowSubscriptionCTA] = useState(false);
   const [checking, setChecking] = useState(false);
@@ -187,6 +190,41 @@ const HomeUser = () => {
       }
     })();
   }, [statsLoading, customerId]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowSubscriptionCTA(true);
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    registerForPushNotificationsAsync()
+      .then((token) => {
+        if (token) {
+          setExpoPushToken(token);
+          saveTokenToBackend(token);
+        }
+      })
+      .catch((error: any) => setExpoPushToken(`${error}`));
+
+    const notificationListener = Notifications.addNotificationReceivedListener(
+      (notification) => {
+        setNotification(notification);
+      }
+    );
+
+    const responseListener =
+      Notifications.addNotificationResponseReceivedListener((response) => {
+        console.log(response);
+      });
+
+    return () => {
+      notificationListener.remove();
+      responseListener.remove();
+    };
+  }, []);
 
   useEffect(() => {
     if (!isVisible) return;
