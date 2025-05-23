@@ -59,7 +59,7 @@ import { saveNotificationToken } from "../../../services/notifications/api";
 import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 import LottieView from "lottie-react-native";
-import { TabBarContext } from "@/app/(protected)/(tabs)/_layout";
+// import { TabBarContext } from "@/app/(protected)/(tabs)/_layout";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -222,7 +222,7 @@ const HomeUser = () => {
   const searchBarOpacity = useSharedValue(1);
   const searchIconOpacity = useSharedValue(0);
   const headerTranslateY = useSharedValue(0);
-  const { tabBarTranslateY } = React.useContext(TabBarContext);
+  // const { tabBarTranslateY } = React.useContext(TabBarContext);
 
   // Animated styles
   const searchBarAnimatedStyle = useAnimatedStyle(() => {
@@ -307,129 +307,129 @@ const HomeUser = () => {
   // }, []);
 
   // Add memory check to scroll handler
-  const handleScroll = useCallback(
-    (event: any) => {
-      try {
-        const offsetY = event.contentOffset.y;
-        console.log("[HomeUser] Scroll position:", offsetY);
-        scrollY.value = offsetY;
-        setIsScrolledToFeatured(offsetY > 1);
+  // const handleScroll = useCallback(
+  //   (event: any) => {
+  //     try {
+  //       const offsetY = event.contentOffset.y;
+  //       console.log("[HomeUser] Scroll position:", offsetY);
+  //       scrollY.value = offsetY;
+  //       setIsScrolledToFeatured(offsetY > 1);
 
-        // Clear any existing animation frame
-        if (scrollTimeoutRef.current) {
-          console.log("[HomeUser] Clearing existing animation frame");
-          cancelAnimationFrame(scrollTimeoutRef.current);
-        }
+  //       // Clear any existing animation frame
+  //       if (scrollTimeoutRef.current) {
+  //         console.log("[HomeUser] Clearing existing animation frame");
+  //         cancelAnimationFrame(scrollTimeoutRef.current);
+  //       }
 
-        // Use requestAnimationFrame instead of setTimeout for better performance
-        scrollTimeoutRef.current = requestAnimationFrame(() => {
-          console.log("[HomeUser] Processing scroll animation frame");
-          if (offsetY > 0) {
-            headerTranslateY.value = withTiming(-100, { duration: 200 });
-            if (tabBarTranslateY?.value !== undefined) {
-              tabBarTranslateY.value = withTiming(100, { duration: 200 });
-            }
-          } else {
-            headerTranslateY.value = withTiming(0, { duration: 200 });
-            if (tabBarTranslateY?.value !== undefined) {
-              tabBarTranslateY.value = withTiming(0, { duration: 200 });
-            }
-          }
-        });
+  //       // Use requestAnimationFrame instead of setTimeout for better performance
+  //       scrollTimeoutRef.current = requestAnimationFrame(() => {
+  //         console.log("[HomeUser] Processing scroll animation frame");
+  //         if (offsetY > 0) {
+  //           headerTranslateY.value = withTiming(-100, { duration: 200 });
+  //           if (tabBarTranslateY?.value !== undefined) {
+  //             tabBarTranslateY.value = withTiming(100, { duration: 200 });
+  //           }
+  //         } else {
+  //           headerTranslateY.value = withTiming(0, { duration: 200 });
+  //           if (tabBarTranslateY?.value !== undefined) {
+  //             tabBarTranslateY.value = withTiming(0, { duration: 200 });
+  //           }
+  //         }
+  //       });
 
-        // Log memory usage during scroll (throttled)
-        if (__DEV__ && offsetY % 100 === 0) {
-          console.log("[HomeUser] Scroll memory check at offset:", offsetY);
-          logMemoryUsage();
-        }
-      } catch (error) {
-        console.error("[HomeUser] Scroll handling error:", error);
-      }
-    },
-    [tabBarTranslateY]
-  );
+  //       // Log memory usage during scroll (throttled)
+  //       if (__DEV__ && offsetY % 100 === 0) {
+  //         console.log("[HomeUser] Scroll memory check at offset:", offsetY);
+  //         logMemoryUsage();
+  //       }
+  //     } catch (error) {
+  //       console.error("[HomeUser] Scroll handling error:", error);
+  //     }
+  //   },
+  //   [tabBarTranslateY]
+  // );
 
-  const handleScrollEnd = useCallback(() => {
-    try {
-      // Always show header and tab bar when scrolling stops
-      headerTranslateY.value = withTiming(0, { duration: 200 });
-      if (tabBarTranslateY?.value !== undefined) {
-        tabBarTranslateY.value = withTiming(0, { duration: 200 });
-      }
-    } catch (error) {
-      console.error("Scroll end handling error:", error);
-    }
-  }, [tabBarTranslateY]);
+  // const handleScrollEnd = useCallback(() => {
+  //   try {
+  //     // Always show header and tab bar when scrolling stops
+  //     headerTranslateY.value = withTiming(0, { duration: 200 });
+  //     if (tabBarTranslateY?.value !== undefined) {
+  //       tabBarTranslateY.value = withTiming(0, { duration: 200 });
+  //     }
+  //   } catch (error) {
+  //     console.error("Scroll end handling error:", error);
+  //   }
+  // }, [tabBarTranslateY]);
 
   // Cleanup all listeners and animations on unmount
-  useEffect(() => {
-    console.log("[HomeUser] Setting up notifications and subscriptions");
-    let notificationListener: Notifications.Subscription;
-    let responseListener: Notifications.Subscription;
-    let subscriptionTimer: ReturnType<typeof setTimeout>;
+  // useEffect(() => {
+  //   console.log("[HomeUser] Setting up notifications and subscriptions");
+  //   let notificationListener: Notifications.Subscription;
+  //   let responseListener: Notifications.Subscription;
+  //   let subscriptionTimer: ReturnType<typeof setTimeout>;
 
-    const setupNotifications = async () => {
-      try {
-        console.log("[HomeUser] Registering for push notifications");
-        const token = await registerForPushNotificationsAsync();
-        if (token) {
-          console.log("[HomeUser] Push notification token received");
-          setExpoPushToken(token);
-          await saveTokenToBackend(token);
-        }
-      } catch (error: any) {
-        console.error("[HomeUser] Push notification setup error:", error);
-        setExpoPushToken(`${error}`);
-      }
+  //   const setupNotifications = async () => {
+  //     try {
+  //       console.log("[HomeUser] Registering for push notifications");
+  //       const token = await registerForPushNotificationsAsync();
+  //       if (token) {
+  //         console.log("[HomeUser] Push notification token received");
+  //         setExpoPushToken(token);
+  //         await saveTokenToBackend(token);
+  //       }
+  //     } catch (error: any) {
+  //       console.error("[HomeUser] Push notification setup error:", error);
+  //       setExpoPushToken(`${error}`);
+  //     }
 
-      notificationListener = Notifications.addNotificationReceivedListener(
-        (notification) => {
-          console.log("[HomeUser] Notification received:", notification);
-          setNotification(notification);
-        }
-      );
+  //     notificationListener = Notifications.addNotificationReceivedListener(
+  //       (notification) => {
+  //         console.log("[HomeUser] Notification received:", notification);
+  //         setNotification(notification);
+  //       }
+  //     );
 
-      responseListener = Notifications.addNotificationResponseReceivedListener(
-        (response) => {
-          console.log("[HomeUser] Notification response received:", response);
-        }
-      );
-    };
+  //     responseListener = Notifications.addNotificationResponseReceivedListener(
+  //       (response) => {
+  //         console.log("[HomeUser] Notification response received:", response);
+  //       }
+  //     );
+  //   };
 
-    setupNotifications();
+  //   setupNotifications();
 
-    subscriptionTimer = setTimeout(() => {
-      console.log("[HomeUser] Showing subscription CTA");
-      setShowSubscriptionCTA(true);
-    }, 3000);
+  //   subscriptionTimer = setTimeout(() => {
+  //     console.log("[HomeUser] Showing subscription CTA");
+  //     setShowSubscriptionCTA(true);
+  //   }, 3000);
 
-    return () => {
-      console.log("[HomeUser] Cleaning up notifications and subscriptions");
-      // Cleanup notification listeners
-      if (notificationListener) notificationListener.remove();
-      if (responseListener) responseListener.remove();
-      if (subscriptionTimer) clearTimeout(subscriptionTimer);
-      if (scrollTimeoutRef.current) {
-        console.log("[HomeUser] Cleaning up scroll animation frame");
-        cancelAnimationFrame(scrollTimeoutRef.current);
-      }
+  //   return () => {
+  //     console.log("[HomeUser] Cleaning up notifications and subscriptions");
+  //     // Cleanup notification listeners
+  //     if (notificationListener) notificationListener.remove();
+  //     if (responseListener) responseListener.remove();
+  //     if (subscriptionTimer) clearTimeout(subscriptionTimer);
+  //     if (scrollTimeoutRef.current) {
+  //       console.log("[HomeUser] Cleaning up scroll animation frame");
+  //       cancelAnimationFrame(scrollTimeoutRef.current);
+  //     }
 
-      // Reset all animation values
-      scrollY.value = 0;
-      headerTranslateY.value = 0;
-      searchBarOpacity.value = 1;
-      searchIconOpacity.value = 0;
-      if (tabBarTranslateY?.value !== undefined) {
-        tabBarTranslateY.value = 0;
-      }
+  //     // Reset all animation values
+  //     scrollY.value = 0;
+  //     headerTranslateY.value = 0;
+  //     searchBarOpacity.value = 1;
+  //     searchIconOpacity.value = 0;
+  //     if (tabBarTranslateY?.value !== undefined) {
+  //       tabBarTranslateY.value = 0;
+  //     }
 
-      // Cancel any ongoing animations
-      cancelAnimation(scrollY);
-      cancelAnimation(headerTranslateY);
-      cancelAnimation(searchBarOpacity);
-      cancelAnimation(searchIconOpacity);
-    };
-  }, []);
+  //     // Cancel any ongoing animations
+  //     cancelAnimation(scrollY);
+  //     cancelAnimation(headerTranslateY);
+  //     cancelAnimation(searchBarOpacity);
+  //     cancelAnimation(searchIconOpacity);
+  //   };
+  // }, []);
 
   // Cleanup scroll handler
   useEffect(() => {
@@ -627,15 +627,15 @@ const HomeUser = () => {
           paddingTop: 190,
         }}
         showsVerticalScrollIndicator={false}
-        onScroll={useAnimatedScrollHandler({
-          onScroll: (event) => {
-            "worklet";
-            runOnJS(handleScroll)(event);
-          },
-        })}
+        // onScroll={useAnimatedScrollHandler({
+        //   onScroll: (event) => {
+        //     "worklet";
+        //     runOnJS(handleScroll)(event);
+        //   },
+        // })}
         scrollEventThrottle={16}
-        onScrollEndDrag={handleScrollEnd}
-        onMomentumScrollEnd={handleScrollEnd}
+        // onScrollEndDrag={handleScrollEnd}
+        // onMomentumScrollEnd={handleScrollEnd}
         bounces={true}
         overScrollMode="always"
         removeClippedSubviews={true}
