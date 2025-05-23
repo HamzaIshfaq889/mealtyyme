@@ -141,7 +141,6 @@ const IngredientBasedSearch = () => {
             },
           }}
           onSelectItem={(item) => {
-            console.log("hellooooooooooo");
             const matched = fetchedIngredients.find(
               (i) => i.id.toString() === item?.id
             );
@@ -310,7 +309,7 @@ const IngredientBasedSearch = () => {
               !addedIngredients.length ? "text-foreground/60" : "text-white"
             }`}
           >
-            Find Me a Recipes
+            Find Me a Recipe
           </Text>
           {/* {addedIngredients.length > 0 && (
             <ChevronRight size={24} color="#fff" className="ml-2" />

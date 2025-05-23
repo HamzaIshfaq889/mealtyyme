@@ -24,9 +24,16 @@ const AllSteps = ({ steps, bottomSheetRef }: AllSteps) => {
       snapPoints={["80%"]}
       backdropComponent={BottomSheetBackdrop}
       enablePanDownToClose
+      handleStyle={{
+        backgroundColor: isDarkMode ? "#1c1c1c" : "#fdf8f4",
+        borderWidth: 0,
+      }}
+      handleIndicatorStyle={{
+        backgroundColor: isDarkMode ? "#888" : "#ccc",
+      }}
     >
       <BottomSheetScrollView>
-        <View className="pb-10 pt-4 px-6 bg-background">
+        <View className="pb-10 pt-4 px-6 bg-background w-full h-full">
           <Text className="font-bold text-2xl leading-8 text-foreground text-center mb-4 mt-8">
             Steps
           </Text>

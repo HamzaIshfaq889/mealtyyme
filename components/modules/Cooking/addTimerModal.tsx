@@ -43,7 +43,7 @@ const AddTimerModal = ({
       <Dialog.Container
         visible={showTimerModal}
         contentStyle={{
-          backgroundColor: isDarkMode ? "#000" : "#fff",
+          backgroundColor: scheme === "dark" ? "#1a1a1a" : "#fdf8f4",
           paddingBottom: 10,
           paddingTop: 2,
           borderRadius: 20,
@@ -67,7 +67,7 @@ const AddTimerModal = ({
               )}
               onValueChange={(data, idx) => setSelectedHours(Number(data))}
               wrapperHeight={180}
-              wrapperBackground={isDarkMode ? "#000" : "#fff"}
+              wrapperBackground={isDarkMode ? "#1A1A1A" : "#FDF8F4"}
               itemHeight={40}
               highlightColor={isDarkMode ? "#fff" : "#000"}
               highlightBorderWidth={2}
@@ -87,7 +87,7 @@ const AddTimerModal = ({
               )}
               onValueChange={(data, idx) => setSelectedMinutes(Number(data))}
               wrapperHeight={180}
-              wrapperBackground={isDarkMode ? "#000" : "#fff"}
+              wrapperBackground={isDarkMode ? "#1A1A1A" : "#FDF8F4"}
               itemHeight={40}
               highlightColor={isDarkMode ? "#fff" : "#000"}
               highlightBorderWidth={2}
@@ -98,7 +98,7 @@ const AddTimerModal = ({
         <View className="flex flex-row gap-2">
           <Button
             className="w-1/2"
-            action="muted"
+            action="card"
             onPress={() => setShowTimerModal(false)}
           >
             <ButtonText>Cancel</ButtonText>

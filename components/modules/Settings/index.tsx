@@ -109,7 +109,7 @@ const Settings = () => {
 
   const scheme = useColorScheme();
   return (
-    <View className="flex-1 px-6 pt-16 pb-8 bg-background">
+    <View className="flex-1 px-6 pt-16 pb-12 bg-background">
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         {/* Header */}
         <View className="relative flex items-center justify-center mb-12">

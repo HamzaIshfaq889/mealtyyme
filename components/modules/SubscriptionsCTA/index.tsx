@@ -215,7 +215,8 @@ const SubcriptionCTA = ({
           snapPoints={["95%"]}
           backdropComponent={BottomSheetBackdrop}
           handleStyle={{
-            backgroundColor: isDarkMode ? "#1f242a" : "#fff",
+            backgroundColor: isDarkMode ? "#1c1c1c" : "#fdf8f4",
+            borderWidth: 0,
           }}
           handleIndicatorStyle={{
             backgroundColor: isDarkMode ? "#888" : "#ccc",

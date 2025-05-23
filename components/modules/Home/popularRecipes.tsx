@@ -53,7 +53,7 @@ const PopularRecipes: React.FC = () => {
   const handleCategoryPress = (id: string | number, name: string) => {
     router.push({
       pathname: `/(protected)/(nested)/all-recipes/${id}` as any,
-      params: { name: name.toLowerCase() },
+      params: { name: "categories" },
     });
   };
 
@@ -89,7 +89,7 @@ const PopularRecipes: React.FC = () => {
         ) : (
           <FlatList
             horizontal
-            data={[{ id: "all", name: "All" }, ...categories]}
+            data={[...categories]}
             keyExtractor={(item) => item.id.toString()}
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={{ gap: 12 }}

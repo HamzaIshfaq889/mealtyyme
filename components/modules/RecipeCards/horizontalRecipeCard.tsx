@@ -1,5 +1,5 @@
 import React from "react";
-import { ArrowRight, Clock, Flame, Star } from "lucide-react-native";
+import { ArrowRight, Clock, Flame, Star, Trash } from "lucide-react-native";
 
 import { Image, Text, TouchableOpacity, View } from "react-native";
 import { Recipe } from "@/lib/types/recipe";
@@ -7,9 +7,15 @@ import { router } from "expo-router";
 
 type HorizontalRecipeCardProps = {
   recipe: Recipe;
+  showDelete?: boolean;
+  onDelete?: (id: number) => void;
 };
 
-const HorizontalRecipeCard = ({ recipe }: HorizontalRecipeCardProps) => {
+const HorizontalRecipeCard = ({
+  recipe,
+  showDelete,
+  onDelete,
+}: HorizontalRecipeCardProps) => {
   return (
     <TouchableOpacity
       onPress={() => router.push(`/recipe/${recipe?.id}` as const)}
@@ -67,9 +73,17 @@ const HorizontalRecipeCard = ({ recipe }: HorizontalRecipeCardProps) => {
           </View>
         </View>
 
-        <View className="ml-2 p-2 bg-secondary rounded-full">
-          <ArrowRight color="#fff" size={18} />
-        </View>
+        {showDelete && onDelete ? (
+          <Trash
+            color="#ee8427"
+            size={30}
+            onPress={() => onDelete(recipe?.id)}
+          />
+        ) : (
+          <View className="ml-2 p-2 bg-secondary rounded-full">
+            <ArrowRight color="#fff" size={18} />
+          </View>
+        )}
       </View>
     </TouchableOpacity>
   );

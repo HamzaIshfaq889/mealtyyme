@@ -71,11 +71,10 @@ const Step = ({ step, timer, onToggle, onComplete, onAdd }: StepProps) => {
         <View className="mb-10 mx-auto">
           <CountdownCircleTimer
             key={timer?.key}
-            // feed it the *current* remaining seconds as the duration
             duration={remaining}
-            isPlaying={false /* we drive it manually with remaining */}
+            isPlaying={false}
             initialRemainingTime={remaining}
-            colors={["#00C3FF"] as any}
+            colors={["#ee8427"] as any}
             strokeWidth={8}
             onComplete={() => {
               onComplete();
@@ -93,9 +92,9 @@ const Step = ({ step, timer, onToggle, onComplete, onAdd }: StepProps) => {
                     className="bg-foreground p-3 rounded-full mb-2"
                   >
                     {timer?.isPlaying ? (
-                      <Pause color={isDark ? "#000" : "#fff"} size={24} />
+                      <Pause color={isDark ? "#fff" : "#000"} size={24} />
                     ) : (
-                      <Play color={isDark ? "#000" : "#fff"} size={24} />
+                      <Play color={isDark ? "#fff" : "#000"} size={24} />
                     )}
                   </Pressable>
                   {/* <Text className="text-xl text-primary">{fmt}</Text> */}

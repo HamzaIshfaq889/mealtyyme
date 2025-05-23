@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import { Text, TouchableOpacity, View } from "react-native";
+import { Text, TouchableOpacity, useColorScheme, View } from "react-native";
 
 import { Star } from "lucide-react-native";
 
@@ -21,6 +21,8 @@ type ReviewProps = {
 const Review = ({ currentRecipeId, bottomSheetRef }: ReviewProps) => {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [starRating, setStarRating] = useState<number>(0);
+  const scheme = useColorScheme();
+  const isDarkMode = scheme === "dark";
 
   const handleSelection = (index: number) => {
     const newIndex = selectedIndex === index ? null : index;
@@ -63,6 +65,13 @@ const Review = ({ currentRecipeId, bottomSheetRef }: ReviewProps) => {
       ref={bottomSheetRef}
       index={-1}
       snapPoints={["20%", "50%", "80%"]}
+      handleStyle={{
+        backgroundColor: isDarkMode ? "#1c1c1c" : "#fdf8f4",
+        borderWidth: 0,
+      }}
+      handleIndicatorStyle={{
+        backgroundColor: isDarkMode ? "#888" : "#ccc",
+      }}
       backdropComponent={BottomSheetBackdrop}
       enablePanDownToClose
     >

@@ -34,7 +34,10 @@ const subscriptionModalContent = ({
       ref={bottomSheetRef}
       snapPoints={["95%"]}
       backdropComponent={BottomSheetBackdrop}
-      handleStyle={{ backgroundColor: isDarkMode ? "#1f242a" : "#fff" }}
+      handleStyle={{
+        backgroundColor: isDarkMode ? "#1c1c1c" : "#fdf8f4",
+        borderWidth: 0,
+      }}
       handleIndicatorStyle={{ backgroundColor: isDarkMode ? "#888" : "#ccc" }}
     >
       <BottomSheetView className="bg-background w-full h-full">

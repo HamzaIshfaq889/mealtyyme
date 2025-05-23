@@ -74,7 +74,7 @@ const DeleteCookbook = ({
             Are you sure to delete this collection
           </Text>
         </View>
-        <View className="flex flex-row justify-center items-center gap-2">
+        <View className="flex flex-row justify-center items-center gap-2 w-full">
           <Button
             action="card"
             className="basis-1/2 h-16"

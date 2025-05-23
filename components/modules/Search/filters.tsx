@@ -185,13 +185,13 @@ const Filters = ({
         enablePanDownToClose={true}
         enableContentPanningGesture={false}
         enableHandlePanningGesture={true}
-        // handleStyle={{
-        //   backgroundColor: isDarkMode ? "#1f242a" : "#fff",
-        //   borderWidth: 0,
-        // }}
-        // handleIndicatorStyle={{
-        //   backgroundColor: isDarkMode ? "#888" : "#ccc",
-        // }}
+        handleStyle={{
+          backgroundColor: isDarkMode ? "#1c1c1c" : "#fdf8f4",
+          borderWidth: 0,
+        }}
+        handleIndicatorStyle={{
+          backgroundColor: isDarkMode ? "#888" : "#ccc",
+        }}
         onChange={(index) => {
           if (index === 0) {
             bottomSheetRef.current?.close();

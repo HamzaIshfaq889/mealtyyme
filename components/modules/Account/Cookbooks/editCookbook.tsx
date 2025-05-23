@@ -70,7 +70,7 @@ const EditCookbook = ({
       <Dialog.Container
         visible={showEditModal}
         contentStyle={{
-          backgroundColor: scheme === "dark" ? "#000" : "#fff",
+          backgroundColor: scheme === "dark" ? "#1a1a1a" : "#fdf8f4",
           paddingVertical: 50,
           borderRadius: 30,
           marginLeft: 35,
@@ -97,9 +97,9 @@ const EditCookbook = ({
             />
           </Input>
         </FormControl>
-        <View className="flex flex-row gap-2">
+        <View className="flex flex-row justify-center items-center gap-2">
           <Button
-            action="muted"
+            action="card"
             className="basis-1/2 h-16"
             onPress={() => setShowEditModal(false)}
           >

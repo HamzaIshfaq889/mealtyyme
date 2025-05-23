@@ -87,22 +87,31 @@ const Cookbooks = ({ activeTab }: { activeTab: string }) => {
           </Text>
         </View>
       ) : (
-        <ScrollView className="mb-6">
-          <View className="flex flex-row flex-wrap justify-between mx-6">
-            {cookBooks?.length &&
-              cookBooks.map((cookbook) => (
-                <RecipeCollectionCard
-                  key={cookbook?.id}
-                  id={cookbook?.id}
-                  title={cookbook?.name}
-                  recipeCount={cookbook?.recipes?.length || 0}
-                  imageUrl={cookbook?.recipe_thumbnails?.[0]}
-                  onEdit={() => handleEditCookbook(cookbook?.id)}
-                  onDelete={() => handleDeleteCookbook(cookbook?.id)}
-                  recipes={cookbook?.recipes || []}
-                />
-              ))}
-          </View>
+        <ScrollView className="mb-6 mx-6">
+          {cookBooks?.some((cookbook) => cookbook.recipes?.length > 0) ? (
+            <View className="flex flex-row flex-wrap justify-between">
+              {cookBooks.map((cookbook) =>
+                cookbook.recipes?.length > 0 ? (
+                  <RecipeCollectionCard
+                    key={cookbook.id}
+                    id={cookbook.id}
+                    title={cookbook.name}
+                    recipeCount={cookbook.recipes.length}
+                    imageUrl={cookbook.recipe_thumbnails?.[0]}
+                    onEdit={() => handleEditCookbook(cookbook.id)}
+                    onDelete={() => handleDeleteCookbook(cookbook.id)}
+                    recipes={cookbook.recipes}
+                  />
+                ) : null
+              )}
+            </View>
+          ) : (
+            <View className="items-center mt-10">
+              <Text className="text-muted text-lg font-medium">
+                Your cookbook is empty
+              </Text>
+            </View>
+          )}
         </ScrollView>
       )}
 

@@ -146,7 +146,7 @@ const RecipeDetails = ({ recipeId, isPrivate }: RecipeDetailsProps) => {
       id: 3,
       icon: Flame,
       amount: recipe?.nutrition?.calories,
-      text: `g cal`,
+      text: `K cal`,
     },
     {
       id: 4,
@@ -492,7 +492,7 @@ const RecipeDetails = ({ recipeId, isPrivate }: RecipeDetailsProps) => {
           }
         }}
         handleStyle={{
-          backgroundColor: isDarkMode ? "#1f242a" : "#fff",
+          backgroundColor: isDarkMode ? "#1c1c1c" : "#fdf8f4",
           borderWidth: 0,
         }}
         handleIndicatorStyle={{
