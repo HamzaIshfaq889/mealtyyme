@@ -25,6 +25,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useColorScheme } from "react-native";
 import { Input, InputField, InputIcon, InputSlot } from "@/components/ui/input";
 import { useSelector } from "react-redux";
+import LottieView from "lottie-react-native";
 
 export default function HomeScreen() {
   const tabBarTranslation = useContext(TabBarContext);
@@ -168,10 +169,10 @@ export default function HomeScreen() {
         style={[
           headerAnimatedStyle,
           {
-            paddingTop: Platform.OS === "ios" ? 50 : 36,
+            paddingTop: Platform.OS === "ios" ? 40 : 36,
           },
         ]}
-        className="bg-background/95 backdrop-blur-md"
+        className="bg-background backdrop-blur-md "
       >
         {/* User info and greeting */}
         <View className="flex-row items-center justify-between px-4 mb-4 mt-3">
@@ -204,16 +205,27 @@ export default function HomeScreen() {
             <Animated.View style={searchIconAnimatedStyle}>
               <Pressable
                 onPress={() => router.push("/(protected)/(nested)/search")}
-                className="relative h-10 w-10 bg-background/80 dark:bg-muted/20 rounded-full flex items-center justify-center shadow-sm"
+                className="relative h-10 w-10 bg-card rounded-full flex items-center justify-center shadow-sm"
               >
                 <Search size={24} color={isDark ? "#e0e0e0" : "#333"} />
               </Pressable>
             </Animated.View>
-
-            {/* Bell Icon
-            <Pressable className="relative h-10 w-10 bg-background/80 dark:bg-muted/20 rounded-full flex items-center justify-center shadow-sm">
+            <Pressable className="relative h-10  bg-card rounded-full flex items-center justify-center shadow-sm">
+              <View className="absolute left-0">
+                <LottieView
+                  source={require("../../../assets/lottie/coin.json")}
+                  autoPlay
+                  loop
+                  style={{ width: 24, height: 24 }}
+                />
+              </View>
+              <Text className="absolute text-xs font-semibold text-foreground ">
+                100
+              </Text>
+            </Pressable>
+            <Pressable className="relative h-10 w-10 bg-card rounded-full flex items-center justify-center shadow-sm">
               <Bell size={24} color={isDark ? "#e0e0e0" : "#333"} />
-            </Pressable> */}
+            </Pressable>
           </View>
         </View>
 
@@ -223,12 +235,12 @@ export default function HomeScreen() {
             onPress={() => router.push("/(protected)/(nested)/search")}
             className="mx-6 mb-5"
           >
-            <Input isReadOnly>
-              <InputSlot className="ml-1">
-                <InputIcon className="!w-6 !h-6" as={Search} />
-              </InputSlot>
-              <InputField type="text" placeholder="Search Recipes" readOnly />
-            </Input>
+            <View className="flex-row items-center bg-card border border-input rounded-3xl px-3 py-2 h-16">
+              <View className="ml-1">
+                <Search size={24} color={isDark ? "#e0e0e0" : "#333"} />
+              </View>
+              <Text className="ml-2 text-foreground">Search Recipes</Text>
+            </View>
           </Pressable>
         </Animated.View>
       </Animated.View>
@@ -239,7 +251,7 @@ export default function HomeScreen() {
         contentContainerStyle={[
           styles.content,
           {
-            paddingTop: Platform.OS === "ios" ? 190 : 176,
+            paddingTop: Platform.OS === "ios" ? 180 : 176,
           },
         ]}
         className="bg-background"
