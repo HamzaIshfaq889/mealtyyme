@@ -5,7 +5,6 @@ import {
   CalendarDays,
   ShoppingCart,
   User,
-  BotMessageSquare,
 } from "lucide-react-native";
 import { useRouter } from "expo-router";
 import { useDispatch, useSelector } from "react-redux";

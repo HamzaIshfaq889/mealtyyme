@@ -289,22 +289,22 @@ const HomeUser = () => {
     };
   }, [isScrolledToFeatured]);
 
-  // Add memory monitoring
-  useEffect(() => {
-    if (__DEV__) {
-      // Log initial memory usage
-      logMemoryUsage();
+  // // Add memory monitoring
+  // useEffect(() => {
+  //   if (__DEV__) {
+  //     // Log initial memory usage
+  //     logMemoryUsage();
 
-      // Set up interval to log memory usage
-      const memoryInterval = setInterval(() => {
-        logMemoryUsage();
-      }, 5000); // Log every 5 seconds
+  //     // Set up interval to log memory usage
+  //     const memoryInterval = setInterval(() => {
+  //       logMemoryUsage();
+  //     }, 5000); // Log every 5 seconds
 
-      return () => {
-        clearInterval(memoryInterval);
-      };
-    }
-  }, []);
+  //     return () => {
+  //       clearInterval(memoryInterval);
+  //     };
+  //   }
+  // }, []);
 
   // Add memory check to scroll handler
   const handleScroll = useCallback(
@@ -513,6 +513,8 @@ const HomeUser = () => {
       };
     }
   }, []);
+
+  console.log('okkkkkkkkkkkkkkkkkkkkkkkk')
 
   return (
     <View className="flex-1 bg-background">
