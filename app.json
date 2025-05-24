@@ -4,7 +4,7 @@
     "slug": "mealtyme",
     "version": "0.0.20",
     "orientation": "portrait",
-    "icon": "./assets/images/global-icon.png",
+    "icon": "./assets/images/global-icon-2.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -41,7 +41,7 @@
       "versionCode": 15,
       "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/android-icon.png",
+        "foregroundImage": "./assets/images/android-icon-2.png",
         "backgroundColor": "#ffffff"
       }
     },
@@ -55,10 +55,10 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/global-icon.png",
+          "image": "./assets/images/android-icon-2.png",
           "imageWidth": 200,
           "resizeMode": "contain",
-          "backgroundColor": "#00C3FF"
+          "backgroundColor": "#EE8427"
         }
       ],
       "expo-font",
