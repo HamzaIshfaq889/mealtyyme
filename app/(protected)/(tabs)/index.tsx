@@ -27,6 +27,20 @@ import { Input, InputField, InputIcon, InputSlot } from "@/components/ui/input";
 import { useSelector } from "react-redux";
 import LottieView from "lottie-react-native";
 import { useUserGamification } from "@/hooks/useUserGamification";
+import Svg1 from "@/assets/svgs/cookingfood.svg";
+
+interface RootState {
+  recipe: {
+    isCooking: boolean;
+  };
+  auth: {
+    loginResponseType: {
+      first_name: string;
+      image_url?: string;
+      id: string;
+    };
+  };
+}
 
 export default function HomeScreen() {
   const tabBarTranslation = useContext(TabBarContext);
@@ -37,7 +51,7 @@ export default function HomeScreen() {
   const scheme = useColorScheme();
   const isDark = scheme === "dark";
   const { stats, fetchStats } = useUserGamification();
-
+  const isCooking = useSelector((state: RootState) => state.recipe.isCooking);
   // Get user data from Redux
   const { first_name: name, image_url } = useSelector(
     (state: any) => state.auth.loginResponseType
@@ -273,6 +287,20 @@ export default function HomeScreen() {
       >
         <HomeUser onCheckInComplete={fetchStats} />
       </Animated.ScrollView>
+      {isCooking && (
+        <Pressable
+          className="absolute bottom-5 right-5 z-20 mb-24"
+          onPress={() => router.push(`/cooking/1`)}
+        >
+          <View
+            className={`${
+              scheme === "dark" ? "bg-primary" : "bg-card"
+            } rounded-full p-3 shadow-lg shadow-primary/20`}
+          >
+            <Svg1 width={40} height={40} color="#fff" />
+          </View>
+        </Pressable>
+      )}
     </View>
   );
 }

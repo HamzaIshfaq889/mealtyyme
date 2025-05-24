@@ -63,6 +63,9 @@ import {
   saveCookingPrivacy,
   saveCookingRecipe,
 } from "@/utils/storage/cookingStorage";
+import * as Notifications from "expo-notifications";
+
+import { TimeIntervalNotificationTrigger } from "expo-notifications";
 
 type RecipeDetailsProps = {
   recipeId: string | null;
@@ -96,7 +99,11 @@ const RecipeDetails = ({ recipeId, isPrivate }: RecipeDetailsProps) => {
   const dispatch = useDispatch();
   const scheme = useColorScheme();
   const isDarkMode = scheme === "dark";
-
+  const trigger: TimeIntervalNotificationTrigger = {
+    seconds: 10,
+    repeats: false,
+    type: "timeInterval",
+  };
   const customerId = useSelector(
     (state: any) => state?.auth?.loginResponseType?.customer_details?.id
   );
@@ -114,6 +121,7 @@ const RecipeDetails = ({ recipeId, isPrivate }: RecipeDetailsProps) => {
     queryFn: () => getSingleRecipe(recipeId, isPrivate),
     enabled: !!recipeId,
   });
+  const [notificationId, setNotificationId] = useState<string | null>(null);
 
   // useEffect(() => {
   //   if (recipe?.servings) {
@@ -138,7 +146,7 @@ const RecipeDetails = ({ recipeId, isPrivate }: RecipeDetailsProps) => {
       id: 3,
       icon: Flame,
       amount: recipe?.nutrition?.calories,
-      text: `K cal`,
+      text: `Kcal`,
     },
     {
       id: 4,
@@ -155,7 +163,31 @@ const RecipeDetails = ({ recipeId, isPrivate }: RecipeDetailsProps) => {
       await saveCookingPrivacy(customerId, isPrivate);
       await clearStepTimers(customerId);
 
+      const id = await Notifications.scheduleNotificationAsync({
+        content: {
+          title: "Still cooking? Let's finish your recipe!",
+          body: `You left your ${recipe.title} recipe in the middle. Ready to pick up where you left off?`,
+          sound: true,
+          data: {
+            recipeId: recipe.id,
+          },
+        },
+        trigger: {
+          seconds: recipe.ready_in_minutes * 60 - 600,
+          repeats: false,
+          type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
+        },
+      });
+      setNotificationId(id);
+
       router.push(`/cooking/${recipe?.id}` as any);
+    }
+  };
+
+  const handleCancelNotification = async () => {
+    if (notificationId) {
+      await Notifications.cancelScheduledNotificationAsync(notificationId);
+      setNotificationId(null);
     }
   };
 

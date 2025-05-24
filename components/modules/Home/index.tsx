@@ -138,7 +138,7 @@ const HomeUser = ({ onCheckInComplete }: HomeUserProps) => {
   const subscriptionBottomSheetRef = useRef<BottomSheet>(null);
 
   // Optimize Redux selectors to only get what's needed
-  const isCooking = useSelector((state: RootState) => state.recipe.isCooking);
+
   const customerId = useSelector(
     (state: any) => state.auth.loginResponseType.customer_details?.id
   );
@@ -293,21 +293,6 @@ const HomeUser = ({ onCheckInComplete }: HomeUserProps) => {
 
         {showSubscriptionCTA && <SubcriptionCTA />}
       </Animated.View>
-
-      {isCooking && (
-        <Pressable
-          className="absolute bottom-5 right-5 z-20 mb-24"
-          onPress={() => router.push(`/cooking/1`)}
-        >
-          <View
-            className={`${
-              scheme === "dark" ? "bg-primary" : "bg-card"
-            } rounded-full p-3 shadow-lg shadow-primary/20`}
-          >
-            <Svg1 width={40} height={40} color="#fff" />
-          </View>
-        </Pressable>
-      )}
 
       <ProSubscribeModal
         visible={isVisible}

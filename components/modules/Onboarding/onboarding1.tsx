@@ -39,7 +39,7 @@ const OnBoarding = () => {
     },
     {
       title: "Order groceries straight to your door",
-      description: "Skip the store—your groceries come to you!",
+      description: "Skip the store—your groceries come to you! \n",
     },
     {
       title: "Save time. Eat better. Enjoy life.",

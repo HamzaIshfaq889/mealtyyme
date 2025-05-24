@@ -98,7 +98,7 @@ const PickDiet = () => {
 
   return (
     <>
-      <View className="w-full h-full px-6 py-16 flex-col relative bg-background">
+      <View className="w-full h-full px-6 pt-16 pb-6 flex-col relative bg-background ">
         <View className="flex-row items-center justify-between mb-8">
           <View className="flex-1 items-center">
             <Text className="font-bold text-2xl text-primary">
