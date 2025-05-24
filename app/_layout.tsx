@@ -152,7 +152,7 @@ export default function RootLayout() {
 
   return (
     <StripeProvider
-      publishableKey="pk_test_51RLiYoQ9GhZlI30ssstOKRRdnVqc2U1TLlLcbLkBlc7QIOuKsYb8HjXL81VtwaTkZMPunuNeRuPS3736dEjfjGcH00emK8MZG2" // 🔐 Replace with your actual Stripe publishable key
+      publishableKey="pk_live_51R6ecuLTF3jHlzVZbx1QHrJsfMhqpIiteNgD1w8yiBEgz0UgJ1q87ElSKqVkFDRDK8sLbxB7QykS8JCHGKARetUZ00LlwjwSaD" // 🔐 Replace with your actual Stripe publishable key
       merchantIdentifier="merchant.co.mealtyme.app" // for Apple Pay (optional)
     >
       <ClerkProvider
