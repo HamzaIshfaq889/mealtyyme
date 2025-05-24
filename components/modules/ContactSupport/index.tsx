@@ -26,6 +26,8 @@ import { Input, InputField } from "@/components/ui/input";
 import { Button, ButtonText } from "@/components/ui/button";
 import { ScrollView } from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
+import { usecontactSupport } from "@/redux/queries/recipes/useContactSupportQuery";
+import { Spinner } from "@/components/ui/spinner";
 
 const isValidEmail = (email: string) => {
   const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -36,12 +38,14 @@ const ContactSupport = () => {
   const scheme = useColorScheme();
   const isDarkMode = scheme === "dark";
 
+  const { mutate: contactSupport } = usecontactSupport();
   const [selected, setSelected] = useState(supportOptions[0]);
   const [message, setMessage] = useState("");
   const [email, setEmail] = useState("");
   const [errors, setErrors] = useState<{ email?: string; message?: string }>(
     {}
   );
+  const [loading, setLoading] = useState<boolean>(false);
 
   const handleSubmit = () => {
     const newErrors: { email?: string; message?: string } = {};
@@ -63,8 +67,27 @@ const ContactSupport = () => {
 
     setErrors({});
 
-    // Replace this with your real send logic
-    console.log({ subject: selected, email, message });
+    const data = {
+      subject: selected,
+      email,
+      message,
+    };
+
+    setLoading(true);
+
+    contactSupport(data, {
+      onSuccess: () => {
+        Toast.show({
+          type: "success",
+          text1: "Our support team will get back to you shortly.",
+        });
+        setLoading(false);
+      },
+      onError: (error: any) => {
+        console.log(error);
+        setLoading(false);
+      },
+    });
 
     Toast.show({
       type: "success",
@@ -220,7 +243,7 @@ const ContactSupport = () => {
 
         <View className="mt-auto mb-2">
           <Button onPress={handleSubmit} action="secondary">
-            <ButtonText>Send Message</ButtonText>
+            <ButtonText>{loading ? <Spinner /> : "Message"}</ButtonText>
           </Button>
         </View>
       </ScrollView>

@@ -283,8 +283,6 @@ export const addReview = async ({
     review_text: reviewText || "", // Send empty string if not provided
   });
 
-  console.log("response", response);
-
   if (!response.ok) {
     if (response.status === 401) {
       throw new Error("You need to be logged in to submit a review");
