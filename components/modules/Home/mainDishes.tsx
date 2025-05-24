@@ -37,7 +37,7 @@ const MainDishes = () => {
 
   return (
     <>
-      <View className="flex flex-row justify-between  mx-7">
+      <View className="flex flex-row justify-between mx-6">
         <Text className="text-foreground font-bold text-xl leading-5 mb-4">
           Main Dishes
         </Text>
@@ -102,7 +102,9 @@ const MainDishes = () => {
                   <View className="flex flex-row items-center gap-2 mt-auto">
                     <View className="flex flex-row items-center gap-0.5">
                       <Flame color="#96a1b0" size={20} />
-                      <Text className="text-muted"> {item.calories} Kcal</Text>
+                      <Text className="text-muted">
+                        {Math.round(item.calories)} Kcal
+                      </Text>
                     </View>
                     <View className="bg-muted p-0.5" />
                     <View className="flex flex-row items-center gap-1">
