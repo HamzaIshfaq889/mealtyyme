@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 
 import {
   Image,
@@ -79,7 +79,17 @@ const RecipeDetails = ({ recipeId, isPrivate }: RecipeDetailsProps) => {
   const isRecipeSaved = savedRecipes.some(
     (id: number) => id === Number(recipeId)
   );
-
+  const renderBackdrop = useCallback(
+    (props: any) => (
+      <BottomSheetBackdrop
+        {...props}
+        disappearsOnIndex={-1}
+        appearsOnIndex={0}
+        opacity={0.5}
+      />
+    ),
+    []
+  );
   const { mutate: saveRecipe } = useSaveRecipe();
   const { mutate: removeRecipe } = useRemoveRecipe();
   const { width } = useWindowDimensions();
@@ -110,24 +120,6 @@ const RecipeDetails = ({ recipeId, isPrivate }: RecipeDetailsProps) => {
   //     setServings(recipe.servings);
   //   }
   // }, [recipe]);
-
-  if (isLoading) {
-    return <RecipeDetailsSkeleton />;
-  }
-
-  if (isError) {
-    return (
-      <Error
-        errorButtonLink="/(tabs)/Home"
-        errorButtonText="Go to home"
-        errorMessage="Recipe Not Found"
-      />
-    );
-  }
-
-  if (recipe) {
-    dispatch(setCurrentRecipe(recipe));
-  }
 
   const gradientsInfo = [
     {
@@ -231,6 +223,24 @@ const RecipeDetails = ({ recipeId, isPrivate }: RecipeDetailsProps) => {
         });
       });
   };
+
+  if (isLoading) {
+    return <RecipeDetailsSkeleton />;
+  }
+
+  if (isError) {
+    return (
+      <Error
+        errorButtonLink="/(tabs)/Home"
+        errorButtonText="Go to home"
+        errorMessage="Recipe Not Found"
+      />
+    );
+  }
+
+  if (recipe) {
+    dispatch(setCurrentRecipe(recipe));
+  }
 
   return (
     <>
@@ -363,7 +373,7 @@ const RecipeDetails = ({ recipeId, isPrivate }: RecipeDetailsProps) => {
           </View>
 
           <View className="mx-6 px-3 py-4 flex flex-row items-center justify-between rounded-2xl mb-5 bg-card">
-            <Text className="font-bold text-xl text-primary">
+            <Text className="font-semibold text-md text-primary">
               Number of Servings
             </Text>
             <View className="flex flex-row gap-3 items-center">
@@ -484,7 +494,7 @@ const RecipeDetails = ({ recipeId, isPrivate }: RecipeDetailsProps) => {
         ref={bottomSheetMenuRef}
         index={-1}
         snapPoints={["30%"]}
-        backdropComponent={BottomSheetBackdrop}
+        backdropComponent={renderBackdrop}
         onChange={(index) => {
           console.log(index);
           if (index === 0) {

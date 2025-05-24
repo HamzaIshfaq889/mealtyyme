@@ -194,7 +194,7 @@ const AllRecipes = ({ queryOptions }: AllRecipesProps) => {
 
   if (isLoading) {
     return (
-      <View className="pt-20 px-6 pb-4 space-y-6 bg-background">
+      <View className="pt-16 px-6 pb-4 space-y-6 bg-background">
         <View>
           <View className="flex flex-row items-center gap-3 mb-3">
             <TouchableOpacity onPress={() => router.back()}>
@@ -223,10 +223,10 @@ const AllRecipes = ({ queryOptions }: AllRecipesProps) => {
   }
 
   return (
-    <View className="bg-background">
-      <View className="pt-16 px-5 pb-4">
-        <View className="flex flex-row justify-between items-center mb-6">
-          <View className="flex flex-row items-center gap-3">
+    <>
+      <View className="pt-16 px-5 pb-4 bg-background">
+        <View className="flex flex-row justify-between items-center mb-6 ">
+          <View className="flex flex-row items-center gap-3 relative">
             <TouchableOpacity onPress={() => router.back()}>
               <ArrowLeft color={isDarkMode ? "#fff" : "#000"} size={24} />
             </TouchableOpacity>
@@ -317,7 +317,7 @@ const AllRecipes = ({ queryOptions }: AllRecipesProps) => {
           />
         </ProSubscribeModal>
       )}
-    </View>
+    </>
   );
 };
 

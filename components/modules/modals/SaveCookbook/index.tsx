@@ -1,10 +1,14 @@
 import React, { useState } from "react";
-
-import { Platform, Pressable, Text, useColorScheme, View } from "react-native";
+import {
+  Platform,
+  Pressable,
+  Text,
+  useColorScheme,
+  View,
+  StyleSheet,
+} from "react-native";
 import Dialog from "react-native-dialog";
-
 import Toast from "react-native-toast-message";
-
 import { Button, ButtonText } from "@/components/ui/button";
 import {
   FormControl,
@@ -12,7 +16,6 @@ import {
   FormControlLabelText,
 } from "@/components/ui/form-control";
 import { Input, InputField, InputIcon, InputSlot } from "@/components/ui/input";
-
 import { Bookmark, ChevronDown, ChevronUp, Plus } from "lucide-react-native";
 import SelectDropdown from "react-native-select-dropdown";
 import {
@@ -45,11 +48,11 @@ const SaveCookbook = ({
     (state: any) => state.recipe.currentRecipe
   );
   const scheme = useColorScheme();
+  const isDark = scheme === "dark";
   const options = cookBooks ? cookBooks?.map((cookbook) => cookbook?.name) : [];
   const [showExistingCollections, setShowExistingCOllections] = useState(false);
   const [collectionName, setCollectionName] = useState("");
   const [selected, setSelected] = useState(options[0]);
-
   const [loading, setLoading] = useState(false);
 
   const handlexistingCollection = async () => {
@@ -128,138 +131,157 @@ const SaveCookbook = ({
       <Dialog.Container
         visible={showSaveCookbookModal}
         contentStyle={{
-          backgroundColor: scheme === "dark" ? "#1a1a1a" : "#fdf8f4",
-          paddingVertical: 50,
-          borderRadius: 30,
+          // backgroundColor: isDark ? "#2B2B2B" : "#2B2B2B",
+          paddingVertical: Platform.OS === "ios" ? 20 : 24,
+          borderRadius: 24,
+
+          minWidth: Platform.OS === "ios" ? 300 : 300,
         }}
       >
-        <View className="flex flex-row justify-center mb-6">
-          <View className="bg-secondary flex flex-row justify-center items-center w-16 h-16 p-8 rounded-full">
-            <Bookmark color="#fff" size={28} />
-          </View>
-        </View>
-        {!showExistingCollections ? (
-          <FormControl size="md" className="mb-1">
-            <FormControlLabel>
-              <FormControlLabelText className="font-bold leading-5 text-foreground text-center w-full h-full">
-                <Text>Add Cookbook</Text>
-              </FormControlLabelText>
-            </FormControlLabel>
-            <Input
-              className={`my-5 border border-secondary ${
-                Platform.OS === "ios" && "mx-4"
-              }`}
+        <View style={[styles.container]}>
+          <View style={styles.iconContainer}>
+            <View
+              style={[styles.iconWrapper, isDark && styles.iconWrapperDark]}
             >
-              <InputSlot className="ml-1">
-                <InputIcon className="!w-6 !h-6" as={Plus} />
-              </InputSlot>
-              <InputField
-                type="text"
-                placeholder="Add new collection"
-                value={collectionName}
-                onChangeText={(text) => setCollectionName(text)}
-              />
-            </Input>
-          </FormControl>
-        ) : selectLoading ? (
-          <Spinner size={50} />
-        ) : selectError ? (
-          <Text className="text-3xl text-foreground text-cneter my-4">
-            Some thing went wrong.Please try again!
+              <Bookmark color="#fff" size={Platform.OS === "ios" ? 28 : 32} />
+            </View>
+          </View>
+
+          <Text style={[styles.title, isDark && styles.titleDark]}>
+            Save to Cookbook
           </Text>
-        ) : (
-          <SelectDropdown
-            data={options}
-            defaultValue={selected}
-            onSelect={(selectedItem) => {
-              setSelected(selectedItem);
-            }}
-            renderButton={(selectedItem, isOpened) => (
-              <View
-                className={`flex-row items-center gap-4 px-6 py-5 !rounded-2xl mb-8 bg-card`}
-              >
-                <Text className="flex-1 text-base leading-6 font-semibold text-primary">
-                  {selectedItem || "Select"}
-                </Text>
-                {isOpened ? (
-                  <ChevronUp color="#ee8427" size={24} />
-                ) : (
-                  <ChevronDown color="#ee8427" size={24} />
-                )}
-              </View>
-            )}
-            renderItem={(selectedItem, item, isSelected) => {
-              return (
+
+          {!showExistingCollections ? (
+            <FormControl size="md" style={styles.formControl}>
+              <FormControlLabel>
+                <FormControlLabelText
+                  style={[styles.labelText, isDark && styles.labelTextDark]}
+                >
+                  Add Cookbook
+                </FormControlLabelText>
+              </FormControlLabel>
+              <Input style={[styles.input, isDark && styles.inputDark]}>
+                <InputSlot style={styles.inputIcon}>
+                  <InputIcon style={styles.icon} as={Plus} />
+                </InputSlot>
+                <InputField
+                  type="text"
+                  placeholder="Add new collection"
+                  value={collectionName}
+                  onChangeText={(text) => setCollectionName(text)}
+                  style={[styles.inputField, isDark && styles.inputFieldDark]}
+                  placeholderTextColor={isDark ? "#666" : "#999"}
+                />
+              </Input>
+            </FormControl>
+          ) : selectLoading ? (
+            <Spinner size={50} />
+          ) : selectError ? (
+            <Text style={[styles.errorText, isDark && styles.errorTextDark]}>
+              Something went wrong. Please try again!
+            </Text>
+          ) : (
+            <SelectDropdown
+              data={options}
+              defaultValue={selected}
+              onSelect={(selectedItem) => {
+                setSelected(selectedItem);
+              }}
+              renderButton={(selectedItem, isOpened) => (
                 <View
-                  className={`px-4 py-2  ${
-                    isSelected ? "bg-secondary" : "bg-background"
-                  }`}
+                  style={[
+                    styles.dropdownButton,
+                    isDark && styles.dropdownButtonDark,
+                  ]}
                 >
                   <Text
-                    className={`text-lg text-foreground ${
-                      isSelected ? "!text-background" : "text-foreground"
-                    }`}
+                    style={[
+                      styles.dropdownText,
+                      isDark && styles.dropdownTextDark,
+                    ]}
                   >
-                    {selectedItem}
+                    {selectedItem || "Select collection"}
+                  </Text>
+                  <View style={styles.dropdownArrow}>
+                    {isOpened ? (
+                      <ChevronUp color="#ee8427" size={24} />
+                    ) : (
+                      <ChevronDown color="#ee8427" size={24} />
+                    )}
+                  </View>
+                </View>
+              )}
+              renderItem={(item, isSelected) => (
+                <View
+                  style={[
+                    styles.dropdownItem,
+                    isDark && styles.dropdownItemDark,
+                  ]}
+                >
+                  <Text
+                    style={[
+                      styles.dropdownItemText,
+                      isDark && styles.dropdownItemTextDark,
+                    ]}
+                  >
+                    {item}
                   </Text>
                 </View>
-              );
-            }}
-            dropdownStyle={{
-              borderRadius: 12,
-              backgroundColor: scheme === "dark" ? "#1c1f1f" : "#fff",
-              shadowColor: "#000",
-              shadowOffset: { width: 0, height: 4 },
-              shadowOpacity: 0.1,
-              shadowRadius: 12,
-              elevation: 5,
-            }}
-            showsVerticalScrollIndicator={false}
-          />
-        )}
+              )}
+              dropdownStyle={[styles.dropdown, isDark && styles.dropdownDark]}
+              showsVerticalScrollIndicator={false}
+              dropdownOverlayColor="transparent"
+            />
+          )}
 
-        {!showExistingCollections ? (
-          <Pressable onPress={() => setShowExistingCOllections(true)}>
-            <View className="bg-card rounded-xl mb-7">
-              <Text className="text-base text-foreground font-semibold text-center tracking-wider p-4">
-                Choose Collection
-              </Text>
-            </View>
-          </Pressable>
-        ) : (
-          <Pressable onPress={() => setShowExistingCOllections(false)}>
-            <View className="bg-card rounded-xl mb-7">
-              <Text className="text-base text-foreground font-semibold text-center tracking-wider p-4">
-                Add new Collection
-              </Text>
-            </View>
-          </Pressable>
-        )}
-        <View
-          className={`flex flex-row justify-center items-center gap-2 ${
-            Platform.OS === "ios" && "mx-4"
-          }`}
-        >
-          <Button
-            action="card"
-            className={`basis-1/2 h-16`}
-            onPress={() => setShowSaveCookbookModal(false)}
+          <Pressable
+            style={[styles.switchButton, isDark && styles.switchButtonDark]}
+            onPress={() => setShowExistingCOllections(!showExistingCollections)}
           >
-            <ButtonText>Cancel</ButtonText>
-          </Button>
-          <Button
-            action="secondary"
-            className="basis-1/2 h-16"
-            onPress={
-              showExistingCollections
-                ? handlexistingCollection
-                : handleNewCollection
-            }
-          >
-            <ButtonText>
-              {loading ? <Spinner /> : showExistingCollections ? "Save" : "Add"}
-            </ButtonText>
-          </Button>
+            <Text
+              style={[
+                styles.switchButtonText,
+                isDark && styles.switchButtonTextDark,
+              ]}
+            >
+              {showExistingCollections
+                ? "Add new Collection"
+                : "Choose Collection"}
+            </Text>
+          </Pressable>
+
+          <View style={styles.buttonContainer}>
+            <Button
+              action="card"
+              style={[styles.button, isDark && styles.buttonDark]}
+              onPress={() => setShowSaveCookbookModal(false)}
+            >
+              <ButtonText
+                style={[styles.buttonText, isDark && styles.buttonTextDark]}
+              >
+                Cancel
+              </ButtonText>
+            </Button>
+            <Button
+              action="secondary"
+              style={styles.button}
+              onPress={
+                showExistingCollections
+                  ? handlexistingCollection
+                  : handleNewCollection
+              }
+            >
+              <ButtonText style={styles.buttonText}>
+                {loading ? (
+                  <Spinner />
+                ) : showExistingCollections ? (
+                  "Save"
+                ) : (
+                  "Add"
+                )}
+              </ButtonText>
+            </Button>
+          </View>
         </View>
       </Dialog.Container>
     </View>
@@ -267,3 +289,199 @@ const SaveCookbook = ({
 };
 
 export default SaveCookbook;
+
+const styles = StyleSheet.create({
+  container: {
+    padding: Platform.OS === "ios" ? 16 : 20,
+  },
+  containerDark: {
+    backgroundColor: "#2B2B2B",
+  },
+  iconContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    marginBottom: Platform.OS === "ios" ? 20 : 24,
+  },
+  iconWrapper: {
+    backgroundColor: "#ee8427",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    width: Platform.OS === "ios" ? 70 : 80,
+    height: Platform.OS === "ios" ? 70 : 80,
+    padding: 16,
+    borderRadius: 35,
+  },
+  iconWrapperDark: {
+    backgroundColor: "#ee8427",
+  },
+  title: {
+    textAlign: "center",
+    color: "#ee8427",
+    fontSize: Platform.OS === "ios" ? 22 : 24,
+    fontWeight: "600",
+    marginBottom: Platform.OS === "ios" ? 24 : 32,
+  },
+  titleDark: {
+    color: "#ee8427",
+  },
+  formControl: {
+    marginBottom: 16,
+  },
+  labelText: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#000",
+    textAlign: "center",
+    marginBottom: 8,
+  },
+  labelTextDark: {
+    color: "#fff",
+  },
+  input: {
+    backgroundColor: "#fff",
+    borderWidth: 1,
+    borderColor: "#e5e5e5",
+    borderRadius: 16,
+    paddingHorizontal: 16,
+    marginBottom: 16,
+  },
+  inputDark: {
+    backgroundColor: "#2a2a2a",
+    borderColor: "#3a3a3a",
+  },
+  inputIcon: {
+    marginRight: 8,
+  },
+  icon: {
+    width: 24,
+    height: 24,
+  },
+  inputField: {
+    fontSize: 16,
+    color: "#000",
+  },
+  inputFieldDark: {
+    color: "#fff",
+  },
+  errorText: {
+    fontSize: 16,
+    color: "#ff4444",
+    textAlign: "center",
+    marginVertical: 16,
+  },
+  errorTextDark: {
+    color: "#ff6666",
+  },
+  dropdownButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingVertical: 16,
+    paddingHorizontal: 16,
+    backgroundColor: "#fff",
+    borderRadius: 16,
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: "#e5e5e5",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 3,
+    elevation: 2,
+  },
+  dropdownButtonDark: {
+    backgroundColor: "#2a2a2a",
+    borderColor: "#3a3a3a",
+  },
+  dropdownText: {
+    flex: 1,
+    fontSize: 16,
+    fontWeight: "500",
+    color: "#000",
+  },
+  dropdownTextDark: {
+    color: "#fff",
+  },
+  dropdownArrow: {
+    marginLeft: 8,
+  },
+  dropdownItem: {
+    paddingVertical: 16,
+    paddingHorizontal: 24,
+    backgroundColor: "#fff",
+  },
+  dropdownItemDark: {
+    backgroundColor: "#2a2a2a",
+  },
+  dropdownItemText: {
+    fontSize: 16,
+    fontWeight: "500",
+    color: "#000",
+  },
+  dropdownItemTextDark: {
+    color: "#fff",
+  },
+  dropdown: {
+    borderRadius: 16,
+    backgroundColor: "#fff",
+    marginTop: 8,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 4,
+    borderWidth: 1,
+    borderColor: "#e5e5e5",
+  },
+  dropdownDark: {
+    backgroundColor: "#2a2a2a",
+    borderColor: "#3a3a3a",
+  },
+  switchButton: {
+    backgroundColor: "#fff",
+    borderRadius: 16,
+    paddingVertical: 16,
+    marginBottom: 24,
+    borderWidth: 1,
+    borderColor: "#e5e5e5",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 3,
+    elevation: 2,
+  },
+  switchButtonDark: {
+    backgroundColor: "#2a2a2a",
+    borderColor: "#3a3a3a",
+  },
+  switchButtonText: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#000",
+    textAlign: "center",
+  },
+  switchButtonTextDark: {
+    color: "#fff",
+  },
+  buttonContainer: {
+    flexDirection: "row",
+    gap: 8,
+    marginTop: 16,
+  },
+  button: {
+    flex: 1,
+    height: Platform.OS === "ios" ? 50 : 56,
+    borderRadius: 16,
+  },
+  buttonDark: {
+    backgroundColor: "#2a2a2a",
+  },
+  buttonText: {
+    fontSize: Platform.OS === "ios" ? 15 : 16,
+    fontWeight: "600",
+  },
+  buttonTextDark: {
+    color: "#fff",
+  },
+});
