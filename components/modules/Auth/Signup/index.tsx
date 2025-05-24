@@ -56,34 +56,10 @@ const Signup = () => {
     lastName: "",
     email: "",
     password: "",
-    dateOfBirth: "",
   });
 
   const toggleDatePicker = () => {
     setShowdatePicker((prev) => !prev);
-  };
-
-  const onChange = ({ type }: any, date: Date | undefined) => {
-    if (type === "set" && date) {
-      const currentDate = date;
-      setDate(currentDate);
-
-      if (Platform.OS === "android") {
-        toggleDatePicker();
-
-        const dateString = currentDate.toDateString();
-        formData.dateOfBirth = dateString;
-
-        validateField("dateOfBirth", dateString);
-      }
-    } else {
-      toggleDatePicker();
-    }
-  };
-
-  const confirmDateOnIOS = () => {
-    formData.dateOfBirth = date.toDateString();
-    toggleDatePicker();
   };
 
   const validateField = (key: string, value: string) => {
@@ -133,14 +109,6 @@ const Signup = () => {
         }
         break;
 
-      case "dateOfBirth":
-        if (!value) {
-          errorMessage = "Date of Birth required.";
-        } else if (value.length < 3) {
-          errorMessage = "Date of Birth must be of 3 letters.";
-        }
-        break;
-
       default:
         break;
     }
@@ -185,7 +153,7 @@ const Signup = () => {
       email: formData?.email,
       password: formData?.password,
       role: "CUSTOMER",
-      dob: formatDateToYYYYMMDD(formData?.dateOfBirth),
+      dob: "1999-07-19",
       first_name: formData?.firstName,
       last_name: formData?.lastName,
     };
@@ -439,67 +407,6 @@ const Signup = () => {
             </Input>
             <FormControlError>
               <FormControlErrorText>{errors?.email}</FormControlErrorText>
-            </FormControlError>
-          </FormControl>
-
-          <FormControl
-            size="md"
-            className="mb-1"
-            isInvalid={!!errors?.dateOfBirth}
-          >
-            <FormControlLabel>
-              <FormControlLabelText className="font-bold leading-5">
-                Date of Birth
-              </FormControlLabelText>
-            </FormControlLabel>
-
-            {!showdatePicker && (
-              <Pressable onPress={toggleDatePicker}>
-                <Input className="my-3.5 flex flex-row items-center">
-                  <InputSlot className="ml-1">
-                    <InputIcon className="!w-6 !h-6" as={MailIcon} />
-                  </InputSlot>
-
-                  <InputField
-                    type="text"
-                    placeholder="Enter Date of Birth"
-                    value={formData?.dateOfBirth}
-                    editable={false}
-                    onPressIn={toggleDatePicker}
-                  />
-                </Input>
-              </Pressable>
-            )}
-
-            {showdatePicker && (
-              <DateTimePicker
-                mode="date"
-                display="spinner"
-                value={date}
-                onChange={onChange}
-                themeVariant="light"
-              />
-            )}
-
-            {showdatePicker && Platform.OS === "ios" && (
-              <View className="flex flex-row mt-2 mb-4 mx-auto gap-2">
-                <TouchableOpacity
-                  className="py-3 px-6 bg-[#CCD4DE] rounded-xl w-32 items-center"
-                  onPress={toggleDatePicker}
-                >
-                  <Text className="text-foreground">Cancel</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  className="py-3 px-6 bg-secondary rounded-xl w-32 items-center"
-                  onPress={confirmDateOnIOS}
-                >
-                  <Text className="text-background">Select</Text>
-                </TouchableOpacity>
-              </View>
-            )}
-            <FormControlError>
-              <FormControlErrorText>{errors?.dateOfBirth}</FormControlErrorText>
             </FormControlError>
           </FormControl>
 
