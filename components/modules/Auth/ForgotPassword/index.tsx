@@ -99,7 +99,7 @@ const ForgotPassword = () => {
   };
 
   return (
-    <View className="w-full h-full px-9 pt-16 pb-6 flex-col relative bg-background">
+    <View className="w-full h-full px-9 pt-16 pb-12 flex-col relative bg-background">
       {/* Header row */}
       <View className="flex-row items-center justify-between mb-6">
         <TouchableOpacity onPress={() => router.push("/(auth)/login")}>

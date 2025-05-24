@@ -126,7 +126,7 @@ const ResetPassword = () => {
   };
 
   return (
-    <View className="flex flex-col w-full h-full px-9 pt-16 pb-6 bg-background">
+    <View className="flex flex-col w-full h-full px-9 pt-16 pb-12 bg-background">
       <View className="flex flex-row justify-between items-center mb-14">
         <Text></Text>
         <Text className="block font-bold text-2xl text-primary">

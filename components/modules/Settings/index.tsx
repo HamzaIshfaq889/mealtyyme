@@ -207,7 +207,7 @@ const Settings = () => {
           scheme={scheme}
         />
 
-        <View className="mt-4 px-2 mb-6">
+        <View className="mt-4 px-2">
           <Button
             action="secondary"
             onPress={handleLogout}

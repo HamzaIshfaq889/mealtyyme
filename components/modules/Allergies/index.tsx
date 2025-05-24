@@ -101,7 +101,7 @@ const Allergies = () => {
   };
 
   return (
-    <View className="w-full h-full px-9 pt-16 pb-6 flex-col relative bg-background">
+    <View className="w-full h-full px-9 pt-16 pb-12 flex-col relative bg-background">
       <View className="flex-row items-center justify-between mb-8">
         <TouchableOpacity
           onPress={() => router.push("/(protected)/(onboarding)/pick-diet")}

@@ -154,7 +154,7 @@ const Otp = () => {
   };
 
   return (
-    <View className="w-full h-full px-9 pt-16 pb-6 flex flex-col relative bg-background">
+    <View className="w-full h-full px-9 pt-16 pb-12 flex flex-col relative bg-background">
       {/* Header row */}
       <View className="flex-row items-center justify-between mb-8">
         <TouchableOpacity
