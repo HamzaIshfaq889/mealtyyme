@@ -354,6 +354,7 @@ const Search = () => {
             <Animated.ScrollView
               onScroll={scrollHandler}
               scrollEventThrottle={16}
+              showsVerticalScrollIndicator={false}
               contentContainerStyle={{ paddingTop: 104, paddingBottom: 100 }}
             >
               <RecipesByFilters />

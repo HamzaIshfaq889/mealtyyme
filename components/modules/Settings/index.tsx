@@ -109,8 +109,11 @@ const Settings = () => {
 
   const scheme = useColorScheme();
   return (
-    <View className="flex-1 px-6 pt-16 pb-12 bg-background">
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+    <View className="flex-1 px-6 pt-16  bg-background">
+      <ScrollView
+        contentContainerStyle={{ flexGrow: 1 }}
+        showsVerticalScrollIndicator={false}
+      >
         {/* Header */}
         <View className="relative flex items-center justify-center mb-12">
           <TouchableOpacity
@@ -118,8 +121,8 @@ const Settings = () => {
             className="absolute left-0"
           >
             <ArrowLeft
-              width={30}
-              height={30}
+              width={24}
+              height={24}
               color={scheme === "dark" ? "#fff" : "#000"}
             />
           </TouchableOpacity>
@@ -129,7 +132,7 @@ const Settings = () => {
         {/* Cards */}
         <SettingCard
           icon={
-            <UserPen color={scheme === "dark" ? "#fff" : "#000"} size={30} />
+            <UserPen color={scheme === "dark" ? "#fff" : "#000"} size={24} />
           }
           text="Edit profile"
           desc="Edit your information"
@@ -137,7 +140,7 @@ const Settings = () => {
           scheme={scheme}
         />
         <SettingCard
-          icon={<Info color={scheme === "dark" ? "#fff" : "#000"} size={30} />}
+          icon={<Info color={scheme === "dark" ? "#fff" : "#000"} size={24} />}
           text="Privacy Policy"
           desc="Check our policy"
           onPress={() => router.push("/(protected)/(nested)/privacy-policy")}
@@ -148,7 +151,7 @@ const Settings = () => {
           icon={
             <FileTerminal
               color={scheme === "dark" ? "#fff" : "#000"}
-              size={30}
+              size={24}
             />
           }
           text="Terms and Conditions"
@@ -161,7 +164,7 @@ const Settings = () => {
           icon={
             <MessageCircle
               color={scheme === "dark" ? "#fff" : "#000"}
-              size={30}
+              size={24}
             />
           }
           text="Contact Support"
@@ -171,7 +174,7 @@ const Settings = () => {
         />
 
         <SettingCard
-          icon={<Cog color={scheme === "dark" ? "#fff" : "#000"} size={30} />}
+          icon={<Cog color={scheme === "dark" ? "#fff" : "#000"} size={24} />}
           text="Manage Subscription"
           onPress={() => {
             if (isProUser || isSubscriptionCanceld) {
@@ -185,7 +188,7 @@ const Settings = () => {
         />
 
         <SettingCard
-          icon={<Gift color={scheme === "dark" ? "#fff" : "#000"} size={30} />}
+          icon={<Gift color={scheme === "dark" ? "#fff" : "#000"} size={24} />}
           text="Rewards Overview"
           onPress={() => {
             router.push("/(protected)/(nested)/rewards");
@@ -195,7 +198,7 @@ const Settings = () => {
         />
 
         <SettingCard
-          icon={<Bell color={scheme === "dark" ? "#fff" : "#000"} size={30} />}
+          icon={<Bell color={scheme === "dark" ? "#fff" : "#000"} size={24} />}
           text="Notification"
           onPress={() => {
             router.push("/(protected)/(nested)/notifications");

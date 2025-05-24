@@ -21,15 +21,15 @@ import { getPrivateRecipes } from "@/services/privateRecipe";
 import { LinearGradient } from "expo-linear-gradient";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
+const NUM_COLUMNS = 2;
+const ITEM_WIDTH = (SCREEN_WIDTH - 48) / NUM_COLUMNS; // 48 = padding (16) * 2 + gap (16)
+const ITEM_HEIGHT = 200;
 
 const MyRecipes = () => {
   const scheme = useColorScheme();
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
-
-  const ITEM_WIDTH = SCREEN_WIDTH / 2 - 24;
-  const ITEM_HEIGHT = 200;
 
   useFocusEffect(
     useCallback(() => {
@@ -77,31 +77,16 @@ const MyRecipes = () => {
   }
 
   return (
-    <View className="mt-6 space-y-7 pb-8">
-      {/* Button to Import Recipe */}
-      <TouchableOpacity
-        className="mx-6 p-3  flex flex-row items-center justify-between border border-foreground rounded-lg mb-4"
-        onPress={() => router.push("/(protected)/(nested)/scrape-recipe")}
-      >
-        <View className="flex flex-row items-center gap-3">
-          <Import color={scheme === "dark" ? "#fff" : "#000"} size={30} />
-          <Text className="font-medium text-base font-sofia text-foreground w-64">
-            Found a recipe on the web, save it to Mealtyme.
-          </Text>
-        </View>
-        <ArrowRight color={"#00C3FF"} size={30} />
-      </TouchableOpacity>
-
+    <View className="flex-1">
       <FlatList
         data={recipes}
-        numColumns={2}
+        numColumns={NUM_COLUMNS}
         showsVerticalScrollIndicator={false}
         keyExtractor={(item) => item.id.toString()}
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={{ paddingHorizontal: 16 }}
+        contentContainerStyle={{ padding: 16, paddingBottom: 100 }}
         columnWrapperStyle={{
           justifyContent: "space-between",
-          marginBottom: 22,
+          marginBottom: 16,
         }}
         renderItem={({ item }) => (
           <Pressable
@@ -149,6 +134,8 @@ const MyRecipes = () => {
           </Pressable>
         )}
       />
+
+      {/* Button to Import Recipe */}
     </View>
   );
 };
@@ -162,5 +149,15 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     height: 100,
+  },
+  buttonContainer: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    padding: 16,
+    backgroundColor: "white",
+    borderTopWidth: 1,
+    borderTopColor: "#e5e5e5",
   },
 });

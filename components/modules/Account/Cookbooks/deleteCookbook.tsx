@@ -1,4 +1,4 @@
-import { Text, useColorScheme, View } from "react-native";
+import { Text, useColorScheme, View, Platform } from "react-native";
 import Dialog from "react-native-dialog";
 
 import React, { useState } from "react";
@@ -55,40 +55,49 @@ const DeleteCookbook = ({
         visible={showDeleteModal}
         contentStyle={{
           backgroundColor: scheme === "dark" ? "#1a1a1a" : "#fdf8f4",
-          paddingVertical: 50,
-          marginLeft: 20,
-          marginRight: 20,
-          borderRadius: 30,
+          paddingVertical: 24,
+          borderRadius: 16,
+          paddingHorizontal: 24,
+          minWidth: Platform.OS === "ios" ? 320 : 340,
+          maxWidth: 400,
+          alignSelf: "center",
+          marginHorizontal: 20,
+          elevation: 5,
+          shadowColor: "#000",
+          shadowOffset: { width: 0, height: 2 },
+          shadowOpacity: 0.25,
+          shadowRadius: 3.84,
         }}
       >
         <View className="flex flex-row justify-center mb-6">
-          <View className="bg-destructive flex flex-row justify-center items-center w-24 h-24 p-8 rounded-full basis-1/">
-            <Trash2 color="#fff" size={35} />
+          <View className="bg-destructive flex flex-row justify-center items-center w-20 h-20 p-4 rounded-full">
+            <Trash2 color="#fff" size={28} />
           </View>
         </View>
-        <View>
-          <Text className="font-bold leading-5 text-foreground text-lg text-center mb-3">
+        <View className="mb-6">
+          <Text className="font-bold text-xl text-foreground text-center mb-3">
             Delete Collection
           </Text>
-          <Text className="font-bold leading-5 text-foreground text-lg text-center mb-7 ">
-            Are you sure to delete this collection
+          <Text className="text-base text-foreground/80 text-center">
+            Are you sure you want to delete this collection? This action cannot
+            be undone.
           </Text>
         </View>
-        <View className="flex flex-row justify-center items-center gap-2 w-full">
+        <View className="flex flex-row justify-center items-center gap-3">
           <Button
             action="card"
-            className="basis-1/2 h-16"
+            className="basis-1/2 h-14 rounded-xl"
             onPress={() => setShowDeleteModal(false)}
           >
-            <ButtonText>Cancel</ButtonText>
+            <ButtonText className="text-base font-semibold">Cancel</ButtonText>
           </Button>
           <Button
             action="negative"
             onPress={handleDelete}
-            className="basis-1/2 h-16"
+            className="basis-1/2 h-14 rounded-xl"
           >
-            <ButtonText>
-              {loading ? <Spinner size={30} /> : "Delete"}
+            <ButtonText className="text-base font-semibold">
+              {loading ? <Spinner size={24} /> : "Delete"}
             </ButtonText>
           </Button>
         </View>
