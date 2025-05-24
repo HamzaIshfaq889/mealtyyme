@@ -21,6 +21,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setCredentials } from "@/redux/slices/Auth";
 import { saveUserDataInStorage } from "@/utils/storage/authStorage";
 import { Spinner } from "@/components/ui/spinner";
+import { capitalizeFirstLetter } from "@/utils";
 
 const PickDiet = () => {
   const { data: diets = [], isLoading: dietsLoading } = useDietsQuery();
@@ -97,7 +98,7 @@ const PickDiet = () => {
 
   return (
     <>
-      <View className="w-full h-full px-9 py-16 flex-col relative bg-background">
+      <View className="w-full h-full px-6 py-16 flex-col relative bg-background">
         <View className="flex-row items-center justify-between mb-8">
           <View className="flex-1 items-center">
             <Text className="font-bold text-2xl text-primary">
@@ -107,7 +108,7 @@ const PickDiet = () => {
         </View>
 
         {/* Buttons List */}
-        <ScrollView>
+        <ScrollView showsVerticalScrollIndicator={false}>
           {diets?.map((diet, index) => {
             const isSelected = selectedIndexes.includes(diet.id);
             return (
@@ -123,7 +124,7 @@ const PickDiet = () => {
                         : "text-foreground"
                     }`}
                   >
-                    {diet.name}
+                    {capitalizeFirstLetter(diet.name)}
                   </Text>
                 </View>
               </TouchableOpacity>
