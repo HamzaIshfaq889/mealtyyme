@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   TextInput,
   StyleSheet,
+  Keyboard,
 } from "react-native";
 import { router, useLocalSearchParams } from "expo-router";
 import { ArrowLeft } from "lucide-react-native";
@@ -46,6 +47,9 @@ const OtpInput = ({
 
     if (digitsOnly && index < length - 1) {
       inputRefs.current[index + 1]?.focus();
+    } else if (digitsOnly && index === length - 1) {
+      // Dismiss keyboard when last digit is entered
+      Keyboard.dismiss();
     }
   };
 
@@ -150,7 +154,7 @@ const Otp = () => {
   };
 
   return (
-    <View className="w-full h-full px-9 pt-16 pb-6 flex flex-col relative">
+    <View className="w-full h-full px-9 pt-16 pb-6 flex flex-col relative bg-background">
       {/* Header row */}
       <View className="flex-row items-center justify-between mb-8">
         <TouchableOpacity
@@ -188,7 +192,11 @@ const Otp = () => {
         </FormControlError>
       </FormControl>
 
-      <Button className="h-16 mt-auto" action="secondary" onPress={handleSubmit}>
+      <Button
+        className="h-16 mt-auto"
+        action="secondary"
+        onPress={handleSubmit}
+      >
         {!loading ? (
           <ButtonText>Confirm</ButtonText>
         ) : (

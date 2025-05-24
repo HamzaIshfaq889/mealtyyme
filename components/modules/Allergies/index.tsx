@@ -132,9 +132,7 @@ const Allergies = () => {
               <Text
                 className={`inline p-4 rounded-xl font-bold leading-6 bg-card mx-1.5 my-1.5 
                  ${
-                   isSelected
-                     ? "!text-white !bg-secondary "
-                     : "text-foreground"
+                   isSelected ? "!text-white !bg-secondary " : "text-foreground"
                  }`}
               >
                 {allergy.title}
@@ -156,7 +154,9 @@ const Allergies = () => {
         onPress={handleNext}
         disabled={!!loading}
       >
-        <ButtonText>{loading ? <Spinner /> : "Next"}</ButtonText>
+        <ButtonText className="!text-white">
+          {loading ? <Spinner /> : "Next"}
+        </ButtonText>
       </Button>
     </View>
   );

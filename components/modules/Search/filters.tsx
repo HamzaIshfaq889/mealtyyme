@@ -201,7 +201,9 @@ const Filters = ({
         <SafeAreaView style={{ flex: 1 }} className="bg-background">
           <ScrollView
             className="flex flex-col w-full h-full pt-4"
+            showsHorizontalScrollIndicator={false}
             showsVerticalScrollIndicator={false}
+    
           >
             <Text className="font-bold text-2xl leading-8 text-foreground text-center mb-3 mt-2.5">
               Filter

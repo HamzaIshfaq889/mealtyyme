@@ -259,6 +259,7 @@ export default function HomeScreen() {
       {/* <Animated.ScrollView
         onScroll={scrollHandler}
         scrollEventThrottle={16}
+        showsVerticalScrollIndicator={false}
         contentContainerStyle={[
           styles.content,
           {

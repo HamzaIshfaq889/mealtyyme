@@ -10,9 +10,11 @@ import {
 } from "react-native";
 import { router, useFocusEffect } from "expo-router";
 import {
+  ArrowRight,
   BookmarkIcon,
   CircleUserRound,
   HeartIcon,
+  Import,
   Settings,
   UserPen,
   UtensilsIcon,
@@ -225,9 +227,19 @@ const Account = () => {
           <Savedrecipes />
         </ScrollView>
       ) : (
-        <ScrollView>
+        <>
           <MyRecipes />
-        </ScrollView>
+
+          <View className="px-6 mb-10 bg-none py-4">
+            <Button
+              className="w-full !rounded-3xl !bg-primary"
+              onPress={() => router.push("/(protected)/(nested)/scrape-recipe")}
+              action="secondary"
+            >
+              <ButtonText>Find Recipes using URL</ButtonText>
+            </Button>
+          </View>
+        </>
       )}
     </View>
   );
