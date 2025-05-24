@@ -11,8 +11,6 @@ import { Button, ButtonText } from "@/components/ui/button";
 import Slide1 from "./slide1";
 import Slide2 from "./slide2";
 import Slide3 from "./slide3";
-import { setOnboardingComplete } from "@/redux/slices/Auth";
-import { setOnboardingComplete as setOnboardingCompleteStorage } from "@/utils/storage/authStorage";
 
 const OnBoarding = () => {
   const dispatch = useDispatch();
@@ -80,7 +78,7 @@ const OnBoarding = () => {
           <Slide3 />
         </Swiper>
       </View>
-      <View className="px-4 h-[30%]">
+      <View className="mt-auto px-4 h-[30%]">
         <Text className="text-center text-primary font-bold text-3xl mb-3 leading-9 font-sofia">
           {slideContent[currentSlide].title}
         </Text>

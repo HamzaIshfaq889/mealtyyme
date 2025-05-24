@@ -256,7 +256,7 @@ export default function HomeScreen() {
         </Animated.View>
       </Animated.View>
 
-      <Animated.ScrollView
+      {/* <Animated.ScrollView
         onScroll={scrollHandler}
         scrollEventThrottle={16}
         contentContainerStyle={[
@@ -269,9 +269,10 @@ export default function HomeScreen() {
         bounces={true}
         overScrollMode="always"
         removeClippedSubviews={true}
-      >
-        <HomeUser onCheckInComplete={fetchStats} />
-      </Animated.ScrollView>
+      > */}
+
+      <HomeUser onCheckInComplete={fetchStats} />
+      {/* </Animated.ScrollView> */}
     </View>
   );
 }
