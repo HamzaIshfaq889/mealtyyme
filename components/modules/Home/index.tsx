@@ -1,5 +1,11 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
-import { View, Pressable, useColorScheme, Platform } from "react-native";
+import {
+  View,
+  Pressable,
+  useColorScheme,
+  Platform,
+  SafeAreaView,
+} from "react-native";
 import { router } from "expo-router";
 import BottomSheet from "@gorhom/bottom-sheet";
 import { useSelector } from "react-redux";
@@ -251,7 +257,7 @@ const HomeUser = ({ onCheckInComplete }: HomeUserProps) => {
   }, []);
 
   return (
-    <View className="flex-1">
+    <View>
       <Animated.View layout={Layout.springify()}>
         <View className="mb-8">
           <FeaturedRecipes />

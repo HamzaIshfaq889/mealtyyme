@@ -1,5 +1,12 @@
 import React from "react";
-import { FlatList, Image, Pressable, Text, View } from "react-native";
+import {
+  FlatList,
+  Image,
+  Pressable,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { FeaturedRecipeSketon } from "../Skeletons";
 import { convertMinutesToTimeLabel, truncateChars } from "@/utils";
 import { Clock, Flame } from "lucide-react-native";
@@ -16,10 +23,20 @@ const Under30Minutes = () => {
 
   return (
     <>
-      <View className="flex flex-row justify-between">
-        <Text className="text-foreground font-bold text-xl leading-5 pl-7 mb-4">
+      <View className="flex flex-row justify-between mx-7">
+        <Text className="text-foreground font-bold text-xl leading-5 mb-4">
           Under 30 Minutes
         </Text>
+        <TouchableOpacity
+          onPress={() =>
+            router.push({
+              pathname: `/(protected)/(nested)/all-recipes/${1}` as any,
+              params: { name: "minutes" },
+            })
+          }
+        >
+          <Text className="font-medium text-secondary mb-1">View all</Text>
+        </TouchableOpacity>
       </View>
 
       <View>
@@ -65,7 +82,7 @@ const Under30Minutes = () => {
                   </View>
 
                   <Text className="text-foreground font-bold text-base leading-5 mb-3">
-                    {truncateChars(item?.title, 35)}
+                    {truncateChars(item?.title, 20)}
                     {/* {item?.title} */}
                   </Text>
 
