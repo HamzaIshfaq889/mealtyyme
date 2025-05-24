@@ -142,8 +142,10 @@ const HomeUser = ({ onCheckInComplete }: HomeUserProps) => {
   const customerId = useSelector(
     (state: any) => state.auth.loginResponseType.customer_details?.id
   );
-
-  console.log(customerId);
+  const firstTimeUser = useSelector(
+    (state: any) =>
+      state.auth.loginResponseType.customer_details?.first_time_user
+  );
 
   const [expoPushToken, setExpoPushToken] = useState("");
   const [notification, setNotification] = useState<
@@ -203,14 +205,6 @@ const HomeUser = ({ onCheckInComplete }: HomeUserProps) => {
   }, [statsLoading, customerId]);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowSubscriptionCTA(true);
-    }, 3000);
-
-    return () => clearTimeout(timer);
-  }, []);
-
-  useEffect(() => {
     registerForPushNotificationsAsync()
       .then((token) => {
         if (token) {
@@ -255,6 +249,16 @@ const HomeUser = ({ onCheckInComplete }: HomeUserProps) => {
       }
     };
   }, []);
+
+  useEffect(() => {
+    if (firstTimeUser) {
+      const timer = setTimeout(() => {
+        setShowSubscriptionCTA(true);
+      }, 3000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [firstTimeUser]);
 
   return (
     <View>

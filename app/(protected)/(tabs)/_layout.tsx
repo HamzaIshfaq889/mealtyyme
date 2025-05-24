@@ -1,5 +1,5 @@
 // app/(tabs)/_layout.tsx
-import React, { createContext } from "react";
+import React, { createContext, useCallback } from "react";
 import { Tabs } from "expo-router";
 import { BottomTabBar } from "@react-navigation/bottom-tabs";
 import Animated, {
@@ -15,6 +15,11 @@ import {
   User,
 } from "lucide-react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useFocusEffect } from "expo-router";
+import { saveSavedRecipesInStorage } from "@/utils/storage/authStorage";
+import { useDispatch } from "react-redux";
+import { useSavedRecipes } from "@/redux/queries/recipes/useSaveRecipesQuery";
+import { setSavedRecipes } from "@/redux/slices/Auth";
 
 export const TabBarContext = createContext(null);
 
@@ -22,6 +27,29 @@ export default function TabsLayout() {
   const tabBarTranslation = useSharedValue(0);
   const insets = useSafeAreaInsets();
   const scheme = useColorScheme();
+
+  const dispatch = useDispatch();
+  const { data: savedRecipes } = useSavedRecipes();
+
+  useFocusEffect(
+    useCallback(() => {
+      const fetchAndStore = async () => {
+        const savedRecipeIds = savedRecipes?.map((recipe) => recipe.id);
+
+        if (savedRecipeIds && savedRecipeIds.length > 0) {
+          try {
+            await saveSavedRecipesInStorage([...savedRecipeIds]);
+            console.log("Saved Recipes retrieved successfully");
+            dispatch(setSavedRecipes(savedRecipeIds));
+          } catch (error) {
+            console.error("Error saving recipe to storage:", error);
+          }
+        }
+      };
+
+      fetchAndStore();
+    }, [savedRecipes])
+  );
 
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ translateY: tabBarTranslation.value }],
