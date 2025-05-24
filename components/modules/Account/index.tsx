@@ -7,6 +7,7 @@ import {
   View,
   ScrollView,
   TouchableOpacity,
+  Platform,
 } from "react-native";
 import { router, useFocusEffect } from "expo-router";
 import {
@@ -230,14 +231,28 @@ const Account = () => {
         <>
           <MyRecipes />
 
-          <View className="px-6 mb-10 bg-none py-4">
-            <Button
-              className="w-full !rounded-3xl !bg-primary"
-              onPress={() => router.push("/(protected)/(nested)/scrape-recipe")}
-              action="secondary"
-            >
-              <ButtonText>Find Recipes using URL</ButtonText>
-            </Button>
+          <View className="px-6 mb-10 bg-none py-12">
+            {Platform?.OS === "ios" ? (
+              <Button
+                className="w-full !rounded-3xl !bg-primary"
+                onPress={() =>
+                  router.push("/(protected)/(nested)/scrape-recipe")
+                }
+                action="secondary"
+              >
+                <ButtonText>Find Recipes using URL</ButtonText>
+              </Button>
+            ) : (
+              <Button
+                className="w-full h-16"
+                onPress={() =>
+                  router.push("/(protected)/(nested)/scrape-recipe")
+                }
+                action="card"
+              >
+                <ButtonText>Find Recipes using URL</ButtonText>
+              </Button>
+            )}
           </View>
         </>
       )}
