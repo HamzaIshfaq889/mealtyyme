@@ -162,9 +162,9 @@ const PopularRecipes: React.FC = () => {
                     />
                   </View>
                   <Text className="text-foreground font-bold text-base leading-5 mb-3">
-                    {truncateChars(item?.title, 35)}
+                    {truncateChars(item?.title, 20)}
                   </Text>
-                  <View className="flex flex-row items-center gap-2 mt-auto">
+                  <View className="flex flex-row items-center gap-2">
                     <View className="flex flex-row items-center gap-0.5">
                       <Flame color="#96a1b0" size={20} />
                       <Text className="text-muted">{item?.calories} Kcal</Text>

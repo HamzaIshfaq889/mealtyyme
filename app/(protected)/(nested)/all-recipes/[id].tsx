@@ -18,6 +18,8 @@ const AllRecipesScreen = () => {
         return { categoryIds: [numericId] };
       case "cuisines":
         return { cuisineIds: [numericId] };
+      case "minutes":
+        return { readyInMinutes: [0, 30] };
       default:
         return {};
     }
