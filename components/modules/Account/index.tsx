@@ -234,7 +234,7 @@ const Account = () => {
           <View className="px-6 mb-10 bg-none py-12">
             {Platform?.OS === "ios" ? (
               <Button
-                className="w-full !rounded-3xl !bg-primary"
+                className="w-full  !bg-secondary"
                 onPress={() =>
                   router.push("/(protected)/(nested)/scrape-recipe")
                 }
