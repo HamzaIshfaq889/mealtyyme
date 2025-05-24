@@ -133,6 +133,11 @@ type Review = {
 export type ChatbotResponse = {
   reply: string;
   recipes: Recipe[];
+  message_usage?: {
+    used: number;
+    limit: number;
+    remaining: number;
+  };
 };
 
 export type SearchRecipeQueryOptions = {

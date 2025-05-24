@@ -1,9 +1,15 @@
 import { Input, InputField } from "@/components/ui/input";
 import { Recipe } from "@/lib/types/recipe";
-import { sendChatBotMessage } from "@/services/chatbotApi";
+import { sendChatBotMessage, getTokenUsage } from "@/services/chatbotApi";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { router } from "expo-router";
-import { ArrowLeft, ArrowRight } from "lucide-react-native";
+import {
+  ArrowLeft,
+  ArrowRight,
+  MessageCircleHeart,
+  MessageCircleIcon,
+  X,
+} from "lucide-react-native";
 import React, { useEffect, useState } from "react";
 import {
   SafeAreaView,
@@ -14,6 +20,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   useColorScheme,
+  Keyboard,
 } from "react-native";
 import {
   Easing,
@@ -23,6 +30,8 @@ import {
 } from "react-native-reanimated";
 import CheMateAi from "@/assets/svgs/chef-mate-ai.svg";
 import HorizontalRecipeCard from "../RecipeCards/horizontalRecipeCard";
+import { useFocusEffect } from "@react-navigation/native";
+import NoTokensOverlay from "./NoTokensOverlay";
 
 interface ChatMessage {
   _id: number;
@@ -34,6 +43,11 @@ interface ChatMessage {
     _id: number;
     name: string;
   };
+  messageUsage?: {
+    used: number;
+    limit: number;
+    remaining: number;
+  };
 }
 
 const ChatBot = () => {
@@ -44,12 +58,18 @@ const ChatBot = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [inputHistory, setInputHistory] = useState<string[]>([]);
   const [messageIndex, setMessageIndex] = useState(0);
+  const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
+  const [messageUsage, setMessageUsage] = useState<{
+    used: number;
+    limit: number;
+    remaining: number;
+  } | null>(null);
   const messagesBOT = [
     "ChatBot is typing...",
-    "Nibbles is finding a recipe for you...",
-    "Nibbles is processing your request...",
-    "Nibbles is searching for the best options...",
-    "Nibbles is connecting you with the best match...",
+    "ChefMate is finding a recipe for you...",
+    "ChefMate is processing your request...",
+    "ChefMate is searching for the best options...",
+    "ChefMate is connecting you with the best match...",
   ];
 
   const opacity = useSharedValue(0);
@@ -92,6 +112,44 @@ const ChatBot = () => {
     setMessages([defaultMessage]);
   }, []);
 
+  // Fetch token usage when screen is focused
+  useFocusEffect(
+    React.useCallback(() => {
+      const fetchTokenUsage = async () => {
+        try {
+          const response = await getTokenUsage();
+          if (response.message_usage) {
+            setMessageUsage(response.message_usage);
+          }
+        } catch (error) {
+          console.error("Error fetching token usage:", error);
+        }
+      };
+
+      fetchTokenUsage();
+    }, [])
+  );
+
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      "keyboardDidShow",
+      () => {
+        setIsKeyboardVisible(true);
+      }
+    );
+    const keyboardDidHideListener = Keyboard.addListener(
+      "keyboardDidHide",
+      () => {
+        setIsKeyboardVisible(false);
+      }
+    );
+
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    };
+  }, []);
+
   const handleSend = async () => {
     const trimmedInput = inputText.trim();
 
@@ -103,6 +161,11 @@ const ChatBot = () => {
       setMessages((prev) => (prev.length > 0 ? [prev[prev.length - 1]] : []));
       setInputText("");
       setInputHistory([]);
+      return;
+    }
+
+    // Check if there are tokens left
+    if (messageUsage?.remaining === 0) {
       return;
     }
 
@@ -139,7 +202,7 @@ const ChatBot = () => {
 
     try {
       const response = await sendChatBotMessage(updatedHistory);
-
+      console.log("response", response);
       // Remove loading message
       setMessages((prev) =>
         prev.filter((msg) => msg.text !== "ChatBot is typing...")
@@ -154,7 +217,13 @@ const ChatBot = () => {
           _id: 2,
           name: "ChatBot",
         },
+        messageUsage: response.message_usage,
       };
+
+      // Update message usage state
+      if (response.message_usage) {
+        setMessageUsage(response.message_usage);
+      }
 
       const updatedMessages = [botMessage];
 
@@ -177,7 +246,7 @@ const ChatBot = () => {
         // Add a message if no recipes are found
         const noRecipesMessage: ChatMessage = {
           _id: Date.now() + 100,
-          text: "Don’t worry, I’ve got a-peel (get it?) for this! If you’re craving something specific, just say “clear” to wipe the slate clean—like a freshly scrubbed skillet! I’m Nibbles, your pun-loving kitchen sidekick, here to knead your questions into tasty answers. Let’s taco ‘bout what you’re hungry for! 🌮✨ (Too cheesy? Nah, just gouda ‘nuff.) 🧀😉",
+          text: "Don't worry, I've got a-peel (get it?) for this! If you're craving something specific, just say clear to wipe the slate clean—like a freshly scrubbed skillet! I'm ChefMate, your pun-loving kitchen sidekick, here to knead your questions into tasty answers. Let's taco 'bout what you're hungry for! 🌮✨ (Too cheesy? Nah, just gouda 'nuff.) 🧀😉",
           createdAt: new Date(),
           user: {
             _id: 2,
@@ -194,7 +263,7 @@ const ChatBot = () => {
       );
       const errorMessage: ChatMessage = {
         _id: Date.now() + 3,
-        text: "Uh-oh! 🐾 Nibbles just had a full meal 🍽️ and is now too stuffed to process your request. 😅 Give Nibbles a moment to digest, and we’ll be back to serving you with a bite of fun in no time! 🐾🍴",
+        text: "Uh-oh! 🐾 ChefMate just had a full meal 🍽️ and is now too stuffed to process your request. 😅 Give ChefMate a moment to digest, and we'll be back to serving you with a bite of fun in no time! 🐾🍴",
         createdAt: new Date(),
         user: {
           _id: 2,
@@ -217,10 +286,10 @@ const ChatBot = () => {
             className={`p-4 rounded-xl mb-4 mx-6 ${
               item.user._id === 1
                 ? "bg-foreground self-end"
-                : "bg-background self-start"
+                : "bg-card self-start"
             }`}
           >
-            <Text className="text-muted text-sm">Nibbles is typing....</Text>
+            <Text className="text-muted text-sm">ChefMate is typing....</Text>
           </View>
         ) : isRecipe ? (
           item?.recipe ? (
@@ -255,22 +324,16 @@ const ChatBot = () => {
   };
 
   return (
-    <SafeAreaView className="flex-1 w-full h-full pt-16">
+    <SafeAreaView className="flex-1 w-full h-full pt-16 bg-background">
+      {messageUsage?.remaining === 0 && <NoTokensOverlay />}
       <KeyboardAvoidingView
         className="flex-1"
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={Platform.OS === "ios" ? -60 : -20}
       >
         <View className="flex-1">
           <View className="flex-row items-center justify-between mb-5 mx-6">
-            <TouchableOpacity
-              onPress={() => router.push("/(protected)/(tabs)")}
-            >
-              <ArrowLeft
-                width={30}
-                height={30}
-                color={scheme === "dark" ? "#fff" : "#000"}
-              />
-            </TouchableOpacity>
+            <View style={{ width: 30 }} />
 
             <View className="flex flex-row gap-3 items-center">
               <CheMateAi />
@@ -279,22 +342,51 @@ const ChatBot = () => {
               </Text>
             </View>
 
-            <View style={{ width: 30 }} />
+            <TouchableOpacity
+              onPress={() => {
+                setMessages((prev) =>
+                  prev.length > 0 ? [prev[prev.length - 1]] : []
+                );
+                setInputText("");
+                setInputHistory([]);
+              }}
+              className="w-8 h-8 items-center justify-center"
+            >
+              <MessageCircleIcon
+                size={24}
+                color={scheme === "dark" ? "#fff" : "#000"}
+              />
+            </TouchableOpacity>
           </View>
 
-          <View className="mx-6 pb-1.5">
-            <View className="bg-[#fae1cb] rounded-full">
-              <View className="bg-secondary w-[60%] py-1 rounded-full m-0"></View>
+          {messageUsage?.remaining !== 0 && (
+            <View className="mx-6 pb-1.5">
+              <View className="bg-[#fae1cb] rounded-full">
+                <View
+                  className="bg-secondary py-1 rounded-full m-0"
+                  style={{
+                    width: `${
+                      messageUsage?.remaining
+                        ? (messageUsage.remaining / messageUsage.limit) * 100
+                        : 100
+                    }%`,
+                  }}
+                />
+              </View>
+              <View className="flex flex-row justify-between mt-2">
+                <Text className="text-secondary text-sm leading-6 font-medium">
+                  Tokens Left
+                </Text>
+                <Text className="text-secondary text-sm leading-6 font-medium">
+                  {messageUsage?.remaining
+                    ? `${Math.round(
+                        (messageUsage.remaining / messageUsage.limit) * 100
+                      )}%`
+                    : "100%"}
+                </Text>
+              </View>
             </View>
-            <View className="flex flex-row justify-between mt-2">
-              <Text className="text-secondary text-sm leading-6 font-medium">
-                Free Tokens Left
-              </Text>
-              <Text className="text-secondary text-sm leading-6 font-medium">
-                65%
-              </Text>
-            </View>
-          </View>
+          )}
 
           <FlatList
             data={messages}
@@ -307,15 +399,23 @@ const ChatBot = () => {
           />
 
           <View
-            className="flex-row items-center pt-4 pb-4 mx-6"
-            style={{ paddingBottom: tabBarHeight + 20 }}
+            className="flex-row items-center pt-2 pb-2 mx-6"
+            style={{
+              paddingBottom:
+                Platform.OS === "ios" ? tabBarHeight - 10 : tabBarHeight + 5,
+            }}
           >
             <Input className="flex-1 mr-2 py-1.5">
               <InputField
                 type="text"
-                placeholder="Message Chefmate"
+                placeholder="Message Chefmate (max 15 words)"
                 value={inputText}
-                onChangeText={setInputText}
+                onChangeText={(text) => {
+                  const words = text.trim().split(/\s+/);
+                  if (words.length <= 15 || text.endsWith(" ")) {
+                    setInputText(text);
+                  }
+                }}
               />
             </Input>
 

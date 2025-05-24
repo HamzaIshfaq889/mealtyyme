@@ -44,6 +44,7 @@ const MealSchedule = ({
   showMealScheduleModal,
 }: MealScheduleProps) => {
   const scheme = useColorScheme();
+  const isDark = scheme === "dark";
   const currentRecipe: Recipe = useSelector(
     (state: any) => state.recipe.currentRecipe
   );
@@ -109,25 +110,22 @@ const MealSchedule = ({
       <Dialog.Container
         visible={showMealScheduleModal}
         contentStyle={{
-          backgroundColor: scheme === "dark" ? "#1a1a1a" : "#fdf8f4",
-          paddingVertical: Platform.OS === "ios" ? 40 : 30,
-          borderRadius: Platform.OS === "ios" ? 30 : 20,
-          width: Platform.OS === "ios" ? "90%" : "85%",
+          paddingVertical: Platform.OS === "ios" ? 20 : 24,
+          borderRadius: 24,
+          width: Platform.OS === "ios" ? "92%" : "90%",
+          maxWidth: Platform.OS === "ios" ? 380 : 400,
         }}
       >
-        <View style={{ padding: Platform.OS === "ios" ? 20 : 15 }}>
-          <View className="flex flex-row justify-center mb-6">
-            <View className="bg-secondary flex flex-row justify-center items-center w-24 h-24 p-8 rounded-full">
-              <Clock color="#fff" size={Platform.OS === "ios" ? 45 : 40} />
+        <View style={[styles.container]}>
+          <View style={styles.iconContainer}>
+            <View
+              style={[styles.iconWrapper, isDark && styles.iconWrapperDark]}
+            >
+              <Clock color="#fff" size={Platform.OS === "ios" ? 36 : 40} />
             </View>
           </View>
-          <Text
-            className="text-center text-primary text-2xl mt-2 mb-10"
-            style={{
-              fontSize: Platform.OS === "ios" ? 24 : 22,
-              marginBottom: Platform.OS === "ios" ? 40 : 30,
-            }}
-          >
+
+          <Text style={[styles.title, isDark && styles.titleDark]}>
             Schedule your meal
           </Text>
 
@@ -144,30 +142,24 @@ const MealSchedule = ({
             }}
             renderButton={(selectedItem, isOpened) => (
               <View
-                className="flex-row items-center justify-between px-3 py-4 bg-background rounded-2xl"
-                style={{
-                  paddingVertical: 16,
-                  marginBottom: 16,
-                  shadowColor: "#000",
-                  shadowOffset: { width: 0, height: 2 },
-                  shadowOpacity: 0.1,
-                  shadowRadius: 4,
-                  elevation: 3,
-                }}
+                style={[
+                  styles.dropdownButton,
+                  isDark && styles.dropdownButtonDark,
+                ]}
               >
-                <View className="mr-3">
-                  <Clock1
-                    color={scheme === "dark" ? "#fff" : "#000"}
-                    size={20}
-                  />
+                <View style={styles.dropdownIcon}>
+                  <Clock1 color={isDark ? "#fff" : "#000"} size={20} />
                 </View>
                 <Text
-                  className="flex-1 text-lg font-medium text-primary"
+                  style={[
+                    styles.dropdownText,
+                    isDark && styles.dropdownTextDark,
+                  ]}
                   numberOfLines={1}
                 >
                   {selectedItem || "Select meal type"}
                 </Text>
-                <View className="ml-2">
+                <View style={styles.dropdownArrow}>
                   {isOpened ? (
                     <ChevronUp color="#ee8427" size={24} />
                   ) : (
@@ -177,47 +169,32 @@ const MealSchedule = ({
               </View>
             )}
             renderItem={(item, isSelected) => (
-              <View className="px-6 py-4 bg-background">
-                <Text className="text-base font-semibold text-primary">
+              <View
+                style={[styles.dropdownItem, isDark && styles.dropdownItemDark]}
+              >
+                <Text
+                  style={[
+                    styles.dropdownItemText,
+                    isDark && styles.dropdownItemTextDark,
+                  ]}
+                >
                   {item}
                 </Text>
               </View>
             )}
-            dropdownStyle={{
-              borderRadius: 12,
-              backgroundColor: scheme === "dark" ? "#000" : "#fff",
-              marginTop: 8,
-              shadowColor: "#000",
-              shadowOffset: { width: 0, height: 4 },
-              shadowOpacity: 0.1,
-              shadowRadius: 12,
-              elevation: 5,
-            }}
+            dropdownStyle={[styles.dropdown, isDark && styles.dropdownDark]}
+            showsVerticalScrollIndicator={false}
+            dropdownOverlayColor="transparent"
           />
 
-          <SafeAreaView>
+          <SafeAreaView style={styles.safeArea}>
             <TouchableOpacity
               onPress={() => showMode("date")}
-              className="bg-background px-4 border border-border rounded-xl py-5 mb-7"
-              style={{
-                borderRadius: Platform.OS === "ios" ? 16 : 12,
-                paddingVertical: Platform.OS === "ios" ? 20 : 16,
-              }}
+              style={[styles.dateButton, isDark && styles.dateButtonDark]}
             >
-              <View className="flex flex-row gap-4">
-                <CalendarRange
-                  color={scheme === "dark" ? "#fff" : "#000"}
-                  size={20}
-                />
-                <Text
-                  className="text-foreground"
-                  style={{
-                    fontSize: Platform.OS === "ios" ? 16 : 15,
-                    color: scheme === "dark" ? "#fff" : "#000",
-                    textAlign: "center",
-                    fontWeight: "500",
-                  }}
-                >
+              <View style={styles.dateButtonContent}>
+                <CalendarRange color={isDark ? "#fff" : "#000"} size={20} />
+                <Text style={[styles.dateText, isDark && styles.dateTextDark]}>
                   {moment(date).format("MMMM D, YYYY")}
                 </Text>
               </View>
@@ -238,52 +215,42 @@ const MealSchedule = ({
             )}
 
             {Platform.OS === "ios" && (
-              <DateTimePicker
-                testID="dateTimePicker"
-                value={date}
-                mode="date"
-                // is24Hour={true}
-                onChange={onChange}
-                display="inline"
-                minimumDate={today}
-                maximumDate={maxDate}
-                themeVariant={scheme === "dark" ? "dark" : "light"}
-              />
+              <View style={styles.iosCalendarContainer}>
+                <DateTimePicker
+                  testID="dateTimePicker"
+                  value={date}
+                  mode="date"
+                  onChange={onChange}
+                  display="inline"
+                  minimumDate={today}
+                  maximumDate={maxDate}
+                  themeVariant={scheme === "dark" ? "dark" : "light"}
+                />
+              </View>
             )}
           </SafeAreaView>
 
-          <View
-            className="flex flex-row gap-2"
-            style={{ marginTop: Platform.OS === "ios" ? 10 : 5 }}
-          >
+          <View style={styles.buttonContainer}>
             <Button
               action="card"
-              className="basis-1/2 h-16"
-              style={{
-                height: Platform.OS === "ios" ? 60 : 55,
-                borderRadius: Platform.OS === "ios" ? 16 : 12,
-              }}
+              style={[styles.button, isDark && styles.buttonDark]}
               onPress={() => setShowMealScheduleModal(false)}
             >
-              <ButtonText style={{ fontSize: Platform.OS === "ios" ? 18 : 16 }}>
+              <ButtonText
+                style={[styles.buttonText, isDark && styles.buttonTextDark]}
+              >
                 Cancel
               </ButtonText>
             </Button>
             <Button
               action="secondary"
-              className="basis-1/2 h-16"
+              style={styles.button}
               onPress={() => {
                 handleSave();
                 setShowMealScheduleModal(false);
               }}
-              style={{
-                height: Platform.OS === "ios" ? 60 : 55,
-                borderRadius: Platform.OS === "ios" ? 16 : 12,
-              }}
             >
-              <ButtonText style={{ fontSize: Platform.OS === "ios" ? 18 : 16 }}>
-                Save
-              </ButtonText>
+              <ButtonText style={styles.buttonText}>Save</ButtonText>
             </Button>
           </View>
         </View>
@@ -295,11 +262,160 @@ const MealSchedule = ({
 export default MealSchedule;
 
 const styles = StyleSheet.create({
-  pickerContainer: {
-    width: "100%",
-    alignSelf: "stretch",
+  container: {
+    padding: Platform.OS === "ios" ? 16 : 20,
   },
-  picker: {
+  containerDark: {
+    backgroundColor: "#1a1a1a",
+  },
+  iconContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    marginBottom: Platform.OS === "ios" ? 20 : 24,
+  },
+  iconWrapper: {
+    backgroundColor: "#ee8427",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    width: Platform.OS === "ios" ? 70 : 80,
+    height: Platform.OS === "ios" ? 70 : 80,
+    padding: 16,
+    borderRadius: 35,
+  },
+  iconWrapperDark: {
+    backgroundColor: "#ee8427",
+  },
+  title: {
+    textAlign: "center",
+    color: "#ee8427",
+    fontSize: Platform.OS === "ios" ? 22 : 24,
+    fontWeight: "600",
+    marginBottom: Platform.OS === "ios" ? 24 : 32,
+  },
+  titleDark: {
+    color: "#ee8427",
+  },
+  dropdownButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingVertical: 16,
+    paddingHorizontal: 16,
+    backgroundColor: "#fff",
+    borderRadius: 16,
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: "#e5e5e5",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 3,
+    elevation: 2,
+  },
+  dropdownButtonDark: {
+    backgroundColor: "#2a2a2a",
+    borderColor: "#3a3a3a",
+  },
+  dropdownIcon: {
+    marginRight: 12,
+  },
+  dropdownText: {
+    flex: 1,
+    fontSize: 16,
+    fontWeight: "500",
+    color: "#000",
+  },
+  dropdownTextDark: {
+    color: "#fff",
+  },
+  dropdownArrow: {
+    marginLeft: 8,
+  },
+  dropdownItem: {
+    paddingVertical: 16,
+    paddingHorizontal: 24,
+    backgroundColor: "#fff",
+  },
+  dropdownItemDark: {
+    backgroundColor: "#2a2a2a",
+  },
+  dropdownItemText: {
+    fontSize: 16,
+    fontWeight: "500",
+    color: "#000",
+  },
+  dropdownItemTextDark: {
+    color: "#fff",
+  },
+  dropdown: {
+    borderRadius: 16,
+    backgroundColor: "#fff",
+    marginTop: 8,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 4,
+    borderWidth: 1,
+    borderColor: "#e5e5e5",
+  },
+  dropdownDark: {
+    backgroundColor: "#2a2a2a",
+    borderColor: "#3a3a3a",
+  },
+  safeArea: {
     width: "100%",
+  },
+  iosCalendarContainer: {
+    width: "100%",
+    paddingHorizontal: Platform.OS === "ios" ? 4 : 0,
+    marginBottom: 16,
+  },
+  dateButton: {
+    backgroundColor: "#fff",
+    paddingHorizontal: 16,
+    borderWidth: 1,
+    borderColor: "#e5e5e5",
+    borderRadius: 16,
+    paddingVertical: 16,
+    marginBottom: 16,
+  },
+  dateButtonDark: {
+    backgroundColor: "#2a2a2a",
+    borderColor: "#3a3a3a",
+  },
+  dateButtonContent: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 16,
+  },
+  dateText: {
+    fontSize: 16,
+    color: "#000",
+    fontWeight: "500",
+  },
+  dateTextDark: {
+    color: "#fff",
+  },
+  buttonContainer: {
+    flexDirection: "row",
+    gap: 8,
+    marginTop: 16,
+  },
+  button: {
+    flex: 1,
+    height: Platform.OS === "ios" ? 50 : 56,
+    borderRadius: 16,
+  },
+  buttonDark: {
+    backgroundColor: "#2a2a2a",
+  },
+  buttonText: {
+    fontSize: Platform.OS === "ios" ? 15 : 16,
+    fontWeight: "600",
+  },
+  buttonTextDark: {
+    color: "#fff",
   },
 });

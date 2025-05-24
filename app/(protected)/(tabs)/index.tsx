@@ -26,6 +26,7 @@ import { useColorScheme } from "react-native";
 import { Input, InputField, InputIcon, InputSlot } from "@/components/ui/input";
 import { useSelector } from "react-redux";
 import LottieView from "lottie-react-native";
+import { useUserGamification } from "@/hooks/useUserGamification";
 
 export default function HomeScreen() {
   const tabBarTranslation = useContext(TabBarContext);
@@ -35,6 +36,7 @@ export default function HomeScreen() {
   const tabBarHeight = 70 + insets.bottom;
   const scheme = useColorScheme();
   const isDark = scheme === "dark";
+  const { stats, fetchStats } = useUserGamification();
 
   // Get user data from Redux
   const { first_name: name, image_url } = useSelector(
@@ -207,11 +209,15 @@ export default function HomeScreen() {
                 onPress={() => router.push("/(protected)/(nested)/search")}
                 className="relative h-10 w-10 bg-card rounded-full flex items-center justify-center shadow-sm"
               >
-                <Search size={24} color={isDark ? "#e0e0e0" : "#333"} />
+                <Search
+                  size={24}
+                  color={isDark ? "#e0e0e0" : "#333"}
+                  strokeWidth={1.5}
+                />
               </Pressable>
             </Animated.View>
-            <Pressable className="relative h-10  bg-card rounded-full flex items-center justify-center shadow-sm">
-              <View className="absolute left-0">
+            <View className="flex flex-row  justify-center items-center bg-card w-16 h-10 rounded-full shadow-sm">
+              <View>
                 <LottieView
                   source={require("../../../assets/lottie/coin.json")}
                   autoPlay
@@ -219,12 +225,17 @@ export default function HomeScreen() {
                   style={{ width: 24, height: 24 }}
                 />
               </View>
-              <Text className="absolute text-xs font-semibold text-foreground ">
-                100
+              <Text className="text-foreground text-xs">
+                {stats?.total_points}
               </Text>
-            </Pressable>
+            </View>
+
             <Pressable className="relative h-10 w-10 bg-card rounded-full flex items-center justify-center shadow-sm">
-              <Bell size={24} color={isDark ? "#e0e0e0" : "#333"} />
+              <Bell
+                size={24}
+                color={isDark ? "#e0e0e0" : "#333"}
+                strokeWidth={1.5}
+              />
             </Pressable>
           </View>
         </View>
@@ -259,7 +270,7 @@ export default function HomeScreen() {
         overScrollMode="always"
         removeClippedSubviews={true}
       >
-        <HomeUser />
+        <HomeUser onCheckInComplete={fetchStats} />
       </Animated.ScrollView>
     </View>
   );

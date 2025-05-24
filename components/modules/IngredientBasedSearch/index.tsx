@@ -75,7 +75,7 @@ const IngredientBasedSearch = () => {
   const [shouldOpenDropdown, setShouldOpenDropdown] = useState(true);
 
   return (
-    <View className="flex flex-col w-full h-full px-6 pt-20 pb-6 relative bg-background">
+    <View className="flex flex-col w-full h-full px-5 pt-16 pb-6 relative bg-background">
       <Animated.View
         entering={FadeIn.duration(500)}
         className="flex-row items-center mb-8"
@@ -112,19 +112,23 @@ const IngredientBasedSearch = () => {
             borderRadius: 16,
             overflow: "hidden",
             marginBottom: 8,
+            elevation: 0,
+            shadowOpacity: 0,
           }}
           inputContainerStyle={{
             borderRadius: 20,
             borderWidth: 1,
-            borderColor: isDarkMode ? "#494949" : "#e3e3e3",
-            backgroundColor: isDarkMode ? "#2b2b2b" : "#fff",
+            borderColor: isDarkMode ? "#1D232B" : "#EDF2F7",
+            backgroundColor: isDarkMode ? "#2B2B2B" : "#FFFFFF",
             paddingHorizontal: 12,
+            elevation: 0,
+            shadowOpacity: 0,
           }}
           textInputProps={{
             placeholder: "Search for ingredients...",
-            placeholderTextColor: isDarkMode ? "#aaa" : "#666",
+            placeholderTextColor: isDarkMode ? "#CCCCCC" : "#666666",
             style: {
-              color: isDarkMode ? "#fff" : "#000",
+              color: isDarkMode ? "#FFFFFF" : "#1A1A1A",
               paddingHorizontal: 10,
               fontSize: 16,
               fontFamily: "Inter-Medium",
@@ -162,16 +166,18 @@ const IngredientBasedSearch = () => {
             title: capitalizeWords(item.name),
           }))}
           suggestionsListTextStyle={{
-            color: isDarkMode ? "#fff" : "#000",
+            color: isDarkMode ? "#FFFFFF" : "#1A1A1A",
             fontFamily: "Inter-Regular",
           }}
           suggestionsListContainerStyle={{
-            backgroundColor: isDarkMode ? "#1D232B" : "#fff",
+            backgroundColor: isDarkMode ? "#2B2B2B" : "#FFFFFF",
             borderRadius: 12,
             borderWidth: 1,
-            borderColor: isDarkMode ? "#333" : "#eee",
+            borderColor: isDarkMode ? "#1D232B" : "#EDF2F7",
             marginTop: 8,
             maxHeight: 300,
+            elevation: 0,
+            shadowOpacity: 0,
           }}
           renderItem={(item, isSelected) => (
             <View
@@ -180,15 +186,15 @@ const IngredientBasedSearch = () => {
                 backgroundColor: isSelected
                   ? isDarkMode
                     ? "#2A3441"
-                    : "#f5f5f5"
+                    : "#F5F5F5"
                   : "transparent",
                 borderBottomWidth: 1,
-                borderBottomColor: isDarkMode ? "#333" : "#eee",
+                borderBottomColor: isDarkMode ? "#1D232B" : "#EDF2F7",
               }}
             >
               <Text
                 style={{
-                  color: isDarkMode ? "#fff" : "#000",
+                  color: isDarkMode ? "#FFFFFF" : "#1A1A1A",
                   fontSize: 15,
                   fontFamily: isSelected ? "Inter-SemiBold" : "Inter-Regular",
                 }}
@@ -201,10 +207,11 @@ const IngredientBasedSearch = () => {
           EmptyResultComponent={
             <View className="p-4 items-center">
               <Text
-                className={`text-center py-4 text-base ${
-                  isDarkMode ? "text-white" : "text-black"
-                }`}
-                style={{ fontFamily: "Inter-Medium" }}
+                className={`text-center py-4 text-base`}
+                style={{
+                  fontFamily: "Inter-Medium",
+                  color: isDarkMode ? "#FFFFFF" : "#1A1A1A",
+                }}
               >
                 No ingredients match your search
               </Text>

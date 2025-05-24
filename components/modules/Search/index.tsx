@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useCallback, useMemo } from "react";
+import { useState, useRef, useCallback, useMemo, useEffect } from "react";
 
 import { router } from "expo-router";
 
@@ -14,6 +14,7 @@ import {
   TouchableOpacity,
   useColorScheme,
   View,
+  ScrollView,
 } from "react-native";
 import {
   SearchIcon,
@@ -26,7 +27,11 @@ import {
 
 import { useRecipesQuery } from "@/redux/queries/recipes/useRecipeQuery";
 
-import { checkisProUser, checkisSubscriptionCanceled } from "@/utils";
+import {
+  capitalizeFirstLetter,
+  checkisProUser,
+  checkisSubscriptionCanceled,
+} from "@/utils";
 
 import { Input, InputField, InputIcon, InputSlot } from "@/components/ui/input";
 
@@ -37,9 +42,74 @@ import ProFeaturesCard from "./proFeaturesCard";
 import ProSubscribeModal from "@/components/ui/modals/proModal";
 import { useModal } from "@/hooks/useModal";
 
+import Animated, {
+  useAnimatedScrollHandler,
+  useSharedValue,
+  withSpring,
+  useAnimatedStyle,
+  interpolate,
+  Extrapolation,
+  runOnJS,
+} from "react-native-reanimated";
+
+import { RecipeSkeletonItem } from "../Skeletons";
+
 const Search = () => {
   const scheme = useColorScheme();
   const bottomSheetRef = useRef<BottomSheet>(null);
+  const scrollY = useSharedValue(0);
+  const isScrolling = useSharedValue(false);
+  const lastScrollY = useSharedValue(0);
+
+  const scrollHandler = useAnimatedScrollHandler({
+    onScroll: (event) => {
+      const currentScrollY = event.contentOffset.y;
+      scrollY.value = withSpring(currentScrollY, {
+        damping: 20,
+        stiffness: 200,
+        mass: 0.3,
+        velocity: 0.5,
+      });
+      lastScrollY.value = currentScrollY;
+    },
+    onBeginDrag: () => {
+      isScrolling.value = true;
+    },
+    onEndDrag: () => {
+      isScrolling.value = false;
+    },
+  });
+
+  const ingredientCardAnimatedStyle = useAnimatedStyle(() => {
+    const progress = interpolate(
+      scrollY.value,
+      [0, 20],
+      [1, 0],
+      Extrapolation.CLAMP
+    );
+
+    return {
+      opacity: progress,
+      transform: [
+        {
+          translateY: interpolate(
+            progress,
+            [0, 1],
+            [-8, 0],
+            Extrapolation.CLAMP
+          ),
+        },
+      ],
+      height: interpolate(progress, [0, 1], [0, 80], Extrapolation.CLAMP),
+      marginBottom: interpolate(progress, [0, 1], [0, 24], Extrapolation.CLAMP),
+      position: "absolute",
+      top: 0,
+      left: 0,
+      right: 0,
+      zIndex: 10,
+    };
+  });
+
   const [isFiltersApplied, setIsFiltersApplied] = useState(false);
   const diet_preferences = useSelector(
     (state: any) =>
@@ -145,13 +215,14 @@ const Search = () => {
     bottomSheetRef.current?.close();
   };
 
-  // useEffect(() => {
-  //   const timer = setTimeout(() => {
-  //     setSearchValue(searchValue);
-  //   }, 200);
+  // Add debounced search with cleanup
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setSearchValue(inputValue);
+    }, 200);
 
-  //   return () => clearTimeout(timer);
-  // }, [searchValue]);
+    return () => clearTimeout(timer);
+  }, [inputValue]);
 
   const {
     isVisible: showProModal,
@@ -163,44 +234,53 @@ const Search = () => {
 
   const handleUpgrade = () => {
     hideModal();
-    setTimeout(() => {
+    const timeoutId = setTimeout(() => {
       if (isSubscriptionCanceled) {
         router.push("/(protected)/(nested)/manage-subscription");
       } else {
         router.push("/(protected)/(nested)/buy-subscription");
       }
     }, 100);
+
+    // Cleanup timeout if component unmounts
+    return () => clearTimeout(timeoutId);
   };
 
   return (
     <>
       <View className="w-full h-full bg-background">
-        <View className="px-6 pt-16 pb-5 relative ">
-          <TouchableOpacity
-            onPress={() => router.back()}
-            className="absolute left-6 top-16"
-          >
-            <ArrowLeft
-              width={30}
-              height={30}
-              color={scheme === "dark" ? "#fff" : "#000"}
-            />
-          </TouchableOpacity>
-          <View className="flex items-center">
-            <Text className="font-bold text-2xl text-primary">Search</Text>
-          </View>
-          <View className="flex flex-row items-center justify-between mt-2.5 ">
-            <Input className="basis-4/5 my-3.5 bg-foreground">
-              <InputSlot className="ml-1">
-                <InputIcon className="!w-6 !h-6 text-primary" as={SearchIcon} />
-              </InputSlot>
-              <InputField
-                type="text"
-                placeholder="Search..."
-                value={searchValue}
-                onChangeText={setSearchValue}
+        <View className="px-5 pt-16 pb-5 relative">
+          <View className="flex-row items-center">
+            <TouchableOpacity onPress={() => router.back()}>
+              <ArrowLeft
+                width={30}
+                height={30}
+                color={scheme === "dark" ? "#fff" : "#000"}
               />
-            </Input>
+            </TouchableOpacity>
+            <Text className="text-foreground text-2xl font-semibold ml-4">
+              Search
+            </Text>
+            <View style={{ width: 30 }} />
+          </View>
+
+          <View className="flex flex-row items-center justify-between mt-2.5">
+            <View className="basis-4/5">
+              <Input className="my-3.5 bg-foreground">
+                <InputSlot className="ml-1">
+                  <InputIcon
+                    className="!w-6 !h-6 text-primary"
+                    as={SearchIcon}
+                  />
+                </InputSlot>
+                <InputField
+                  type="text"
+                  placeholder="Search..."
+                  value={searchValue}
+                  onChangeText={setSearchValue}
+                />
+              </Input>
+            </View>
 
             <Pressable
               onPress={() =>
@@ -220,32 +300,66 @@ const Search = () => {
           </View>
         </View>
 
-        <TouchableOpacity
-          className="mx-6 p-3 mb-6 flex flex-row items-center justify-between border border-input rounded-lg"
-          onPress={() =>
-            router.push("/(protected)/(nested)/ingredient-based-search")
-          }
-        >
-          <View className="flex flex-row items-center gap-3">
-            <ChefHat color={scheme === "dark" ? "#fff" : "#000"} size={30} />
-            <Text className="font-medium text-base font-sofia text-primary w-64">
-              Find Recipies based on what you already have at home
-            </Text>
-          </View>
-          <ChevronRight color={"#EE8427"} size={28} />
-        </TouchableOpacity>
+        <View className="relative">
+          <Animated.View style={ingredientCardAnimatedStyle}>
+            <TouchableOpacity
+              className="mx-6 p-3 flex flex-row items-center justify-between border border-input rounded-lg bg-background"
+              onPress={() =>
+                router.push("/(protected)/(nested)/ingredient-based-search")
+              }
+            >
+              <View className="flex flex-row items-center gap-3">
+                <ChefHat
+                  color={scheme === "dark" ? "#fff" : "#000"}
+                  size={30}
+                />
+                <Text className="font-medium text-base font-sofia text-primary w-64">
+                  Find Recipies based on what you already have at home
+                </Text>
+              </View>
+              <ChevronRight color={"#EE8427"} size={28} />
+            </TouchableOpacity>
+          </Animated.View>
 
-        {(!!searchValue || isFiltersApplied) && (
-          <RecipesBySearch
-            flattenedRecipes={flattenedRecipes}
-            searchValue={searchValue}
-            isLoading={recipesLoading}
-            handleLoadMore={handleLoadMore}
-            isFetchingNextPage={isFetchingNextPage}
-          />
-        )}
-
-        {!searchValue && !isFiltersApplied && <RecipesByFilters />}
+          {!!searchValue || isFiltersApplied ? (
+            <Animated.FlatList
+              onScroll={scrollHandler}
+              scrollEventThrottle={16}
+              contentContainerStyle={{ paddingTop: 104, paddingBottom: 100 }}
+              data={flattenedRecipes}
+              keyExtractor={(item) => item?.id.toString()}
+              renderItem={({ item: recipe, index }) => (
+                <RecipesBySearch
+                  flattenedRecipes={[recipe]}
+                  searchValue={searchValue}
+                  isLoading={recipesLoading}
+                  handleLoadMore={handleLoadMore}
+                  isFetchingNextPage={isFetchingNextPage}
+                  hasNextPage={hasNextPage}
+                />
+              )}
+              onEndReached={handleLoadMore}
+              onEndReachedThreshold={0.5}
+              ListFooterComponent={
+                isFetchingNextPage ? (
+                  <View className="mt-3 space-y-6">
+                    {[1, 2].map((item) => (
+                      <RecipeSkeletonItem key={`footer-skeleton-${item}`} />
+                    ))}
+                  </View>
+                ) : null
+              }
+            />
+          ) : (
+            <Animated.ScrollView
+              onScroll={scrollHandler}
+              scrollEventThrottle={16}
+              contentContainerStyle={{ paddingTop: 104, paddingBottom: 100 }}
+            >
+              <RecipesByFilters />
+            </Animated.ScrollView>
+          )}
+        </View>
 
         <Filters
           bottomSheetRef={bottomSheetRef as any}
@@ -269,7 +383,6 @@ const Search = () => {
           handleClearFilters={handleClearFilters}
         />
 
-        {/* Pro Upgrade Modal */}
         {showProModal && (
           <ProSubscribeModal
             visible={showProModal}

@@ -36,10 +36,14 @@ export default function TabsLayout() {
           tabBarActiveTintColor: "#EE8427",
           tabBarInactiveTintColor: scheme === "dark" ? "#FFF" : "#000",
           tabBarStyle: {
-            height: 65 + insets.bottom,
-            paddingBottom: insets.bottom,
-            paddingTop: 10,
+            height:
+              Platform.OS === "ios" ? 45 + insets.bottom : 65 + insets.bottom,
+            paddingBottom:
+              Platform.OS === "ios" ? insets.bottom : insets.bottom,
+            paddingTop: Platform.OS === "ios" ? 10 : 10,
             backgroundColor: scheme === "dark" ? "#2B2B2B" : "#fff",
+            justifyContent: "center",
+            alignItems: "center",
           },
         }}
         tabBar={(props) => (
@@ -53,7 +57,7 @@ export default function TabsLayout() {
           options={{
             title: "",
             tabBarIcon: ({ color }) => (
-              <House color={color} size={32} strokeWidth={1.5} />
+              <House color={color} size={24} strokeWidth={1.5} />
             ),
           }}
         />
@@ -62,7 +66,7 @@ export default function TabsLayout() {
           options={{
             title: "",
             tabBarIcon: ({ color }) => (
-              <CalendarDays color={color} size={32} strokeWidth={1.5} />
+              <CalendarDays color={color} size={24} strokeWidth={1.5} />
             ),
           }}
         />
@@ -71,7 +75,7 @@ export default function TabsLayout() {
           options={{
             title: "",
             tabBarIcon: ({ color }) => (
-              <Bot color={color} size={36} strokeWidth={1.5} />
+              <Bot color={color} size={28} strokeWidth={1.5} />
             ),
           }}
         />
@@ -80,7 +84,7 @@ export default function TabsLayout() {
           options={{
             title: "",
             tabBarIcon: ({ color }) => (
-              <ShoppingCart color={color} size={32} strokeWidth={1.5} />
+              <ShoppingCart color={color} size={24} strokeWidth={1.5} />
             ),
           }}
         />
@@ -89,7 +93,7 @@ export default function TabsLayout() {
           options={{
             title: "",
             tabBarIcon: ({ color }) => (
-              <User color={color} size={32} strokeWidth={1.5} />
+              <User color={color} size={24} strokeWidth={1.5} />
             ),
           }}
         />
@@ -106,21 +110,21 @@ const styles = StyleSheet.create({
     right: 0,
     backgroundColor: "#1E293B",
     zIndex: 100,
+    justifyContent: "center",
+    alignItems: "center",
     ...Platform.select({
       ios: {
         shadowColor: "#000",
         shadowOffset: {
           width: 0,
-          height: -4,
+          height: -7,
         },
-        shadowOpacity: 0.3,
-        shadowRadius: 8,
+        shadowOpacity: 0.2,
+        shadowRadius: 4,
       },
       android: {
         elevation: 12,
       },
     }),
-    borderTopWidth: 0.5,
-    borderTopColor: "rgba(255,255,255,0.1)",
   },
 });

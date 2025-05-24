@@ -54,6 +54,7 @@ type RecipesBySearchProps = {
   isLoading: boolean;
   handleLoadMore: () => void;
   isFetchingNextPage: boolean;
+  hasNextPage: boolean;
 };
 
 const RecipesBySearch = ({
@@ -62,6 +63,7 @@ const RecipesBySearch = ({
   isLoading,
   handleLoadMore,
   isFetchingNextPage,
+  hasNextPage,
 }: RecipesBySearchProps) => {
   const prevRecipesCountRef = useRef(0);
   const isNewBatchRef = useRef(false);
@@ -78,69 +80,27 @@ const RecipesBySearch = ({
     prevRecipesCountRef.current = flattenedRecipes.length;
   }, [flattenedRecipes]);
 
+  if (isLoading) {
+    return (
+      <View className="mt-3 space-y-6">
+        {[1, 2, 3, 4].map((item) => {
+          return <RecipeSkeletonItem key={item} />;
+        })}
+      </View>
+    );
+  }
+
+  if (flattenedRecipes.length === 0) {
+    return (
+      <Text className="text-xl text-foreground text-center mt-10 px-6">
+        No recipes Found with these filters. Please Update filters
+      </Text>
+    );
+  }
+
   return (
     <View className="px-4">
-      <View className="flex-row justify-between items-center mb-4">
-        <Text className="text-xl font-bold text-primary">Recipes</Text>
-      </View>
-      {searchValue && flattenedRecipes.length === 0 && !isLoading ? (
-        <View className="flex flex-col justify-center items-center p-4 mt-10">
-          <Text className="text-2xl font-semibold text-center text-primary">
-            No recipes found for "{searchValue}"
-          </Text>
-          <Text className="text-center mt-2 text-primary">
-            Try adjusting your search or filters
-          </Text>
-        </View>
-      ) : isLoading ? (
-        <View className="mt-3 space-y-6">
-          {[1, 2, 3, 4].map((item) => {
-            return <RecipeSkeletonItem key={item} />;
-          })}
-        </View>
-      ) : flattenedRecipes.length === 0 ? (
-        <Text className="text-xl text-foreground text-center mt-10 px-6">
-          No recipes Found with these filters. Please Update filters
-        </Text>
-      ) : (
-        <FlatList
-          data={flattenedRecipes}
-          keyExtractor={(item) => item?.id.toString()}
-          contentContainerStyle={{
-            paddingHorizontal: 2,
-            paddingBottom: 400,
-          }}
-          onEndReached={handleLoadMore}
-          onEndReachedThreshold={0.4}
-          showsVerticalScrollIndicator={false}
-          renderItem={({ item: recipe, index }) => (
-            <AnimatedRecipeItem
-              recipe={recipe}
-              index={
-                isNewBatchRef.current &&
-                index >=
-                  prevRecipesCountRef.current -
-                    (flattenedRecipes.length - prevRecipesCountRef.current)
-                  ? index -
-                    (prevRecipesCountRef.current -
-                      (flattenedRecipes.length - prevRecipesCountRef.current))
-                  : isNewBatchRef.current
-                  ? 0
-                  : index
-              }
-            />
-          )}
-          ListFooterComponent={
-            isFetchingNextPage ? (
-              <View className="mt-3 space-y-6">
-                {[1, 2].map((item) => (
-                  <RecipeSkeletonItem key={`footer-skeleton-${item}`} />
-                ))}
-              </View>
-            ) : null
-          }
-        />
-      )}
+      <AnimatedRecipeItem recipe={flattenedRecipes[0]} index={0} />
     </View>
   );
 };

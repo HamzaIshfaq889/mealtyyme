@@ -21,12 +21,16 @@ type CheckedItemsProps = {
   bottomSheetRef: React.RefObject<BottomSheetMethods | null>;
   refreshTrigger: number;
   setRefreshTrigger: React.Dispatch<React.SetStateAction<number>>;
+  onChange?: (index: number) => void;
+  backdropComponent?: (props: any) => React.ReactElement;
 };
 
 const CheckedItems = ({
   bottomSheetRef,
   refreshTrigger,
   setRefreshTrigger,
+  onChange,
+  backdropComponent,
 }: CheckedItemsProps) => {
   const [checkedItems, setCheckedItems] = useState<Ingredient[]>([]);
   const scheme = useColorScheme();
@@ -60,13 +64,9 @@ const CheckedItems = ({
         ref={bottomSheetRef}
         index={-1}
         snapPoints={["90%"]}
-        backdropComponent={BottomSheetBackdrop}
-        onChange={(index) => {
-          console.log(index);
-          if (index === 0) {
-            bottomSheetRef.current?.close();
-          }
-        }}
+        enablePanDownToClose
+        backdropComponent={backdropComponent || BottomSheetBackdrop}
+        onChange={onChange}
         style={{
           backgroundColor: "#000",
         }}
@@ -142,7 +142,7 @@ const CheckedItems = ({
           ) : (
             <View className="flex-1 justify-center items-center p-7">
               <Text className="text-muted text-sm text-center">
-                You haven’t checked off any ingredients yet.
+                You haven't checked off any ingredients yet.
               </Text>
             </View>
           )}

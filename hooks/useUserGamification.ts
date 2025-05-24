@@ -47,7 +47,7 @@ export const useUserGamification = () => {
 
   const checkIn = async () => {
     try {
-      console.log('hhh')
+      console.log("hhh");
       await checkInUser();
       console.log("1");
       await AsyncStorage.setItem("lastCheckInDate", today);
@@ -68,5 +68,13 @@ export const useUserGamification = () => {
     }
   };
 
-  return { hasCheckedIn, stats, error, loading, checkIn, clearCheckInDate };
+  return {
+    hasCheckedIn,
+    stats,
+    fetchStats,
+    error,
+    loading,
+    checkIn,
+    clearCheckInDate,
+  };
 };

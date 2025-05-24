@@ -121,7 +121,11 @@ interface RootState {
   };
 }
 
-const HomeUser = () => {
+interface HomeUserProps {
+  onCheckInComplete?: () => void;
+}
+
+const HomeUser = ({ onCheckInComplete }: HomeUserProps) => {
   const scheme = useColorScheme();
   const isDark = scheme === "dark";
   const lottieRef = useRef<LottieView>(null);
@@ -182,6 +186,7 @@ const HomeUser = () => {
           await checkInMutation.mutateAsync();
           await setLastCheckInDate(customerId, today);
           showModal();
+          onCheckInComplete?.();
         }
       } catch (e) {
         console.error("[HomeUser] Daily check‑in failed:", e);

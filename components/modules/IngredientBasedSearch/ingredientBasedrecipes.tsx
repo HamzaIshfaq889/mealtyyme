@@ -53,7 +53,7 @@ const IngredientBasedrecipes = ({
 
   if (isLoading) {
     return (
-      <View className="pt-20 px-6 pb-4 space-y-6">
+      <View className="pt-20 px-6 pb-4 space-y-6 bg-background">
         <View>
           <Text className="text-foreground text-4xl font-semibold mb-6">
             {capitalizeFirstLetter("Recipes")}
@@ -77,7 +77,7 @@ const IngredientBasedrecipes = ({
   }
 
   return (
-    <View className="pt-20 px-5 pb-4 bg-background w-full h-full">
+    <View className="pt-16 px-5 pb-4 bg-background w-full h-full">
       <View className="flex-row items-center mb-6">
         <TouchableOpacity onPress={() => router.back()}>
           <ArrowLeft
@@ -86,7 +86,7 @@ const IngredientBasedrecipes = ({
             color={isDarkMode ? "#fff" : "#000"}
           />
         </TouchableOpacity>
-        <Text className="text-foreground text-2xl font-semibold ml-2">
+        <Text className="text-foreground text-2xl font-semibold ml-4">
           {capitalizeFirstLetter("Recipes")}
         </Text>
       </View>
